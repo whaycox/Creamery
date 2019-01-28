@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Curds.Application\Curds.Application.csproj" />
+    <ProjectReference Include="..\Curds.Domain\Curds.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
