@@ -5,6 +5,7 @@
         public MockNamedEntity()
         {
             Name = nameof(MockNamedEntity);
+            ID = 13;
         }
 
         public override Entity Clone()

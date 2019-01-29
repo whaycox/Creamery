@@ -25,6 +25,7 @@ namespace Curds.Domain.Persistence
                 return toReturn;
             }
         }
+
         public override bool Equals(object obj)
         {
             Entity toTest = obj as Entity;

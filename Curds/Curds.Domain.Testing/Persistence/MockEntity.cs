@@ -2,6 +2,11 @@
 {
     public class MockEntity : Entity
     {
+        public MockEntity()
+        {
+            ID = 12;
+        }
+
         public override Entity Clone()
         {
             MockEntity clone = new MockEntity();
