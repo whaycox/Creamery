@@ -11,14 +11,13 @@ namespace Gouda.Domain.Communication
         public int UserID { get; set; }
         public string CronString { get; set; }
 
-        public override Entity Clone()
+        public override Entity Clone() => CloneInternal(new UserRegistration());
+        protected UserRegistration CloneInternal(UserRegistration clone)
         {
-            UserRegistration clone = new UserRegistration();
-            clone.ID = ID;
             clone.DefinitionID = DefinitionID;
             clone.UserID = UserID;
             clone.CronString = CronString;
-
+            base.CloneInternal(clone);
             return clone;
         }
 
@@ -26,20 +25,20 @@ namespace Gouda.Domain.Communication
         {
             unchecked
             {
-                int toReturn = HashPrime1;
+                int toReturn = StartHashCode();
 
-                toReturn *= HashPrime2;
-                toReturn += base.GetHashCode();
+                toReturn = PrimeHashCode(toReturn);
+                toReturn = IncrementHashCode(toReturn, base.GetHashCode());
 
-                toReturn *= HashPrime2;
-                toReturn += DefinitionID.GetHashCode();
+                toReturn = PrimeHashCode(toReturn);
+                toReturn = IncrementHashCode(toReturn, DefinitionID.GetHashCode());
 
-                toReturn *= HashPrime2;
-                toReturn += UserID.GetHashCode();
+                toReturn = PrimeHashCode(toReturn);
+                toReturn = IncrementHashCode(toReturn, UserID.GetHashCode());
 
-                toReturn *= HashPrime2;
+                toReturn = PrimeHashCode(toReturn);
                 if (CronString != null)
-                    toReturn += CronString.GetHashCode();
+                    toReturn = IncrementHashCode(toReturn, CronString.GetHashCode());
 
                 return toReturn;
             }

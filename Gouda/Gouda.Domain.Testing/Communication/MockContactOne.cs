@@ -8,9 +8,6 @@ namespace Gouda.Domain.Communication
 {
     public class MockContactOne : Contact
     {
-        public override Entity Clone()
-        {
-            throw new NotImplementedException();
-        }
+        public override Entity Clone() => CloneInternal(new MockContactOne());
     }
 }

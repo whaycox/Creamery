@@ -7,13 +7,6 @@ namespace Gouda.Domain
 {
     public class User : NamedEntity
     {
-        public override Entity Clone()
-        {
-            User clone = new User();
-            clone.ID = ID;
-            clone.Name = Name;
-
-            return clone;
-        }
+        public override Entity Clone() => CloneInternal(new User());
     }
 }

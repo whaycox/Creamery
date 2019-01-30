@@ -14,13 +14,11 @@ namespace Gouda.Domain.Communication
 
         public IPEndPoint Endpoint { get; set; }
 
-        public override Entity Clone()
+        public override Entity Clone() => CloneInternal(new Satellite());
+        protected Satellite CloneInternal(Satellite clone)
         {
-            Satellite clone = new Satellite();
-            clone.ID = ID;
-            clone.Name = Name;
             clone.Endpoint = Clone(Endpoint);
-
+            base.CloneInternal(clone);
             return clone;
         }
         private IPEndPoint Clone(IPEndPoint starting)
@@ -33,14 +31,14 @@ namespace Gouda.Domain.Communication
         {
             unchecked
             {
-                int toReturn = HashPrime1;
+                int toReturn = StartHashCode();
 
-                toReturn *= HashPrime2;
-                toReturn += base.GetHashCode();
+                toReturn = PrimeHashCode(toReturn);
+                toReturn = IncrementHashCode(toReturn, base.GetHashCode());
 
-                toReturn *= HashPrime2;
+                toReturn = PrimeHashCode(toReturn);
                 if (Endpoint != null)
-                    toReturn += Endpoint.GetHashCode();
+                    toReturn = IncrementHashCode(toReturn, Endpoint.GetHashCode());
 
                 return toReturn;
             }

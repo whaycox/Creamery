@@ -12,19 +12,28 @@ namespace Curds.Domain.Persistence
         public int ID { get; set; }
 
         public abstract Entity Clone();
+        protected Entity CloneInternal(Entity clone)
+        {
+            clone.ID = ID;
+            return clone;
+        }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                int toReturn = HashPrime1;
+                int toReturn = StartHashCode();
 
-                toReturn *= HashPrime2;
-                toReturn += ID.GetHashCode();
+                toReturn = PrimeHashCode(toReturn);
+                toReturn = IncrementHashCode(toReturn, ID.GetHashCode());
 
                 return toReturn;
             }
         }
+        protected int StartHashCode() => HashPrime1;
+        protected int PrimeHashCode(int currentHashCode) => unchecked(currentHashCode * HashPrime2);
+        protected int IncrementHashCode(int currentHashCode, int incrementValue) => unchecked(currentHashCode + incrementValue);
+
 
         public override bool Equals(object obj)
         {

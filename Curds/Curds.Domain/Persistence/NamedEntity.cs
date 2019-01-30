@@ -8,18 +8,25 @@ namespace Curds.Domain.Persistence
     {
         public string Name { get; set; }
 
+        protected NamedEntity CloneInternal(NamedEntity clone)
+        {
+            clone.Name = Name;
+            base.CloneInternal(clone);
+            return clone;
+        }
+
         public override int GetHashCode()
         {
             unchecked
             {
-                int toReturn = HashPrime1;
+                int toReturn = StartHashCode();
 
-                toReturn *= HashPrime2;
-                toReturn += base.GetHashCode();
+                toReturn = PrimeHashCode(toReturn);
+                toReturn = IncrementHashCode(toReturn, base.GetHashCode());
 
-                toReturn *= HashPrime2;
+                toReturn = PrimeHashCode(toReturn);
                 if (Name != null)
-                    toReturn += Name.GetHashCode();
+                    toReturn = IncrementHashCode(toReturn, Name.GetHashCode());
 
                 return toReturn;
             }
