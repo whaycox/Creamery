@@ -7,8 +7,6 @@ namespace Gouda.Application
 {
     public sealed class Gouda : Curds.Application.Curds, IDisposable
     {
-        internal EntityCollection Entities { get; private set; }
-        
         private Persistence.IProvider Persistence { get; set; }
 
         private Check.IExecutor Executor { get; set; }
@@ -52,11 +50,12 @@ namespace Gouda.Application
         }
         private void LoadEntities()
         {
-            Entities = Persistence.Load();
-            foreach (UserRegistration registration in Persistence.LoadRegistrations(Entities.Definitions))
-                Notifier.AddRegistration(registration);
-            foreach (Contact contact in Persistence.LoadContacts(Entities.Users))
-                Notifier.AddContact(contact);
+            Persistence.PopulateCache();
+            throw new NotImplementedException();
+            //foreach (UserRegistration registration in Persistence.LoadRegistrations(Entities.Definitions))
+            //    Notifier.AddRegistration(registration);
+            //foreach (Contact contact in Persistence.LoadContacts(Entities.Users))
+            //    Notifier.AddContact(contact);
         }
         private void StartServices()
         {

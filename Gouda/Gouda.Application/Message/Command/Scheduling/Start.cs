@@ -14,6 +14,6 @@ namespace Gouda.Application.Message.Command.Scheduling
             : base(application)
         { }
 
-        public override void Handle(Start command) => Application.Scheduler.Start(Application.Entities.Definitions);
+        public override void Handle(Start command) => Application.Scheduler.Start();
     }
 }

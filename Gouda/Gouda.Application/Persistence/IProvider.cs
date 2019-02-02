@@ -9,8 +9,8 @@ namespace Gouda.Application.Persistence
 {
     public interface IProvider
     {
-        EntityCollection Load();
-        IEnumerable<UserRegistration> LoadRegistrations(IEnumerable<Definition> definitions);
-        IEnumerable<Contact> LoadContacts(IEnumerable<User> users);
+        void PopulateCache();
+
+        Satellite LookupSatellite(int id);
     }
 }

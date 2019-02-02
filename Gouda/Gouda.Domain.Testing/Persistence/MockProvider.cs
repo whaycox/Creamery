@@ -13,6 +13,8 @@ namespace Gouda.Domain.Persistence
 {
     public class MockProvider : BaseProvider
     {
+        private const int MockDefinitionID = 5;
+
         private List<Satellite> MockSatellites = new List<Satellite>()
         {
             { new MockSatellite() }
@@ -24,27 +26,6 @@ namespace Gouda.Domain.Persistence
             { MockUser.Three },
         };
 
-        protected override IEnumerable<Definition> LoadDefinitions(Dictionary<int, Satellite> satellites)
-        {
-            List<Definition> toReturn = new List<Definition>();
-            toReturn.Add(new MockDefinition(satellites[0]));
-            return toReturn;
-        }
-
         protected override IEnumerable<Satellite> LoadSatellites() => MockSatellites;
-
-        protected override IEnumerable<User> LoadUsers() => MockUsers;
-
-        public override IEnumerable<UserRegistration> LoadRegistrations(IEnumerable<Definition> definitions) => new List<UserRegistration>
-        {
-            { new UserRegistration() { DefinitionID = MockDefinition.MockID, UserID = 2, CronString = Testing.AlwaysCronString } },
-            { new UserRegistration() { DefinitionID = MockDefinition.MockID, UserID = 3, CronString = Testing.AlwaysCronString } }
-        };
-
-        public override IEnumerable<Contact> LoadContacts(IEnumerable<User> users) => new List<Contact>()
-        {
-            { new MockContactOne() { UserID = 3, CronString = Testing.AlwaysCronString} },
-            { new MockContactTwo() { UserID = 2, CronString = Testing.AlwaysCronString} },
-        };
     }
 }

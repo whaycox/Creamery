@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Curds.Application.DateTimes;
 using Gouda.Application.Check;
 using Gouda.Domain.Check;
 
@@ -9,15 +8,15 @@ namespace Gouda.Infrastructure.Check
 {
     public class Scheduler : IScheduler
     {
-        public IProvider Time { get; set; }
+        public Curds.Application.DateTimes.IProvider Time { get; set; }
+        public Application.Persistence.IProvider Persistence { get; set; }
 
-        public void Start(IEnumerable<Definition> definitions)
+        public void Start()
         {
-            foreach (Definition definition in definitions)
-                Add(definition);
+            throw new NotImplementedException();
         }
 
-        public void Add(Definition definition)
+        public void Add(int definitionID)
         {
             throw new NotImplementedException();
         }

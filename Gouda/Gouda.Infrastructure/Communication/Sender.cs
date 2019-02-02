@@ -11,9 +11,12 @@ namespace Gouda.Infrastructure.Communication
 {
     public class Sender : ISender
     {
+        public Application.Persistence.IProvider Persistence { get; set; }
+
         private Communicator Communicator = new Communicator();
 
-        public Response Send(Definition definition) => Send(definition.Satellite, definition.Request);
+        public Response Send(Definition definition) => Send(LookupSatellite(definition), definition.Request);
+        private Satellite LookupSatellite(Definition definition) => Persistence.LookupSatellite(definition.ID);
 
         private Response Send(Satellite satellite, Request request)
         {

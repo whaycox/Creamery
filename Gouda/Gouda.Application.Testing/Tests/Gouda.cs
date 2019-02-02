@@ -14,7 +14,7 @@ namespace Gouda.Application.Tests
     {
         private MockOptions MockOptions = new MockOptions();
 
-        private Definition MockDefinition(Application.Gouda app) => app.Entities.Definitions.First();
+        private Definition MockDefinition(Application.Gouda app) => throw new NotImplementedException();
         private void StartScheduling(Application.Gouda app) => app.Commands.StartScheduling(new Message.Command.Scheduling.Start());
 
         private void ApplicationTestHelper(Action<Application.Gouda> testDelegate)
@@ -38,8 +38,9 @@ namespace Gouda.Application.Tests
             Assert.AreEqual(nameof(Domain.Check.MockDefinition), request.Name);
             foreach (var argPair in request.Arguments)
             {
-                Assert.IsTrue(Domain.Check.MockDefinition.MockArguments.ContainsKey(argPair.Key));
-                Assert.AreEqual(Domain.Check.MockDefinition.MockArguments[argPair.Key], argPair.Value);
+                throw new NotImplementedException();
+                //Assert.IsTrue(Domain.Check.MockDefinition.MockArguments.ContainsKey(argPair.Key));
+                //Assert.AreEqual(Domain.Check.MockDefinition.MockArguments[argPair.Key], argPair.Value);
             }
         }
 
