@@ -9,6 +9,6 @@ namespace Gouda.Application.Check
     public interface IEvaluator
     {
         event EventHandler<StatusChanged> StatusChanged;
-        void Evaluate(Definition definition, Response response);
+        void Evaluate(Definition definition, BaseResponse response);
     }
 }

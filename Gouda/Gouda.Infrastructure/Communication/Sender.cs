@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Gouda.Application.Communication;
+﻿using Gouda.Application.Communication;
 using Gouda.Domain.Check;
 using Gouda.Domain.Communication;
-using System.Net.Sockets;
 using System.Net;
+using System.Net.Sockets;
 
 namespace Gouda.Infrastructure.Communication
 {
@@ -15,16 +12,16 @@ namespace Gouda.Infrastructure.Communication
 
         private Communicator Communicator = new Communicator();
 
-        public Response Send(Definition definition) => Send(LookupSatellite(definition), definition.Request);
-        private Satellite LookupSatellite(Definition definition) => Persistence.LookupSatellite(definition.ID);
+        public BaseResponse Send(Definition definition) => Send(LookupSatellite(definition), definition.Request);
+        private Satellite LookupSatellite(Definition definition) => Persistence.LookupSatellite(definition.SatelliteID);
 
-        private Response Send(Satellite satellite, Request request)
+        private BaseResponse Send(Satellite satellite, Request request)
         {
             using (TcpClient client = BuildClient(satellite))
             using (NetworkStream stream = client.GetStream())
             {
                 Communicator.Send(stream, request.ToBytes());
-                return Response.Parse(Communicator.ReadPacket(stream, client.ReceiveBufferSize));
+                return BaseResponse.Parse(Communicator.ReadPacket(stream, client.ReceiveBufferSize));
             }
         }
         private TcpClient BuildClient(Satellite satellite)

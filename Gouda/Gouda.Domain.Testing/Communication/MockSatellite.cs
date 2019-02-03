@@ -9,10 +9,14 @@ namespace Gouda.Domain.Communication
     public class MockSatellite : Satellite
     {
         public MockSatellite()
+        { }
+
+        public const int SampleID = 1;
+        public static Satellite Sample => new Satellite()
         {
-            ID = 5;
-            Name = nameof(MockSatellite);
-            Endpoint = Testing.TestEndpoint;
-        }
+            ID = SampleID,
+            Name = nameof(MockSatellite),
+            Endpoint = Testing.TestEndpoint,
+        };
     }
 }

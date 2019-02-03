@@ -13,19 +13,18 @@ namespace Gouda.Domain.Persistence
 {
     public class MockProvider : BaseProvider
     {
-        private const int MockDefinitionID = 5;
-
         private List<Satellite> MockSatellites = new List<Satellite>()
         {
-            { new MockSatellite() }
+            { MockSatellite.Sample }
         };
-        private List<User> MockUsers = new List<User>()
+        private List<Definition> MockDefinitions = new List<Definition>()
         {
-            { MockUser.One },
-            { MockUser.Two },
-            { MockUser.Three },
+            { MockDefinition.Sample }
         };
+        private List<Argument> MockArguments = MockArgument.Samples;
 
         protected override IEnumerable<Satellite> LoadSatellites() => MockSatellites;
+        protected override IEnumerable<Definition> LoadDefinitions() => MockDefinitions;
+        protected override IEnumerable<Argument> LoadArguments() => MockArguments;
     }
 }

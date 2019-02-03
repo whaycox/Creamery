@@ -10,6 +10,6 @@ namespace Gouda.Application.Communication
     {
         Persistence.IProvider Persistence { get; set; }
 
-        Response Send(Definition definition);
+        BaseResponse Send(Definition definition);
     }
 }

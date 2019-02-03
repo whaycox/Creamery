@@ -13,7 +13,7 @@ namespace Gouda.Domain.Check
 
         public void Reset() => ReceivedRequests.Clear();
 
-        public override Response Perform(Request request)
+        public override BaseResponse Perform(Request request)
         {
             ReceivedRequests.Add(request);
             return new MockResponse();

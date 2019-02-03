@@ -11,6 +11,7 @@ namespace Gouda.Application.Persistence
     {
         void PopulateCache();
 
+        Definition LookupDefinition(int id);
         Satellite LookupSatellite(int id);
     }
 }

@@ -11,7 +11,7 @@ namespace Gouda.Domain.Check
         public static Argument Three => new MockArgument(3);
         public static Argument Four => new MockArgument(4);
 
-        public static List<Argument> MockArguments => new List<Argument>()
+        public static List<Argument> Samples => new List<Argument>()
         {
             One,
             Two,
@@ -21,6 +21,8 @@ namespace Gouda.Domain.Check
         private MockArgument(int val)
         {
             ID = val;
+            DefinitionID = MockDefinition.SampleID;
+
             Name = val.ToString();
             Value = val.ToString();
         }

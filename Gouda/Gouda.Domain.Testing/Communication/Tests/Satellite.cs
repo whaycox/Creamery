@@ -10,7 +10,7 @@ namespace Gouda.Domain.Communication.Tests
     [TestClass]
     public class Satellite : NamedEntityTemplate<Communication.Satellite>
     {
-        protected override Communication.Satellite Sample => new MockSatellite();
+        protected override Communication.Satellite Sample => MockSatellite.Sample;
 
         [TestMethod]
         public void EndpointChangesCode()

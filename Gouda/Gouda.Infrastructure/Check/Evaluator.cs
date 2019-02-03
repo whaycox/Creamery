@@ -13,7 +13,7 @@ namespace Gouda.Infrastructure.Check
         public event EventHandler<StatusChanged> StatusChanged;
         protected void OnStatusChanged(Definition definition, Status oldStatus, Status newStatus) => StatusChanged?.Invoke(this, new StatusChanged(definition, oldStatus, newStatus));
 
-        public void Evaluate(Definition definition, Response response)
+        public void Evaluate(Definition definition, BaseResponse response)
         {
             Status evaluated = definition.Evaluate(response);
             if(definition.Status != evaluated)

@@ -17,5 +17,10 @@ namespace Curds.Domain.Persistence
                 AddOrUpdate(entity);
         }
         public T Retrieve(int key) => Collection[key];
+        public IEnumerable<T> RetrieveAll()
+        {
+            foreach (var pair in Collection)
+                yield return pair.Value;
+        }
     }
 }

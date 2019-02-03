@@ -4,7 +4,9 @@ using System.Text;
 
 namespace Gouda.Domain.Check
 {
-    public class MockResponse : Response
+    using Responses;
+
+    public class MockResponse : Success
     {
         private const int Count = 4;
         private const decimal Decimal = 3.5463211m;
@@ -18,7 +20,7 @@ namespace Gouda.Domain.Check
         public int CountData => int.Parse(Arguments[nameof(Count)]);
         public decimal RealData => decimal.Parse(Arguments[nameof(Decimal)]);
 
-        public MockResponse(Response basicResponse)
+        public MockResponse(BaseResponse basicResponse)
             : base(basicResponse)
         { }
 

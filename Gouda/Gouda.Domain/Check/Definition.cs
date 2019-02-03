@@ -15,8 +15,7 @@ namespace Gouda.Domain.Check
         public int SatelliteID { get; set; }
         public List<Argument> Arguments { get; set; }
 
-        public Request Request => new Request(Name, CompileArguments(Arguments));
-        private Dictionary<string, string> CompileArguments(List<Argument> arguments) => arguments.ToDictionary(k => k.Name, v => v.Value);
+        public Request Request => new Request(Name, Argument.Compile(Arguments));
 
         public void Update(Status newStatus) => Status = newStatus;
 
@@ -75,14 +74,14 @@ namespace Gouda.Domain.Check
             return base.Equals(obj);
         }
 
-        public abstract Status Evaluate(Response response);
+        public abstract Status Evaluate(BaseResponse response);
     }
 
-    public abstract class Definition<T> : Definition where T : Response
+    public abstract class Definition<T> : Definition where T : BaseResponse
     {
-        public sealed override Status Evaluate(Response response) => Evaluate(BuildResponse(response));
+        public sealed override Status Evaluate(BaseResponse response) => Evaluate(BuildResponse(response));
 
-        public abstract T BuildResponse(Response response);
+        public abstract T BuildResponse(BaseResponse response);
         protected abstract Status Evaluate(T response);
     }
 }

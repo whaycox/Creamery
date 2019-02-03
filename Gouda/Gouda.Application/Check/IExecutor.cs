@@ -7,6 +7,6 @@ namespace Gouda.Application.Check
 {
     public interface IExecutor
     {
-        Response Perform(Request request);
+        BaseResponse Perform(Request request);
     }
 }

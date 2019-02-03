@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Gouda.Domain.Check;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading.Tasks;
 using System.Threading;
-using System.Linq;
-using Gouda.Domain.Check;
+using System.Threading.Tasks;
+using System;
+using Gouda.Domain.Check.Responses;
 
 namespace Gouda.Infrastructure.Communication
 {
@@ -56,7 +54,7 @@ namespace Gouda.Infrastructure.Communication
                     using (NetworkStream stream = client.GetStream())
                     {
                         token.ThrowIfCancellationRequested();
-                        Response response = Handler(Request.Parse(Communicator.ReadPacket(stream, client.ReceiveBufferSize)));
+                        BaseResponse response = HandleRequest(client, stream);
                         Communicator.Send(stream, response.ToBytes());
                     }
                 }
@@ -65,6 +63,17 @@ namespace Gouda.Infrastructure.Communication
                     if (socketException.Message != "A blocking operation was interrupted by a call to WSACancelBlockingCall")
                         throw socketException;
                 }
+            }
+        }
+        private BaseResponse HandleRequest(TcpClient client, NetworkStream stream)
+        {
+            try
+            {
+                return Handler(Request.Parse(Communicator.ReadPacket(stream, client.ReceiveBufferSize)));
+            }
+            catch(Exception ex)
+            {
+                return new Failure(ex);
             }
         }
 

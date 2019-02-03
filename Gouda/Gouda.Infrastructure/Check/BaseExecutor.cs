@@ -9,6 +9,6 @@ namespace Gouda.Infrastructure.Check
 {
     public abstract class BaseExecutor : IExecutor
     {
-        public abstract Response Perform(Request request);
+        public abstract BaseResponse Perform(Request request);
     }
 }

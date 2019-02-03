@@ -5,7 +5,7 @@ using Gouda.Domain.Check;
 
 namespace Gouda.Application.Communication
 {
-    public delegate Response RequestHandler(Request request);
+    public delegate BaseResponse RequestHandler(Request request);
 
     public interface IListener : IDisposable
     {

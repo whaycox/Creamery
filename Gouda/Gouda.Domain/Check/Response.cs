@@ -4,24 +4,26 @@ using System.Collections.Generic;
 namespace Gouda.Domain.Check
 {
     using Communication;
+    using Enumerations;
+    using Responses;
 
-    public class Response : CommunicableObject
+    public abstract class BaseResponse : CommunicableObject
     {
+        public ResponseType Type { get; }
         public Dictionary<string, string> Arguments { get; }
 
-        public Response(Response response)
-            : this(response.Arguments)
-        { }
-
-        public Response(Dictionary<string, string> args)
+        protected BaseResponse(Dictionary<string, string> args, ResponseType type)
         {
+            Type = type;
             Arguments = args;
         }
 
         public override bool Equals(object obj)
         {
-            Response toTest = obj as Response;
+            BaseResponse toTest = obj as BaseResponse;
             if (toTest == null)
+                return false;
+            if (toTest.Type != Type)
                 return false;
             if (toTest.Arguments.Count != Arguments.Count)
                 return false;
@@ -39,6 +41,7 @@ namespace Gouda.Domain.Check
         public byte[] ToBytes()
         {
             List<byte> buffer = new List<byte>();
+            buffer.AddRange(BitConverter.GetBytes((int)Type));
             buffer.AddRange(BitConverter.GetBytes(Arguments.Count));
             foreach (var pair in Arguments)
             {
@@ -49,9 +52,10 @@ namespace Gouda.Domain.Check
             return buffer.ToArray();
         }
 
-        public static Response Parse(byte[] buffer)
+        public static BaseResponse Parse(byte[] buffer)
         {
             int index = 0;
+            ResponseType type = (ResponseType)ReadNumber(buffer, ref index);
             int numberOfArguments = ReadNumber(buffer, ref index);
             Dictionary<string, string> arguments = new Dictionary<string, string>();
             for (int i = 0; i < numberOfArguments; i++)
@@ -61,7 +65,15 @@ namespace Gouda.Domain.Check
                 arguments.Add(key, value);
             }
 
-            return new Response(arguments);
+            switch (type)
+            {
+                case ResponseType.Success:
+                    return new Success(arguments);
+                case ResponseType.Failure:
+                    return new Failure(arguments);
+                default:
+                    throw new NotImplementedException();
+            }
         }
     }
 }
