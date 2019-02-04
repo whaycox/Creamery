@@ -13,7 +13,7 @@ namespace Gouda.Infrastructure.Communication
         private Communicator Communicator = new Communicator();
 
         public BaseResponse Send(Definition definition) => Send(LookupSatellite(definition), definition.Request);
-        private Satellite LookupSatellite(Definition definition) => Persistence.LookupSatellite(definition.SatelliteID);
+        private Satellite LookupSatellite(Definition definition) => Persistence.Satellites.Lookup(definition.SatelliteID);
 
         private BaseResponse Send(Satellite satellite, Request request)
         {

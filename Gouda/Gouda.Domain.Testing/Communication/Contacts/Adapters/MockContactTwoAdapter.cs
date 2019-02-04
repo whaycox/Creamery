@@ -1,23 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Gouda.Application.Communication;
 using Gouda.Domain.Communication;
 using Gouda.Infrastructure.Communication;
 
-namespace Gouda.Domain.Communication
+namespace Gouda.Domain.Communication.Contacts.Adapters
 {
-    public class MockContactOneAdapter : BaseContactAdapter<MockContactOne>
+    public class MockContactTwoAdapter : BaseContactAdapter<MockContactTwo>
     {
         private MockNotifier Notifier { get; }
 
-        protected override void Notify(MockContactOne contact)
+        protected override void Notify(MockContactTwo contact)
         {
             Notifier.UsersNotified.Add(contact.UserID);
-            Notifier.UsersContactedByOne.Add(contact.UserID);
+            Notifier.UsersContactedByTwo.Add(contact.UserID);
         }
 
-        public MockContactOneAdapter(MockNotifier notifier)
+        public MockContactTwoAdapter(MockNotifier notifier)
         {
             Notifier = notifier;
         }

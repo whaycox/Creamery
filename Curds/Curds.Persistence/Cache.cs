@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Text;
 using System.Threading.Tasks;
+using Curds.Domain.Persistence;
 
-namespace Curds.Domain.Persistence
+namespace Curds.Persistence
 {
     public class Cache<T> where T : Entity
     {

@@ -4,14 +4,19 @@ using System.Text;
 using Gouda.Domain.Communication;
 using Gouda.Domain.Check;
 using Gouda.Domain;
+using Curds.Application.Persistence;
 
 namespace Gouda.Application.Persistence
 {
     public interface IProvider
     {
-        void PopulateCache();
+        Curds.Application.Cron.IProvider Cron { get; set; }
 
-        Definition LookupDefinition(int id);
-        Satellite LookupSatellite(int id);
+        IPersistor<Satellite> Satellites { get; }
+        IPersistor<Definition> Definitions { get; }
+        IPersistor<Argument> Arguments { get; }
+        IPersistor<Contact> Contacts { get; }
+
+        IEnumerable<Contact> FilterContacts(int definitionID, DateTime eventTime);
     }
 }

@@ -8,7 +8,10 @@ using Gouda.Infrastructure.Communication;
 
 namespace Gouda.Domain.Communication
 {
-    public class MockNotifier : BaseNotifier
+    using Contacts;
+    using Contacts.Adapters;
+
+    public class MockNotifier : Notifier
     {
         public List<int> UsersNotified = new List<int>();
 

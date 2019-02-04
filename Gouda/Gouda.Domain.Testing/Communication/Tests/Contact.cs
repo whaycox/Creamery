@@ -5,9 +5,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Gouda.Domain.Communication.Tests
 {
+    using Contacts;
+
     [TestClass]
     public class Contact : ContactTemplate<MockContactOne>
     {
-        protected override MockContactOne Sample => new MockContactOne() { ID = 5, UserID = 2, Name = nameof(MockContactOne), CronString = Testing.AlwaysCronString };
+        protected override MockContactOne Sample => MockContactOne.Sample;
     }
 }

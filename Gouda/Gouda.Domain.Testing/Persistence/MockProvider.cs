@@ -21,10 +21,10 @@ namespace Gouda.Domain.Persistence
         {
             { MockDefinition.Sample }
         };
-        private List<Argument> MockArguments = MockArgument.Samples;
 
         protected override IEnumerable<Satellite> LoadSatellites() => MockSatellites;
         protected override IEnumerable<Definition> LoadDefinitions() => MockDefinitions;
-        protected override IEnumerable<Argument> LoadArguments() => MockArguments;
+        protected override IEnumerable<Argument> LoadArguments() => MockArgument.Samples;
+        protected override IEnumerable<Contact> LoadContacts() => MockContact.Samples;
     }
 }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Curds.Domain.Persistence;
+﻿using Curds.Domain.Persistence;
 
 namespace Gouda.Domain.Communication
 {

@@ -19,7 +19,6 @@ namespace Gouda.Infrastructure.Communication.Tests
         [TestInitialize]
         public void Init()
         {
-            MockProvider.PopulateCache();
             MockSender.Persistence = MockProvider;
         }
 

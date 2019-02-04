@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Gouda.Domain.Communication
+namespace Curds.Domain.Persistence
 {
     public interface ICronEntity
     {
+        int ID { get; }
         string CronString { get; }
     }
 }
