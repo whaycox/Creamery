@@ -14,14 +14,13 @@ namespace Gouda.Infrastructure.Communication.Tests
         private MockProvider Persistence = new MockProvider();
         private MockListener Listener = new MockListener();
 
-        private Definition Definition => Persistence.LookupDefinition(MockDefinition.SampleID);
+        private Definition Definition => Persistence.Definitions.Lookup(MockDefinition.SampleID);
 
         private Communication.Sender TestSender = new Communication.Sender();
 
         [TestInitialize]
         public void Init()
         {
-            Persistence.PopulateCache();
             TestSender.Persistence = Persistence;
             Listener.Start();
         }

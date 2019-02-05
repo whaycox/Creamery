@@ -10,6 +10,13 @@ namespace Gouda.Domain
         public static MockUser Two => new MockUser(2);
         public static MockUser Three => new MockUser(3);
 
+        public static IEnumerable<User> Samples => new List<User>()
+        {
+            One,
+            Two,
+            Three,
+        };
+
         private MockUser(int id)
         {
             ID = id;

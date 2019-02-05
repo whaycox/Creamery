@@ -10,11 +10,9 @@ namespace Gouda.Application.Communication
 {
     public interface INotifier
     {
-        Curds.Application.Cron.IProvider Cron { get; set; }
         Curds.Application.DateTimes.IProvider Time { get; set; }
+        Persistence.IProvider Persistence { get; set; }
 
-        void AddContact(Contact contact);
-        void AddRegistration(UserRegistration registration);
         void NotifyUsers(object sender, StatusChanged eventArgs);
     }
 }

@@ -2,22 +2,22 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace Curds.Domain.Persistence.Relationships
+namespace Curds.Persistence.Relationships
 {
     public class OneToMany : CachedRelationship
     {
         private ConcurrentDictionary<int, HashSet<int>> Relationships = new ConcurrentDictionary<int, HashSet<int>>();
 
-        public override void AddRelationship(int keyID, int valueID) => Relationships.AddOrUpdate(keyID, StartingSet(valueID), (k, v) => AddToSet(v, valueID));
-        private HashSet<int> StartingSet(int valueID)
+        public override void AddRelationship(int keyID, int relatedID) => Relationships.AddOrUpdate(keyID, StartingSet(relatedID), (k, v) => AddToSet(v, relatedID));
+        private HashSet<int> StartingSet(int relatedID)
         {
             HashSet<int> toReturn = new HashSet<int>();
-            toReturn.Add(valueID);
+            toReturn.Add(relatedID);
             return toReturn;
         }
-        private HashSet<int> AddToSet(HashSet<int> set, int valueID)
+        private HashSet<int> AddToSet(HashSet<int> set, int relatedID)
         {
-            set.Add(valueID);
+            set.Add(relatedID);
             return set;
         }
 

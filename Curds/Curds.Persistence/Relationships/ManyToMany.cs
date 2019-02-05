@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Curds.Domain.Persistence.Relationships
+namespace Curds.Persistence.Relationships
 {
     public class ManyToMany : CachedRelationship
     {

@@ -25,7 +25,6 @@ namespace Gouda.Application
         {
             ReadOptions(options);
             HookupReferences();
-            LoadEntities();
             StartServices();
         }
         private void ReadOptions(GoudaOptions options)
@@ -44,18 +43,9 @@ namespace Gouda.Application
         {
             Listener.Handler = Executor.Perform;
             Evaluator.StatusChanged += Notifier.NotifyUsers;
-            Notifier.Cron = Cron;
+            Notifier.Persistence = Persistence;
             Notifier.Time = Time;
             Scheduler.Time = Time;
-        }
-        private void LoadEntities()
-        {
-            Persistence.PopulateCache();
-            throw new NotImplementedException();
-            //foreach (UserRegistration registration in Persistence.LoadRegistrations(Entities.Definitions))
-            //    Notifier.AddRegistration(registration);
-            //foreach (Contact contact in Persistence.LoadContacts(Entities.Users))
-            //    Notifier.AddContact(contact);
         }
         private void StartServices()
         {

@@ -12,7 +12,7 @@ namespace Gouda.Domain.Communication
 
         public void SendTest()
         {
-            BaseResponse received = Send(Persistence.LookupDefinition(MockDefinition.SampleID));
+            BaseResponse received = Send(Persistence.Definitions.Lookup(MockDefinition.SampleID));
             ResponsesReceived.Add(received);
         }
     }
