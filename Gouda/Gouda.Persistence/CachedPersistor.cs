@@ -19,5 +19,6 @@ namespace Gouda.Persistence
         public IEnumerable<T> FetchAll() => Cache.RetrieveAll();
 
         public T Lookup(int id) => Cache.Retrieve(id);
+        public IEnumerable<T> Lookup(IEnumerable<int> ids) => Cache.Retrieve(ids);
     }
 }

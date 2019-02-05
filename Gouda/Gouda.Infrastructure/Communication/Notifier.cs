@@ -4,10 +4,11 @@ using Gouda.Domain.EventArgs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Gouda.Infrastructure.Communication
 {
-    public abstract class Notifier : INotifier
+    public class Notifier : INotifier
     {
         private Dictionary<Type, IContactAdapter> Adapters = new Dictionary<Type, IContactAdapter>();
 
@@ -20,9 +21,26 @@ namespace Gouda.Infrastructure.Communication
         {
             LoadAdapters();
         }
-        protected virtual void LoadAdapters() { }
-
-        protected void AddAdapter(Type type, IContactAdapter adapter) => Adapters.Add(type, adapter);
+        private void LoadAdapters()
+        {
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+                LoadNamespaceFromAssembly(assembly);
+        }
+        private void LoadNamespaceFromAssembly(Assembly assembly)
+        {
+            foreach (Type type in assembly.GetTypes().Where(t => typeof(IContactAdapter).IsAssignableFrom(t)))
+                LoadType(type);
+        }
+        private void LoadType(Type type)
+        {
+            var ctor = type.GetConstructor(new Type[0]);
+            if (ctor != null && type.BaseType.IsGenericType)
+            {
+                Type keyType = type.BaseType.GetGenericArguments()[0];
+                AddAdapter(keyType, ctor.Invoke(null) as IContactAdapter);
+            }
+        }
+        private void AddAdapter(Type type, IContactAdapter adapter) => Adapters.Add(type, adapter);
 
         public void NotifyUsers(object sender, StatusChanged eventArgs) => NotifyContacts(Persistence.FilterContacts(eventArgs.Definition.ID, FetchTime));
         private void NotifyContacts(IEnumerable<Contact> contacts)

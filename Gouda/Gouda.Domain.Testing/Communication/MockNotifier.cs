@@ -17,11 +17,5 @@ namespace Gouda.Domain.Communication
 
         public List<int> UsersContactedByOne = new List<int>();
         public List<int> UsersContactedByTwo = new List<int>();
-
-        protected override void LoadAdapters()
-        {
-            AddAdapter(typeof(MockContactOne), new MockContactOneAdapter(this));
-            AddAdapter(typeof(MockContactTwo), new MockContactTwoAdapter(this));
-        }
     }
 }

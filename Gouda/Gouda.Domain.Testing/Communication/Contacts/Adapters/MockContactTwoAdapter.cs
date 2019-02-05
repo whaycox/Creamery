@@ -8,17 +8,9 @@ namespace Gouda.Domain.Communication.Contacts.Adapters
 {
     public class MockContactTwoAdapter : BaseContactAdapter<MockContactTwo>
     {
-        private MockNotifier Notifier { get; }
+        public static List<int> UsersNotified = new List<int>();
+        public static void Reset() => UsersNotified.Clear();
 
-        protected override void Notify(MockContactTwo contact)
-        {
-            Notifier.UsersNotified.Add(contact.UserID);
-            Notifier.UsersContactedByTwo.Add(contact.UserID);
-        }
-
-        public MockContactTwoAdapter(MockNotifier notifier)
-        {
-            Notifier = notifier;
-        }
+        protected override void Notify(MockContactTwo contact) => UsersNotified.Add(contact.UserID);
     }
 }

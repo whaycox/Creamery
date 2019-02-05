@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Text;
 using Curds.Application.Cron;
+using System.Linq;
 
 namespace Curds.Persistence.Relationships
 {
@@ -10,14 +11,24 @@ namespace Curds.Persistence.Relationships
     {
         private ConcurrentDictionary<int, ConcurrentDictionary<int, ICronObject>> Relationships = new ConcurrentDictionary<int, ConcurrentDictionary<int, ICronObject>>();
 
-        public void AddRelationship(int keyID, int relatedID, ICronObject cronFilter) => Relationships.AddOrUpdate(keyID, StartingSet(relatedID, cronFilter), (k, e) => AddCronRelationship(e, relatedID, cronFilter));
+        public IEnumerable<int> Filter(int definition, DateTime testTime) => Relationships[definition].Where(u => u.Value.Test(testTime)).Select(u => u.Key).ToList();
+
+        public void AddRelationship(int keyID, int relatedID, ICronObject cronFilter) => 
+            Relationships.AddOrUpdate(
+                keyID, 
+                StartingSet(relatedID, cronFilter), 
+                (k, e) => AddCronRelationship(e, relatedID, cronFilter)
+                );
         private ConcurrentDictionary<int, ICronObject> StartingSet(int relatedID, ICronObject cronFilter)
         {
-            throw new NotImplementedException();
+            ConcurrentDictionary<int, ICronObject> toReturn = new ConcurrentDictionary<int, ICronObject>();
+            toReturn.AddOrUpdate(relatedID, cronFilter, (e, v) => cronFilter);
+            return toReturn;
         }
         private ConcurrentDictionary<int, ICronObject> AddCronRelationship(ConcurrentDictionary<int, ICronObject> relatedEntities, int relatedID, ICronObject cronFilter)
         {
-            throw new NotImplementedException();
+            relatedEntities.AddOrUpdate(relatedID, cronFilter, (e, v) => cronFilter);
+            return relatedEntities;
         }
 
         public void SeverRelationship(int keyID, int relatedID)
