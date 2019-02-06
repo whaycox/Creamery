@@ -9,11 +9,11 @@ using System.Linq;
 
 namespace Gouda.Infrastructure.Communication
 {
-    internal class Communicator
+    public abstract class Communicator
     {
-        public void Send(NetworkStream stream, byte[] packet) => stream.Write(packet, 0, packet.Length);
+        protected void Send(NetworkStream stream, byte[] packet) => stream.Write(packet, 0, packet.Length);
 
-        public byte[] ReadPacket(NetworkStream stream, int bufferSize)
+        protected byte[] ReadPacket(NetworkStream stream, int bufferSize)
         {
             int bytesRead = 0;
             byte[] buffer = new byte[bufferSize];

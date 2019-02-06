@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Gouda.Application.Check;
+﻿using Gouda.Application.Check;
 using Gouda.Domain.Check;
-using Gouda.Domain.EventArgs;
 using Gouda.Domain.Enumerations;
+using Gouda.Domain.EventArgs;
+using System;
 
 namespace Gouda.Infrastructure.Check
 {
@@ -16,7 +14,7 @@ namespace Gouda.Infrastructure.Check
         public void Evaluate(Definition definition, BaseResponse response)
         {
             Status evaluated = definition.Evaluate(response);
-            if(definition.Status != evaluated)
+            if (definition.Status != evaluated)
             {
                 Status old = definition.Status;
                 definition.Update(evaluated);

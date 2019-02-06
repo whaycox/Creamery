@@ -6,11 +6,9 @@ using System.Net.Sockets;
 
 namespace Gouda.Infrastructure.Communication
 {
-    public class Sender : ISender
+    public class Sender : Communicator, ISender
     {
         public Application.Persistence.IProvider Persistence { get; set; }
-
-        private Communicator Communicator = new Communicator();
 
         public BaseResponse Send(Definition definition) => Send(LookupSatellite(definition), definition.Request);
         private Satellite LookupSatellite(Definition definition) => Persistence.Satellites.Lookup(definition.SatelliteID);
@@ -20,8 +18,8 @@ namespace Gouda.Infrastructure.Communication
             using (TcpClient client = BuildClient(satellite))
             using (NetworkStream stream = client.GetStream())
             {
-                Communicator.Send(stream, request.ToBytes());
-                return BaseResponse.Parse(Communicator.ReadPacket(stream, client.ReceiveBufferSize));
+                Send(stream, request.ToBytes());
+                return BaseResponse.Parse(ReadPacket(stream, client.ReceiveBufferSize));
             }
         }
         private TcpClient BuildClient(Satellite satellite)
