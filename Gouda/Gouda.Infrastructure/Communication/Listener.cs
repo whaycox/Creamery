@@ -10,8 +10,6 @@ namespace Gouda.Infrastructure.Communication
 {
     public class Listener : BaseListener
     {
-        private Communicator Communicator = new Communicator();
-
         private CancellationTokenSource CancelSource { get; set; }
         private TcpListener Server { get; }
 
@@ -55,7 +53,7 @@ namespace Gouda.Infrastructure.Communication
                     {
                         token.ThrowIfCancellationRequested();
                         BaseResponse response = HandleRequest(client, stream);
-                        Communicator.Send(stream, response.ToBytes());
+                        Send(stream, response.ToBytes());
                     }
                 }
                 catch (SocketException socketException)
@@ -69,7 +67,7 @@ namespace Gouda.Infrastructure.Communication
         {
             try
             {
-                return Handler(Request.Parse(Communicator.ReadPacket(stream, client.ReceiveBufferSize)));
+                return Handler(Request.Parse(ReadPacket(stream, client.ReceiveBufferSize)));
             }
             catch(Exception ex)
             {

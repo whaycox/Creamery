@@ -7,7 +7,7 @@ using Gouda.Domain.Check;
 
 namespace Gouda.Infrastructure.Communication
 {
-    public abstract class BaseListener : IListener
+    public abstract class BaseListener : Communicator, IListener
     {
         public RequestHandler Handler { get; set; }
 
