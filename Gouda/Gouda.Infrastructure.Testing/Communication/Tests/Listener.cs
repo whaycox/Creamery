@@ -53,7 +53,7 @@ namespace Gouda.Infrastructure.Communication.Tests
         {
             var expectedArguments = Argument.Compile(MockArgument.Samples);
 
-            Assert.AreEqual(nameof(MockDefinition), request.Name);
+            Assert.AreEqual(MockCheck.SampleID, request.ID);
             Assert.AreEqual(expectedArguments.Count, request.Arguments.Count);
             foreach(var argPair in request.Arguments)
             {

@@ -35,6 +35,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curds.Infrastructure.Testin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curds.Persistence.Testing", "..\Curds\Curds.Persistence.Testing\Curds.Persistence.Testing.csproj", "{60F51D08-2666-40DD-AF3C-B923C17BFE7F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gouda.Check", "Gouda.Check\Gouda.Check.csproj", "{F313AF55-B55C-4E00-ADF8-A3B3EC3D9FC3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gouda.Check.Testing", "Gouda.Check.Testing\Gouda.Check.Testing.csproj", "{A8B179BF-C5CB-4584-B5CD-567F115F91F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -105,6 +109,14 @@ Global
 		{60F51D08-2666-40DD-AF3C-B923C17BFE7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60F51D08-2666-40DD-AF3C-B923C17BFE7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60F51D08-2666-40DD-AF3C-B923C17BFE7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F313AF55-B55C-4E00-ADF8-A3B3EC3D9FC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F313AF55-B55C-4E00-ADF8-A3B3EC3D9FC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F313AF55-B55C-4E00-ADF8-A3B3EC3D9FC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F313AF55-B55C-4E00-ADF8-A3B3EC3D9FC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8B179BF-C5CB-4584-B5CD-567F115F91F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8B179BF-C5CB-4584-B5CD-567F115F91F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8B179BF-C5CB-4584-B5CD-567F115F91F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8B179BF-C5CB-4584-B5CD-567F115F91F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -30,21 +30,6 @@ namespace Gouda.Application.Tests
         }
 
         [TestMethod]
-        public void BuildsRequestFromDefinitionTest() => ApplicationTestHelper(BuildsRequestFromDefinitionHelper);
-        private void BuildsRequestFromDefinitionHelper(Application.Gouda app)
-        {
-            Definition sample = MockDefinition(app);
-            Request request = sample.Request;
-            Assert.AreEqual(nameof(Domain.Check.MockDefinition), request.Name);
-            foreach (var argPair in request.Arguments)
-            {
-                throw new NotImplementedException();
-                //Assert.IsTrue(Domain.Check.MockDefinition.MockArguments.ContainsKey(argPair.Key));
-                //Assert.AreEqual(Domain.Check.MockDefinition.MockArguments[argPair.Key], argPair.Value);
-            }
-        }
-
-        [TestMethod]
         public void DeterminesWhetherDefinitionStatusChangesTest() => ApplicationTestHelper(DeterminesWhetherDefinitionStatusChangesHelper);
         private void DeterminesWhetherDefinitionStatusChangesHelper(Application.Gouda app)
         {

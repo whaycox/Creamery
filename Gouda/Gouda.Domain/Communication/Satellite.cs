@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Curds.Domain.Persistence;
+using Curds.Domain;
 
 namespace Gouda.Domain.Communication
 {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Curds.Domain;
 
 namespace Gouda.Domain.Check
 {
@@ -25,16 +26,8 @@ namespace Gouda.Domain.Check
                 return false;
             if (toTest.Type != Type)
                 return false;
-            if (toTest.Arguments.Count != Arguments.Count)
+            if (!toTest.Arguments.CompareTwoDictionaries(Arguments))
                 return false;
-            foreach (var pair in toTest.Arguments)
-            {
-                if (!Arguments.ContainsKey(pair.Key))
-                    return false;
-                if (!pair.Value.Equals(Arguments[pair.Key]))
-                    return false;
-            }
-
             return true;
         }
 

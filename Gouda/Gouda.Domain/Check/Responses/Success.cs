@@ -8,6 +8,10 @@ namespace Gouda.Domain.Check.Responses
 
     public class Success : BaseResponse
     {
+        public Success()
+            : this(new Dictionary<string, string>())
+        { }
+
         public Success(BaseResponse response)
             : this(response.Arguments)
         {

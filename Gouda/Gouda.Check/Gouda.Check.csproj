@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Curds\Curds.Application\Curds.Application.csproj" />
+    <ProjectReference Include="..\..\Curds\Curds.Domain\Curds.Domain.csproj" />
+    <ProjectReference Include="..\Gouda.Application\Gouda.Application.csproj" />
+    <ProjectReference Include="..\Gouda.Domain\Gouda.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace Curds.Domain.Persistence
+namespace Curds.Domain
 {
     public static class CompareExtensions
     {
@@ -31,6 +30,21 @@ namespace Curds.Domain.Persistence
             for (int i = 0; i < left.Count; i++)
                 if (!left[i].CompareWithNull(right[i]))
                     return false;
+            return true;
+        }
+
+        public static bool CompareTwoDictionaries<T, U>(this Dictionary<T, U> left, Dictionary<T, U> right) => CompareWithNull(left, right, DefaultDictionaryComparison);
+        private static bool DefaultDictionaryComparison<T, U>(Dictionary<T, U> left, Dictionary<T, U> right)
+        {
+            if (left.Count != right.Count)
+                return false;
+            foreach(var pair in left)
+            {
+                if (!right.ContainsKey(pair.Key))
+                    return false;
+                if (!pair.Value.CompareWithNull(right[pair.Key]))
+                    return false;
+            }
             return true;
         }
     }

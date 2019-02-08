@@ -13,13 +13,14 @@ namespace Gouda.Infrastructure.Check
 
         public void Evaluate(Definition definition, BaseResponse response)
         {
-            Status evaluated = definition.Evaluate(response);
-            if (definition.Status != evaluated)
-            {
-                Status old = definition.Status;
-                definition.Update(evaluated);
-                OnStatusChanged(definition, old, evaluated);
-            }
+            throw new NotImplementedException();
+            //Status evaluated = definition.Evaluate(response);
+            //if (definition.Status != evaluated)
+            //{
+            //    Status old = definition.Status;
+            //    definition.Update(evaluated);
+            //    OnStatusChanged(definition, old, evaluated);
+            //}
         }
     }
 }

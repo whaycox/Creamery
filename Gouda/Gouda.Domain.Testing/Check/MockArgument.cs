@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace Gouda.Domain.Check
 {
@@ -17,6 +18,7 @@ namespace Gouda.Domain.Check
             Two,
             Three,
         };
+        public static List<int> SampleIDs => Samples.Select(a => a.ID).ToList();
 
         private MockArgument(int val)
         {

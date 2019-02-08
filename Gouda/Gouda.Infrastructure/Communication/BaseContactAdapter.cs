@@ -6,9 +6,14 @@ using Gouda.Application.Communication;
 
 namespace Gouda.Infrastructure.Communication
 {
-    public abstract class BaseContactAdapter<T> : IContactAdapter where T : Contact
+    public abstract class BaseContactAdapter : IContactAdapter
     {
-        public void Notify(Contact contact) => Notify(contact as T);
+        public abstract void Notify(Contact contact);
+    }
+
+    public abstract class BaseContactAdapter<T> : BaseContactAdapter where T : Contact
+    {
+        public override void Notify(Contact contact) => Notify(contact as T);
         protected abstract void Notify(T contact);
     }
 }

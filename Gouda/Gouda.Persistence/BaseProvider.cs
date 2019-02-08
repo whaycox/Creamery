@@ -52,5 +52,6 @@ namespace Gouda.Persistence
         protected abstract IEnumerable<UserRegistration> LoadUserRegistrations();
 
         public IEnumerable<Contact> FilterContacts(int definitionID, DateTime eventTime) => Contacts.Lookup(UsersPerDefinition.Filter(definitionID, eventTime));
+        public IEnumerable<Argument> GenerateArguments(int definitionID) => Arguments.Lookup(Definitions.Lookup(definitionID).ArgumentIDs);
     }
 }
