@@ -9,12 +9,13 @@ namespace Gouda.Infrastructure
     {
         public static IEnumerable<string> IContactAdapterNamespaces => new List<string>
         {
-            $"{nameof(Gouda)}.{nameof(Domain)}.{nameof(Domain.Communication)}.Contacts.Adapters", //MUST come back to use nameofs
+            "Gouda.Domain.Communication.Contacts.Adapters",
         };
 
         public static IEnumerable<string> IRequestHandlerNamespaces => new List<string>
         {
-            $"{nameof(Gouda)}.{nameof(Domain)}.{nameof(Domain.Check)}", 
+            "Gouda.Domain.Check",
+            "Gouda.Check.Basic",
         };
     }
 }

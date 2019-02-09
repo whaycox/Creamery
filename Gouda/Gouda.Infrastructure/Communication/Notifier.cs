@@ -24,7 +24,7 @@ namespace Gouda.Infrastructure.Communication
         private void LoadAdapters()
         {
             foreach(string nameSpace in LoadableItems.IContactAdapterNamespaces)
-                foreach (var adapterPair in AppDomain.CurrentDomain.LoadBasicConstructors<Type, BaseContactAdapter>(nameSpace, KeySelector))
+                foreach (var adapterPair in AppDomain.CurrentDomain.LoadKeyInstancePairs<Type, BaseContactAdapter>(nameSpace, KeySelector))
                     AddAdapter(adapterPair.key, adapterPair.instance);
         }
         private Type KeySelector(BaseContactAdapter adapter) => adapter.GetType().BaseType.GetGenericArguments().First();

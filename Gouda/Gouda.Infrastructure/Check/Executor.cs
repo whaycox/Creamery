@@ -4,6 +4,7 @@ using System.Text;
 using Gouda.Application.Check;
 using Gouda.Domain;
 using Gouda.Domain.Check;
+using Gouda.Domain.Check.Responses;
 
 namespace Gouda.Infrastructure.Check
 {
@@ -18,10 +19,20 @@ namespace Gouda.Infrastructure.Check
         private void LoadHandlers()
         {
             foreach (string nameSpace in LoadableItems.IRequestHandlerNamespaces)
-                foreach (var handlerPair in AppDomain.CurrentDomain.LoadBasicConstructors<Guid, IRequestHandler>(nameSpace, (t) => t.ID))
+                foreach (var handlerPair in AppDomain.CurrentDomain.LoadKeyInstancePairs<Guid, IRequestHandler>(nameSpace, (t) => t.ID))
                     Handlers.Add(handlerPair.key, handlerPair.instance);
         }
 
-        public BaseResponse Perform(Request request) => Handlers[request.ID].Perform(request);
+        public BaseResponse Perform(Request request)
+        {
+            try
+            {
+                return Handlers[request.ID].Perform(request);
+            }
+            catch(Exception ex)
+            {
+                return new Failure(ex);
+            }
+        }
     }
 }

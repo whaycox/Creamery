@@ -20,6 +20,7 @@ namespace Curds.Domain
                 TestForException<Exception>(testCase.Delegate);
         }
 
+        protected void TestForException(Action action) => TestForException<Exception>(action);
         protected void TestForException<U>(Action action) where U : Exception => TestForException<U>(action, (u) => { });
         protected void TestForException<U>(Action action, Action<U> exceptionHandler) where U : Exception
         {

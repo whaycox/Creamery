@@ -9,7 +9,7 @@ namespace Gouda.Infrastructure
 {
     public static class ReflectionExtensions
     {
-        public static IEnumerable<(T key, U instance)> LoadBasicConstructors<T, U>(this AppDomain appDomain, string nameSpace, Func<U, T> keySelector) where U : class
+        public static IEnumerable<(T key, U instance)> LoadKeyInstancePairs<T, U>(this AppDomain appDomain, string nameSpace, Func<U, T> keySelector) where U : class
         {
             foreach (Type type in appDomain.LoadTypes<U>(nameSpace))
             {
