@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using Gouda.Domain.Check;
 using Gouda.Domain.Communication;
-using Gouda.Domain.EventArgs;
 using Gouda.Infrastructure.Communication;
 
 namespace Gouda.Domain.Communication

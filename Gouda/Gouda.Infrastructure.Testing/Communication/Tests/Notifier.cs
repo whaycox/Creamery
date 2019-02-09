@@ -25,9 +25,9 @@ namespace Gouda.Infrastructure.Communication.Tests
         public void Init()
         {
             Persistence.Cron = Cron;
+            Evaluator.Notifier = TestNotifier;
             TestNotifier.Time = Time;
             TestNotifier.Persistence = Persistence;
-            Evaluator.StatusChanged += TestNotifier.NotifyUsers;
 
             Persistence.LoadRelationships();
         }

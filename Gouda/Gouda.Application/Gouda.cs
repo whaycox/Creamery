@@ -42,7 +42,6 @@ namespace Gouda.Application
         private void HookupReferences()
         {
             Listener.Handler = Executor.Perform;
-            Evaluator.StatusChanged += Notifier.NotifyUsers;
             Notifier.Persistence = Persistence;
             Notifier.Time = Time;
             Scheduler.Time = Time;

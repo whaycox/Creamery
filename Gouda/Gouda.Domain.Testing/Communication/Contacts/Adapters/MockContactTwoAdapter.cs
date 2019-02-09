@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Gouda.Domain.Communication;
 using Gouda.Infrastructure.Communication;
+using Gouda.Domain.Check;
 
 namespace Gouda.Domain.Communication.Contacts.Adapters
 {
@@ -11,6 +12,6 @@ namespace Gouda.Domain.Communication.Contacts.Adapters
         public static List<int> UsersNotified = new List<int>();
         public static void Reset() => UsersNotified.Clear();
 
-        protected override void Notify(MockContactTwo contact) => UsersNotified.Add(contact.UserID);
+        protected override void Notify(MockContactTwo contact, StatusChange changeInformation) => UsersNotified.Add(contact.UserID);
     }
 }

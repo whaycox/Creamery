@@ -1,21 +1,24 @@
 ﻿using Gouda.Application.Check;
 using Gouda.Domain.Check;
 using Gouda.Domain.Enumerations;
-using Gouda.Domain.EventArgs;
 using System;
 using System.Collections.Generic;
+using Gouda.Domain.Check.Responses;
+using Gouda.Application.Communication;
 
 namespace Gouda.Infrastructure.Check
 {
     public class Evaluator : ReflectionLoader<Guid, IResponseHandler>, IEvaluator
     {
-        protected override IEnumerable<string> NamespacesToSearch => LoadableItems.CheckNamespaces;
+        public INotifier Notifier { get; set; }
 
-        public event EventHandler<StatusChanged> StatusChanged;
-        protected void OnStatusChanged(Definition definition, Status oldStatus, Status newStatus) => StatusChanged?.Invoke(this, new StatusChanged(definition, oldStatus, newStatus));
+        protected override IEnumerable<string> NamespacesToSearch => LoadableItems.CheckNamespaces;
 
         public void Evaluate(Definition definition, BaseResponse response)
         {
+
+
+
             throw new NotImplementedException();
             //Status evaluated = definition.Evaluate(response);
             //if (definition.Status != evaluated)
@@ -24,6 +27,10 @@ namespace Gouda.Infrastructure.Check
             //    definition.Update(evaluated);
             //    OnStatusChanged(definition, old, evaluated);
             //}
+        }
+        private Status EvaluateInternal(IResponseHandler handler, Success response)
+        {
+            throw new NotImplementedException();
         }
 
         protected override Guid KeySelector(IResponseHandler instance) => instance.ID;

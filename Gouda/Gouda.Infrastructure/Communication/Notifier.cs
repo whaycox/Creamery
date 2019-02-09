@@ -1,6 +1,6 @@
 ﻿using Gouda.Application.Communication;
+using Gouda.Domain.Check;
 using Gouda.Domain.Communication;
-using Gouda.Domain.EventArgs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +17,13 @@ namespace Gouda.Infrastructure.Communication
 
         protected override IEnumerable<string> NamespacesToSearch => LoadableItems.IContactAdapterNamespaces;
 
-        public void NotifyUsers(object sender, StatusChanged eventArgs) => NotifyContacts(Persistence.FilterContacts(eventArgs.Definition.ID, FetchTime));
-        private void NotifyContacts(IEnumerable<Contact> contacts)
+        public void NotifyUsers(StatusChange changeInformation) => NotifyContacts(Persistence.FilterContacts(changeInformation.Definition.ID, FetchTime), changeInformation);
+        private void NotifyContacts(IEnumerable<Contact> contacts, StatusChange changeInformation)
         {
             foreach(Contact contact in contacts)
             {
                 Type contactType = contact.GetType();
-                Loaded[contactType].Notify(contact);
+                Loaded[contactType].Notify(contact, changeInformation);
             }
         }
 
