@@ -10,8 +10,9 @@ namespace Gouda.Infrastructure.Communication
     {
         public Application.Persistence.IProvider Persistence { get; set; }
 
-        public BaseResponse Send(Definition definition) => Send(LookupSatellite(definition), definition.Request);
+        public BaseResponse Send(Definition definition) => Send(LookupSatellite(definition), BuildRequest(definition));
         private Satellite LookupSatellite(Definition definition) => Persistence.Satellites.Lookup(definition.SatelliteID);
+        private Request BuildRequest(Definition definition) => new Request(definition.CheckID, Argument.Compile(Persistence.GenerateArguments(definition.ID)));
 
         private BaseResponse Send(Satellite satellite, Request request)
         {

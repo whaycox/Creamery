@@ -11,7 +11,7 @@ namespace Gouda.Domain.Check.Tests
     [TestClass]
     public class Definition : NamedEntityTemplate<Check.Definition>
     {
-        protected override Check.Definition Sample => new MockDefinition() { ID = 5, Name = nameof(Sample), SatelliteID = 5, Arguments = MockArgument.Samples };
+        protected override Check.Definition Sample => new MockDefinition() { ID = 5, Name = nameof(Sample), SatelliteID = 5, ArgumentIDs = MockArgument.SampleIDs };
 
         [TestMethod]
         public void SatelliteIDEquality() => TestIntChange((e, v) => e.SatelliteID = v);
@@ -28,32 +28,32 @@ namespace Gouda.Domain.Check.Tests
         private void NullCollectionNotEqualsSample()
         {
             var samples = Samples;
-            samples.right.Arguments = null;
+            samples.right.ArgumentIDs = null;
             TestEquality(samples);
         }
         private void EmptyCollectionNotEqualsSample()
         {
             var samples = Samples;
-            samples.right.Arguments.Clear();
+            samples.right.ArgumentIDs.Clear();
             TestEquality(samples);
         }
         private void NullCollectionNotEqualsEmpty()
         {
             var samples = Samples;
-            samples.left.Arguments = null;
-            samples.right.Arguments.Clear();
+            samples.left.ArgumentIDs = null;
+            samples.right.ArgumentIDs.Clear();
             TestEquality(samples);
         }
         private void ContentChangesNotEqual()
         {
             var samples = Samples;
-            samples.right.Arguments[0].Value = nameof(ContentChangesNotEqual);
+            samples.right.ArgumentIDs[0] = int.MaxValue;
             TestEquality(samples);
         }
         private void QuantityChangesNotEqual()
         {
             var samples = Samples;
-            samples.right.Arguments.Add(MockArgument.Four);
+            samples.right.ArgumentIDs.Add(MockArgument.Four.ID);
             TestEquality(samples);
         }
     }

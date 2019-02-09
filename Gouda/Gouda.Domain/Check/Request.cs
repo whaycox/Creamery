@@ -8,39 +8,19 @@ namespace Gouda.Domain.Check
 
     public class Request : CommunicableObject 
     {
-        public string Name { get; }
+        public Guid ID { get; }
         public Dictionary<string, string> Arguments { get; }
 
-        public Request(string name, Dictionary<string, string> args)
+        public Request(Guid guid, Dictionary<string, string> args)
         {
-            Name = name;
+            ID = guid;
             Arguments = args;
-        }
-
-        public override bool Equals(object obj)
-        {
-            Request toTest = obj as Request;
-            if (toTest == null)
-                return false;
-            if (!toTest.Name.Equals(Name))
-                return false;
-            if (toTest.Arguments.Count != Arguments.Count)
-                return false;
-            foreach (var pair in toTest.Arguments)
-            {
-                if (!Arguments.ContainsKey(pair.Key))
-                    return false;
-                if (!pair.Value.Equals(Arguments[pair.Key]))
-                    return false;
-            }
-
-            return true;
         }
 
         public byte[] ToBytes()
         {
             List<byte> buffer = new List<byte>();
-            buffer = AddStringToBuffer(buffer, Name);
+            buffer = AddGuidToBuffer(buffer, ID);
             buffer.AddRange(BitConverter.GetBytes(Arguments.Count));
             foreach (var pair in Arguments)
             {
@@ -54,7 +34,7 @@ namespace Gouda.Domain.Check
         public static Request Parse(byte[] buffer)
         {
             int index = 0;
-            string name = ReadString(buffer, ref index);
+            Guid id = ReadGuid(buffer, ref index);
             int numberOfArguments = ReadNumber(buffer, ref index);
             Dictionary<string, string> arguments = new Dictionary<string, string>();
             for (int i = 0; i < numberOfArguments; i++)
@@ -64,7 +44,7 @@ namespace Gouda.Domain.Check
                 arguments.Add(key, value);
             }
 
-            return new Request(name, arguments);
+            return new Request(id, arguments);
         }
     }
 }

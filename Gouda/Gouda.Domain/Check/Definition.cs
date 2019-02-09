@@ -1,31 +1,33 @@
-﻿using System;
+﻿using Curds.Domain.Persistence;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using Curds.Domain.Persistence;
 using System.Linq;
+using Curds.Domain;
 
 namespace Gouda.Domain.Check
 {
     using Enumerations;
-    using Communication;
 
-    public abstract class Definition : NamedEntity
+    public class Definition : NamedEntity
     {
         public Status Status { get; private set; }
         public int SatelliteID { get; set; }
-        public List<Argument> Arguments { get; set; }
+        public List<int> ArgumentIDs { get; set; }
+        public Guid CheckID { get; set; }
 
-        public Request Request => new Request(Name, Argument.Compile(Arguments));
+        public Definition()
+        {
+            ArgumentIDs = new List<int>();
+        }
 
         public void Update(Status newStatus) => Status = newStatus;
 
-        public override Entity Clone() => CloneInternal(Default);
-        protected abstract Definition Default { get; }
+        public override Entity Clone() => CloneInternal(new Definition());
         protected Definition CloneInternal(Definition clone)
         {
             clone.SatelliteID = SatelliteID;
             clone.Status = Status;
-            clone.Arguments = Arguments?.Select(a => a.Clone() as Argument).ToList();
+            clone.ArgumentIDs = ArgumentIDs.ToList();
             base.CloneInternal(clone);
             return clone;
         }
@@ -45,14 +47,14 @@ namespace Gouda.Domain.Check
                 toReturn = PrimeHashCode(toReturn);
                 toReturn = IncrementHashCode(toReturn, SatelliteID.GetHashCode());
 
-                if (Arguments != null)
+                if (ArgumentIDs != null)
                 {
                     toReturn = PrimeHashCode(toReturn);
-                    toReturn = IncrementHashCode(toReturn, Arguments.Count.GetHashCode());
-                    foreach (Argument argument in Arguments)
+                    toReturn = IncrementHashCode(toReturn, ArgumentIDs.Count.GetHashCode());
+                    foreach (int argumentID in ArgumentIDs)
                     {
                         toReturn = PrimeHashCode(toReturn);
-                        toReturn = IncrementHashCode(toReturn, argument.GetHashCode());
+                        toReturn = IncrementHashCode(toReturn, argumentID.GetHashCode());
                     }
                 }
 
@@ -69,19 +71,9 @@ namespace Gouda.Domain.Check
                 return false;
             if (toTest.SatelliteID != SatelliteID)
                 return false;
-            if (!toTest.Arguments.CompareTwoLists(Arguments))
+            if (!toTest.ArgumentIDs.CompareTwoLists(ArgumentIDs))
                 return false;
             return base.Equals(obj);
         }
-
-        public abstract Status Evaluate(BaseResponse response);
-    }
-
-    public abstract class Definition<T> : Definition where T : BaseResponse
-    {
-        public sealed override Status Evaluate(BaseResponse response) => Evaluate(BuildResponse(response));
-
-        public abstract T BuildResponse(BaseResponse response);
-        protected abstract Status Evaluate(T response);
     }
 }

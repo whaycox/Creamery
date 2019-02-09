@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Gouda.Domain.Persistence;
 using Gouda.Domain.Communication;
 using Gouda.Domain.Check;
+using Gouda.Domain.Check.Responses;
 
 namespace Gouda.Infrastructure.Communication.Tests
 {

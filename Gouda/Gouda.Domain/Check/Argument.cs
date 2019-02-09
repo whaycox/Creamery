@@ -1,6 +1,7 @@
 ﻿using Curds.Domain.Persistence;
 using System.Collections.Generic;
 using System.Linq;
+using Curds.Domain;
 
 namespace Gouda.Domain.Check
 {
@@ -49,6 +50,6 @@ namespace Gouda.Domain.Check
             return base.Equals(obj);
         }
 
-        public static Dictionary<string, string> Compile(List<Argument> arguments) => arguments?.ToDictionary(k => k.Name, v => v.Value) ?? new Dictionary<string, string>();
+        public static Dictionary<string, string> Compile(IEnumerable<Argument> arguments) => arguments?.ToDictionary(k => k.Name, v => v.Value) ?? new Dictionary<string, string>();
     }
 }

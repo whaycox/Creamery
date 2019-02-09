@@ -19,5 +19,6 @@ namespace Gouda.Application.Persistence
         IPersistor<User> Users { get; }
 
         IEnumerable<Contact> FilterContacts(int definitionID, DateTime eventTime);
+        IEnumerable<Argument> GenerateArguments(int definitionID);
     }
 }

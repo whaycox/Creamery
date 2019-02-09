@@ -23,24 +23,12 @@ namespace Gouda.Infrastructure.Communication
         }
         private void LoadAdapters()
         {
-            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
-                LoadNamespaceFromAssembly(assembly);
+            foreach(string nameSpace in LoadableItems.IContactAdapterNamespaces)
+                foreach (var adapterPair in AppDomain.CurrentDomain.LoadKeyInstancePairs<Type, BaseContactAdapter>(nameSpace, KeySelector))
+                    AddAdapter(adapterPair.key, adapterPair.instance);
         }
-        private void LoadNamespaceFromAssembly(Assembly assembly)
-        {
-            foreach (Type type in assembly.GetTypes().Where(t => typeof(IContactAdapter).IsAssignableFrom(t)))
-                LoadType(type);
-        }
-        private void LoadType(Type type)
-        {
-            var ctor = type.GetConstructor(new Type[0]);
-            if (ctor != null && type.BaseType.IsGenericType)
-            {
-                Type keyType = type.BaseType.GetGenericArguments()[0];
-                AddAdapter(keyType, ctor.Invoke(null) as IContactAdapter);
-            }
-        }
-        private void AddAdapter(Type type, IContactAdapter adapter) => Adapters.Add(type, adapter);
+        private Type KeySelector(BaseContactAdapter adapter) => adapter.GetType().BaseType.GetGenericArguments().First();
+        private void AddAdapter(Type type, BaseContactAdapter adapter) => Adapters.Add(type, adapter);
 
         public void NotifyUsers(object sender, StatusChanged eventArgs) => NotifyContacts(Persistence.FilterContacts(eventArgs.Definition.ID, FetchTime));
         private void NotifyContacts(IEnumerable<Contact> contacts)

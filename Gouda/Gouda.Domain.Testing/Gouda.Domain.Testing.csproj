@@ -21,6 +21,7 @@
     <ProjectReference Include="..\..\Curds\Curds.Infrastructure\Curds.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Curds\Curds.Persistence\Curds.Persistence.csproj" />
     <ProjectReference Include="..\Gouda.Application\Gouda.Application.csproj" />
+    <ProjectReference Include="..\Gouda.Check\Gouda.Check.csproj" />
     <ProjectReference Include="..\Gouda.Domain\Gouda.Domain.csproj" />
     <ProjectReference Include="..\Gouda.Infrastructure\Gouda.Infrastructure.csproj" />
     <ProjectReference Include="..\Gouda.Persistence\Gouda.Persistence.csproj" />

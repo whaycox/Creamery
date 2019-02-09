@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Curds.Domain.Persistence;
+using Curds.Domain;
 
 namespace Gouda.Domain.Communication
 {

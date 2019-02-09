@@ -7,27 +7,16 @@ using Curds.Domain.Persistence;
 
 namespace Gouda.Domain.Check
 {
-    public class MockDefinition : Definition<MockResponse>
+    public class MockDefinition : Definition
     {
-        protected override Definition Default => new MockDefinition();
-
-        public override MockResponse BuildResponse(BaseResponse response) => new MockResponse(response);
-
-        protected override Status Evaluate(MockResponse response)
-        {
-            if (response.CountData == 4)
-                return Status.Good;
-            else
-                return Status.Worried;
-        }
-
         public const int SampleID = 1;
         public static Definition Sample => new MockDefinition()
         {
             ID = SampleID,
             Name = nameof(MockDefinition),
+            CheckID = MockCheck.SampleID,
             SatelliteID = MockSatellite.SampleID,
-            Arguments = MockArgument.Samples,
+            ArgumentIDs = MockArgument.SampleIDs,
         };
     }
 }
