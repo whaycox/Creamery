@@ -10,7 +10,7 @@ namespace Gouda.Domain.Check
 
     public class Definition : NamedEntity
     {
-        public Status Status { get; private set; }
+        public Status Status { get; set; }
         public int SatelliteID { get; set; }
         public List<int> ArgumentIDs { get; set; }
         public Guid CheckID { get; set; }
@@ -19,8 +19,6 @@ namespace Gouda.Domain.Check
         {
             ArgumentIDs = new List<int>();
         }
-
-        public void Update(Status newStatus) => Status = newStatus;
 
         public override Entity Clone() => CloneInternal(new Definition());
         protected Definition CloneInternal(Definition clone)

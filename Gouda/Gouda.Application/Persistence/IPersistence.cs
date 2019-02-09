@@ -5,12 +5,13 @@ using Gouda.Domain.Communication;
 using Gouda.Domain.Check;
 using Gouda.Domain;
 using Curds.Application.Persistence;
+using Curds.Application.Cron;
 
 namespace Gouda.Application.Persistence
 {
-    public interface IProvider
+    public interface IPersistence
     {
-        Curds.Application.Cron.IProvider Cron { get; set; }
+        ICron Cron { get; set; }
 
         IPersistor<Satellite> Satellites { get; }
         IPersistor<Definition> Definitions { get; }

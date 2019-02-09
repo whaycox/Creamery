@@ -10,7 +10,7 @@ namespace Gouda.Domain.Check
     public class MockDefinition : Definition
     {
         public const int SampleID = 1;
-        public static Definition Sample => new MockDefinition()
+        public static MockDefinition Sample => new MockDefinition()
         {
             ID = SampleID,
             Name = nameof(MockDefinition),

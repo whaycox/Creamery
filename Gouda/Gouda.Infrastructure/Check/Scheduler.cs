@@ -8,8 +8,8 @@ namespace Gouda.Infrastructure.Check
 {
     public class Scheduler : IScheduler
     {
-        public Curds.Application.DateTimes.IProvider Time { get; set; }
-        public Application.Persistence.IProvider Persistence { get; set; }
+        public Curds.Application.DateTimes.IDateTime Time { get; set; }
+        public Application.Persistence.IPersistence Persistence { get; set; }
 
         public void Start()
         {

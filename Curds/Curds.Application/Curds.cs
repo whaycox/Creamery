@@ -6,8 +6,8 @@ namespace Curds.Application
 {
     public abstract class Curds
     {
-        protected DateTimes.IProvider Time { get; }
-        protected Cron.IProvider Cron { get; }
+        protected DateTimes.IDateTime Time { get; }
+        protected Cron.ICron Cron { get; }
 
         public Curds(CurdsOptions options)
         {

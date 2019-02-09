@@ -11,7 +11,7 @@ namespace Curds.Infrastructure.DateTimes.Tests
     {
         private const int AcceptableDeltaInMs = 1;
 
-        private IProvider Time = new DateTimes.Machine();
+        private IDateTime Time = new DateTimes.Machine();
 
         [TestMethod]
         public void MatchesNow()

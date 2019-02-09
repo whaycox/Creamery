@@ -43,9 +43,10 @@ namespace Gouda.Application.Tests
         private void DeterminesWhoIsNotifiedHelper(Application.Gouda app)
         {
             StartScheduling(app);
-            Assert.AreEqual(2, MockOptions.MockNotifier.UsersNotified.Count);
-            Assert.AreEqual(2, MockOptions.MockNotifier.UsersNotified[0]);
-            Assert.AreEqual(3, MockOptions.MockNotifier.UsersNotified[1]);
+            throw new NotImplementedException();
+            //Assert.AreEqual(2, MockOptions.MockNotifier.UsersNotified.Count);
+            //Assert.AreEqual(2, MockOptions.MockNotifier.UsersNotified[0]);
+            //Assert.AreEqual(3, MockOptions.MockNotifier.UsersNotified[1]);
         }
 
         [TestMethod]
@@ -53,10 +54,11 @@ namespace Gouda.Application.Tests
         private void DeterminesHowToContactHelper(Application.Gouda app)
         {
             StartScheduling(app);
-            Assert.AreEqual(1, MockOptions.MockNotifier.UsersContactedByOne.Count);
-            Assert.AreEqual(3, MockOptions.MockNotifier.UsersContactedByOne[0]);
-            Assert.AreEqual(1, MockOptions.MockNotifier.UsersContactedByTwo.Count);
-            Assert.AreEqual(2, MockOptions.MockNotifier.UsersContactedByTwo[0]);
+            throw new NotImplementedException();
+            //Assert.AreEqual(1, MockOptions.MockNotifier.UsersContactedByOne.Count);
+            //Assert.AreEqual(3, MockOptions.MockNotifier.UsersContactedByOne[0]);
+            //Assert.AreEqual(1, MockOptions.MockNotifier.UsersContactedByTwo.Count);
+            //Assert.AreEqual(2, MockOptions.MockNotifier.UsersContactedByTwo[0]);
         }
     }
 }

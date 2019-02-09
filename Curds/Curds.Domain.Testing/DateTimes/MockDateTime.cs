@@ -5,7 +5,7 @@ using Curds.Application.DateTimes;
 
 namespace Curds.Domain.DateTimes
 {
-    public class MockDateTime : IProvider
+    public class MockDateTime : IDateTime
     {
         public static readonly DateTimeOffset StartingPointInTime = DateTimeOffset.MinValue;
         private static DateTimeOffset CurrentPointInTime = StartingPointInTime;

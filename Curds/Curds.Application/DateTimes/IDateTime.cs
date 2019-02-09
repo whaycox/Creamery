@@ -2,7 +2,7 @@
 
 namespace Curds.Application.DateTimes
 {
-    public interface IProvider
+    public interface IDateTime
     {
         DateTimeOffset Fetch { get; }
     }

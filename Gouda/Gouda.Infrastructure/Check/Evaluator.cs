@@ -1,26 +1,64 @@
 ﻿using Gouda.Application.Check;
 using Gouda.Domain.Check;
 using Gouda.Domain.Enumerations;
-using Gouda.Domain.EventArgs;
 using System;
+using System.Collections.Generic;
+using Gouda.Domain.Check.Responses;
+using Gouda.Application.Communication;
+using Gouda.Application.Persistence;
 
 namespace Gouda.Infrastructure.Check
 {
-    public class Evaluator : IEvaluator
+    public class Evaluator : ReflectionLoader<Guid, IResponseHandler>, IEvaluator
     {
-        public event EventHandler<StatusChanged> StatusChanged;
-        protected void OnStatusChanged(Definition definition, Status oldStatus, Status newStatus) => StatusChanged?.Invoke(this, new StatusChanged(definition, oldStatus, newStatus));
+        public INotifier Notifier { get; set; }
+        public IPersistence Persistence { get; set; }
+
+        protected override IEnumerable<string> NamespacesToSearch => LoadableItems.CheckNamespaces;
 
         public void Evaluate(Definition definition, BaseResponse response)
         {
-            throw new NotImplementedException();
-            //Status evaluated = definition.Evaluate(response);
-            //if (definition.Status != evaluated)
-            //{
-            //    Status old = definition.Status;
-            //    definition.Update(evaluated);
-            //    OnStatusChanged(definition, old, evaluated);
-            //}
+            Status evaluated = EvaluateResponse(definition, response);
+            if(definition.Status != evaluated)
+            {
+                Status old = definition.Status;
+                Persistence.Definitions.Update(definition.ID, (d) => UpdateStatus(d, evaluated));
+                StatusChange changeInformation = new StatusChange()
+                {
+                    Definition = definition,
+                    Old = old,
+                    New = evaluated,
+                    Response = response,
+                };
+                Notifier.NotifyUsers(changeInformation);
+            }
         }
+        private Status EvaluateResponse(Definition definition, BaseResponse response)
+        {
+            Status evaluated = Status.Unknown;
+            try
+            {
+                evaluated = EvaluateInternal(Loaded[definition.CheckID], response);
+            }
+            catch (Exception ex)
+            {
+                evaluated = Status.Critical;
+            }
+            return evaluated;
+        }
+        private Status EvaluateInternal(IResponseHandler handler, BaseResponse response)
+        {
+            if (response is Failure)
+                return Status.Critical;
+            else
+                return handler.Evaluate((Success)response);
+        }
+        private Definition UpdateStatus(Definition definition, Status newStatus)
+        {
+            definition.Status = newStatus;
+            return definition;
+        }
+
+        protected override Guid KeySelector(IResponseHandler instance) => instance.ID;
     }
 }

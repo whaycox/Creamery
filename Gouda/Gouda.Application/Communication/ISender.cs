@@ -8,7 +8,7 @@ namespace Gouda.Application.Communication
 {
     public interface ISender
     {
-        Persistence.IProvider Persistence { get; set; }
+        Persistence.IPersistence Persistence { get; set; }
 
         BaseResponse Send(Definition definition);
     }

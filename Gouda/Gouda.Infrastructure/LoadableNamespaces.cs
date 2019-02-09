@@ -12,7 +12,7 @@ namespace Gouda.Infrastructure
             "Gouda.Domain.Communication.Contacts.Adapters",
         };
 
-        public static IEnumerable<string> IRequestHandlerNamespaces => new List<string>
+        public static IEnumerable<string> CheckNamespaces => new List<string>
         {
             "Gouda.Domain.Check",
             "Gouda.Check.Basic",
