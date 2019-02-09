@@ -8,27 +8,14 @@ using System.Reflection;
 
 namespace Gouda.Infrastructure.Communication
 {
-    public class Notifier : INotifier
+    public class Notifier : ReflectionLoader<Type, BaseContactAdapter>, INotifier
     {
-        private Dictionary<Type, IContactAdapter> Adapters = new Dictionary<Type, IContactAdapter>();
-
         public Curds.Application.DateTimes.IProvider Time { get; set; }
         public Application.Persistence.IProvider Persistence { get; set; }
 
         private DateTime FetchTime => Time.Fetch.LocalDateTime;
 
-        public Notifier()
-        {
-            LoadAdapters();
-        }
-        private void LoadAdapters()
-        {
-            foreach(string nameSpace in LoadableItems.IContactAdapterNamespaces)
-                foreach (var adapterPair in AppDomain.CurrentDomain.LoadKeyInstancePairs<Type, BaseContactAdapter>(nameSpace, KeySelector))
-                    AddAdapter(adapterPair.key, adapterPair.instance);
-        }
-        private Type KeySelector(BaseContactAdapter adapter) => adapter.GetType().BaseType.GetGenericArguments().First();
-        private void AddAdapter(Type type, BaseContactAdapter adapter) => Adapters.Add(type, adapter);
+        protected override IEnumerable<string> NamespacesToSearch => LoadableItems.IContactAdapterNamespaces;
 
         public void NotifyUsers(object sender, StatusChanged eventArgs) => NotifyContacts(Persistence.FilterContacts(eventArgs.Definition.ID, FetchTime));
         private void NotifyContacts(IEnumerable<Contact> contacts)
@@ -36,8 +23,10 @@ namespace Gouda.Infrastructure.Communication
             foreach(Contact contact in contacts)
             {
                 Type contactType = contact.GetType();
-                Adapters[contactType].Notify(contact);
+                Loaded[contactType].Notify(contact);
             }
         }
+
+        protected override Type KeySelector(BaseContactAdapter instance) => instance.GetType().BaseType.GetGenericArguments().First();
     }
 }
