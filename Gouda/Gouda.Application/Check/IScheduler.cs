@@ -8,8 +8,8 @@ namespace Gouda.Application.Check
 {
     public interface IScheduler
     {
-        Curds.Application.DateTimes.IProvider Time { get; set; }
-        Persistence.IProvider Persistence { get; set; }
+        Curds.Application.DateTimes.IDateTime Time { get; set; }
+        Persistence.IPersistence Persistence { get; set; }
 
         void Add(int definitionID);
         void Reschedule(int definitionID, DateTimeOffset rescheduleTime);

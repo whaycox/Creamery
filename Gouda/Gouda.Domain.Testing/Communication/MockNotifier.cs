@@ -12,9 +12,5 @@ namespace Gouda.Domain.Communication
 
     public class MockNotifier : Notifier
     {
-        public List<int> UsersNotified = new List<int>();
-
-        public List<int> UsersContactedByOne = new List<int>();
-        public List<int> UsersContactedByTwo = new List<int>();
     }
 }

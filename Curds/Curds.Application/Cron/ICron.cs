@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Curds.Application.Cron
 {
-    public interface IProvider
+    public interface ICron
     {
         ICronObject Build(string cronString);
     }

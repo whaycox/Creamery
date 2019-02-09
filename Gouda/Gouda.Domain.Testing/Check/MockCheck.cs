@@ -15,7 +15,7 @@ namespace Gouda.Domain.Check
 
         public override Guid ID => SampleID;
 
-        public override Status Evaluate(Success response) => Status.Good;
+        public override Status Evaluate(Success response) => ShouldFail ? Status.Critical : Status.Good;
         public override Success Perform(Request request) => ShouldFail ? throw new Exception($"{nameof(ShouldFail)} is {ShouldFail}") : new MockResponse();
     }
 }

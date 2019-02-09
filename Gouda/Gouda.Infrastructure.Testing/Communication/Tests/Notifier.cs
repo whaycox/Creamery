@@ -13,7 +13,7 @@ namespace Gouda.Infrastructure.Communication.Tests
     public class Notifier
     {
         private MockDateTime Time = new MockDateTime();
-        private Curds.Application.Cron.IProvider Cron = new Curds.Infrastructure.Cron.Provider();
+        private Curds.Application.Cron.ICron Cron = new Curds.Infrastructure.Cron.Provider();
         private MockEvaluator Evaluator = new MockEvaluator();
         private MockProvider Persistence = new MockProvider();
 
@@ -36,10 +36,10 @@ namespace Gouda.Infrastructure.Communication.Tests
         public void NotifiesOnStatusChange()
         {
             Evaluator.FireEvent(Definition);
-            Assert.AreEqual(1, MockContactOneAdapter.UsersNotified.Count);
-            Assert.AreEqual(1, MockContactOneAdapter.UsersNotified[0]);
-            Assert.AreEqual(1, MockContactTwoAdapter.UsersNotified.Count);
-            Assert.AreEqual(2, MockContactTwoAdapter.UsersNotified[0]);
+            Assert.AreEqual(1, MockContactOneAdapter.Notifications.Count);
+            Assert.AreEqual(1, MockContactOneAdapter.Notifications[0].userNotified);
+            Assert.AreEqual(1, MockContactTwoAdapter.Notifications.Count);
+            Assert.AreEqual(2, MockContactTwoAdapter.Notifications[0].userNotified);
         }
 
     }

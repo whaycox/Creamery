@@ -8,7 +8,7 @@ namespace Gouda.Infrastructure.Communication
 {
     public class Sender : Communicator, ISender
     {
-        public Application.Persistence.IProvider Persistence { get; set; }
+        public Application.Persistence.IPersistence Persistence { get; set; }
 
         public BaseResponse Send(Definition definition) => Send(LookupSatellite(definition), BuildRequest(definition));
         private Satellite LookupSatellite(Definition definition) => Persistence.Satellites.Lookup(definition.SatelliteID);

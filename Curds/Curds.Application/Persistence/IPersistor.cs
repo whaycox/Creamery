@@ -10,5 +10,7 @@ namespace Curds.Application.Persistence
         IEnumerable<T> FetchAll();
         T Lookup(int id);
         IEnumerable<T> Lookup(IEnumerable<int> ids);
+
+        void Update(int id, Func<T, T> updateDelegate);
     }
 }

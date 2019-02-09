@@ -11,9 +11,9 @@ using Curds.Persistence.Relationships;
 
 namespace Gouda.Persistence
 {
-    public abstract class BaseProvider : IProvider
+    public abstract class BaseProvider : IPersistence
     {
-        public Curds.Application.Cron.IProvider Cron { get; set; }
+        public Curds.Application.Cron.ICron Cron { get; set; }
 
         public IPersistor<Satellite> Satellites { get; }
         public IPersistor<Definition> Definitions { get; }

@@ -10,8 +10,8 @@ namespace Gouda.Infrastructure.Communication
 {
     public class Notifier : ReflectionLoader<Type, BaseContactAdapter>, INotifier
     {
-        public Curds.Application.DateTimes.IProvider Time { get; set; }
-        public Application.Persistence.IProvider Persistence { get; set; }
+        public Curds.Application.DateTimes.IDateTime Time { get; set; }
+        public Application.Persistence.IPersistence Persistence { get; set; }
 
         private DateTime FetchTime => Time.Fetch.LocalDateTime;
 

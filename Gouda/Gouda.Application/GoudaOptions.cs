@@ -4,7 +4,7 @@ namespace Gouda.Application
 {
     public abstract class GoudaOptions : CurdsOptions
     {
-        public abstract Persistence.IProvider Persistence { get; }
+        public abstract Persistence.IPersistence Persistence { get; }
 
         public abstract Check.IExecutor Executor { get; }
         public abstract Check.IEvaluator Evaluator { get; }

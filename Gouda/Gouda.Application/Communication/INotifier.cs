@@ -9,8 +9,8 @@ namespace Gouda.Application.Communication
 {
     public interface INotifier
     {
-        Curds.Application.DateTimes.IProvider Time { get; set; }
-        Persistence.IProvider Persistence { get; set; }
+        Curds.Application.DateTimes.IDateTime Time { get; set; }
+        Persistence.IPersistence Persistence { get; set; }
 
         void NotifyUsers(StatusChange changeInformation);
     }

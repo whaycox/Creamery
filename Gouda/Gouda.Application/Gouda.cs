@@ -7,7 +7,7 @@ namespace Gouda.Application
 {
     public sealed class Gouda : Curds.Application.Curds, IDisposable
     {
-        private Persistence.IProvider Persistence { get; set; }
+        private Persistence.IPersistence Persistence { get; set; }
 
         private Check.IExecutor Executor { get; set; }
         private Communication.IListener Listener { get; set; }
