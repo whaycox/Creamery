@@ -11,7 +11,7 @@ using Gouda.Persistence;
 
 namespace Gouda.Domain.Persistence
 {
-    public class MockProvider : BaseProvider
+    public class MockPersistence : BasePersistence
     {
         private List<Satellite> MockSatellites = new List<Satellite>()
         {

@@ -11,7 +11,7 @@ namespace Gouda.Infrastructure.Communication.Tests
     [TestClass]
     public class Listener : Test
     {
-        private MockProvider MockProvider = new MockProvider();
+        private MockPersistence MockProvider = new MockPersistence();
         private MockSender MockSender = new MockSender();
 
         private Communication.Listener TestListener = new Communication.Listener(Testing.TestEndpoint);

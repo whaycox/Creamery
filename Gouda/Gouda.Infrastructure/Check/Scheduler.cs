@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Text;
 using Gouda.Application.Check;
 using Gouda.Domain.Check;
+using Curds.Application.DateTimes;
+using Gouda.Application.Persistence;
+using Gouda.Application.Communication;
 
 namespace Gouda.Infrastructure.Check
 {
     public class Scheduler : IScheduler
     {
-        public Curds.Application.DateTimes.IDateTime Time { get; set; }
-        public Application.Persistence.IPersistence Persistence { get; set; }
+        public IDateTime Time { get; set; }
+        public IPersistence Persistence { get; set; }
+        public ISender Sender { get; set; }
 
         public void Start()
         {

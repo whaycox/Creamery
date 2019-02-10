@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Curds.Application.DateTimes;
+﻿using Curds.Application.DateTimes;
+using System;
 
 namespace Curds.Domain.DateTimes
 {

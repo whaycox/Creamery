@@ -13,9 +13,9 @@ namespace Gouda.Infrastructure.Communication.Tests
     public class Notifier
     {
         private MockDateTime Time = new MockDateTime();
-        private Curds.Application.Cron.ICron Cron = new Curds.Infrastructure.Cron.Provider();
+        private Curds.Application.Cron.ICron Cron = new Curds.Infrastructure.Cron.CronProvider();
         private MockEvaluator Evaluator = new MockEvaluator();
-        private MockProvider Persistence = new MockProvider();
+        private MockPersistence Persistence = new MockPersistence();
 
         private Definition Definition => Persistence.Definitions.Lookup(MockDefinition.SampleID);
 

@@ -12,7 +12,7 @@ namespace Gouda.Infrastructure.Communication.Tests
     [TestClass]
     public class Sender
     {
-        private MockProvider Persistence = new MockProvider();
+        private MockPersistence Persistence = new MockPersistence();
         private MockListener Listener = new MockListener();
 
         private Definition Definition => Persistence.Definitions.Lookup(MockDefinition.SampleID);

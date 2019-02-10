@@ -4,13 +4,13 @@ using System.Text;
 
 namespace Curds.Infrastructure.Cron.Tests.Cases.CronExpression
 {
-    public class EveryHourLastFriday : CronCase<Cron.CronExpression>
+    public class EveryHourLastFriday : CronCase<Cron.Expression>
     {
-        public override IEnumerable<Cron.CronExpression> Samples
+        public override IEnumerable<Cron.Expression> Samples
         {
             get
             {
-                yield return new Cron.CronExpression("0 * * * 5L");
+                yield return new Cron.Expression("0 * * * 5L");
             }
         }
 
