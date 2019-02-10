@@ -21,6 +21,8 @@ namespace Gouda.Infrastructure.Communication
         }
         public virtual void Stop()
         {
+            if (!IsStarted)
+                throw new InvalidOperationException($"Cannot stop a {nameof(BaseListener)} that isn't started");
             IsStarted = false;
         }
 

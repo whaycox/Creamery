@@ -6,6 +6,8 @@ using Curds.Domain.DateTimes;
 using Gouda.Domain.Persistence;
 using Curds.Infrastructure.Cron;
 using Gouda.Domain.Communication;
+using System.Threading;
+using Curds.Domain;
 
 namespace Gouda.Infrastructure.Check.Tests
 {
@@ -33,15 +35,26 @@ namespace Gouda.Infrastructure.Check.Tests
         [TestCleanup]
         public void Clean()
         {
+            TestScheduler.Dispose();
             MockDateTime.Reset();
+        }
+
+        [TestMethod]
+        public void InvalidSleepErrors()
+        {
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Check.Scheduler(0));
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Check.Scheduler(-1));
         }
 
         [TestMethod]
         public void SchedulesAllDefinitionsOnStart()
         {
             TestScheduler.Start();
+            Thread.Sleep(5); //give scheduler time to start its thread
             Assert.AreEqual(1, Sender.DefinitionsSent.Count);
         }
+
+
 
     }
 }

@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Curds.Infrastructure.Parsing.CSV
 {
-    public abstract class ParsingTest : Test
+    public abstract class ParsingTest
     {
 
         protected void TestParsingCase(ParsingCase testCase)

@@ -32,6 +32,13 @@ namespace Gouda.Infrastructure.Communication.Tests
             Persistence.LoadRelationships();
         }
 
+        [TestCleanup]
+        public void Clean()
+        {
+            MockContactOneAdapter.Notifications.Clear();
+            MockContactTwoAdapter.Notifications.Clear();
+        }
+
         [TestMethod]
         public void NotifiesOnStatusChange()
         {

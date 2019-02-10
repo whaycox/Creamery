@@ -9,7 +9,7 @@ using System.IO;
 namespace Curds.Infrastructure.Parsing.CSV.Tests
 {
     [TestClass]
-    public class ReadingBuffer : Test
+    public class ReadingBuffer
     {
         private const string Example = "The quick brown fox jumps over the lazy dog";
 
@@ -35,7 +35,7 @@ namespace Curds.Infrastructure.Parsing.CSV.Tests
         public void BufferLengthExceptions()
         {
             foreach (int badLength in ExpectedBufferLengthExceptions)
-                TestForException<Exception>(() => BuildBuffer(badLength));
+                Assert.ThrowsException<ArgumentOutOfRangeException>(() => BuildBuffer(badLength));
         }
 
         private static readonly List<int?> BufferLengthsToTest = new List<int?>()

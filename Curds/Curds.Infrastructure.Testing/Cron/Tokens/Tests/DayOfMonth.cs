@@ -11,49 +11,43 @@ namespace Curds.Infrastructure.Cron.Tokens.Tests
     [TestClass]
     public class DayOfMonth : CronTemplate<Tokens.DayOfMonth>
     {
-        protected override IEnumerable<AcceptanceCase> AcceptanceCases
+        protected override IEnumerable<AcceptanceCase> AcceptanceCases => new List<AcceptanceCase>
         {
-            get
-            {
-                yield return new AcceptanceCase() { Delegate = () => new Tokens.DayOfMonth("*,*/2,5-7"), ShouldSucceed = true };
-                yield return new AcceptanceCase() { Delegate = () => new Tokens.DayOfMonth("2,4,5,7,13"), ShouldSucceed = true };
-                yield return new AcceptanceCase() { Delegate = () => new Tokens.DayOfMonth("5 -7"), ShouldSucceed = false };
-                yield return new AcceptanceCase() { Delegate = () => new Tokens.DayOfMonth("5 -7"), ShouldSucceed = false };
-                yield return new AcceptanceCase() { Delegate = () => new Tokens.DayOfMonth("5 -7"), ShouldSucceed = false };
-                yield return new AcceptanceCase() { Delegate = () => new Tokens.DayOfMonth("5- 7"), ShouldSucceed = false };
-                yield return new AcceptanceCase() { Delegate = () => new Tokens.DayOfMonth("0-7"), ShouldSucceed = false };
-                yield return new AcceptanceCase() { Delegate = () => new Tokens.DayOfMonth("5-32"), ShouldSucceed = false };
-                yield return new AcceptanceCase() { Delegate = () => new Tokens.DayOfMonth("*"), ShouldSucceed = true };
-                yield return new AcceptanceCase() { Delegate = () => new Tokens.DayOfMonth("*/2"), ShouldSucceed = true };
-                yield return new AcceptanceCase() { Delegate = () => new Tokens.DayOfMonth("*/5"), ShouldSucceed = true };
-                yield return new AcceptanceCase() { Delegate = () => new Tokens.DayOfMonth("*/7"), ShouldSucceed = true };
-                yield return new AcceptanceCase() { Delegate = () => new Tokens.DayOfMonth("32"), ShouldSucceed = false };
-                yield return new AcceptanceCase() { Delegate = () => new Tokens.DayOfMonth("0"), ShouldSucceed = false };
-                yield return new AcceptanceCase() { Delegate = () => new Tokens.DayOfMonth("5W"), ShouldSucceed = true };
-                yield return new AcceptanceCase() { Delegate = () => new Tokens.DayOfMonth("W5"), ShouldSucceed = false };
-                yield return new AcceptanceCase() { Delegate = () => new Tokens.DayOfMonth("10W"), ShouldSucceed = true };
-                yield return new AcceptanceCase() { Delegate = () => new Tokens.DayOfMonth("W10"), ShouldSucceed = false };
-                yield return new AcceptanceCase() { Delegate = () => new Tokens.DayOfMonth("15W"), ShouldSucceed = true };
-                yield return new AcceptanceCase() { Delegate = () => new Tokens.DayOfMonth("W15"), ShouldSucceed = false };
-                yield return new AcceptanceCase() { Delegate = () => new Tokens.DayOfMonth("25W"), ShouldSucceed = true };
-                yield return new AcceptanceCase() { Delegate = () => new Tokens.DayOfMonth("W25"), ShouldSucceed = false };
-                yield return new AcceptanceCase() { Delegate = () => new Tokens.DayOfMonth("L"), ShouldSucceed = true };
-                yield return new AcceptanceCase() { Delegate = () => new Tokens.DayOfMonth("20-L"), ShouldSucceed = false };
-                yield return new AcceptanceCase() { Delegate = () => new Tokens.DayOfMonth("L-20"), ShouldSucceed = true };
-                yield return new AcceptanceCase() { Delegate = () => new Tokens.DayOfMonth("L-21"), ShouldSucceed = false };
-            }
-        }
+            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfMonth("*,*/2,5-7"), ShouldSucceed = true } },
+            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfMonth("2,4,5,7,13"), ShouldSucceed = true } },
+            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfMonth("5 -7"), ShouldSucceed = false } },
+            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfMonth("5 -7"), ShouldSucceed = false } },
+            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfMonth("5 -7"), ShouldSucceed = false } },
+            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfMonth("5- 7"), ShouldSucceed = false } },
+            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfMonth("0-7"), ShouldSucceed = false } },
+            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfMonth("5-32"), ShouldSucceed = false } },
+            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfMonth("*"), ShouldSucceed = true } },
+            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfMonth("*/2"), ShouldSucceed = true } },
+            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfMonth("*/5"), ShouldSucceed = true } },
+            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfMonth("*/7"), ShouldSucceed = true } },
+            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfMonth("32"), ShouldSucceed = false } },
+            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfMonth("0"), ShouldSucceed = false } },
+            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfMonth("5W"), ShouldSucceed = true } },
+            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfMonth("W5"), ShouldSucceed = false } },
+            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfMonth("10W"), ShouldSucceed = true } },
+            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfMonth("W10"), ShouldSucceed = false } },
+            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfMonth("15W"), ShouldSucceed = true } },
+            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfMonth("W15"), ShouldSucceed = false } },
+            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfMonth("25W"), ShouldSucceed = true } },
+            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfMonth("W25"), ShouldSucceed = false } },
+            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfMonth("L"), ShouldSucceed = true } },
+            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfMonth("20-L"), ShouldSucceed = false } },
+            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfMonth("L-20"), ShouldSucceed = true } },
+            { new AcceptanceCase<ArgumentOutOfRangeException>() { Delegate = () => new Tokens.DayOfMonth("L-21"), ShouldSucceed = false } },
+        };
 
-        protected override IEnumerable<CronCase<Tokens.DayOfMonth>> TestCases
+        protected override IEnumerable<CronCase<Tokens.DayOfMonth>> TestCases => new List<CronCase<Tokens.DayOfMonth>>
         {
-            get
-            {
-                yield return new FifthThroughThirteenth();
-                yield return new Last();
-                yield return new NearestWeekday();
-                yield return new OffsetLast();
-                yield return new TenthTwentiethLast();
-            }
-        }
+            { new FifthThroughThirteenth() },
+            { new Last() },
+            { new NearestWeekday() },
+            { new OffsetLast() },
+            { new TenthTwentiethLast() },
+        };
     }
 }

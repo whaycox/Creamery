@@ -51,6 +51,7 @@ namespace Curds.Infrastructure.Collections.Tests
                 foreach (int currentRetrieved in retrieved)
                     Assert.AreEqual(currentExpected++, currentRetrieved);
             }
+            Assert.AreEqual(10, currentExpected);
         }
 
         [TestMethod]

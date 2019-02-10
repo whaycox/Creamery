@@ -6,13 +6,17 @@ using System.Collections.Generic;
 
 namespace Curds.Infrastructure.Cron
 {
-    public abstract class CronTemplate<T> : Test where T : ICronObject
+    public abstract class CronTemplate<T> where T : ICronObject
     {
         protected abstract IEnumerable<AcceptanceCase> AcceptanceCases { get; }
         protected abstract IEnumerable<CronCase<T>> TestCases { get; }
 
         [TestMethod]
-        public void Acceptance() => TestAcceptanceCases(AcceptanceCases);
+        public void Acceptance()
+        {
+            foreach (AcceptanceCase testCase in AcceptanceCases)
+                testCase.Test();
+        }
 
         [TestMethod]
         public void CronTests()

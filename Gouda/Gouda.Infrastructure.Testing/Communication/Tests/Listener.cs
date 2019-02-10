@@ -9,7 +9,7 @@ using Gouda.Domain.Check.Responses;
 namespace Gouda.Infrastructure.Communication.Tests
 {
     [TestClass]
-    public class Listener : Test
+    public class Listener
     {
         private MockPersistence MockProvider = new MockPersistence();
         private MockSender MockSender = new MockSender();
@@ -33,13 +33,13 @@ namespace Gouda.Infrastructure.Communication.Tests
         {
             TestListener.Start();
             Assert.IsTrue(TestListener.IsStarted);
-            TestForException<Exception>(() => TestListener.Start());
+            Assert.ThrowsException<InvalidOperationException>(() => TestListener.Start());
         }
 
         [TestMethod]
         public void StopBeforeStartThrowsException()
         {
-            TestForException<Exception>(() => TestListener.Stop());
+            Assert.ThrowsException<InvalidOperationException>(() => TestListener.Stop());
         }
 
         [TestMethod]
