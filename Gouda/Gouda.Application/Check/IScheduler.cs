@@ -3,16 +3,24 @@ using System.Collections.Generic;
 using System.Text;
 using Gouda.Domain.Check;
 using Gouda.Domain;
+using Curds.Application.DateTimes;
 
 namespace Gouda.Application.Check
 {
-    public interface IScheduler
+    using Communication;
+    using Persistence;
+
+    public interface IScheduler : IDisposable
     {
-        Curds.Application.DateTimes.IDateTime Time { get; set; }
-        Persistence.IPersistence Persistence { get; set; }
+        IDateTime Time { get; set; }
+        IPersistence Persistence { get; set; }
+        ISender Sender { get; set; }
+
+        DateTimeOffset this[int id] { get; }
 
         void Add(int definitionID);
         void Reschedule(int definitionID, DateTimeOffset rescheduleTime);
+        void Remove(int definitionID);
 
         void Start();
         void Stop();

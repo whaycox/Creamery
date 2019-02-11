@@ -19,9 +19,7 @@
     <ProjectReference Include="..\Gouda.Application\Gouda.Application.csproj" />
     <ProjectReference Include="..\Gouda.Domain.Testing\Gouda.Domain.Testing.csproj" />
     <ProjectReference Include="..\Gouda.Domain\Gouda.Domain.csproj" />
-    <ProjectReference Include="..\Gouda.Infrastructure.Testing\Gouda.Infrastructure.Testing.csproj" />
     <ProjectReference Include="..\Gouda.Infrastructure\Gouda.Infrastructure.csproj" />
-    <ProjectReference Include="..\Gouda.Persistence.Testing\Gouda.Persistence.Testing.csproj" />
   </ItemGroup>
 
 </Project>

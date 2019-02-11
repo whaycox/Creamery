@@ -4,13 +4,13 @@ using System.Text;
 
 namespace Curds.Infrastructure.Cron.Tests.Cases.CronExpression
 {
-    public class EveryMinuteAtTwo : CronCase<Cron.CronExpression>
+    public class EveryMinuteAtTwo : CronCase<Cron.Expression>
     {
-        public override IEnumerable<Cron.CronExpression> Samples
+        public override IEnumerable<Cron.Expression> Samples
         {
             get
             {
-                yield return new Cron.CronExpression(" * 14 * * *");
+                yield return new Cron.Expression(" * 14 * * *");
             }
         }
 

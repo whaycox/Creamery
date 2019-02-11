@@ -4,13 +4,13 @@ using System.Text;
 
 namespace Curds.Infrastructure.Cron.Tests.Cases.CronExpression
 {
-    public class BigExpression : CronCase<Cron.CronExpression>
+    public class BigExpression : CronCase<Cron.Expression>
     {
-        public override IEnumerable<Cron.CronExpression> Samples
+        public override IEnumerable<Cron.Expression> Samples
         {
             get
             {
-                yield return new Cron.CronExpression("0,15,30,45 0,6,12,18 * 3,MAY-7,SEP 1-WED,FRI-SAT");
+                yield return new Cron.Expression("0,15,30,45 0,6,12,18 * 3,MAY-7,SEP 1-WED,FRI-SAT");
             }
         }
 

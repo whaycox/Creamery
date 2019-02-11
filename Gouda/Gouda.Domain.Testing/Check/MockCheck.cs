@@ -11,7 +11,7 @@ namespace Gouda.Domain.Check
     {
         public static bool ShouldFail { get; set; }
 
-        public static Guid SampleID => Guid.Empty;
+        public static readonly Guid SampleID = Guid.Parse("30d7e69b-f611-447f-a6ae-88887caa870d");
 
         public override Guid ID => SampleID;
 

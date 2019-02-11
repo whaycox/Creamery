@@ -11,7 +11,7 @@ using Gouda.Check.Basic;
 namespace Gouda.Infrastructure.Check.Tests
 {
     [TestClass]
-    public class Executor : Test
+    public class Executor
     {
         private MockRequest Request => new MockRequest();
         private MockResponse Response => new MockResponse();

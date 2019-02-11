@@ -5,8 +5,8 @@ using Curds.Application.Cron;
 
 namespace Curds.Infrastructure.Cron
 {
-    public class Provider : ICron
+    public class CronProvider : ICron
     {
-        public ICronObject Build(string cronString) => new CronExpression(cronString);
+        public ICronObject Build(string cronString) => new Expression(cronString);
     }
 }

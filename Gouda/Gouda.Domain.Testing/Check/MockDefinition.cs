@@ -17,6 +17,7 @@ namespace Gouda.Domain.Check
             CheckID = MockCheck.SampleID,
             SatelliteID = MockSatellite.SampleID,
             ArgumentIDs = MockArgument.SampleIDs,
+            RescheduleSpan = TimeSpan.FromTicks(100),
         };
     }
 }

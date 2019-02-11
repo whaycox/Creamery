@@ -18,8 +18,8 @@ namespace Gouda.Infrastructure.Check.Tests
     public class Evaluator
     {
         private MockDateTime Time = new MockDateTime();
-        private Provider Cron = new Provider();
-        private MockProvider Persistence = new MockProvider();
+        private CronProvider Cron = new CronProvider();
+        private MockPersistence Persistence = new MockPersistence();
         private MockNotifier Notifier = new MockNotifier();
         private MockDefinition Definition = MockDefinition.Sample;
         private MockResponse Response = new MockResponse();

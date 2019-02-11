@@ -20,12 +20,12 @@ namespace Gouda.Domain
         public override IExecutor Executor => MockExecutor;
         public override INotifier Notifier => MockNotifier;
 
-        public override Gouda.Application.Persistence.IPersistence Persistence => new MockProvider();
+        public override Gouda.Application.Persistence.IPersistence Persistence => new MockPersistence();
         public override IListener Listener => new Listener(Testing.TestEndpoint);
         public override IEvaluator Evaluator => new Evaluator();
         public override ISender Sender => new Sender();
         public override Curds.Application.DateTimes.IDateTime Time => new MockDateTime();
-        public override Curds.Application.Cron.ICron Cron => new Curds.Infrastructure.Cron.Provider();
+        public override Curds.Application.Cron.ICron Cron => new Curds.Infrastructure.Cron.CronProvider();
         public override IScheduler Scheduler => new Scheduler();
 
         public MockOptions()

@@ -9,7 +9,7 @@ namespace Curds.Infrastructure.Parsing.CSV.Tests
     using Cases.NewLineHandler;
 
     [TestClass]
-    public class NewLineHandler : Test 
+    public class NewLineHandler 
     {
         [TestMethod]
         public void IsNewLine()

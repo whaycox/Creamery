@@ -11,7 +11,7 @@ using Curds.Persistence.Relationships;
 
 namespace Gouda.Persistence
 {
-    public abstract class BaseProvider : IPersistence
+    public abstract class BasePersistence : IPersistence
     {
         public Curds.Application.Cron.ICron Cron { get; set; }
 
@@ -24,7 +24,7 @@ namespace Gouda.Persistence
 
         private CronOneToMany UsersPerDefinition { get; }
 
-        public BaseProvider()
+        public BasePersistence()
         {
             Satellites = new CachedPersistor<Satellite>(LoadSatellites());
             Definitions = new CachedPersistor<Definition>(LoadDefinitions());
