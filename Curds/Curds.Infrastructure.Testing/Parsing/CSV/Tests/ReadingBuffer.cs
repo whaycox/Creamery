@@ -1,10 +1,8 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Curds.Domain;
-using Curds.Domain.Parsing.CSV;
 using System.IO;
+using System.Text;
 
 namespace Curds.Infrastructure.Parsing.CSV.Tests
 {

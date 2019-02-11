@@ -2,22 +2,23 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Curds.Domain;
 
 namespace Curds.Domain.Parsing.CSV.Tests
 {
     [TestClass]
-    public class Row
+    public class Row : TestTemplate<CSV.Row>
     {
-        private MockRow MockRow = new MockRow();
+        protected override CSV.Row TestObject => new MockRow();
 
         [TestMethod]
-        public void ExpectedRowLength() => Assert.AreEqual(MockRow.ExpectedLength, MockRow.RetrieveCells().Count);
+        public void ExpectedRowLength() => Assert.AreEqual(MockRow.ExpectedLength, TestObject.RetrieveCells().Count);
 
         [TestMethod]
         public void DifferentCollectionSameContent()
         {
-            List<Cell> cells = MockRow.RetrieveCells();
-            List<Cell> otherCollection = MockRow.RetrieveCells();
+            List<CSV.Cell> cells = TestObject.RetrieveCells();
+            List<CSV.Cell> otherCollection = TestObject.RetrieveCells();
 
             Assert.AreNotSame(otherCollection, cells);
             Assert.AreEqual(cells.Count, otherCollection.Count);
@@ -28,10 +29,10 @@ namespace Curds.Domain.Parsing.CSV.Tests
 
         public void IteratorAndCollectionSameContent()
         {
-            List<Cell> cells = MockRow.RetrieveCells();
+            List<CSV.Cell> cells = TestObject.RetrieveCells();
 
             int cellToTest = 0;
-            foreach (Cell cell in MockRow)
+            foreach (CSV.Cell cell in TestObject)
                 Assert.AreSame(cells[cellToTest++], cell);
         }
     }

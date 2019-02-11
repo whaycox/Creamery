@@ -22,10 +22,10 @@ namespace Curds.Domain.Persistence.Tests
         private static decimal AlterDecimal(decimal input) => input + 0.001m;
         private static string AlterString(string input) => $"{(input ?? string.Empty)}{nameof(AlterString)}";
         private static DateTime AlterDateTime(DateTime input) => input.AddMilliseconds(1);
-        private static Persistence.MockEntity AlterMockEntity(Persistence.MockEntity input)
+        private static MockEntity AlterMockEntity(MockEntity input)
         {
             if (input == null)
-                input = new Persistence.MockEntity();
+                input = new MockEntity();
             input.ID++;
             return input;
         }
@@ -33,14 +33,26 @@ namespace Curds.Domain.Persistence.Tests
         [TestMethod]
         public void CompareWithNullTests()
         {
+        }
+        private void CompareWithNullValueTests()
+        {
             CompareWithNullByType<int>(AlterInt);
             CompareWithNullByType<long>(AlterLong);
             CompareWithNullByType<decimal>(AlterDecimal);
-            CompareWithNullByType<string>(AlterString);
             CompareWithNullByType<DateTime>(AlterDateTime);
-            CompareWithNullByType<Persistence.MockEntity>(AlterMockEntity);
+        }
+        private void CompareWithNullClassTests()
+        {
+            CompareWithNullByType<string>(AlterString);
+            CompareWithNullByType<MockEntity>(AlterMockEntity);
         }
 
+        private void CompareWithNullByNullableType<T>(AlterDelegate<T> alterDelegate) where T : class
+        {
+            CompareWithNullByType(alterDelegate);
+            BothNullsAreTrue(alterDelegate);
+            DefaultAndNullAreFalse(alterDelegate);
+        }
         private void CompareWithNullByType<T>(AlterDelegate<T> alterDelegate)
         {
             DefaultValuesAreTrue<T>();
@@ -77,7 +89,22 @@ namespace Curds.Domain.Persistence.Tests
             Assert.IsFalse(once.CompareWithNull(twice));
             Assert.IsFalse(twice.CompareWithNull(once));
         }
+        private void BothNullsAreTrue<T>(AlterDelegate<T> alterDelegate) where T : class
+        {
+            T left = null;
+            T right = null;
+            Assert.IsTrue(left.CompareWithNull(right));
+            Assert.IsTrue(right.CompareWithNull(left));
+        }
+        private void DefaultAndNullAreFalse<T>(AlterDelegate<T> alterDelegate) where T : class
+        {
+            T left = alterDelegate(default);
+            T right = null;
+            Assert.IsFalse(left.CompareWithNull(right));
+            Assert.IsFalse(right.CompareWithNull(left));
+        }
 
+        [TestMethod]
         public void CompareTwoListsTests()
         {
             CompareTwoListsByType<int>(AlterInt);
@@ -85,7 +112,7 @@ namespace Curds.Domain.Persistence.Tests
             CompareTwoListsByType<decimal>(AlterDecimal);
             CompareTwoListsByType<string>(AlterString);
             CompareTwoListsByType<DateTime>(AlterDateTime);
-            CompareTwoListsByType<Persistence.MockEntity>(AlterMockEntity);
+            CompareTwoListsByType<MockEntity>(AlterMockEntity);
         }
 
         private void CompareTwoListsByType<T>(AlterDelegate<T> alterDelegate)
