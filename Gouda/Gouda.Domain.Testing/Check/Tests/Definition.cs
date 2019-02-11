@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Curds.Domain.Persistence;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Curds.Domain.Persistence;
 
 namespace Gouda.Domain.Check.Tests
 {
-    using Communication;
-
     [TestClass]
     public class Definition : NamedEntityTemplate<Check.Definition>
     {
-        protected override Check.Definition Sample => new MockDefinition() { ID = 5, Name = nameof(Sample), SatelliteID = 5, ArgumentIDs = MockArgument.SampleIDs };
+        protected override Check.Definition Sample => MockDefinition.Sample;
 
         [TestMethod]
         public void SatelliteIDEquality() => TestIntChange((e, v) => e.SatelliteID = v);
@@ -56,5 +51,11 @@ namespace Gouda.Domain.Check.Tests
             samples.right.ArgumentIDs.Add(MockArgument.Four.ID);
             TestEquality(samples);
         }
+
+        [TestMethod]
+        public void CheckIDEquality() => TestGuidChange((e, v) => e.CheckID = v);
+
+        [TestMethod]
+        public void RescheduleSpanEquality() => TestTimeSpanChange((e, v) => e.RescheduleSpan = v);
     }
 }

@@ -53,26 +53,37 @@ namespace Curds.Domain.Persistence
 
         protected void TestIntChange(Action<T, int> modifier)
         {
-            var samples = Samples;
-            modifier(samples.right, default);
-            TestEquality(samples);
+            TestChange(modifier, int.MinValue);
+            TestChange(modifier, int.MaxValue);
+            TestChange(modifier, default);
         }
-
         protected void TestStringChange(Action<T, string> modifier)
         {
-            TestStringChange(modifier, null);
-            TestStringChange(modifier, string.Empty);
-            TestStringChange(modifier, nameof(TestStringChange));
-            TestStringChangeOnBoth(modifier, null, string.Empty);
-            TestStringChangeOnBoth(modifier, string.Empty, null);
+            TestChange(modifier, null);
+            TestChange(modifier, string.Empty);
+            TestChange(modifier, nameof(TestStringChange));
+            TestChangeOnBoth(modifier, null, string.Empty);
+            TestChangeOnBoth(modifier, string.Empty, null);
         }
-        private void TestStringChange(Action<T, string> modifier, string suppliedValue)
+        protected void TestGuidChange(Action<T, Guid> modifier)
+        {
+            TestChange(modifier, Guid.Empty);
+            TestChange(modifier, Guid.NewGuid());
+        }
+        protected void TestTimeSpanChange(Action<T, TimeSpan> modifier)
+        {
+            TestChange(modifier, TimeSpan.MinValue);
+            TestChange(modifier, TimeSpan.MaxValue);
+            TestChange(modifier, TimeSpan.FromMilliseconds(1));
+        }
+
+        private void TestChange<U>(Action<T, U> modifier, U suppliedValue)
         {
             var samples = Samples;
             modifier(samples.right, suppliedValue);
             TestEquality(samples);
         }
-        private void TestStringChangeOnBoth(Action<T, string> modifier, string leftValue, string rightValue)
+        private void TestChangeOnBoth<U>(Action<T, U> modifier, U leftValue, U rightValue)
         {
             var samples = Samples;
             modifier(samples.left, leftValue);

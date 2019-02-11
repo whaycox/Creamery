@@ -23,12 +23,6 @@ namespace Gouda.Application.Tests
                 testDelegate(app);
         }
 
-        [TestCleanup]
-        public void Cleanup()
-        {
-            MockDateTime.Reset();
-        }
-
         [TestMethod]
         public void DeterminesWhetherDefinitionStatusChangesTest() => ApplicationTestHelper(DeterminesWhetherDefinitionStatusChangesHelper);
         private void DeterminesWhetherDefinitionStatusChangesHelper(Application.Gouda app)

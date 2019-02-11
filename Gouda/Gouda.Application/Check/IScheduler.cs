@@ -10,14 +10,17 @@ namespace Gouda.Application.Check
     using Communication;
     using Persistence;
 
-    public interface IScheduler
+    public interface IScheduler : IDisposable
     {
         IDateTime Time { get; set; }
         IPersistence Persistence { get; set; }
         ISender Sender { get; set; }
 
+        DateTimeOffset this[int id] { get; }
+
         void Add(int definitionID);
         void Reschedule(int definitionID, DateTimeOffset rescheduleTime);
+        void Remove(int definitionID);
 
         void Start();
         void Stop();

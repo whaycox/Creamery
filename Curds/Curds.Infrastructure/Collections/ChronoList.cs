@@ -5,13 +5,13 @@ namespace Curds.Infrastructure.Collections
 {
     public class ChronoList<T>
     {
-        private object Locker = new object();
+        protected object Locker = new object();
 
         private ChronoNode First = null;
         private ChronoNode Last = null;
 
-        public void AddNow(T item) => AddFirst(new ChronoNode(DateTimeOffset.MinValue, item));
-        public void Add(DateTimeOffset time, T item)
+        public ChronoNode AddNow(T item) => Add(DateTimeOffset.MinValue, item);
+        public virtual ChronoNode Add(DateTimeOffset time, T item)
         {
             lock (Locker)
             {
@@ -21,10 +21,11 @@ namespace Curds.Infrastructure.Collections
                     AddLast(newNode);
                 else
                     AddBefore(nearestNeighbor, newNode);
+                return newNode;
             }
         }
 
-        public IEnumerable<T> Retrieve(DateTimeOffset time)
+        public virtual IEnumerable<T> Retrieve(DateTimeOffset time)
         {
             lock (Locker)
                 return SeverAt(LastNodeInRangeFromStart(time));
@@ -122,7 +123,7 @@ namespace Curds.Infrastructure.Collections
             lock (Locker)
             {
                 if (node == null)
-                    return null;
+                    return new List<T>();
 
                 ChronoNode newFirst = node.Next;
                 First = newFirst;
@@ -148,7 +149,26 @@ namespace Curds.Infrastructure.Collections
             return toReturn;
         }
 
-        private class ChronoNode
+        protected void Remove(ChronoNode node)
+        {
+            lock (Locker)
+            {
+                ChronoNode prev = node.Previous;
+                ChronoNode next = node.Next;
+
+                if (node == Last)
+                    Last = prev;
+                if (node == First)
+                    First = next;
+
+                if (prev != null)
+                    prev.Next = next;
+                if (next != null)
+                    next.Previous = prev;
+            }
+        }
+
+        public class ChronoNode
         {
             public ChronoNode Previous { get; set; }
             public ChronoNode Next { get; set; }

@@ -1,8 +1,8 @@
-﻿using Curds.Domain.Persistence;
+﻿using Curds.Domain;
+using Curds.Domain.Persistence;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Curds.Domain;
 
 namespace Gouda.Domain.Check
 {
@@ -14,6 +14,7 @@ namespace Gouda.Domain.Check
         public int SatelliteID { get; set; }
         public List<int> ArgumentIDs { get; set; }
         public Guid CheckID { get; set; }
+        public TimeSpan RescheduleSpan { get; set; }
 
         public Definition()
         {
@@ -25,6 +26,8 @@ namespace Gouda.Domain.Check
         {
             clone.SatelliteID = SatelliteID;
             clone.Status = Status;
+            clone.CheckID = CheckID;
+            clone.RescheduleSpan = RescheduleSpan;
             clone.ArgumentIDs = ArgumentIDs.ToList();
             base.CloneInternal(clone);
             return clone;
@@ -44,6 +47,12 @@ namespace Gouda.Domain.Check
 
                 toReturn = PrimeHashCode(toReturn);
                 toReturn = IncrementHashCode(toReturn, SatelliteID.GetHashCode());
+
+                toReturn = PrimeHashCode(toReturn);
+                toReturn = IncrementHashCode(toReturn, CheckID.GetHashCode());
+
+                toReturn = PrimeHashCode(toReturn);
+                toReturn = IncrementHashCode(toReturn, RescheduleSpan.GetHashCode());
 
                 if (ArgumentIDs != null)
                 {
@@ -68,6 +77,10 @@ namespace Gouda.Domain.Check
             if (toTest.Status != Status)
                 return false;
             if (toTest.SatelliteID != SatelliteID)
+                return false;
+            if (toTest.CheckID != CheckID)
+                return false;
+            if (toTest.RescheduleSpan != RescheduleSpan)
                 return false;
             if (!toTest.ArgumentIDs.CompareTwoLists(ArgumentIDs))
                 return false;

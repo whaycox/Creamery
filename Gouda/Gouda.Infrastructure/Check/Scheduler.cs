@@ -3,24 +3,28 @@ using Curds.Infrastructure.Collections;
 using Gouda.Application.Check;
 using Gouda.Application.Communication;
 using Gouda.Application.Persistence;
+using Gouda.Domain.Check;
 using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Gouda.Infrastructure.Check
 {
-    public class Scheduler : IScheduler, IDisposable
+    public class Scheduler : IScheduler
     {
         private const int DefaultSleepTimeInMs = 750;
 
         private int SleepTimeInMs { get; }
-        private ChronoList<int> Schedule = new ChronoList<int>();
+        private IndexedChronoList Schedule = new IndexedChronoList();
         private CancellationTokenSource CancelSource = new CancellationTokenSource();
 
         public IDateTime Time { get; set; }
         public IPersistence Persistence { get; set; }
         public ISender Sender { get; set; }
+
+        public DateTimeOffset this[int id] => Schedule[id]?.ScheduledTime ?? throw new KeyNotFoundException($"No definition with the id {id} was found to remove");
 
         public Scheduler()
             : this(DefaultSleepTimeInMs)
@@ -42,10 +46,24 @@ namespace Gouda.Infrastructure.Check
 
         public void Stop()
         {
-            throw new NotImplementedException();
+            CancelSource.Cancel();
         }
 
         public void Add(int definitionID) => Schedule.AddNow(definitionID);
+
+        public void Reschedule(int definitionID, DateTimeOffset rescheduleTime)
+        {
+            var node = Schedule[definitionID];
+            if (node == null)
+                Schedule.Add(rescheduleTime, definitionID);
+            else
+            {
+                Schedule.Remove(node.Value);
+                Schedule.Add(rescheduleTime, node.Value);
+            }
+        }
+
+        public void Remove(int definitionID) => Schedule.Remove(definitionID);
 
         public void Pause()
         {
@@ -53,11 +71,6 @@ namespace Gouda.Infrastructure.Check
         }
 
         public void Resume()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Reschedule(int definitionID, DateTimeOffset rescheduleTime)
         {
             throw new NotImplementedException();
         }
@@ -70,7 +83,9 @@ namespace Gouda.Infrastructure.Check
                 foreach (int definitionID in Schedule.Retrieve(Time.Fetch))
                 {
                     token.ThrowIfCancellationRequested();
-                    Sender.Send(Persistence.Definitions.Lookup(definitionID));
+                    Definition definition = Persistence.Definitions.Lookup(definitionID);
+                    Sender.Send(definition);
+                    Schedule.Add(Time.Fetch.Add(definition.RescheduleSpan), definitionID);
                 }
 
                 token.ThrowIfCancellationRequested();
@@ -87,7 +102,7 @@ namespace Gouda.Infrastructure.Check
             {
                 if (disposing)
                 {
-                    CancelSource.Cancel();
+                    Stop();
                     CancelSource.Dispose();
                 }
 
