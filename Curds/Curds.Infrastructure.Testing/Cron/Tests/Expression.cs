@@ -13,9 +13,9 @@ namespace Curds.Infrastructure.Cron.Tests
     {
         protected override IEnumerable<AcceptanceCase> AcceptanceCases => new List<AcceptanceCase>
         { 
-            { new AcceptanceCase<FormatException>() { Delegate = () => new Cron.Expression("oeu"), ShouldSucceed = false } },
-            { new AcceptanceCase<FormatException>() { Delegate = () => new Cron.Expression("10 3 4 5 6 5"), ShouldSucceed = false } },
-            { new AcceptanceCase<FormatException>() { Delegate = () => new Cron.Expression("* * * * *"), ShouldSucceed = true } },
+            { new FailureCase<FormatException>(() => new Cron.Expression("oeu")) },
+            { new FailureCase<FormatException>(() => new Cron.Expression("10 3 4 5 6 5")) },
+            { new SuccessCase(() => new Cron.Expression("* * * * *")) },
         };
 
         protected override IEnumerable<CronCase<Cron.Expression>> TestCases => new List<CronCase<Cron.Expression>>

@@ -13,14 +13,14 @@ namespace Curds.Infrastructure.Cron.Tokens.Tests
     {
         protected override IEnumerable<AcceptanceCase> AcceptanceCases => new List<AcceptanceCase>
         {
-            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.Hour("*,*/2,5-20"), ShouldSucceed = true } },
-            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.Hour("*-2"), ShouldSucceed = false } },
-            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.Hour("5-24"), ShouldSucceed = false } },
-            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.Hour("0,1,2,3,4,23"), ShouldSucceed = true } },
-            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.Hour("0,1,2,3,4,25"), ShouldSucceed = false } },
-            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.Hour("24"), ShouldSucceed = false } },
-            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.Hour("-10-12"), ShouldSucceed = false } },
-            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.Hour("12-30"), ShouldSucceed = false } },
+            { new SuccessCase(() => new Tokens.Hour("*,*/2,5-20")) },
+            { new FailureCase<FormatException>(() => new Tokens.Hour("*-2")) },
+            { new FailureCase<FormatException>(() => new Tokens.Hour("5-24")) },
+            { new SuccessCase(() => new Tokens.Hour("0,1,2,3,4,23")) },
+            { new FailureCase<FormatException>(() => new Tokens.Hour("0,1,2,3,4,25")) },
+            { new FailureCase<FormatException>(() => new Tokens.Hour("24")) },
+            { new FailureCase<FormatException>(() => new Tokens.Hour("-10-12")) },
+            { new FailureCase<FormatException>(() => new Tokens.Hour("12-30")) },
         };
 
         protected override IEnumerable<CronCase<Tokens.Hour>> TestCases => new List<CronCase<Tokens.Hour>>

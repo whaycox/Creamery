@@ -5,24 +5,33 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Curds.Domain
 {
-    public class AcceptanceCase
+    public abstract class AcceptanceCase
     {
-        public Action Delegate { get; set; }
-        public bool ShouldSucceed { get; set; }
+        public Action Delegate { get; }
 
-        public virtual void Test() => TestInternal<Exception>();
-
-        protected void TestInternal<T>() where T : Exception
+        public AcceptanceCase(Action testDelegate)
         {
-            if (ShouldSucceed)
-                Delegate();
-            else
-                Assert.ThrowsException<T>(Delegate);
+            Delegate = testDelegate;
         }
+
+        public abstract void Test();
     }
 
-    public class AcceptanceCase<T> : AcceptanceCase where T : Exception
+    public class SuccessCase : AcceptanceCase
     {
-        public override void Test() => TestInternal<T>();
+        public SuccessCase(Action testDelegate)
+            : base(testDelegate)
+        { }
+
+        public override void Test() => Delegate();
+    }
+
+    public class FailureCase<T> : AcceptanceCase where T : Exception
+    {
+        public FailureCase(Action testDelegate)
+            : base(testDelegate)
+        { }
+
+        public override void Test() => Assert.ThrowsException<T>(Delegate);
     }
 }

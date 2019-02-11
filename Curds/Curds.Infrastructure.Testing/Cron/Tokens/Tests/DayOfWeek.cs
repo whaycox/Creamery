@@ -13,19 +13,19 @@ namespace Curds.Infrastructure.Cron.Tokens.Tests
     {
         protected override IEnumerable<AcceptanceCase> AcceptanceCases => new List<AcceptanceCase>
         {
-            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfWeek("*,*/2,3-6"), ShouldSucceed = true } },
-            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfWeek("*,*/2,Tue-Fri"), ShouldSucceed = true } },
-            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfWeek("Tue-Fri"), ShouldSucceed = true } },
-            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfWeek("Tues-6"), ShouldSucceed = false } },
-            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfWeek("2-Thur"), ShouldSucceed = false } },
-            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfWeek("-1-5"), ShouldSucceed = false } },
-            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfWeek("2-7"), ShouldSucceed = false } },
-            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfWeek("Mon-Tue"), ShouldSucceed = true } },
-            { new AcceptanceCase<InvalidOperationException>() { Delegate = () => new Tokens.DayOfWeek("Tue-Mon"), ShouldSucceed = false } },
-            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfWeek("Wed-SAT"), ShouldSucceed = true } },
-            { new AcceptanceCase<InvalidOperationException>() { Delegate = () => new Tokens.DayOfWeek("THU-SUN"), ShouldSucceed = false } },
-            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfWeek("SUN-THU"), ShouldSucceed = true } },
-            { new AcceptanceCase<FormatException>() { Delegate = () => new Tokens.DayOfWeek("0-6"), ShouldSucceed = true } },
+            { new SuccessCase(() => new Tokens.DayOfWeek("*,*/2,3-6")) },
+            { new SuccessCase(() => new Tokens.DayOfWeek("*,*/2,Tue-Fri")) },
+            { new SuccessCase(() => new Tokens.DayOfWeek("Tue-Fri")) },
+            { new FailureCase<FormatException>(() => new Tokens.DayOfWeek("Tues-6")) },
+            { new FailureCase<FormatException>(() => new Tokens.DayOfWeek("2-Thur")) },
+            { new FailureCase<FormatException>(() => new Tokens.DayOfWeek("-1-5")) },
+            { new FailureCase<FormatException>(() => new Tokens.DayOfWeek("2-7")) },
+            { new SuccessCase(() => new Tokens.DayOfWeek("Mon-Tue")) },
+            { new FailureCase<InvalidOperationException>(() => new Tokens.DayOfWeek("Tue-Mon")) },
+            { new SuccessCase(() => new Tokens.DayOfWeek("Wed-SAT")) },
+            { new FailureCase<InvalidOperationException>(() => new Tokens.DayOfWeek("THU-SUN")) },
+            { new SuccessCase(() => new Tokens.DayOfWeek("SUN-THU")) },
+            { new SuccessCase(() => new Tokens.DayOfWeek("0-6")) },
         };
 
         protected override IEnumerable<CronCase<Tokens.DayOfWeek>> TestCases => new List<CronCase<Tokens.DayOfWeek>>

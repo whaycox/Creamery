@@ -3,11 +3,9 @@ using System;
 
 namespace Curds.Domain.Persistence
 {
-    public abstract class EntityTemplate<T> where T : Entity
+    public abstract class EntityTemplate<T> : TestTemplate<T> where T : Entity
     {
-        protected abstract T Sample { get; }
-
-        protected (T left, T right) Samples => (Sample, Sample);
+        protected (T left, T right) Samples => (TestObject, TestObject);
         
         protected void TestEquality((T left, T right) pair, bool expectedToBeEqual = false)
         {
@@ -26,7 +24,7 @@ namespace Curds.Domain.Persistence
         [TestMethod]
         public void CloneEquality()
         {
-            T left = Sample;
+            T left = TestObject;
             T right = left.Clone() as T;
             Assert.AreNotSame(left, right);
             TestEquality((left, right), true);
@@ -43,7 +41,7 @@ namespace Curds.Domain.Persistence
         [TestMethod]
         public void SampleNotEqualToNull()
         {
-            T left = Sample;
+            T left = TestObject;
             T right = null;
             Assert.AreNotEqual(left, right);
         }
