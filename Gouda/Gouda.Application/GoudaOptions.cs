@@ -6,6 +6,8 @@ namespace Gouda.Application
     {
         public abstract Persistence.IPersistence Persistence { get; }
 
+        public abstract Security.ISecurity Security { get; }
+
         public abstract Check.IExecutor Executor { get; }
         public abstract Check.IEvaluator Evaluator { get; }
         public abstract Check.IScheduler Scheduler { get; }

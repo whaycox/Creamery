@@ -6,7 +6,7 @@ namespace Gouda.Domain.Check.Tests
     [TestClass]
     public class Definition : NamedEntityTemplate<Check.Definition>
     {
-        protected override Check.Definition Sample => MockDefinition.Sample;
+        protected override Check.Definition TestObject => MockDefinition.Sample;
 
         [TestMethod]
         public void SatelliteIDEquality() => TestIntChange((e, v) => e.SatelliteID = v);

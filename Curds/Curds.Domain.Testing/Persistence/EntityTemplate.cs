@@ -75,13 +75,13 @@ namespace Curds.Domain.Persistence
             TestChange(modifier, TimeSpan.FromMilliseconds(1));
         }
 
-        private void TestChange<U>(Action<T, U> modifier, U suppliedValue)
+        protected void TestChange<U>(Action<T, U> modifier, U suppliedValue)
         {
             var samples = Samples;
             modifier(samples.right, suppliedValue);
             TestEquality(samples);
         }
-        private void TestChangeOnBoth<U>(Action<T, U> modifier, U leftValue, U rightValue)
+        protected void TestChangeOnBoth<U>(Action<T, U> modifier, U leftValue, U rightValue)
         {
             var samples = Samples;
             modifier(samples.left, leftValue);

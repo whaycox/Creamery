@@ -9,14 +9,7 @@ namespace Gouda.Domain.Communication.Tests
     [TestClass]
     public class UserRegistration : EntityTemplate<Communication.UserRegistration>
     {
-        protected override Communication.UserRegistration Sample =>
-            new Communication.UserRegistration()
-            {
-                ID = 5,
-                DefinitionID = 2,
-                UserID = 4,
-                CronString = Testing.AlwaysCronString,
-            };
+        protected override Communication.UserRegistration TestObject => MockUserRegistration.Sample;
 
         [TestMethod]
         public void DefinitionIDEquality() => TestIntChange((e, v) => e.DefinitionID = v);

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Gouda.Application.Communication;
-using Gouda.Application.Persistence;
-using Gouda.Domain;
+﻿using Gouda.Domain.Check;
 using Gouda.Domain.Communication;
-using System.Linq;
-using Gouda.Domain.Check;
 using Gouda.Persistence;
+using System.Collections.Generic;
+using System.Linq;
+using Gouda.Domain.Security;
 
 namespace Gouda.Domain.Persistence
 {
@@ -35,5 +31,12 @@ namespace Gouda.Domain.Persistence
         protected override IEnumerable<Contact> LoadContacts() => MockContact.Samples;
 
         protected override IEnumerable<UserRegistration> LoadUserRegistrations() => UserRegistrations;
+
+        public void EmptyUsers()
+        {
+            foreach (int userID in Users.FetchAll().Select(u => u.ID))
+                Users.Delete(userID);
+        }
+
     }
 }

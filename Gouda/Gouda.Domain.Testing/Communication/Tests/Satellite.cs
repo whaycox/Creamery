@@ -10,24 +10,13 @@ namespace Gouda.Domain.Communication.Tests
     [TestClass]
     public class Satellite : NamedEntityTemplate<Communication.Satellite>
     {
-        protected override Communication.Satellite Sample => MockSatellite.Sample;
+        protected override Communication.Satellite TestObject => MockSatellite.Sample;
 
         [TestMethod]
-        public void EndpointChangesCode()
+        public void EndpointEquality()
         {
-            var left = Sample;
-            var right = Sample;
-            left.Endpoint = new IPEndPoint(IPAddress.None, IPEndPoint.MaxPort);
-            Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
-        }
-
-        [TestMethod]
-        public void DifferentEndpointNotEquals()
-        {
-            var left = Sample;
-            var right = Sample;
-            left.Endpoint = new IPEndPoint(IPAddress.None, IPEndPoint.MaxPort);
-            Assert.AreNotEqual(left, right);
+            TestChange<IPEndPoint>((e, v) => e.Endpoint = v, null);
+            TestChange((e, v) => e.Endpoint = v, new IPEndPoint(IPAddress.None, IPEndPoint.MaxPort));
         }
     }
 }

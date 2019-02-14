@@ -4,6 +4,8 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <RootNamespace>Curds.Persistence</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Curds.Application.Testing\Curds.Application.Testing.csproj" />
     <ProjectReference Include="..\Curds.Domain.Testing\Curds.Domain.Testing.csproj" />
   </ItemGroup>
 

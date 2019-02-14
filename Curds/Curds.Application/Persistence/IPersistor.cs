@@ -7,10 +7,16 @@ namespace Curds.Application.Persistence
 {
     public interface IPersistor<T> where T : Entity
     {
+        int Count { get; }
+
         IEnumerable<T> FetchAll();
         T Lookup(int id);
         IEnumerable<T> Lookup(IEnumerable<int> ids);
 
+        T Insert(T newEntity);
+
         void Update(int id, Func<T, T> updateDelegate);
+
+        void Delete(int id);
     }
 }

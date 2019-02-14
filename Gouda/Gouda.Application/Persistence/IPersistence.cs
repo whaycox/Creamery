@@ -6,6 +6,7 @@ using Gouda.Domain.Check;
 using Gouda.Domain;
 using Curds.Application.Persistence;
 using Curds.Application.Cron;
+using Gouda.Domain.Security;
 
 namespace Gouda.Application.Persistence
 {

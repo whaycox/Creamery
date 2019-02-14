@@ -9,7 +9,7 @@ namespace Gouda.Domain.Check.Tests
     [TestClass]
     public class Argument : NamedEntityTemplate<Check.Argument>
     {
-        protected override Check.Argument Sample => MockArgument.One;
+        protected override Check.Argument TestObject => MockArgument.One;
 
         [TestMethod]
         public void ValueEquality() => TestStringChange((e, v) => e.Value = v);

@@ -10,6 +10,6 @@ namespace Gouda.Domain.Communication.Tests
     [TestClass]
     public class Contact : ContactTemplate<MockContactOne>
     {
-        protected override MockContactOne Sample => MockContactOne.Sample;
+        protected override MockContactOne TestObject => MockContactOne.Sample;
     }
 }

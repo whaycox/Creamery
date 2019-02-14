@@ -10,6 +10,8 @@ namespace Curds.Persistence
     {
         private ConcurrentDictionary<int, T> Collection = new ConcurrentDictionary<int, T>();
 
+        public int Count => Collection.Count;
+
         public void AddOrUpdate(T newEntity) => Collection.AddOrUpdate(newEntity.ID, newEntity, (k, old) => newEntity);
         public void AddOrUpdate(IEnumerable<T> newEntities)
         {
@@ -29,11 +31,15 @@ namespace Curds.Persistence
                 yield return pair.Value;
         }
 
-        public void Update(int id, Func<T, T> updater)
+        public void Insert(T newEntity) => Collection.AddOrUpdate(newEntity.ID, newEntity, (e, v) => newEntity);
+
+        public void Remove(int key) => Collection.TryRemove(key, out T removed);
+
+        public void Update(int id, T modifiedEntity)
         {
             try
             {
-                Collection.AddOrUpdate(id, (k) => throw new KeyNotFoundException(), (k, e) => updater(e));
+                Collection.AddOrUpdate(id, (k) => throw new KeyNotFoundException(), (k, e) => modifiedEntity);
             }
             catch (KeyNotFoundException)
             {

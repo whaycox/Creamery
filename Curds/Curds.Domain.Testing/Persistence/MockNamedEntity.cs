@@ -7,5 +7,7 @@
         public static MockNamedEntity Sample => new MockNamedEntity() { ID = SampleID, Name = nameof(MockNamedEntity) };
 
         public override Entity Clone() => CloneInternal(new MockNamedEntity());
+
+        public override string ToString() => $"{ID}:{Name}";
     }
 }

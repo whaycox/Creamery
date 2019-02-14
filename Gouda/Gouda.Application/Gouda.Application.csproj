@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Message\Command\Scheduling\" />
     <Folder Include="Message\Query\" />
   </ItemGroup>
 

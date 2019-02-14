@@ -8,9 +8,10 @@ namespace Gouda
 {
     using Domain.Communication;
 
-    public partial class Testing
+    public static class Testing
     {
         public const string AlwaysCronString = "* * * * *";
         public static IPEndPoint TestEndpoint => new IPEndPoint(IPAddress.Loopback, Satellite.DefaultPort);
+        public static string TestEmail => nameof(TestEmail);
     }
 }

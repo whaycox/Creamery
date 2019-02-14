@@ -8,6 +8,8 @@ using Gouda.Domain.Communication;
 using System.Linq;
 using Curds.Application.Persistence;
 using Curds.Persistence.Relationships;
+using Gouda.Domain.Security;
+using Curds.Persistence.Memory;
 
 namespace Gouda.Persistence
 {

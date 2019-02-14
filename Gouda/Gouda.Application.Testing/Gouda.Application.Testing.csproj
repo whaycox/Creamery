@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Curds\Curds.Application.Testing\Curds.Application.Testing.csproj" />
     <ProjectReference Include="..\..\Curds\Curds.Domain.Testing\Curds.Domain.Testing.csproj" />
     <ProjectReference Include="..\Gouda.Application\Gouda.Application.csproj" />
     <ProjectReference Include="..\Gouda.Domain.Testing\Gouda.Domain.Testing.csproj" />
