@@ -16,6 +16,12 @@ namespace Gouda.Infrastructure.Check
 
         protected override IEnumerable<string> NamespacesToSearch => LoadableItems.CheckNamespaces;
 
+        public Evaluator(INotifier notifier, IPersistence persistence)
+        {
+            Notifier = notifier;
+            Persistence = persistence;
+        }
+
         public void Evaluate(Definition definition, BaseResponse response)
         {
             Status evaluated = EvaluateResponse(definition, response);

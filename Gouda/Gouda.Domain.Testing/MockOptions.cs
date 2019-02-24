@@ -56,7 +56,6 @@ namespace Gouda.Domain
 
             MockScheduler = new MockScheduler();
             MockExecutor = new MockExecutor();
-            MockEvaluator = new MockEvaluator();
 
             MockPersistence = new MockPersistence();
 
@@ -65,6 +64,8 @@ namespace Gouda.Domain
             MockListener = new MockListener();
             MockSender = new MockSender();
             MockNotifier = new MockNotifier();
+
+            MockEvaluator = new MockEvaluator(MockNotifier, MockPersistence);
         }
 
     }

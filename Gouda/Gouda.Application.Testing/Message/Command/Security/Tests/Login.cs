@@ -18,7 +18,8 @@ namespace Gouda.Application.Message.Command.Security.Tests
         [TestInitialize]
         public void Init()
         {
-            Application = new GoudaApplication(Options);
+            throw new NotImplementedException();
+            //Application = new GoudaApplication(Options);
         }
 
         [TestCleanup]
@@ -30,8 +31,8 @@ namespace Gouda.Application.Message.Command.Security.Tests
         [TestMethod]
         public void NoUsersViewModelCreatesInitialUser()
         {
-            Options.MockPersistence.EmptyUsers();
-            Assert.IsInstanceOfType(Application.Commands.Login.ViewModel, typeof(CreateInitialUserViewModel));
+            throw new NotImplementedException();
+            //Assert.IsInstanceOfType(Application.Commands.Login.ViewModel, typeof(CreateInitialUserViewModel));
         }
 
         [TestMethod]
@@ -43,16 +44,16 @@ namespace Gouda.Application.Message.Command.Security.Tests
         [TestMethod]
         public void CreatesInitialUser()
         {
-            Options.MockPersistence.EmptyUsers();
-            CreateInitialUserViewModel viewModel = Application.Commands.Login.ViewModel as CreateInitialUserViewModel;
-            viewModel.UserCredentials.Email = Testing.TestEmail;
-            viewModel.UserCredentials.Password = Curds.Testing.TestPassword;
+            throw new NotImplementedException();
+            //CreateInitialUserViewModel viewModel = Application.Commands.Login.ViewModel as CreateInitialUserViewModel;
+            //viewModel.UserCredentials.Email = Testing.TestEmail;
+            //viewModel.UserCredentials.Password = Curds.Testing.TestPassword;
 
-            User newUser = Application.Commands.CreateInitialUser.Execute(viewModel);
-            Assert.AreEqual(1, newUser.ID);
-            Assert.AreEqual(Testing.TestEmail, newUser.Email);
-            Assert.AreNotEqual(Curds.Testing.TestPassword, newUser.Password);
-            Assert.AreEqual(1, Application.Persistence.Users.Count);
+            //User newUser = Application.Commands.CreateInitialUser.Execute(viewModel);
+            //Assert.AreEqual(1, newUser.ID);
+            //Assert.AreEqual(Testing.TestEmail, newUser.Email);
+            //Assert.AreNotEqual(Curds.Testing.TestPassword, newUser.Password);
+            //Assert.AreEqual(1, Application.Persistence.Users.Count);
         }
     }
 }

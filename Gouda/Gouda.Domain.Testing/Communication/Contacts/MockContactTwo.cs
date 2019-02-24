@@ -9,8 +9,6 @@ namespace Gouda.Domain.Communication.Contacts
 {
     public class MockContactTwo : Contact
     {
-        public override Entity Clone() => CloneInternal(new MockContactTwo());
-
         public static MockContactTwo Sample => new MockContactTwo()
         {
             ID = 2,

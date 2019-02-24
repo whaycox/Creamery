@@ -13,6 +13,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Curds\Curds.Application\Curds.Application.csproj" />
     <ProjectReference Include="..\..\Curds\Curds.Domain\Curds.Domain.csproj" />
     <ProjectReference Include="..\..\Curds\Curds.Persistence\Curds.Persistence.csproj" />

@@ -24,20 +24,14 @@ namespace Gouda.Infrastructure.Check.Tests
         private MockDefinition Definition = MockDefinition.Sample;
         private MockResponse Response = new MockResponse();
 
-        private Check.Evaluator TestEvaluator = new Check.Evaluator();
+        private Check.Evaluator TestEvaluator = null;
 
         private Heartbeat HeartbeatCheck = new Heartbeat();
 
         [TestInitialize]
         public void Init()
         {
-            Persistence.Cron = Cron;
-            Persistence.LoadRelationships();
-
-            Notifier.Time = Time;
-            Notifier.Persistence = Persistence;
-            TestEvaluator.Persistence = Persistence;
-            TestEvaluator.Notifier = Notifier;
+            TestEvaluator = new Check.Evaluator(Notifier, Persistence);
         }
 
         [TestCleanup]

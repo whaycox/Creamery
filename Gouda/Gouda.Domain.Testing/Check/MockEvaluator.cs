@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using Gouda.Infrastructure.Check;
+using Gouda.Application.Communication;
+using Gouda.Application.Persistence;
 
 namespace Gouda.Domain.Check
 {
@@ -9,6 +11,10 @@ namespace Gouda.Domain.Check
 
     public class MockEvaluator : Evaluator
     {
+        public MockEvaluator(INotifier notifier, IPersistence persistence)
+            : base(notifier, persistence)
+        { }
+
         public void FireEvent(Definition definition) => Notifier.NotifyUsers(MockChange(definition));
 
         private StatusChange MockChange(Definition definition) => new StatusChange()

@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 using Gouda.Application.Persistence;
 using Curds.Application.Cron;
 using Curds.Application.Persistence;
+using Gouda.Domain.Check;
+using Gouda.Domain.Communication;
+using Gouda.Domain.Security;
 
-namespace Gouda.Domain.Persistence
+namespace Gouda.Persistence.EFCore
 {
-    using Communication;
-    using Check;
-    using Security;
-
-    public class MockPersistence : IPersistence
+    public class EFPersistence : IPersistence
     {
-        public ICron Cron { get; set; }
+        private GoudaContext Context { get; }
+
+        public ICron Cron { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public IPersistor<Satellite> Satellites => throw new NotImplementedException();
 
@@ -24,6 +26,11 @@ namespace Gouda.Domain.Persistence
         public IPersistor<Contact> Contacts => throw new NotImplementedException();
 
         public IPersistor<User> Users => throw new NotImplementedException();
+
+        public EFPersistence()
+        {
+            Context = new GoudaContext();
+        }
 
         public IEnumerable<Contact> FilterContacts(int definitionID, DateTime eventTime)
         {

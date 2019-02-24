@@ -14,7 +14,7 @@ namespace Gouda.Infrastructure.Communication.Tests
     {
         private MockDateTime Time = new MockDateTime();
         private Curds.Application.Cron.ICron Cron = new Curds.Infrastructure.Cron.CronProvider();
-        private MockEvaluator Evaluator = new MockEvaluator();
+        private MockEvaluator Evaluator = null;
         private MockPersistence Persistence = new MockPersistence();
 
         private Definition Definition => Persistence.Definitions.Lookup(MockDefinition.SampleID);
@@ -24,12 +24,7 @@ namespace Gouda.Infrastructure.Communication.Tests
         [TestInitialize]
         public void Init()
         {
-            Persistence.Cron = Cron;
-            Evaluator.Notifier = TestNotifier;
-            TestNotifier.Time = Time;
-            TestNotifier.Persistence = Persistence;
-
-            Persistence.LoadRelationships();
+            Evaluator = new MockEvaluator(TestNotifier, Persistence);
         }
 
         [TestCleanup]

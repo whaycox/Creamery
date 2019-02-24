@@ -6,6 +6,14 @@
 
         public static MockEntity Sample => new MockEntity() { ID = SampleID };
 
-        public override Entity Clone() => CloneInternal(new MockEntity());
+        public override bool Equals(object obj)
+        {
+            MockEntity toTest = obj as MockEntity;
+            if (toTest == null)
+                return false;
+            if (toTest.ID != ID)
+                return false;
+            return true;
+        }
     }
 }
