@@ -10,12 +10,12 @@ namespace Gouda.Application.Security
 {
     public abstract class ISecurityTemplate<T> : IAuthenticatorTemplate<T> where T : ISecurity
     {
-        MockPersistence Persistence = new MockPersistence();
+        MockPersistence Persistence = null;
 
         [TestInitialize]
         public void Init()
         {
-            TestObject.Persistence = Persistence;
+            Persistence = new MockPersistence(Cron);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Gouda.Application.Communication
 
     public interface IListener : IDisposable
     {
-        RequestHandler Handler { get; set; }
+        RequestHandler Handler { get; }
 
         bool IsStarted { get; }
 

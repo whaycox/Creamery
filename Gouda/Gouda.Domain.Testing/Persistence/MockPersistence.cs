@@ -4,35 +4,42 @@ using System.Text;
 using Gouda.Application.Persistence;
 using Curds.Application.Cron;
 using Curds.Application.Persistence;
+using Gouda.Persistence.EFCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gouda.Domain.Persistence
 {
-    using Communication;
     using Check;
+    using Communication;
     using Security;
 
-    public class MockPersistence : IPersistence
+    public class MockPersistence : EFProvider
     {
-        public ICron Cron { get; set; }
+        public MockPersistence(ICron cronProvider)
+            : base(cronProvider)
+        { }
 
-        public IPersistor<Satellite> Satellites => throw new NotImplementedException();
-
-        public IPersistor<Definition> Definitions => throw new NotImplementedException();
-
-        public IPersistor<Argument> Arguments => throw new NotImplementedException();
-
-        public IPersistor<Contact> Contacts => throw new NotImplementedException();
-
-        public IPersistor<User> Users => throw new NotImplementedException();
-
-        public IEnumerable<Contact> FilterContacts(int definitionID, DateTime eventTime)
+        public void Reset()
         {
-            throw new NotImplementedException();
+            using (GoudaContext context = Context)
+            {
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+            }
         }
+        
+        internal override void ConfigureContext(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseInMemoryDatabase(nameof(MockPersistence));
 
-        public IEnumerable<Argument> GenerateArguments(int definitionID)
+        internal override void SeedData(ModelBuilder modelBuilder)
         {
-            throw new NotImplementedException();
+            modelBuilder.Entity<Definition>().HasData(Seeds.Definition.Data);
+            modelBuilder.Entity<DefinitionArgument>().HasData(Seeds.DefinitionArgument.Data);
+            modelBuilder.Entity<DefinitionRegistration>().HasData(Seeds.DefinitionRegistration.Data);
+            modelBuilder.Entity<Satellite>().HasData(Seeds.Satellite.Data);
+            modelBuilder.Entity<User>().HasData(Seeds.User.Data);
+            modelBuilder.Entity<Contact>().HasData(Seeds.Contact.Data);
+            modelBuilder.Entity<ContactArgument>().HasData(Seeds.ContactArgument.Data);
+
         }
     }
 }

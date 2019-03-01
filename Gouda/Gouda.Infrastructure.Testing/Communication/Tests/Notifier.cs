@@ -5,26 +5,31 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Gouda.Domain.Check;
 using Gouda.Domain.Persistence;
 using Curds.Domain.DateTimes;
-using Gouda.Domain.Communication.Contacts.Adapters;
+using Curds.Domain;
+using Gouda.Domain.Communication.ContactAdapters;
 
 namespace Gouda.Infrastructure.Communication.Tests
 {
     [TestClass]
-    public class Notifier
+    public class Notifier : CronTemplate<Communication.Notifier>
     {
-        private MockDateTime Time = new MockDateTime();
-        private Curds.Application.Cron.ICron Cron = new Curds.Infrastructure.Cron.CronProvider();
         private MockEvaluator Evaluator = null;
-        private MockPersistence Persistence = new MockPersistence();
+        private MockPersistence Persistence = null;
 
-        private Definition Definition => Persistence.Definitions.Lookup(MockDefinition.SampleID);
+        private Definition Definition => Persistence.Definitions.Lookup(MockDefinition.SampleID).GetAwaiter().GetResult();
 
-        private Communication.Notifier TestNotifier = new Communication.Notifier();
+        private Communication.Notifier _obj = null;
+        protected override Communication.Notifier TestObject => _obj;
 
         [TestInitialize]
         public void Init()
         {
-            Evaluator = new MockEvaluator(TestNotifier, Persistence);
+            Persistence = new MockPersistence(Cron);
+            Persistence.Reset();
+
+            _obj = new Communication.Notifier(Time, Persistence);
+
+            Evaluator = new MockEvaluator(TestObject, Persistence);
         }
 
         [TestCleanup]

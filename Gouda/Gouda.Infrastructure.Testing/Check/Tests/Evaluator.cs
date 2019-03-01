@@ -6,32 +6,37 @@ using Gouda.Domain.Communication;
 using Gouda.Domain.Check;
 using Curds.Domain.DateTimes;
 using Gouda.Domain.Persistence;
-using Gouda.Domain.Communication.Contacts.Adapters;
 using Gouda.Domain.Enumerations;
 using Gouda.Check.Basic;
 using Gouda.Domain.Check.Responses;
 using Curds.Infrastructure.Cron;
+using Curds.Domain;
+using Gouda.Domain.Communication.ContactAdapters;
 
 namespace Gouda.Infrastructure.Check.Tests
 {
     [TestClass]
-    public class Evaluator
+    public class Evaluator : CronTemplate<Check.Evaluator>
     {
-        private MockDateTime Time = new MockDateTime();
-        private CronProvider Cron = new CronProvider();
-        private MockPersistence Persistence = new MockPersistence();
-        private MockNotifier Notifier = new MockNotifier();
-        private MockDefinition Definition = MockDefinition.Sample;
+        private MockPersistence Persistence = null;
+        private MockNotifier Notifier = null;
+        private Definition Definition = MockDefinition.Sample;
         private MockResponse Response = new MockResponse();
 
-        private Check.Evaluator TestEvaluator = null;
+        private Check.Evaluator _obj = null;
+        protected override Check.Evaluator TestObject => _obj;
 
         private Heartbeat HeartbeatCheck = new Heartbeat();
 
         [TestInitialize]
         public void Init()
         {
-            TestEvaluator = new Check.Evaluator(Notifier, Persistence);
+            Persistence = new MockPersistence(Cron);
+            Persistence.Reset();
+
+            Notifier = new MockNotifier(Time, Persistence);
+
+            _obj = new Check.Evaluator(Notifier, Persistence);
         }
 
         [TestCleanup]
@@ -45,25 +50,25 @@ namespace Gouda.Infrastructure.Check.Tests
         [TestMethod]
         public void UpdatesStatusOnGood()
         {
-            TestEvaluator.Evaluate(Definition, Response);
+            TestObject.Evaluate(Definition, Response).GetAwaiter().GetResult();
             Assert.AreNotEqual(Definition.Status, Persistence.Definitions.Lookup(Definition.ID));
-            Assert.AreEqual(Status.Good, Persistence.Definitions.Lookup(Definition.ID).Status);
+            Assert.AreEqual(Status.Good, Persistence.Definitions.Lookup(Definition.ID).GetAwaiter().GetResult().Status);
         }
 
         [TestMethod]
         public void UpdatesStatusOnFailure()
         {
             MockCheck.ShouldFail = true;
-            TestEvaluator.Evaluate(Definition, Response);
+            TestObject.Evaluate(Definition, Response).GetAwaiter().GetResult();
             Assert.AreNotEqual(Definition.Status, Persistence.Definitions.Lookup(Definition.ID).Status);
-            Assert.AreEqual(Status.Critical, Persistence.Definitions.Lookup(Definition.ID).Status);
+            Assert.AreEqual(Status.Critical, Persistence.Definitions.Lookup(Definition.ID).GetAwaiter().GetResult().Status);
         }
 
         [TestMethod]
         public void NotifiesCriticalOnFailure()
         {
             MockCheck.ShouldFail = true;
-            TestEvaluator.Evaluate(Definition, Response);
+            TestObject.Evaluate(Definition, Response).GetAwaiter().GetResult();
             Assert.AreEqual(1, MockContactOneAdapter.Notifications.Count);
             Assert.AreEqual(1, MockContactOneAdapter.Notifications[0].userNotified);
             Assert.AreEqual(Status.Critical, MockContactOneAdapter.Notifications[0].changeInformation.New);
@@ -75,7 +80,7 @@ namespace Gouda.Infrastructure.Check.Tests
         [TestMethod]
         public void NotifiesOfGoodChange()
         {
-            TestEvaluator.Evaluate(Definition, Response);
+            TestObject.Evaluate(Definition, Response).GetAwaiter().GetResult();
             Assert.AreEqual(1, MockContactOneAdapter.Notifications.Count);
             Assert.AreEqual(1, MockContactOneAdapter.Notifications[0].userNotified);
             Assert.AreEqual(Status.Good, MockContactOneAdapter.Notifications[0].changeInformation.New);
@@ -88,7 +93,7 @@ namespace Gouda.Infrastructure.Check.Tests
         public void ConsecutiveSameStatusDoesntNotify()
         {
             Definition.Status = Status.Good;
-            TestEvaluator.Evaluate(Definition, Response);
+            TestObject.Evaluate(Definition, Response).GetAwaiter().GetResult();
             Assert.AreEqual(0, MockContactOneAdapter.Notifications.Count);
             Assert.AreEqual(0, MockContactTwoAdapter.Notifications.Count);
         }
@@ -96,8 +101,8 @@ namespace Gouda.Infrastructure.Check.Tests
         [TestMethod]
         public void HeartbeatResponseIsGood()
         {
-            Definition.CheckID = HeartbeatCheck.ID;
-            TestEvaluator.Evaluate(Definition, new Success());
+            Definition.CheckGuid = HeartbeatCheck.ID;
+            TestObject.Evaluate(Definition, new Success()).GetAwaiter().GetResult();
             Assert.AreEqual(1, MockContactOneAdapter.Notifications.Count);
             Assert.AreEqual(1, MockContactOneAdapter.Notifications[0].userNotified);
             Assert.AreEqual(Status.Good, MockContactOneAdapter.Notifications[0].changeInformation.New);

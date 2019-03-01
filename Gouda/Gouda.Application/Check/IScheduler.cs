@@ -4,6 +4,7 @@ using System.Text;
 using Gouda.Domain.Check;
 using Gouda.Domain;
 using Curds.Application.DateTimes;
+using System.Threading.Tasks;
 
 namespace Gouda.Application.Check
 {
@@ -12,9 +13,9 @@ namespace Gouda.Application.Check
 
     public interface IScheduler : IDisposable
     {
-        IDateTime Time { get; set; }
-        IPersistence Persistence { get; set; }
-        ISender Sender { get; set; }
+        IDateTime Time { get; }
+        IPersistence Persistence { get; }
+        ISender Sender { get; }
 
         DateTimeOffset this[int id] { get; }
 

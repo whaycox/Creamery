@@ -23,7 +23,6 @@ namespace Gouda.Application
             : base(options)
         {
             ReadOptions(options);
-            HookupReferences();
             StartServices();
         }
         private void ReadOptions(GoudaOptions options)
@@ -39,13 +38,6 @@ namespace Gouda.Application
             Evaluator = options.Evaluator;
             Sender = options.Sender;
             Notifier = options.Notifier;
-        }
-        private void HookupReferences()
-        {
-            Listener.Handler = Executor.Perform;
-            Notifier.Persistence = Persistence;
-            Notifier.Time = Time;
-            Scheduler.Time = Time;
         }
         private void StartServices()
         {

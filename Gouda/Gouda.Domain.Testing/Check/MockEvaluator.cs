@@ -15,7 +15,7 @@ namespace Gouda.Domain.Check
             : base(notifier, persistence)
         { }
 
-        public void FireEvent(Definition definition) => Notifier.NotifyUsers(MockChange(definition));
+        public void FireEvent(Definition definition) => Notifier.NotifyUsers(MockChange(definition)).GetAwaiter().GetResult();
 
         private StatusChange MockChange(Definition definition) => new StatusChange()
         {

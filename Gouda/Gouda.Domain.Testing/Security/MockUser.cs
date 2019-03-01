@@ -6,24 +6,24 @@ namespace Gouda.Domain.Security
 {
     public class MockUser : User
     {
-        public static MockUser One => new MockUser(1);
-        public static MockUser Two => new MockUser(2);
-        public static MockUser Three => new MockUser(3);
+        public static User One => Sample(1);
+        public static User Two => Sample(2);
+        public static User Three => Sample(3);
 
-        public static IEnumerable<User> Samples => new List<User>()
+        public static User[] Samples => new User[]
         {
             One,
             Two,
             Three,
         };
 
-        private MockUser(int id)
+        private static User Sample(int id) => new User
         {
-            ID = id;
-            Name = id.ToString();
-            Email = Testing.TestEmail;
-            Password = Curds.Testing.TestPassword;
-            Salt = Curds.Testing.TestSalt;
-        }
+            ID = id,
+            Name = id.ToString(),
+            Email = Testing.TestEmail,
+            Password = Curds.Testing.TestPassword,
+            Salt = Curds.Testing.TestSalt,
+        };
     }
 }

@@ -19,7 +19,7 @@ namespace Curds.Application.Persistence
         [TestMethod]
         public void FetchAllWorksWhenEmpty()
         {
-            foreach (U test in TestObject.FetchAll())
+            foreach (U test in TestObject.FetchAll().GetAwaiter().GetResult())
                 Assert.Fail();
         }
 
@@ -69,7 +69,7 @@ namespace Curds.Application.Persistence
         {
             U sample = Sample;
             TestObject.Insert(sample);
-            U retrieved = TestObject.Lookup(sample.ID);
+            U retrieved = TestObject.Lookup(sample.ID).GetAwaiter().GetResult();
             Assert.AreNotSame(sample, retrieved);
             Assert.AreEqual(sample, retrieved);
         }
@@ -79,9 +79,9 @@ namespace Curds.Application.Persistence
         {
             U sample = Sample;
             TestObject.Insert(sample);
-            U first = TestObject.Lookup(sample.ID);
+            U first = TestObject.Lookup(sample.ID).GetAwaiter().GetResult();
             first = Modifier(first);
-            U second = TestObject.Lookup(sample.ID);
+            U second = TestObject.Lookup(sample.ID).GetAwaiter().GetResult();
             Assert.AreNotSame(first, second);
             Assert.AreNotEqual(first, second);
         }
@@ -91,8 +91,8 @@ namespace Curds.Application.Persistence
         {
             U sample = Sample;
             TestObject.Insert(sample);
-            TestObject.Update(sample.ID, Modifier);
-            U retrieved = TestObject.Lookup(sample.ID);
+            TestObject.Update(sample.ID, Modifier).GetAwaiter().GetResult();
+            U retrieved = TestObject.Lookup(sample.ID).GetAwaiter().GetResult();
             Assert.AreNotEqual(sample, retrieved);
             sample = Modifier(sample);
             Assert.AreEqual(sample, retrieved);
@@ -140,7 +140,7 @@ namespace Curds.Application.Persistence
                 TestObject.Insert(SampleInLoop(i));
             var retrieved = TestObject.Lookup(new int[] { 2, 5, 8 }).ToArray();
             retrieved[0] = Modifier(retrieved[0]);
-            U singleRetrieve = TestObject.Lookup(2);
+            U singleRetrieve = TestObject.Lookup(2).GetAwaiter().GetResult();
             Assert.AreNotSame(retrieved[0], singleRetrieve);
             Assert.AreNotEqual(retrieved[0], singleRetrieve);
         }

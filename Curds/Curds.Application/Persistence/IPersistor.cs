@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Curds.Domain.Persistence;
+using System.Threading.Tasks;
 
 namespace Curds.Application.Persistence
 {
@@ -9,14 +10,14 @@ namespace Curds.Application.Persistence
     {
         int Count { get; }
 
-        IEnumerable<T> FetchAll();
-        T Lookup(int id);
+        Task<List<T>> FetchAll();
+        Task<T> Lookup(int id);
         IEnumerable<T> Lookup(IEnumerable<int> ids);
 
         T Insert(T newEntity);
 
-        void Update(int id, Func<T, T> updateDelegate);
+        Task Update(int id, Func<T, T> updateDelegate);
 
-        void Delete(int id);
+        Task Delete(int id);
     }
 }

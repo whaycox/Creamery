@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Curds.Application.Security
 {
-    public abstract class IAuthenticatorTemplate<T> : TestTemplate<T> where T : IAuthenticator
+    public abstract class IAuthenticatorTemplate<T> : CronTemplate<T> where T : IAuthenticator
     {
         private string TestEncryptedPassword => TestObject.EncryptPassword(Testing.TestSalt, Testing.TestPassword);
 

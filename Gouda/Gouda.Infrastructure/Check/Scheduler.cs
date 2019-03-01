@@ -5,10 +5,9 @@ using Gouda.Application.Communication;
 using Gouda.Application.Persistence;
 using Gouda.Domain.Check;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 
 namespace Gouda.Infrastructure.Check
 {
@@ -20,27 +19,27 @@ namespace Gouda.Infrastructure.Check
         private IndexedChronoList Schedule = new IndexedChronoList();
         private CancellationTokenSource CancelSource = new CancellationTokenSource();
 
-        public IDateTime Time { get; set; }
-        public IPersistence Persistence { get; set; }
-        public ISender Sender { get; set; }
+        public IDateTime Time { get; }
+        public IPersistence Persistence { get; }
+        public ISender Sender { get; }
 
         public DateTimeOffset this[int id] => Schedule[id]?.ScheduledTime ?? throw new KeyNotFoundException($"No definition with the id {id} was found to remove");
 
-        public Scheduler()
-            : this(DefaultSleepTimeInMs)
-        { }
-
-        public Scheduler(int sleepTime)
+        public Scheduler(IDateTime time, IPersistence persistence, ISender sender, int sleepTime = DefaultSleepTimeInMs)
         {
             if (sleepTime <= 0)
                 throw new ArgumentOutOfRangeException(nameof(sleepTime));
             SleepTimeInMs = sleepTime;
+
+            Time = time;
+            Persistence = persistence;
+            Sender = sender;
         }
 
         public void Start()
         {
-            foreach (int definitionID in Persistence.Definitions.FetchAll().Select(d => d.ID))
-                Schedule.AddNow(definitionID);
+            foreach (Definition definition in Persistence.Definitions.FetchAll().GetAwaiter().GetResult())
+                Schedule.AddNow(definition.ID);
             Task.Factory.StartNew(SchedulingThread, CancelSource.Token);
         }
 
@@ -75,7 +74,7 @@ namespace Gouda.Infrastructure.Check
             throw new NotImplementedException();
         }
 
-        private async void SchedulingThread()
+        private async Task SchedulingThread()
         {
             CancellationToken token = CancelSource.Token;
             while (true)
@@ -83,8 +82,8 @@ namespace Gouda.Infrastructure.Check
                 foreach (int definitionID in Schedule.Retrieve(Time.Fetch))
                 {
                     token.ThrowIfCancellationRequested();
-                    Definition definition = Persistence.Definitions.Lookup(definitionID);
-                    Sender.Send(definition);
+                    Definition definition = await Persistence.Definitions.Lookup(definitionID);
+                    await Sender.Send(definition);
                     Schedule.Add(Time.Fetch.Add(definition.RescheduleSpan), definitionID);
                 }
 

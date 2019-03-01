@@ -6,18 +6,19 @@ using Gouda.Domain.Check;
 using System.Net;
 using System.Net.Sockets;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Gouda.Infrastructure.Communication
 {
     public abstract class Communicator
     {
-        protected void Send(NetworkStream stream, byte[] packet) => stream.Write(packet, 0, packet.Length);
+        protected Task Send(NetworkStream stream, byte[] packet) => stream.WriteAsync(packet, 0, packet.Length);
 
-        protected byte[] ReadPacket(NetworkStream stream, int bufferSize)
+        protected async Task<byte[]> ReadPacket(NetworkStream stream, int bufferSize)
         {
             int bytesRead = 0;
             byte[] buffer = new byte[bufferSize];
-            bytesRead = stream.Read(buffer, 0, bufferSize);
+            bytesRead = await stream.ReadAsync(buffer, 0, bufferSize);
             return buffer.Take(bytesRead).ToArray();
         }
     }

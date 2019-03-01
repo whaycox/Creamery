@@ -5,6 +5,7 @@ using Curds.Application.DateTimes;
 using Gouda.Application.Check;
 using Gouda.Application.Communication;
 using Gouda.Application.Persistence;
+using System.Threading.Tasks;
 
 namespace Gouda.Domain.Check
 {

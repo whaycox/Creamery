@@ -10,13 +10,12 @@ namespace Gouda.Domain.Check
     public class MockDefinition : Definition
     {
         public const int SampleID = 1;
-        public static MockDefinition Sample => new MockDefinition()
+        public static Definition Sample => new Definition()
         {
             ID = SampleID,
             Name = nameof(MockDefinition),
-            CheckID = MockCheck.SampleID,
+            CheckGuid = MockCheck.SampleID,
             SatelliteID = MockSatellite.SampleID,
-            ArgumentIDs = MockArgument.SampleIDs,
             RescheduleSpan = TimeSpan.FromTicks(100),
         };
     }

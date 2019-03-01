@@ -9,6 +9,6 @@ namespace Gouda.Application.Security
 
     public interface ISecurity : IAuthenticator
     {
-        IPersistence Persistence { get; set; }
+        IPersistence Persistence { get; }
     }
 }

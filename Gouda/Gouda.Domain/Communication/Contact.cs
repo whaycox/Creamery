@@ -1,11 +1,16 @@
 ﻿using Curds.Domain.Persistence;
 using Curds.Domain;
+using System.Collections.Generic;
 
 namespace Gouda.Domain.Communication
 {
-    public abstract class Contact : NamedEntity, ICronEntity
+    using Enumerations;
+
+    public class Contact : NamedEntity
     {
         public int UserID { get; set; }
-        public string CronString { get; set; }
+        public ContactType Type { get; set; }
+
+        public IEnumerable<ContactArgument> ContactArguments { get; set; }
     }
 }
