@@ -6,6 +6,7 @@ using Gouda.Domain.Check;
 using Gouda.Application.Communication;
 using Gouda.Application.Persistence;
 using System.Threading.Tasks;
+using Curds;
 
 namespace Gouda.Domain.Communication
 {
@@ -32,7 +33,7 @@ namespace Gouda.Domain.Communication
 
         public void SendTest()
         {
-            ResponsesReceived.Add(_sender.Send(MockDefinition.Sample).GetAwaiter().GetResult());
+            ResponsesReceived.Add(_sender.Send(MockDefinition.Sample).AwaitResult());
         }
     }
 }

@@ -11,7 +11,14 @@ namespace Gouda.Persistence.EFCore
     {
         private EFProvider Provider { get; }
         
-        public int Count => throw new NotImplementedException();
+        public Task<int> Count
+        {
+            get
+            {
+                using (GoudaContext context = Provider.Context)
+                    return Set(context).CountAsync();
+            }
+        }
 
         public EFPersistor(EFProvider provider)
         {
@@ -20,9 +27,18 @@ namespace Gouda.Persistence.EFCore
         
         internal abstract DbSet<T> Set(GoudaContext context);
 
-        public Task Delete(int id)
+        public async Task Delete(int id)
         {
-            throw new NotImplementedException();
+            using (GoudaContext context = Provider.Context)
+            {
+                await Delete(id, context);
+                await context.SaveChangesAsync();
+            }
+        }
+        internal async Task Delete(int id, GoudaContext context)
+        {
+            T toDelete = await Lookup(id, context);
+            context.Remove(toDelete);
         }
 
         public async Task<List<T>> FetchAll()
@@ -30,17 +46,23 @@ namespace Gouda.Persistence.EFCore
             using (GoudaContext context = Provider.Context)
             {
                 DbSet<T> set = Set(context);
-                return await set.ToListAsync();
+                return await set.AsNoTracking().ToListAsync();
             }
         }
 
-        public T Insert(T newEntity)
+        public async Task<T> Insert(T newEntity)
         {
-            throw new NotImplementedException();
+            using (GoudaContext context = Provider.Context)
+            {
+                T inserted = await Insert(newEntity, context);
+                await context.SaveChangesAsync();
+                return inserted;
+            }
         }
         internal async Task<T> Insert(T newEntity, GoudaContext context)
         {
-            throw new NotImplementedException();
+            var entry =  await context.AddAsync(newEntity);
+            return entry.Entity;
         }
 
         public Task<T> Lookup(int id)

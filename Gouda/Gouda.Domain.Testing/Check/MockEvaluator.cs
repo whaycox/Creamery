@@ -4,6 +4,7 @@ using System.Text;
 using Gouda.Infrastructure.Check;
 using Gouda.Application.Communication;
 using Gouda.Application.Persistence;
+using Curds;
 
 namespace Gouda.Domain.Check
 {
@@ -15,7 +16,7 @@ namespace Gouda.Domain.Check
             : base(notifier, persistence)
         { }
 
-        public void FireEvent(Definition definition) => Notifier.NotifyUsers(MockChange(definition)).GetAwaiter().GetResult();
+        public void FireEvent(Definition definition) => Notifier.NotifyUsers(MockChange(definition)).AwaitResult();
 
         private StatusChange MockChange(Definition definition) => new StatusChange()
         {

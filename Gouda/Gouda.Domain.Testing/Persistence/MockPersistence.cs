@@ -6,6 +6,7 @@ using Curds.Application.Cron;
 using Curds.Application.Persistence;
 using Gouda.Persistence.EFCore;
 using Microsoft.EntityFrameworkCore;
+using Curds;
 
 namespace Gouda.Domain.Persistence
 {
@@ -27,6 +28,12 @@ namespace Gouda.Domain.Persistence
                 context.Database.EnsureCreated();
             }
         }
+
+        public void EmptyUsers()
+        {
+            foreach (User user in Users.FetchAll().AwaitResult())
+                Users.Delete(user.ID);
+        }
         
         internal override void ConfigureContext(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseInMemoryDatabase(nameof(MockPersistence));
 
@@ -39,7 +46,6 @@ namespace Gouda.Domain.Persistence
             modelBuilder.Entity<User>().HasData(Seeds.User.Data);
             modelBuilder.Entity<Contact>().HasData(Seeds.Contact.Data);
             modelBuilder.Entity<ContactArgument>().HasData(Seeds.ContactArgument.Data);
-
         }
     }
 }

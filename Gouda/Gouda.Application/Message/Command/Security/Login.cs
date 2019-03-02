@@ -1,6 +1,7 @@
 ﻿using Curds.Application.Message;
 using Gouda.Domain.Security;
 using System;
+using System.Threading.Tasks;
 
 namespace Gouda.Application.Message.Command.Security
 {
@@ -33,22 +34,19 @@ namespace Gouda.Application.Message.Command.Security
 
     public class LoginDefinition : CommandDefinition<LoginCommand, LoginHandler, LoginViewModel>
     {
-        public override BaseViewModel ViewModel
-        {
-            get
-            {
-                if (Application.Persistence.Users.Count == 0)
-                    return new CreateInitialUserViewModel();
-                else
-                    return new LoginViewModel();
-            }
-        }
-
         protected override LoginHandler Handler => new LoginHandler(Application);
 
         public LoginDefinition(GoudaApplication application)
             : base(application)
         { }
+
+        public async override Task<BaseViewModel> ViewModel()
+        {
+            if (await Application.Persistence.Users.Count == 0)
+                return new CreateInitialUserViewModel();
+            else
+                return new LoginViewModel();
+        }
 
         protected override LoginCommand BuildMessage(LoginViewModel viewModel) => new LoginCommand(viewModel);
     }

@@ -12,6 +12,7 @@ using Gouda.Domain.Check.Responses;
 using Curds.Infrastructure.Cron;
 using Curds.Domain;
 using Gouda.Domain.Communication.ContactAdapters;
+using Curds;
 
 namespace Gouda.Infrastructure.Check.Tests
 {
@@ -50,25 +51,27 @@ namespace Gouda.Infrastructure.Check.Tests
         [TestMethod]
         public void UpdatesStatusOnGood()
         {
-            TestObject.Evaluate(Definition, Response).GetAwaiter().GetResult();
-            Assert.AreNotEqual(Definition.Status, Persistence.Definitions.Lookup(Definition.ID));
-            Assert.AreEqual(Status.Good, Persistence.Definitions.Lookup(Definition.ID).GetAwaiter().GetResult().Status);
+            TestObject.Evaluate(Definition, Response).AwaitResult();
+            Definition stored = Persistence.Definitions.Lookup(Definition.ID).AwaitResult();
+            Assert.AreNotEqual(Definition.Status, stored.Status);
+            Assert.AreEqual(Status.Good, stored.Status);
         }
 
         [TestMethod]
         public void UpdatesStatusOnFailure()
         {
             MockCheck.ShouldFail = true;
-            TestObject.Evaluate(Definition, Response).GetAwaiter().GetResult();
-            Assert.AreNotEqual(Definition.Status, Persistence.Definitions.Lookup(Definition.ID).Status);
-            Assert.AreEqual(Status.Critical, Persistence.Definitions.Lookup(Definition.ID).GetAwaiter().GetResult().Status);
+            TestObject.Evaluate(Definition, Response).AwaitResult();
+            Definition stored = Persistence.Definitions.Lookup(Definition.ID).AwaitResult();
+            Assert.AreNotEqual(Definition.Status, stored.Status);
+            Assert.AreEqual(Status.Critical, stored.Status);
         }
 
         [TestMethod]
         public void NotifiesCriticalOnFailure()
         {
             MockCheck.ShouldFail = true;
-            TestObject.Evaluate(Definition, Response).GetAwaiter().GetResult();
+            TestObject.Evaluate(Definition, Response).AwaitResult();
             Assert.AreEqual(1, MockContactOneAdapter.Notifications.Count);
             Assert.AreEqual(1, MockContactOneAdapter.Notifications[0].userNotified);
             Assert.AreEqual(Status.Critical, MockContactOneAdapter.Notifications[0].changeInformation.New);
@@ -80,7 +83,7 @@ namespace Gouda.Infrastructure.Check.Tests
         [TestMethod]
         public void NotifiesOfGoodChange()
         {
-            TestObject.Evaluate(Definition, Response).GetAwaiter().GetResult();
+            TestObject.Evaluate(Definition, Response).AwaitResult();
             Assert.AreEqual(1, MockContactOneAdapter.Notifications.Count);
             Assert.AreEqual(1, MockContactOneAdapter.Notifications[0].userNotified);
             Assert.AreEqual(Status.Good, MockContactOneAdapter.Notifications[0].changeInformation.New);
@@ -93,7 +96,7 @@ namespace Gouda.Infrastructure.Check.Tests
         public void ConsecutiveSameStatusDoesntNotify()
         {
             Definition.Status = Status.Good;
-            TestObject.Evaluate(Definition, Response).GetAwaiter().GetResult();
+            TestObject.Evaluate(Definition, Response).AwaitResult();
             Assert.AreEqual(0, MockContactOneAdapter.Notifications.Count);
             Assert.AreEqual(0, MockContactTwoAdapter.Notifications.Count);
         }
@@ -102,7 +105,7 @@ namespace Gouda.Infrastructure.Check.Tests
         public void HeartbeatResponseIsGood()
         {
             Definition.CheckGuid = HeartbeatCheck.ID;
-            TestObject.Evaluate(Definition, new Success()).GetAwaiter().GetResult();
+            TestObject.Evaluate(Definition, new Success()).AwaitResult();
             Assert.AreEqual(1, MockContactOneAdapter.Notifications.Count);
             Assert.AreEqual(1, MockContactOneAdapter.Notifications[0].userNotified);
             Assert.AreEqual(Status.Good, MockContactOneAdapter.Notifications[0].changeInformation.New);

@@ -8,13 +8,13 @@ namespace Curds.Application.Persistence
 {
     public interface IPersistor<T> where T : Entity
     {
-        int Count { get; }
+        Task<int> Count { get; }
 
         Task<List<T>> FetchAll();
         Task<T> Lookup(int id);
         IEnumerable<T> Lookup(IEnumerable<int> ids);
 
-        T Insert(T newEntity);
+        Task<T> Insert(T newEntity);
 
         Task Update(int id, Func<T, T> updateDelegate);
 

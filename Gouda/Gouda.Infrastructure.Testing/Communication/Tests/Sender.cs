@@ -7,6 +7,7 @@ using Gouda.Domain.Communication;
 using Gouda.Domain.Check;
 using Gouda.Domain.Check.Responses;
 using Curds.Domain;
+using Curds;
 
 namespace Gouda.Infrastructure.Communication.Tests
 {
@@ -16,7 +17,7 @@ namespace Gouda.Infrastructure.Communication.Tests
         private MockPersistence Persistence = null;
         private MockListener Listener = new MockListener();
 
-        private Definition Definition => Persistence.Definitions.Lookup(MockDefinition.SampleID).GetAwaiter().GetResult();
+        private Definition Definition => Persistence.Definitions.Lookup(MockDefinition.SampleID).AwaitResult();
 
         private Communication.Sender _obj = null;
         protected override Communication.Sender TestObject => _obj;
@@ -42,7 +43,7 @@ namespace Gouda.Infrastructure.Communication.Tests
         public void Send()
         {
             BaseResponse expected = new MockResponse();
-            BaseResponse response = TestObject.Send(Definition).GetAwaiter().GetResult();
+            BaseResponse response = TestObject.Send(Definition).AwaitResult();
             Assert.AreEqual(1, Listener.RequestsHandled.Count);
             Assert.AreEqual(expected, response);
             Assert.AreNotSame(expected, response);

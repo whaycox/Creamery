@@ -7,6 +7,7 @@ using System;
 using Gouda.Domain.Check.Responses;
 using Curds.Infrastructure.Cron;
 using Curds.Domain.Persistence;
+using System.Threading;
 
 namespace Gouda.Infrastructure.Communication.Tests
 {
@@ -22,6 +23,7 @@ namespace Gouda.Infrastructure.Communication.Tests
         [TestInitialize]
         public void Init()
         {
+            MockListener.ListenerSync.WaitOne(); //These tests don't run in parallel
             Persistence = new MockPersistence(Cron);
             Persistence.Reset();
 
@@ -32,6 +34,7 @@ namespace Gouda.Infrastructure.Communication.Tests
         public void Cleanup()
         {
             TestObject.Dispose();
+            MockListener.ListenerSync.ReleaseMutex();
         }
 
         [TestMethod]

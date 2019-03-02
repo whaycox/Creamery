@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Curds;
 
 namespace Gouda.Infrastructure.Check
 {
@@ -38,7 +39,7 @@ namespace Gouda.Infrastructure.Check
 
         public void Start()
         {
-            foreach (Definition definition in Persistence.Definitions.FetchAll().GetAwaiter().GetResult())
+            foreach (Definition definition in Persistence.Definitions.FetchAll().AwaitResult())
                 Schedule.AddNow(definition.ID);
             Task.Factory.StartNew(SchedulingThread, CancelSource.Token);
         }

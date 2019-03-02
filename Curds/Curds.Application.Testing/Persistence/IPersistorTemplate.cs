@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Curds.Domain;
 using Curds.Domain.Persistence;
 using System.Linq;
+using Curds;
 
 namespace Curds.Application.Persistence
 {
@@ -19,7 +20,7 @@ namespace Curds.Application.Persistence
         [TestMethod]
         public void FetchAllWorksWhenEmpty()
         {
-            foreach (U test in TestObject.FetchAll().GetAwaiter().GetResult())
+            foreach (U test in TestObject.FetchAll().AwaitResult())
                 Assert.Fail();
         }
 
@@ -43,7 +44,7 @@ namespace Curds.Application.Persistence
         {
             U sample = Sample;
             Assert.AreEqual(default(int), sample.ID);
-            var returned = TestObject.Insert(sample);
+            var returned = TestObject.Insert(sample).AwaitResult();
             Assert.AreEqual(1, sample.ID);
             Assert.AreEqual(1, returned.ID);
         }
@@ -69,7 +70,7 @@ namespace Curds.Application.Persistence
         {
             U sample = Sample;
             TestObject.Insert(sample);
-            U retrieved = TestObject.Lookup(sample.ID).GetAwaiter().GetResult();
+            U retrieved = TestObject.Lookup(sample.ID).AwaitResult();
             Assert.AreNotSame(sample, retrieved);
             Assert.AreEqual(sample, retrieved);
         }
@@ -79,9 +80,9 @@ namespace Curds.Application.Persistence
         {
             U sample = Sample;
             TestObject.Insert(sample);
-            U first = TestObject.Lookup(sample.ID).GetAwaiter().GetResult();
+            U first = TestObject.Lookup(sample.ID).AwaitResult();
             first = Modifier(first);
-            U second = TestObject.Lookup(sample.ID).GetAwaiter().GetResult();
+            U second = TestObject.Lookup(sample.ID).AwaitResult();
             Assert.AreNotSame(first, second);
             Assert.AreNotEqual(first, second);
         }
@@ -91,8 +92,8 @@ namespace Curds.Application.Persistence
         {
             U sample = Sample;
             TestObject.Insert(sample);
-            TestObject.Update(sample.ID, Modifier).GetAwaiter().GetResult();
-            U retrieved = TestObject.Lookup(sample.ID).GetAwaiter().GetResult();
+            TestObject.Update(sample.ID, Modifier).AwaitResult();
+            U retrieved = TestObject.Lookup(sample.ID).AwaitResult();
             Assert.AreNotEqual(sample, retrieved);
             sample = Modifier(sample);
             Assert.AreEqual(sample, retrieved);
@@ -140,7 +141,7 @@ namespace Curds.Application.Persistence
                 TestObject.Insert(SampleInLoop(i));
             var retrieved = TestObject.Lookup(new int[] { 2, 5, 8 }).ToArray();
             retrieved[0] = Modifier(retrieved[0]);
-            U singleRetrieve = TestObject.Lookup(2).GetAwaiter().GetResult();
+            U singleRetrieve = TestObject.Lookup(2).AwaitResult();
             Assert.AreNotSame(retrieved[0], singleRetrieve);
             Assert.AreNotEqual(retrieved[0], singleRetrieve);
         }

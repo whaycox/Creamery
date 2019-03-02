@@ -7,6 +7,7 @@ using Gouda.Domain.Persistence;
 using Curds.Domain.DateTimes;
 using Curds.Domain;
 using Gouda.Domain.Communication.ContactAdapters;
+using Curds;
 
 namespace Gouda.Infrastructure.Communication.Tests
 {
@@ -16,7 +17,7 @@ namespace Gouda.Infrastructure.Communication.Tests
         private MockEvaluator Evaluator = null;
         private MockPersistence Persistence = null;
 
-        private Definition Definition => Persistence.Definitions.Lookup(MockDefinition.SampleID).GetAwaiter().GetResult();
+        private Definition Definition => Persistence.Definitions.Lookup(MockDefinition.SampleID).AwaitResult();
 
         private Communication.Notifier _obj = null;
         protected override Communication.Notifier TestObject => _obj;

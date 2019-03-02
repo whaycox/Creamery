@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System;
 using Gouda.Domain.Check.Responses;
+using System.Diagnostics;
 
 namespace Gouda.Infrastructure.Communication
 {
@@ -20,9 +21,11 @@ namespace Gouda.Infrastructure.Communication
 
         public override void Start()
         {
+            Debug.WriteLine("Listener starting");
             base.Start();
             Server.Start();
             StartListeningThread();
+            Debug.WriteLine("Listener started");
         }
         private void StartListeningThread()
         {
@@ -32,9 +35,11 @@ namespace Gouda.Infrastructure.Communication
 
         public override void Stop()
         {
+            Debug.WriteLine("Listener stopping");
             base.Stop();
             Server.Stop();
             StopListeningThread();
+            Debug.WriteLine("Listener stopped");
         }
         private void StopListeningThread()
         {
@@ -85,11 +90,13 @@ namespace Gouda.Infrastructure.Communication
 
         protected override void Dispose(bool disposing)
         {
+            Debug.WriteLine("Listener disposing");
             base.Dispose(disposing);
             if (!disposedValue)
             {
                 disposedValue = true;
             }
+            Debug.WriteLine("Listener disposed");
         }
         #endregion
     }

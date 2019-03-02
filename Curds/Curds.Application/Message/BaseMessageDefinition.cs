@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Curds.Application.Message
 {
@@ -10,7 +11,6 @@ namespace Curds.Application.Message
         where V : BaseMessageHandler<T, U, W>
         where W : BaseViewModel
     {
-        public abstract BaseViewModel ViewModel { get; }
 
         protected abstract V Handler { get; }
 
@@ -18,6 +18,7 @@ namespace Curds.Application.Message
             : base(application)
         { }
 
+        public abstract Task<BaseViewModel> ViewModel();
         protected abstract U BuildMessage(W viewModel);
     }
 }
