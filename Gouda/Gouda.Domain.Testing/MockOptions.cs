@@ -57,8 +57,6 @@ namespace Gouda.Domain
             MockScheduler = new MockScheduler();
             MockExecutor = new MockExecutor();
 
-            MockSecurity = new MockSecurityProvider();
-
             MockListener = new MockListener();
 
             MockPersistence = new MockPersistence(CronProvider);
@@ -67,6 +65,8 @@ namespace Gouda.Domain
 
             MockNotifier = new MockNotifier(MockDateTime, MockPersistence);
             MockSender = new MockSender(MockPersistence);
+
+            MockSecurity = new MockSecurityProvider(Time, Persistence);
         }
 
     }

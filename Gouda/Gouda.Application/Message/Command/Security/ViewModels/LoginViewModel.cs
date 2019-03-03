@@ -15,6 +15,8 @@ namespace Gouda.Application.Message.Command.Security.ViewModels
         public string ForgotPasswordButtonLabel { get; set; }
         public string ForgotPasswordButtonValue { get; set; }
 
+        public string DeviceIdentifier { get; set; }
+
         public LoginViewModel()
         {
             LoginCredentials = new CredentialsViewModel();

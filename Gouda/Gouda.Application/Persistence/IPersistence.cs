@@ -21,6 +21,9 @@ namespace Gouda.Application.Persistence
         IPersistor<Contact> Contacts { get; }
         IPersistor<User> Users { get; }
 
+        Task<User> FindByEmail(string email);
+        Task AddSession(Session session);
+
         Task<List<Contact>> FilterContacts(int definitionID, DateTime eventTime);
         Task<List<DefinitionArgument>> GenerateArguments(int definitionID);
     }

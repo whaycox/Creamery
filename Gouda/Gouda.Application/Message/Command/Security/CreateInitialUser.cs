@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Curds.Application.Message;
-using Gouda.Domain;
+﻿using Curds.Application.Message;
 using Gouda.Application.Security;
 using Gouda.Domain.Security;
+using System;
 
 namespace Gouda.Application.Message.Command.Security
 {

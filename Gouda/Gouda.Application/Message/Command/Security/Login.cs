@@ -9,12 +9,14 @@ namespace Gouda.Application.Message.Command.Security
 
     public class LoginCommand : BaseCommand<LoginViewModel>
     {
+        public string DeviceIdentifier { get; }
         public string Email { get; }
         public string Password { get; }
 
         public LoginCommand(LoginViewModel viewModel)
             : base(viewModel)
         {
+            DeviceIdentifier = viewModel.DeviceIdentifier;
             Email = viewModel.LoginCredentials.Email;
             Password = viewModel.LoginCredentials.Password;
         }
@@ -26,10 +28,7 @@ namespace Gouda.Application.Message.Command.Security
             : base(application)
         { }
 
-        public AuthenticationToken Handle(LoginCommand command)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<Session> Handle(LoginCommand command) => Application.Security.GenerateSession(command.DeviceIdentifier, command.Email, command.Password);
     }
 
     public class LoginDefinition : CommandDefinition<LoginCommand, LoginHandler, LoginViewModel>
@@ -39,6 +38,8 @@ namespace Gouda.Application.Message.Command.Security
         public LoginDefinition(GoudaApplication application)
             : base(application)
         { }
+
+        public async Task<Session> Execute(LoginViewModel viewModel) => await new LoginHandler(Application).Handle(BuildMessage(viewModel));
 
         public async override Task<BaseViewModel> ViewModel()
         {

@@ -21,9 +21,10 @@ namespace Gouda.Domain.Security
         {
             ID = id,
             Name = id.ToString(),
-            Email = Testing.TestEmail,
-            Password = Curds.Testing.TestPassword,
+            Email = $"{Testing.TestEmail}{EmailIdentifier(id)}",
+            Password = Curds.Testing.TestEncryptedPassword,
             Salt = Curds.Testing.TestSalt,
         };
+        private static string EmailIdentifier(int id) => id == 1 ? string.Empty : id.ToString();
     }
 }

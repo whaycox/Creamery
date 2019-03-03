@@ -26,6 +26,9 @@ namespace Gouda.Persistence
             Cron = cronProvider;
         }
 
+        public abstract Task<User> FindByEmail(string email);
+        public abstract Task AddSession(Session session);
+
         public abstract Task<List<Contact>> FilterContacts(int definitionID, DateTime eventTime);
         public abstract Task<List<DefinitionArgument>> GenerateArguments(int definitionID);
     }

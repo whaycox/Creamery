@@ -11,6 +11,7 @@ using Gouda.Domain.Communication;
 using Gouda.Domain.Security;
 using System.Linq;
 using System.Threading.Tasks;
+using Curds;
 
 namespace Gouda.Persistence.EFCore
 {
@@ -32,6 +33,23 @@ namespace Gouda.Persistence.EFCore
             DefinitionArguments = new Persistors.DefinitionArgument(this);
             Contacts = new Persistors.Contact(this);
             Users = new Persistors.User(this);
+        }
+
+        public override Task<User> FindByEmail(string email)
+        {
+            using (GoudaContext context = Context)
+                return context.Users
+                    .Where(u => u.Email == email)
+                    .SingleAsync();
+        }
+
+        public async override Task AddSession(Session session)
+        {
+            using (GoudaContext context = Context)
+            {
+                await context.Sessions.AddAsync(session);
+                await context.SaveChangesAsync();
+            }
         }
 
         public override Task<List<DefinitionArgument>> GenerateArguments(int definitionID)
