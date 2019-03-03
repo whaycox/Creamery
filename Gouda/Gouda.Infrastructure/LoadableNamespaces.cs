@@ -9,7 +9,7 @@ namespace Gouda.Infrastructure
     {
         public static IEnumerable<string> IContactAdapterNamespaces => new List<string>
         {
-            "Gouda.Domain.Communication.Contacts.Adapters",
+            "Gouda.Domain.Communication.ContactAdapters",
         };
 
         public static IEnumerable<string> CheckNamespaces => new List<string>

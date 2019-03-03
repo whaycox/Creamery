@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System;
 using Gouda.Domain.Check.Responses;
+using System.Diagnostics;
 
 namespace Gouda.Infrastructure.Communication
 {
@@ -48,13 +49,8 @@ namespace Gouda.Infrastructure.Communication
             {
                 try
                 {
-                    using (TcpClient client = Server.AcceptTcpClient())
-                    using (NetworkStream stream = client.GetStream())
-                    {
-                        token.ThrowIfCancellationRequested();
-                        BaseResponse response = HandleRequest(client, stream);
-                        Send(stream, response.ToBytes());
-                    }
+                    token.ThrowIfCancellationRequested();
+                    ProcessMessage(Server.AcceptTcpClientAsync()).Start();
                 }
                 catch (SocketException socketException)
                 {
@@ -63,11 +59,21 @@ namespace Gouda.Infrastructure.Communication
                 }
             }
         }
-        private BaseResponse HandleRequest(TcpClient client, NetworkStream stream)
+        private async Task ProcessMessage(Task<TcpClient> clientTask)
+        {
+            using (TcpClient client = await clientTask)
+            using (NetworkStream stream = client.GetStream())
+            {
+                BaseResponse response = await HandleRequest(client, stream);
+                await Send(stream, response.ToBytes());
+            }
+
+        }
+        private async Task<BaseResponse> HandleRequest(TcpClient client, NetworkStream stream)
         {
             try
             {
-                return Handler(Request.Parse(ReadPacket(stream, client.ReceiveBufferSize)));
+                return Handler(Request.Parse(await ReadPacket(stream, client.ReceiveBufferSize)));
             }
             catch(Exception ex)
             {

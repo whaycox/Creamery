@@ -1,15 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Curds.Application;
 
 namespace Gouda.Application.Message.Command
 {
-    public class Dispatch : ReferencingObject
+    public class Dispatch : ReferencingObject<GoudaApplication>
     {
-        public Dispatch(Gouda application)
-            : base(application)
-        { }
+        public Security.LoginDefinition Login { get; }
+        public Security.CreateInitialUserDefinition CreateInitialUser { get; }
 
-        public void StartScheduling(Scheduling.Start command) => new Scheduling.StartHandler(Application).Handle(command);
+        public Dispatch(GoudaApplication application)
+            : base(application)
+        {
+            Login = new Security.LoginDefinition(application);
+            CreateInitialUser = new Security.CreateInitialUserDefinition(application);
+        }
+
+
     }
 }

@@ -5,28 +5,35 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Curds.Application.DateTimes;
+using Gouda.Application.Persistence;
+using System.Threading.Tasks;
+using Gouda.Domain.Enumerations;
 
 namespace Gouda.Infrastructure.Communication
 {
-    public class Notifier : ReflectionLoader<Type, BaseContactAdapter>, INotifier
+    public class Notifier : ReflectionLoader<ContactType, BaseContactAdapter>, INotifier
     {
-        public Curds.Application.DateTimes.IDateTime Time { get; set; }
-        public Application.Persistence.IPersistence Persistence { get; set; }
+        public IDateTime Time { get; set; }
+        public IPersistence Persistence { get; set; }
 
         private DateTime FetchTime => Time.Fetch.LocalDateTime;
 
         protected override IEnumerable<string> NamespacesToSearch => LoadableItems.IContactAdapterNamespaces;
 
-        public void NotifyUsers(StatusChange changeInformation) => NotifyContacts(Persistence.FilterContacts(changeInformation.Definition.ID, FetchTime), changeInformation);
-        private void NotifyContacts(IEnumerable<Contact> contacts, StatusChange changeInformation)
+        public Notifier(IDateTime time, IPersistence persistence)
         {
-            foreach(Contact contact in contacts)
-            {
-                Type contactType = contact.GetType();
-                Loaded[contactType].Notify(contact, changeInformation);
-            }
+            Time = time;
+            Persistence = persistence;
         }
 
-        protected override Type KeySelector(BaseContactAdapter instance) => instance.GetType().BaseType.GetGenericArguments().First();
+        public async Task NotifyUsers(StatusChange changeInformation) => NotifyContacts(await Persistence.FilterContacts(changeInformation.Definition.ID, FetchTime), changeInformation);
+        private void NotifyContacts(IEnumerable<Contact> contacts, StatusChange changeInformation)
+        {
+            foreach (Contact contact in contacts)
+                Loaded[contact.Type].Notify(contact, changeInformation);
+        }
+
+        protected override ContactType KeySelector(BaseContactAdapter instance) => instance.HandledType;
     }
 }

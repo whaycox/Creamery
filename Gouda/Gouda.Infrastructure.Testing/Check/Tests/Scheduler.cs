@@ -16,15 +16,22 @@ namespace Gouda.Infrastructure.Check.Tests
     [TestClass]
     public class Scheduler : ISchedulerTemplate<Check.Scheduler>
     {
-        private Check.Scheduler _obj = new Check.Scheduler(5);
+        private Check.Scheduler _obj = null;
         protected override Check.Scheduler TestObject => _obj;
+
+        [TestInitialize]
+        public void BuildObj()
+        {
+            _obj = new Check.Scheduler(Time, Persistence, Sender, 5);
+        }
 
         [TestMethod]
         public void InvalidSleepErrors()
         {
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Check.Scheduler(0));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Check.Scheduler(-1));
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => NullScheduler(0));
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => NullScheduler(-1));
         }
+        private void NullScheduler(int sleepTime) => new Check.Scheduler(null, null, null, sleepTime);
 
     }
 }

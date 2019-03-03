@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Text;
 using Gouda.Domain.Check;
 using Gouda.Domain.Communication;
+using System.Threading.Tasks;
 
 namespace Gouda.Application.Communication
 {
+    using Persistence;
+
     public interface ISender
     {
-        Persistence.IPersistence Persistence { get; set; }
+        IPersistence Persistence { get; }
 
-        BaseResponse Send(Definition definition);
+        Task<BaseResponse> Send(Definition definition);
     }
 }

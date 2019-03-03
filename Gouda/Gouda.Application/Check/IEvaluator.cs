@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Gouda.Domain.Check;
+using System.Threading.Tasks;
 
 namespace Gouda.Application.Check
 {
@@ -10,9 +11,9 @@ namespace Gouda.Application.Check
 
     public interface IEvaluator
     {
-        IPersistence Persistence { get; set; }
-        INotifier Notifier { get; set; }
+        IPersistence Persistence { get; }
+        INotifier Notifier { get; }
 
-        void Evaluate(Definition definition, BaseResponse response);
+        Task Evaluate(Definition definition, BaseResponse response);
     }
 }

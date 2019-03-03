@@ -5,53 +5,62 @@ using Gouda.Domain.Persistence;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using Gouda.Domain.Check.Responses;
+using Curds.Infrastructure.Cron;
+using Curds.Domain.Persistence;
+using System.Threading;
 
 namespace Gouda.Infrastructure.Communication.Tests
 {
     [TestClass]
-    public class Listener
+    public class Listener : CronTemplate<Communication.Listener>
     {
-        private MockPersistence MockProvider = new MockPersistence();
-        private MockSender MockSender = new MockSender();
+        private MockPersistence Persistence = null;
+        private MockSender Sender = null;
 
-        private Communication.Listener TestListener = new Communication.Listener(Testing.TestEndpoint);
+        private Communication.Listener _obj = new Communication.Listener(Testing.TestEndpoint);
+        protected override Communication.Listener TestObject => _obj;
 
         [TestInitialize]
         public void Init()
         {
-            MockSender.Persistence = MockProvider;
+            MockListener.ListenerSync.WaitOne(); //These tests don't run in parallel
+            Persistence = new MockPersistence(Cron);
+            Persistence.Reset();
+
+            Sender = new MockSender(Persistence);
         }
 
         [TestCleanup]
         public void Cleanup()
         {
-            TestListener.Dispose();
+            TestObject.Dispose();
+            MockListener.ListenerSync.ReleaseMutex();
         }
 
         [TestMethod]
         public void MultipleStartsThrowsException()
         {
-            TestListener.Start();
-            Assert.IsTrue(TestListener.IsStarted);
-            Assert.ThrowsException<InvalidOperationException>(() => TestListener.Start());
+            TestObject.Start();
+            Assert.IsTrue(TestObject.IsStarted);
+            Assert.ThrowsException<InvalidOperationException>(() => TestObject.Start());
         }
 
         [TestMethod]
         public void StopBeforeStartThrowsException()
         {
-            Assert.ThrowsException<InvalidOperationException>(() => TestListener.Stop());
+            Assert.ThrowsException<InvalidOperationException>(() => TestObject.Stop());
         }
 
         [TestMethod]
         public void ReceivesProperRequest()
         {
-            TestListener.Handler = ReceivesProperRequestHandler;
-            TestListener.Start();
-            MockSender.SendTest();
+            TestObject.Handler = ReceivesProperRequestHandler;
+            TestObject.Start();
+            Sender.SendTest();
         }
         private BaseResponse ReceivesProperRequestHandler(Request request)
         {
-            var expectedArguments = Argument.Compile(MockArgument.Samples);
+            var expectedArguments = NameValueEntity.BuildArguments(MockDefinitionArgument.Samples);
 
             Assert.AreEqual(MockCheck.SampleID, request.ID);
             Assert.AreEqual(expectedArguments.Count, request.Arguments.Count);
@@ -66,12 +75,12 @@ namespace Gouda.Infrastructure.Communication.Tests
         [TestMethod]
         public void ErrorReturnsFailureResponse()
         {
-            TestListener.Handler = ErrorReturnsFailureHandler;
-            TestListener.Start();
-            MockSender.SendTest();
-            Assert.AreEqual(1, MockSender.ResponsesReceived.Count);
+            TestObject.Handler = ErrorReturnsFailureHandler;
+            TestObject.Start();
+            Sender.SendTest();
+            Assert.AreEqual(1, Sender.ResponsesReceived.Count);
 
-            Failure response = MockSender.ResponsesReceived[0] as Failure;
+            Failure response = Sender.ResponsesReceived[0] as Failure;
             Assert.IsTrue(response != null);
             Assert.AreEqual(FailureError, response.Error);
         }

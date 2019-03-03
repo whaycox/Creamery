@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Gouda.Domain.Check.Responses;
 using Gouda.Application.Communication;
 using Gouda.Application.Persistence;
+using System.Threading.Tasks;
 
 namespace Gouda.Infrastructure.Check
 {
@@ -16,13 +17,19 @@ namespace Gouda.Infrastructure.Check
 
         protected override IEnumerable<string> NamespacesToSearch => LoadableItems.CheckNamespaces;
 
-        public void Evaluate(Definition definition, BaseResponse response)
+        public Evaluator(INotifier notifier, IPersistence persistence)
+        {
+            Notifier = notifier;
+            Persistence = persistence;
+        }
+
+        public async Task Evaluate(Definition definition, BaseResponse response)
         {
             Status evaluated = EvaluateResponse(definition, response);
-            if(definition.Status != evaluated)
+            if (definition.Status != evaluated)
             {
                 Status old = definition.Status;
-                Persistence.Definitions.Update(definition.ID, (d) => UpdateStatus(d, evaluated));
+                await Persistence.Definitions.Update(definition.ID, (d) => UpdateStatus(d, evaluated));
                 StatusChange changeInformation = new StatusChange()
                 {
                     Definition = definition,
@@ -30,7 +37,7 @@ namespace Gouda.Infrastructure.Check
                     New = evaluated,
                     Response = response,
                 };
-                Notifier.NotifyUsers(changeInformation);
+                await Notifier.NotifyUsers(changeInformation);
             }
         }
         private Status EvaluateResponse(Definition definition, BaseResponse response)
@@ -38,7 +45,7 @@ namespace Gouda.Infrastructure.Check
             Status evaluated = Status.Unknown;
             try
             {
-                evaluated = EvaluateInternal(Loaded[definition.CheckID], response);
+                evaluated = EvaluateInternal(Loaded[definition.CheckGuid], response);
             }
             catch (Exception ex)
             {

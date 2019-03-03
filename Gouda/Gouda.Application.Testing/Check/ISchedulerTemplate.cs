@@ -1,31 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Curds.Domain;
-using Gouda.Domain;
-using Gouda.Domain.Persistence;
+﻿using Curds.Domain;
 using Gouda.Domain.Check;
 using Gouda.Domain.Communication;
+using Gouda.Domain.Persistence;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Curds.Domain.DateTimes;
+using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace Gouda.Application.Check
 {
     public abstract class ISchedulerTemplate<T> : CronTemplate<T> where T : IScheduler
     {
-        protected MockPersistence Persistence = new MockPersistence();
-        protected MockSender Sender = new MockSender();
-        protected MockDefinition Definition = MockDefinition.Sample;
+        private const int WaitForStartTimeInMs = 100;
+
+        protected MockPersistence Persistence = null;
+        protected MockSender Sender = null;
+        protected Definition Definition = MockDefinition.Sample;
 
         [TestInitialize]
         public void Init()
         {
-            Persistence.Cron = Cron;
-            Sender.Persistence = Persistence;
-            TestObject.Time = Time;
-            TestObject.Persistence = Persistence;
-            TestObject.Sender = Sender;
+            Persistence = new MockPersistence(Cron);
+            Persistence.Reset();
+
+            Sender = new MockSender(Persistence);
         }
 
         [TestCleanup]
@@ -38,7 +36,7 @@ namespace Gouda.Application.Check
         public void SchedulesAllDefinitionsOnStart()
         {
             TestObject.Start();
-            Thread.Sleep(5); //give scheduler time to start
+            Thread.Sleep(WaitForStartTimeInMs);
             Assert.AreEqual(1, Sender.DefinitionsSent.Count);
         }
 
@@ -46,7 +44,7 @@ namespace Gouda.Application.Check
         public void ReschedulesCheckByDefinitionTime()
         {
             TestObject.Start();
-            Thread.Sleep(5);
+            Thread.Sleep(WaitForStartTimeInMs);
             Assert.AreEqual(Time.Fetch.Add(Definition.RescheduleSpan), TestObject[MockDefinition.SampleID]);
         }
 
@@ -54,7 +52,7 @@ namespace Gouda.Application.Check
         public void ReschedulesCheckOnDemand()
         {
             TestObject.Start();
-            Thread.Sleep(5);
+            Thread.Sleep(WaitForStartTimeInMs);
 
             DateTimeOffset testTime = Time.Fetch.AddDays(1);
             TestObject.Reschedule(MockDefinition.SampleID, testTime);
@@ -65,7 +63,7 @@ namespace Gouda.Application.Check
         public void CanRemoveScheduledItem()
         {
             TestObject.Start();
-            Thread.Sleep(5);
+            Thread.Sleep(WaitForStartTimeInMs);
 
             Assert.IsNotNull(TestObject[MockDefinition.SampleID]);
             TestObject.Remove(MockDefinition.SampleID);

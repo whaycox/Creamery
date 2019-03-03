@@ -4,14 +4,18 @@ using System.Text;
 using Gouda.Domain;
 using Gouda.Domain.Check;
 using Gouda.Domain.Communication;
+using Curds.Application.DateTimes;
+using System.Threading.Tasks;
 
 namespace Gouda.Application.Communication
 {
+    using Persistence;
+
     public interface INotifier
     {
-        Curds.Application.DateTimes.IDateTime Time { get; set; }
-        Persistence.IPersistence Persistence { get; set; }
+        IDateTime Time { get; }
+        IPersistence Persistence { get; }
 
-        void NotifyUsers(StatusChange changeInformation);
+        Task NotifyUsers(StatusChange changeInformation);
     }
 }

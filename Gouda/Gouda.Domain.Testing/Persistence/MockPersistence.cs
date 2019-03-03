@@ -1,39 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Gouda.Application.Communication;
 using Gouda.Application.Persistence;
-using Gouda.Domain;
-using Gouda.Domain.Communication;
-using System.Linq;
-using Gouda.Domain.Check;
-using Gouda.Persistence;
+using Curds.Application.Cron;
+using Curds.Application.Persistence;
+using Gouda.Persistence.EFCore;
+using Microsoft.EntityFrameworkCore;
+using Curds;
 
 namespace Gouda.Domain.Persistence
 {
-    public class MockPersistence : BasePersistence
+    using Check;
+    using Communication;
+    using Security;
+
+    public class MockPersistence : EFProvider
     {
-        private List<Satellite> MockSatellites = new List<Satellite>()
-        {
-            { MockSatellite.Sample }
-        };
-        private List<Definition> MockDefinitions = new List<Definition>()
-        {
-            { MockDefinition.Sample }
-        };
-        private List<UserRegistration> UserRegistrations = new List<UserRegistration>()
-        {
-            { new UserRegistration() { UserID = MockUser.One.ID, DefinitionID = MockDefinition.SampleID, CronString = Testing.AlwaysCronString } },
-            { new UserRegistration() { UserID = MockUser.Two.ID, DefinitionID = MockDefinition.SampleID, CronString = Testing.AlwaysCronString } },
-        };
+        public MockPersistence(ICron cronProvider)
+            : base(cronProvider)
+        { }
 
-        protected override IEnumerable<Satellite> LoadSatellites() => MockSatellites;
-        protected override IEnumerable<Definition> LoadDefinitions() => MockDefinitions;
-        protected override IEnumerable<Argument> LoadArguments() => MockArgument.Samples;
+        public void Reset()
+        {
+            using (GoudaContext context = Context)
+            {
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+            }
+        }
 
-        protected override IEnumerable<User> LoadUsers() => MockUser.Samples;
-        protected override IEnumerable<Contact> LoadContacts() => MockContact.Samples;
+        public void EmptyUsers()
+        {
+            foreach (User user in Users.FetchAll().AwaitResult())
+                Users.Delete(user.ID);
+        }
+        
+        internal override void ConfigureContext(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseInMemoryDatabase(nameof(MockPersistence));
 
-        protected override IEnumerable<UserRegistration> LoadUserRegistrations() => UserRegistrations;
+        internal override void SeedData(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Definition>().HasData(Seeds.Definition.Data);
+            modelBuilder.Entity<DefinitionArgument>().HasData(Seeds.DefinitionArgument.Data);
+            modelBuilder.Entity<DefinitionRegistration>().HasData(Seeds.DefinitionRegistration.Data);
+            modelBuilder.Entity<Satellite>().HasData(Seeds.Satellite.Data);
+            modelBuilder.Entity<User>().HasData(Seeds.User.Data);
+            modelBuilder.Entity<Contact>().HasData(Seeds.Contact.Data);
+            modelBuilder.Entity<ContactArgument>().HasData(Seeds.ContactArgument.Data);
+        }
     }
 }
