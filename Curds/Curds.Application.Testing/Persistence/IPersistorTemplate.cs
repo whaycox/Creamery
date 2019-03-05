@@ -3,9 +3,9 @@ using Curds.Domain.Persistence;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Linq;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Curds.Application.Persistence
 {
@@ -82,7 +82,7 @@ namespace Curds.Application.Persistence
         public void LookupReturnsCopyOfEntity()
         {
             U sample = Sample;
-            TestObject.Insert(sample);
+            TestObject.Insert(sample).AwaitResult();
             U retrieved = TestObject.Lookup(sample.ID).AwaitResult();
             Assert.AreNotSame(sample, retrieved);
             Assert.AreEqual(sample, retrieved);
@@ -92,7 +92,7 @@ namespace Curds.Application.Persistence
         public void ModifyRetrievedEntityDoesntModifyPersistedCopy()
         {
             U sample = Sample;
-            TestObject.Insert(sample);
+            TestObject.Insert(sample).AwaitResult();
             U first = TestObject.Lookup(sample.ID).AwaitResult();
             first = Modifier(first);
             U second = TestObject.Lookup(sample.ID).AwaitResult();

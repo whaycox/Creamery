@@ -48,6 +48,7 @@ namespace Gouda.Domain.Persistence
             modelBuilder.Entity<User>().HasData(Seeds.User.Data);
             modelBuilder.Entity<Contact>().HasData(Seeds.Contact.Data);
             modelBuilder.Entity<ContactArgument>().HasData(Seeds.ContactArgument.Data);
+            modelBuilder.Entity<ContactRegistration>().HasData(Seeds.ContactRegistration.Data);
         }
     }
 }
