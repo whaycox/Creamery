@@ -1,21 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Curds.Domain;
+﻿using Curds.Domain;
 using Curds.Domain.Persistence;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using Curds;
+using System.Threading.Tasks;
 
 namespace Curds.Application.Persistence
 {
-    public abstract class IPersistorTemplate<T, U> : TestTemplate<T> where T : IPersistor<U> where U : Entity
+    public abstract class IPersistorTemplate<T, U> : CronTemplate<T> where T : IPersistor<U> where U : Entity
     {
+        private const int ConcurrentIterations = 10;
+
         protected abstract U Sample { get; }
         protected abstract Func<U, U> Modifier { get; }
-
-        protected abstract U SampleInLoop(int iteration);
-        protected abstract void VerifySampleInLoop(U sample, int iteration);
 
         [TestMethod]
         public void FetchAllWorksWhenEmpty()
@@ -25,18 +24,32 @@ namespace Curds.Application.Persistence
         }
 
         [TestMethod]
-        public void LookupManyWorksWhenEmpty()
+        public void CanInsertNewItem()
         {
-            foreach (U found in TestObject.Lookup(new int[] { -1, 0, 1 }))
-                Assert.Fail();
+            Assert.AreEqual(0, TestObject.Count.AwaitResult());
+            TestObject.Insert(Sample).AwaitResult();
+            Assert.AreEqual(1, TestObject.Count.AwaitResult());
         }
 
         [TestMethod]
-        public void CanInsertNewItem()
+        public void CanConcurrentlyInsertNewItems()
         {
-            Assert.AreEqual(0, TestObject.Count);
-            TestObject.Insert(Sample);
-            Assert.AreEqual(1, TestObject.Count);
+            U[] results = new U[ConcurrentIterations];
+            Task[] tasks = new Task[ConcurrentIterations];
+            for (int i = 0; i < ConcurrentIterations; i++)
+            {
+                int index = i;
+                tasks[i] = Task.Factory.StartNew(() => ConcurrentInsertHelper(index, results));
+            }
+            Task.WaitAll(tasks);
+            Assert.IsFalse(results.Where(r => r == null).Any());
+            Assert.IsFalse(results.Where(r => r.ID == default(int)).Any());
+            Assert.IsFalse(results.GroupBy(g => g.ID).Where(g => g.Count() != 1).Any());
+        }
+        private void ConcurrentInsertHelper(int index, U[] results)
+        {
+            Debug.WriteLine($"Inserting with index {index}");
+            results[index] = TestObject.Insert(Sample).AwaitResult();
         }
 
         [TestMethod]
@@ -44,9 +57,9 @@ namespace Curds.Application.Persistence
         {
             U sample = Sample;
             Assert.AreEqual(default(int), sample.ID);
-            var returned = TestObject.Insert(sample).AwaitResult();
-            Assert.AreEqual(1, sample.ID);
-            Assert.AreEqual(1, returned.ID);
+            U returned = TestObject.Insert(sample).AwaitResult();
+            Assert.AreNotEqual(default(int), sample.ID);
+            Assert.AreNotEqual(default(int), returned.ID);
         }
 
         [TestMethod]
@@ -54,22 +67,22 @@ namespace Curds.Application.Persistence
         {
             U sample = Sample;
             sample.ID = 5;
-            Assert.ThrowsException<InvalidOperationException>(() => TestObject.Insert(sample));
+            Assert.ThrowsException<InvalidOperationException>(() => TestObject.Insert(sample).AwaitResult());
         }
 
         [TestMethod]
         public void LookupInvalidKeyThrowsError()
         {
-            Assert.ThrowsException<KeyNotFoundException>(() => TestObject.Lookup(-1));
-            Assert.ThrowsException<KeyNotFoundException>(() => TestObject.Lookup(0));
-            Assert.ThrowsException<KeyNotFoundException>(() => TestObject.Lookup(1));
+            Assert.ThrowsException<KeyNotFoundException>(() => TestObject.Lookup(-1).AwaitResult());
+            Assert.ThrowsException<KeyNotFoundException>(() => TestObject.Lookup(0).AwaitResult());
+            Assert.ThrowsException<KeyNotFoundException>(() => TestObject.Lookup(1).AwaitResult());
         }
 
         [TestMethod]
         public void LookupReturnsCopyOfEntity()
         {
             U sample = Sample;
-            TestObject.Insert(sample);
+            TestObject.Insert(sample).AwaitResult();
             U retrieved = TestObject.Lookup(sample.ID).AwaitResult();
             Assert.AreNotSame(sample, retrieved);
             Assert.AreEqual(sample, retrieved);
@@ -79,7 +92,7 @@ namespace Curds.Application.Persistence
         public void ModifyRetrievedEntityDoesntModifyPersistedCopy()
         {
             U sample = Sample;
-            TestObject.Insert(sample);
+            TestObject.Insert(sample).AwaitResult();
             U first = TestObject.Lookup(sample.ID).AwaitResult();
             first = Modifier(first);
             U second = TestObject.Lookup(sample.ID).AwaitResult();
@@ -91,7 +104,7 @@ namespace Curds.Application.Persistence
         public void CanUpdateEntity()
         {
             U sample = Sample;
-            TestObject.Insert(sample);
+            TestObject.Insert(sample).AwaitResult();
             TestObject.Update(sample.ID, Modifier).AwaitResult();
             U retrieved = TestObject.Lookup(sample.ID).AwaitResult();
             Assert.AreNotEqual(sample, retrieved);
@@ -103,9 +116,9 @@ namespace Curds.Application.Persistence
         public void UpdateIDThrowsException()
         {
             U sample = Sample;
-            TestObject.Insert(sample);
+            TestObject.Insert(sample).AwaitResult();
             int id = sample.ID;
-            Assert.ThrowsException<InvalidOperationException>(() => TestObject.Update(id, UpdateIDThrowsExceptionHelper));
+            Assert.ThrowsException<InvalidOperationException>(() => TestObject.Update(id, UpdateIDThrowsExceptionHelper).AwaitResult());
         }
         private U UpdateIDThrowsExceptionHelper(U entity)
         {
@@ -117,46 +130,9 @@ namespace Curds.Application.Persistence
         public void CanDeleteEntity()
         {
             U sample = Sample;
-            TestObject.Insert(sample);
-            TestObject.Delete(sample.ID);
-            Assert.ThrowsException<KeyNotFoundException>(() => TestObject.Lookup(sample.ID));
+            TestObject.Insert(sample).AwaitResult();
+            TestObject.Delete(sample.ID).AwaitResult();
+            Assert.ThrowsException<KeyNotFoundException>(() => TestObject.Lookup(sample.ID).AwaitResult());
         }
-
-        [TestMethod]
-        public void LookupManyOnlyReturnsExpected()
-        {
-            for (int i = 1; i <= 10; i++)
-                TestObject.Insert(SampleInLoop(i));
-            var retrieved = TestObject.Lookup(new int[] { 2, 5, 8 }).ToArray();
-            Assert.AreEqual(3, retrieved.Length);
-            VerifySampleInLoop(retrieved[0], 2);
-            VerifySampleInLoop(retrieved[1], 5);
-            VerifySampleInLoop(retrieved[2], 8);
-        }
-
-        [TestMethod]
-        public void ModifyLookupManyDoesntModifyPersistedCopy()
-        {
-            for (int i = 1; i <= 10; i++)
-                TestObject.Insert(SampleInLoop(i));
-            var retrieved = TestObject.Lookup(new int[] { 2, 5, 8 }).ToArray();
-            retrieved[0] = Modifier(retrieved[0]);
-            U singleRetrieve = TestObject.Lookup(2).AwaitResult();
-            Assert.AreNotSame(retrieved[0], singleRetrieve);
-            Assert.AreNotEqual(retrieved[0], singleRetrieve);
-        }
-
-        [TestMethod]
-        public void LookupManyCanAcceptInvalidValues()
-        {
-            for (int i = 1; i <= 10; i++)
-                TestObject.Insert(SampleInLoop(i));
-            var retrieved = TestObject.Lookup(new int[] { -1, 0, 2, 5, 8 }).ToArray();
-            Assert.AreEqual(3, retrieved.Length);
-            VerifySampleInLoop(retrieved[0], 2);
-            VerifySampleInLoop(retrieved[1], 5);
-            VerifySampleInLoop(retrieved[2], 8);
-        }
-
     }
 }

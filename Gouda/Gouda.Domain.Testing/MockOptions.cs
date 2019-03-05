@@ -49,7 +49,7 @@ namespace Gouda.Domain
 
         public override ISecurity Security => MockSecurity;
 
-        public MockOptions()
+        public MockOptions(bool useListener = false)
         {
             MockDateTime = new MockDateTime();
             CronProvider = new CronProvider();
@@ -57,7 +57,8 @@ namespace Gouda.Domain
             MockScheduler = new MockScheduler();
             MockExecutor = new MockExecutor();
 
-            MockListener = new MockListener();
+            if (useListener)
+                MockListener = new MockListener();
 
             MockPersistence = new MockPersistence(CronProvider);
 

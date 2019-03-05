@@ -5,13 +5,12 @@ using Microsoft.EntityFrameworkCore;
 using Gouda.Domain.Check;
 using Gouda.Domain.Communication;
 using Gouda.Domain.Security;
+using Curds.Persistence.EFCore;
 
 namespace Gouda.Persistence.EFCore
 {
-    internal class GoudaContext : DbContext
+    public class GoudaContext : CurdsContext
     {
-        private EFProvider Provider { get; }
-
         public DbSet<Definition> Definitions { get; set; }
         public DbSet<DefinitionArgument> DefinitionArguments { get; set; }
         public DbSet<DefinitionRegistration> DefinitionRegistrations { get; set; }
@@ -25,11 +24,8 @@ namespace Gouda.Persistence.EFCore
         public DbSet<Session> Sessions { get; set; }
 
         public GoudaContext(EFProvider provider)
-        {
-            Provider = provider;
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => Provider.ConfigureContext(optionsBuilder);
+            : base(provider)
+        { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -43,7 +39,6 @@ namespace Gouda.Persistence.EFCore
                 .HasAlternateKey(nameof(User.Email));
             modelBuilder.Entity<Session>()
                 .HasKey(nameof(Session.Identifier), nameof(Session.DeviceIdentifier));
-            Provider.SeedData(modelBuilder);
         }
     }
 }

@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Text;
 using Gouda.Domain.Communication;
 using Microsoft.EntityFrameworkCore;
+using Curds.Persistence.EFCore;
 
 namespace Gouda.Persistence.EFCore.Persistors
 {
-    public class Satellite : EFPersistor<Domain.Communication.Satellite>
+    public class Satellite : BasicPersistor<Domain.Communication.Satellite>
     {
-        public Satellite(EFProvider provider)
+        public Satellite(EFProvider<GoudaContext> provider)
             : base(provider)
         { }
 
-        internal override DbSet<Domain.Communication.Satellite> Set(GoudaContext context) => context.Satellites;
+        public override DbSet<Domain.Communication.Satellite> Set(GoudaContext context) => context.Satellites;
     }
 }

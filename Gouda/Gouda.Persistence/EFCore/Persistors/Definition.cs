@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Text;
 using Gouda.Domain.Check;
 using Microsoft.EntityFrameworkCore;
+using Curds.Persistence.EFCore;
 
 namespace Gouda.Persistence.EFCore.Persistors
 {
-    public class Definition : EFPersistor<Domain.Check.Definition>
+    public class Definition : BasicPersistor<Domain.Check.Definition>
     {
-        public Definition(EFProvider provider)
+        public Definition(EFProvider<GoudaContext> provider)
             : base(provider)
         { }
 
-        internal override DbSet<Domain.Check.Definition> Set(GoudaContext context) => context.Definitions;
+        public override DbSet<Domain.Check.Definition> Set(GoudaContext context) => context.Definitions;
     }
 }

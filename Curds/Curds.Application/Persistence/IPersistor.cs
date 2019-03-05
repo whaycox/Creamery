@@ -11,8 +11,8 @@ namespace Curds.Application.Persistence
         Task<int> Count { get; }
 
         Task<List<T>> FetchAll();
+
         Task<T> Lookup(int id);
-        IEnumerable<T> Lookup(IEnumerable<int> ids);
 
         Task<T> Insert(T newEntity);
 

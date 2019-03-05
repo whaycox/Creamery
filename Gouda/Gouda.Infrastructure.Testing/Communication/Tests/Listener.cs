@@ -23,7 +23,7 @@ namespace Gouda.Infrastructure.Communication.Tests
         [TestInitialize]
         public void Init()
         {
-            MockListener.ListenerSync.WaitOne(); //These tests don't run in parallel
+            MockListener.Sync.WaitOne();
             Persistence = new MockPersistence(Cron);
             Persistence.Reset();
 
@@ -34,7 +34,7 @@ namespace Gouda.Infrastructure.Communication.Tests
         public void Cleanup()
         {
             TestObject.Dispose();
-            MockListener.ListenerSync.ReleaseMutex();
+            MockListener.Sync.ReleaseMutex();
         }
 
         [TestMethod]
