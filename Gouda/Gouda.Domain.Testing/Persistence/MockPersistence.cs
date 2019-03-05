@@ -7,6 +7,7 @@ using Curds.Application.Persistence;
 using Gouda.Persistence.EFCore;
 using Microsoft.EntityFrameworkCore;
 using Curds;
+using System.Diagnostics;
 
 namespace Gouda.Domain.Persistence
 {
@@ -14,7 +15,7 @@ namespace Gouda.Domain.Persistence
     using Communication;
     using Security;
 
-    public class MockPersistence : EFProvider
+    public class MockPersistence : GoudaProvider
     {
         public MockPersistence(ICron cronProvider)
             : base(cronProvider)
@@ -24,6 +25,7 @@ namespace Gouda.Domain.Persistence
         {
             using (GoudaContext context = Context)
             {
+                Debug.WriteLine("Resetting context");
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
             }
@@ -34,10 +36,10 @@ namespace Gouda.Domain.Persistence
             foreach (User user in Users.FetchAll().AwaitResult())
                 Users.Delete(user.ID);
         }
-        
-        internal override void ConfigureContext(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseInMemoryDatabase(nameof(MockPersistence));
 
-        internal override void SeedData(ModelBuilder modelBuilder)
+        public override void ConfigureContext(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseInMemoryDatabase(nameof(MockPersistence));
+
+        public override void SeedData(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Definition>().HasData(Seeds.Definition.Data);
             modelBuilder.Entity<DefinitionArgument>().HasData(Seeds.DefinitionArgument.Data);

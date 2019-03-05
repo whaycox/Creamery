@@ -41,7 +41,7 @@ namespace Gouda.Application
         }
         private void StartServices()
         {
-            Listener.Start();
+            Listener?.Start();
             Commands = new Message.Command.Dispatch(this);
         }
 
@@ -55,7 +55,7 @@ namespace Gouda.Application
                 if (disposing)
                 {
                     Scheduler.Dispose();
-                    Listener.Dispose();
+                    Listener?.Dispose();
                 }
                 disposedValue = true;
             }

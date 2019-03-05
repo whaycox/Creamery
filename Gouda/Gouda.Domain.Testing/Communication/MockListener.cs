@@ -7,7 +7,7 @@ namespace Gouda.Domain.Communication
 {
     public class MockListener : Listener
     {
-        public static Mutex ListenerSync = new Mutex(false, nameof(ListenerSync));
+        public static Mutex Sync = new Mutex(false, nameof(MockListener));
 
         public List<Request> RequestsHandled = new List<Request>();
 
@@ -15,18 +15,6 @@ namespace Gouda.Domain.Communication
             : base(Testing.TestEndpoint)
         {
             Handler = Handle;
-        }
-
-        public override void Start()
-        {
-            ListenerSync.WaitOne(); //Only runs on one thread at a time
-            base.Start();
-        }
-
-        public override void Stop()
-        {
-            base.Stop();
-            ListenerSync.ReleaseMutex();
         }
 
         private BaseResponse Handle(Request request)

@@ -15,10 +15,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Curds\Curds.Application.Testing\Curds.Application.Testing.csproj" />
     <ProjectReference Include="..\Gouda.Application\Gouda.Application.csproj" />
     <ProjectReference Include="..\Gouda.Domain.Testing\Gouda.Domain.Testing.csproj" />
     <ProjectReference Include="..\Gouda.Domain\Gouda.Domain.csproj" />
     <ProjectReference Include="..\Gouda.Persistence\Gouda.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="EFCore\Tests\" />
   </ItemGroup>
 
 </Project>
