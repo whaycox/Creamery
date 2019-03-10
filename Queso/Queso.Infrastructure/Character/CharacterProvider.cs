@@ -12,6 +12,9 @@ namespace Queso.Infrastructure.Character
         private const int IntLengthInBytes = 4;
         private const int NameLengthInBytes = 16;
 
+        private const int ChecksumStartIndex = 12;
+        private const int ChecksumEndIndex = 15;
+
         private static Encoding TextEncoding => Encoding.ASCII;
         private static Regex NameCleaner = new Regex("^([^\u0000]+)", RegexOptions.Compiled);
 
@@ -54,12 +57,36 @@ namespace Queso.Infrastructure.Character
         private Domain.Character ParseFileInformation(Domain.Character character, byte[] rawFile, ref int index)
         {
             character.File.Signature = ParseInt(rawFile, ref index);
-            character.File.VersionID = ParseInt(rawFile, ref index);
+            character.File.VersionID = (VersionID)ParseInt(rawFile, ref index);
             character.File.Size = ParseInt(rawFile, ref index);
+
+            int computedChecksum = ComputeChecksum(rawFile);
             character.File.Checksum = ParseInt(rawFile, ref index);
+            if (computedChecksum != character.File.Checksum)
+                throw new FormatException("Invalid checksum");
 
             return character;
         }
+        private int ComputeChecksum(byte[] rawFile)
+        {
+            int sum = 0;
+            for (int i = 0; i < rawFile.Length; i++)
+            {
+                int read = ChecksumByte(rawFile, i);
+                if (sum < 0)
+                    read++;
+                sum = read + (sum * 2);
+            }
+            return sum;
+        }
+        private int ChecksumByte(byte[] rawFile, int index)
+        {
+            if (index >= ChecksumStartIndex && index <= ChecksumEndIndex)
+                return 0x00;
+            else
+                return rawFile[index];
+        }
+
         private Domain.Character ParseIdentifyingInformation(Domain.Character character, byte[] rawFile, ref int index)
         {
             character.Name = ParseString(rawFile, NameLengthInBytes, ref index);

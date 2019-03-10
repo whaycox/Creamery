@@ -27,6 +27,9 @@
     <None Update="TestCharacters\Druid.d2s">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="TestCharacters\InvalidChecksum.d2s">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="TestCharacters\Necromancer.d2s">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -8,6 +8,8 @@ namespace Queso.Domain
 
     public class Character
     {
+        public static int Signature = -1437226411;
+
         public FileData File { get; }
 
         public string Name { get; set; }
@@ -23,7 +25,7 @@ namespace Queso.Domain
         public class FileData
         {
             public int Signature { get; set; }
-            public int VersionID { get; set; }
+            public VersionID VersionID { get; set; }
             public int Size { get; set; }
             public int Checksum { get; set; }
         }

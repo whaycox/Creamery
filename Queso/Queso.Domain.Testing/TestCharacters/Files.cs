@@ -13,9 +13,18 @@ namespace Queso.Domain.TestCharacters
         private static string TestingDirectory => Path.Combine(Environment.CurrentDirectory, nameof(TestCharacters));
 
         public static Characters StartingCharacters { get; } = new Characters();
+        public static string InvalidChecksum => FormatName(nameof(InvalidChecksum));
 
         public class Characters
         {
+            public int AmazonSize = 981;
+            public int SorceressSize = 958;
+            public int NecromancerSize = 958;
+            public int PaladinSize = 980;
+            public int BarbarianSize = 980;
+            public int DruidSize = 980;
+            public int AssassinSize = 980;
+
             public string Amazon => FormatName(nameof(Amazon));
             public string Sorceress => FormatName(nameof(Sorceress));
             public string Necromancer => FormatName(nameof(Necromancer));

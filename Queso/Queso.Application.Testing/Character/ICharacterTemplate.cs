@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Curds.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Curds.Domain;
-using Queso.Domain.TestCharacters;
 using Queso.Domain.Enumerations;
+using Queso.Domain.TestCharacters;
+using System;
+using System.Collections.Generic;
 
 namespace Queso.Application.Character
 {
@@ -35,8 +34,76 @@ namespace Queso.Application.Character
 
         private void ValidateStartingCharacter(Domain.Character character, Class characterClass)
         {
+            ValidateFileInformation(character);
             Assert.AreEqual(StartingCharacterName, character.Name);
             Assert.AreEqual(characterClass, character.Class);
+
+            switch(characterClass)
+            {
+                case Class.Amazon:
+                    StartingAmazon(character);
+                    break;
+                case Class.Sorceress:
+                    StartingSorceresss(character);
+                    break;
+                case Class.Necromancer:
+                    StartingNecromancer(character);
+                    break;
+                case Class.Paladin:
+                    StartingPaladin(character);
+                    break;
+                case Class.Barbarian:
+                    StartingBarbarian(character);
+                    break;
+                case Class.Druid:
+                    StartingDruid(character);
+                    break;
+                case Class.Assassin:
+                    StartingAssassin(character);
+                    break;
+                default:
+                    throw new InvalidOperationException("Unexpected class");
+            }
+        }
+        private void ValidateFileInformation(Domain.Character character)
+        {
+            Assert.AreEqual(Domain.Character.Signature, character.File.Signature);
+            Assert.AreEqual(VersionID.v1_10plus, character.File.VersionID);
+        }
+
+        private void StartingAmazon(Domain.Character amazon)
+        {
+            Assert.AreEqual(Files.StartingCharacters.AmazonSize, amazon.File.Size);
+        }
+        private void StartingSorceresss(Domain.Character sorceress)
+        {
+            Assert.AreEqual(Files.StartingCharacters.SorceressSize, sorceress.File.Size);
+        }
+        private void StartingNecromancer(Domain.Character necromancer)
+        {
+            Assert.AreEqual(Files.StartingCharacters.NecromancerSize, necromancer.File.Size);
+        }
+        private void StartingPaladin(Domain.Character paladin)
+        {
+            Assert.AreEqual(Files.StartingCharacters.PaladinSize, paladin.File.Size);
+        }
+        private void StartingBarbarian(Domain.Character barbarian)
+        {
+            Assert.AreEqual(Files.StartingCharacters.BarbarianSize, barbarian.File.Size);
+        }
+        private void StartingDruid(Domain.Character druid)
+        {
+            Assert.AreEqual(Files.StartingCharacters.DruidSize, druid.File.Size);
+        }
+        private void StartingAssassin(Domain.Character assassin)
+        {
+            Assert.AreEqual(Files.StartingCharacters.AssassinSize, assassin.File.Size);
+        }
+
+        [TestMethod]
+        public void InvalidChecksumFails()
+        {
+            Assert.ThrowsException<FormatException>(() => TestObject.Load(Files.InvalidChecksum));
         }
 
         [TestMethod]
