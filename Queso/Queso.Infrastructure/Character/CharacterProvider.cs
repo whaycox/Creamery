@@ -90,7 +90,7 @@ namespace Queso.Infrastructure.Character
         private Domain.Character ParseIdentifyingInformation(Domain.Character character, byte[] rawFile, ref int index)
         {
             character.Name = ParseString(rawFile, NameLengthInBytes, ref index);
-            byte status = rawFile[index++];
+            character.Status = (Status)rawFile[index++];
             byte progression = rawFile[index++];
             index += 2; //skip unknown
             character.Class = (Class)rawFile[index++];

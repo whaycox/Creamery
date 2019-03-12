@@ -14,6 +14,9 @@ namespace Queso.Domain
 
         public string Name { get; set; }
         public Class Class { get; set; }
+        public Status Status { get; set; }
+        public bool Hardcore => (Status & Status.Hardcore) == Status.Hardcore;
+        public bool Alive => (Status & Status.Died) == Status.None;
 
         public Character()
         {

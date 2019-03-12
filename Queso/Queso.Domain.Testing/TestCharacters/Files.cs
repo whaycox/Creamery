@@ -14,6 +14,7 @@ namespace Queso.Domain.TestCharacters
 
         public static Characters StartingCharacters { get; } = new Characters();
         public static string InvalidChecksum => FormatName(nameof(InvalidChecksum));
+        public static string Dead => FormatName(nameof(Dead));
 
         public class Characters
         {

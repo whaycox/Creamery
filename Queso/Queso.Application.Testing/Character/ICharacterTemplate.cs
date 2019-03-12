@@ -37,8 +37,10 @@ namespace Queso.Application.Character
             ValidateFileInformation(character);
             Assert.AreEqual(StartingCharacterName, character.Name);
             Assert.AreEqual(characterClass, character.Class);
+            Assert.IsTrue(character.Hardcore);
+            Assert.IsTrue(character.Alive);
 
-            switch(characterClass)
+            switch (characterClass)
             {
                 case Class.Amazon:
                     StartingAmazon(character);
@@ -111,6 +113,14 @@ namespace Queso.Application.Character
         {
             foreach(var starter in StartingCharacters)
                 starter.validation(TestObject.Load(starter.path));
+        }
+
+        [TestMethod]
+        public void LoadsDeadCharacter()
+        {
+            Domain.Character loaded = TestObject.Load(Files.Dead);
+            Assert.IsTrue(loaded.Hardcore);
+            Assert.IsFalse(loaded.Alive);
         }
     }
 }

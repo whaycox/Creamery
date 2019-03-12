@@ -24,6 +24,9 @@
     <None Update="TestCharacters\Barbarian.d2s">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="TestCharacters\Dead.d2s">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="TestCharacters\Druid.d2s">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
