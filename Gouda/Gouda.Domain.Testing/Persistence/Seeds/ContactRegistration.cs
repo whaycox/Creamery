@@ -11,8 +11,8 @@ namespace Gouda.Domain.Persistence.Seeds
     {
         public static Communication.ContactRegistration[] Data => new Communication.ContactRegistration[]
         {
-            new Communication.ContactRegistration() { ID = 1, ContactID = MockContact.One.ID, UserID = MockUser.One.ID },
-            new Communication.ContactRegistration() { ID = 2, ContactID = MockContact.Two.ID, UserID = MockUser.Two.ID },
+            new Communication.ContactRegistration() { ID = 1, ContactID = MockContact.One.ID, UserID = MockUser.One.ID, CronString = Testing.AlwaysCronString },
+            new Communication.ContactRegistration() { ID = 2, ContactID = MockContact.Two.ID, UserID = MockUser.Two.ID, CronString = Testing.AlwaysCronString },
         };
     }
 }

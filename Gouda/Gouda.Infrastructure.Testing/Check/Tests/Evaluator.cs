@@ -34,6 +34,7 @@ namespace Gouda.Infrastructure.Check.Tests
         {
             Persistence = new MockPersistence(Cron);
             Persistence.Reset();
+            Persistence.Initialize();
 
             Notifier = new MockNotifier(Time, Persistence);
 

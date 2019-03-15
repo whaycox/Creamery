@@ -8,5 +8,7 @@ namespace Gouda.Domain.Enumerations
     {
         Browser,
         Email,
+
+        Testing = Int32.MaxValue,
     }
 }
