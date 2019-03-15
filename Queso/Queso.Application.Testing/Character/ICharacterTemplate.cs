@@ -4,6 +4,7 @@ using Queso.Domain.Enumerations;
 using Queso.Domain.TestCharacters;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Queso.Application.Character
 {
@@ -121,6 +122,26 @@ namespace Queso.Application.Character
             Domain.Character loaded = TestObject.Load(Files.Dead);
             Assert.IsTrue(loaded.Hardcore);
             Assert.IsFalse(loaded.Alive);
+        }
+
+        [TestMethod]
+        public void CannotResurrectAliveCharacter()
+        {
+            Assert.ThrowsException<InvalidOperationException>(() => TestObject.Resurrect(Files.StartingCharacters.Amazon));
+        }
+
+        [TestMethod]
+        public void ResurrectsDeadCharacter()
+        {
+            using (DisposableCharacter temporary = new DisposableCharacter(Files.Dead))
+            {
+                Domain.Character dead = TestObject.Load(temporary.Path);
+                TestObject.Resurrect(temporary.Path);
+
+                Domain.Character resurrected = TestObject.Load(temporary.Path);
+                Assert.IsTrue(resurrected.Hardcore);
+                Assert.IsTrue(resurrected.Alive);
+            }
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 namespace Queso.Domain.Enumerations
 {
     [Flags]
-    public enum Status
+    public enum Status : byte
     {
         None = 0x00,
         Unknown1 = 0x01,

@@ -15,10 +15,29 @@ namespace Queso.Infrastructure.Character
         private const int ChecksumStartIndex = 12;
         private const int ChecksumEndIndex = 15;
 
+        private const int StatusIndex = 36;
+
         private static Encoding TextEncoding => Encoding.ASCII;
         private static Regex NameCleaner = new Regex("^([^\u0000]+)", RegexOptions.Compiled);
 
         public Domain.Character Load(string filePath) => ParseCharacter(ReadCharacterFile(filePath));
+
+        public void Resurrect(string filePath)
+        {
+            byte[] character = ReadCharacterFile(filePath);
+            Status status = (Status)character[StatusIndex];
+            if ((status & Status.Hardcore) != Status.Hardcore)
+                throw new InvalidOperationException("Can only resurrect hardcore characters");
+            if ((status & Status.Died) != Status.Died)
+                throw new InvalidOperationException("Cannot resurrect a character that is alive");
+            status &= ~Status.Died;
+            character[StatusIndex] = (byte)status;
+            int newChecksum = ComputeChecksum(character);
+            byte[] newChecksumBytes = BitConverter.GetBytes(newChecksum);
+            for (int i = 0; i < newChecksumBytes.Length; i++)
+                character[ChecksumStartIndex + i] = newChecksumBytes[i];
+            File.WriteAllBytes(filePath, character);
+        }
 
         private byte[] ReadCharacterFile(string filePath)
         {
