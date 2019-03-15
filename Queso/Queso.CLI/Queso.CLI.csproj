@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Curds\Curds.Application\Curds.Application.csproj" />
+    <ProjectReference Include="..\..\Curds\Curds.Domain\Curds.Domain.csproj" />
+    <ProjectReference Include="..\..\Curds\Curds.Infrastructure\Curds.Infrastructure.csproj" />
+    <ProjectReference Include="..\Queso.Application\Queso.Application.csproj" />
+    <ProjectReference Include="..\Queso.Domain\Queso.Domain.csproj" />
+    <ProjectReference Include="..\Queso.Infrastructure\Queso.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

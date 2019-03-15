@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.438
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queso.Domain", "Queso.Domain\Queso.Domain.csproj", "{3685C49E-2AF2-4AE8-B5A1-F0B14FBAAC7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queso.Domain", "Queso.Domain\Queso.Domain.csproj", "{3685C49E-2AF2-4AE8-B5A1-F0B14FBAAC7E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queso.Application", "Queso.Application\Queso.Application.csproj", "{013C88C6-D8CA-4497-9687-D7EC2CF5B949}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queso.Application", "Queso.Application\Queso.Application.csproj", "{013C88C6-D8CA-4497-9687-D7EC2CF5B949}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queso.Application.Testing", "Queso.Application.Testing\Queso.Application.Testing.csproj", "{21BE9117-4761-4CDB-BEA4-8777DAFF4E00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queso.Application.Testing", "Queso.Application.Testing\Queso.Application.Testing.csproj", "{21BE9117-4761-4CDB-BEA4-8777DAFF4E00}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curds.Domain.Testing", "..\Curds\Curds.Domain.Testing\Curds.Domain.Testing.csproj", "{5529E1E9-7329-4662-9D6A-A52B7CC09034}"
 EndProject
@@ -19,11 +19,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curds.Infrastructure", "..\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curds.Application", "..\Curds\Curds.Application\Curds.Application.csproj", "{AB117800-0AD1-4AF4-8165-03B6C68E028F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queso.Domain.Testing", "Queso.Domain.Testing\Queso.Domain.Testing.csproj", "{BB4A3F1C-78F2-4D85-9964-5FF7545BD795}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queso.Domain.Testing", "Queso.Domain.Testing\Queso.Domain.Testing.csproj", "{BB4A3F1C-78F2-4D85-9964-5FF7545BD795}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queso.Infrastructure", "Queso.Infrastructure\Queso.Infrastructure.csproj", "{EF624A56-5C50-43EB-A2C8-C001EA502B9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queso.Infrastructure", "Queso.Infrastructure\Queso.Infrastructure.csproj", "{EF624A56-5C50-43EB-A2C8-C001EA502B9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queso.Infrastructure.Testing", "Queso.Infrastructure.Testing\Queso.Infrastructure.Testing.csproj", "{46B03D02-7902-4377-AE2F-C2C09265D8C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queso.Infrastructure.Testing", "Queso.Infrastructure.Testing\Queso.Infrastructure.Testing.csproj", "{46B03D02-7902-4377-AE2F-C2C09265D8C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queso.CLI", "Queso.CLI\Queso.CLI.csproj", "{F9550250-EE96-4502-BD7A-D04E9AAD4A2F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +77,10 @@ Global
 		{46B03D02-7902-4377-AE2F-C2C09265D8C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46B03D02-7902-4377-AE2F-C2C09265D8C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46B03D02-7902-4377-AE2F-C2C09265D8C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9550250-EE96-4502-BD7A-D04E9AAD4A2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9550250-EE96-4502-BD7A-D04E9AAD4A2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9550250-EE96-4502-BD7A-D04E9AAD4A2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9550250-EE96-4502-BD7A-D04E9AAD4A2F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
