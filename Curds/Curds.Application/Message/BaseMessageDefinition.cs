@@ -11,7 +11,6 @@ namespace Curds.Application.Message
         where V : BaseMessageHandler<T, U, W>
         where W : BaseViewModel
     {
-
         protected abstract V Handler { get; }
 
         public BaseMessageDefinition(T application)

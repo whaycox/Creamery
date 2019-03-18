@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "Queso.CLI": {
+      "commandName": "Project"
+    }
+  }
+}
