@@ -5,7 +5,7 @@
 
     <IsPackable>false</IsPackable>
 
-    <RootNamespace>Curds.Application</RootNamespace>
+    <RootNamespace>Queso.Application</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,7 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Curds.Domain.Testing\Curds.Domain.Testing.csproj" />
+    <ProjectReference Include="..\..\Curds\Curds.Domain.Testing\Curds.Domain.Testing.csproj" />
+    <ProjectReference Include="..\Queso.Application\Queso.Application.csproj" />
+    <ProjectReference Include="..\Queso.Domain.Testing\Queso.Domain.Testing.csproj" />
+    <ProjectReference Include="..\Queso.Domain\Queso.Domain.csproj" />
   </ItemGroup>
 
 </Project>
