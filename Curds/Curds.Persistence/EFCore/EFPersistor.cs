@@ -3,13 +3,18 @@ using Curds.Domain.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Threading.Tasks;
+using Curds.Domain.EventArgs;
 
 namespace Curds.Persistence.EFCore
 {
     public abstract class EFPersistor<T, U> : IPersistor<U> where T : CurdsContext where U : Entity
     {
+        protected event EventHandler<EntityModifiedArgs<U>> EntityAdded;
+        protected event EventHandler<EntityModifiedArgs<U>> EntityUpdated;
+        protected event EventHandler<EntityModifiedArgs<U>> EntityRemoved;
+
         private EFProvider<T> Provider { get; }
         
         public Task<int> Count
@@ -40,7 +45,9 @@ namespace Curds.Persistence.EFCore
         {
             U toDelete = await Lookup(id, context);
             context.Remove(toDelete);
+            OnEntityRemoved(toDelete);
         }
+        private void OnEntityRemoved(U entity) => EntityRemoved?.Invoke(this, new EntityModifiedArgs<U>(entity));
 
         public async Task<List<U>> FetchAll()
         {
@@ -62,14 +69,24 @@ namespace Curds.Persistence.EFCore
         }
         public async Task<U> Insert(U newEntity, T context)
         {
-            Debug.WriteLine($"Inserting a {typeof(U).FullName}");
             if (newEntity.ID != default(int))
                 throw new InvalidOperationException($"Cannot insert a {typeof(U).FullName} that has an ID");
             var entry =  await context.AddAsync(newEntity);
-            Debug.WriteLine($"It got an ID {entry.Entity.ID}");
+            OnEntityAdded(entry.Entity);
             return entry.Entity;
         }
+        private void OnEntityAdded(U entity) => EntityAdded?.Invoke(this, new EntityModifiedArgs<U>(entity));
 
+        public async Task<List<U>> LookupMany(IEnumerable<int> ids)
+        {
+            using (T context = Provider.Context)
+            {
+                List<U> toReturn = new List<U>();
+                foreach (int id in ids)
+                    toReturn.Add(await Lookup(id, context));
+                return toReturn;
+            }
+        }
         public async Task<U> Lookup(int id)
         {
             using (T context = Provider.Context)
@@ -90,8 +107,10 @@ namespace Curds.Persistence.EFCore
             {
                 U entity = await Lookup(id, context);
                 entity = updateDelegate(entity);
+                OnEntityModified(entity);
                 await context.SaveChangesAsync();
             }
         }
+        private void OnEntityModified(U entity) => EntityUpdated?.Invoke(this, new EntityModifiedArgs<U>(entity));
     }
 }

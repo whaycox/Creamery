@@ -17,9 +17,13 @@ namespace Gouda.Application.Persistence
 
         IPersistor<Satellite> Satellites { get; }
         IPersistor<Definition> Definitions { get; }
+        IPersistor<DefinitionRegistration> DefinitionRegistrations { get; }
         IPersistor<DefinitionArgument> DefinitionArguments { get; }
         IPersistor<Contact> Contacts { get; }
+        IPersistor<ContactRegistration> ContactRegistrations { get; }
         IPersistor<User> Users { get; }
+
+        void Initialize();
 
         Task<User> FindByEmail(string email);
         Task AddSession(Session session);

@@ -22,8 +22,14 @@ namespace Gouda.Persistence.EFCore
 
         public IPersistor<Satellite> Satellites { get; }
         public IPersistor<Definition> Definitions { get; }
+
+        private Persistors.CronPersistor<DefinitionRegistration> _definitionRegistrations = null;
+        public IPersistor<DefinitionRegistration> DefinitionRegistrations => _definitionRegistrations;
         public IPersistor<DefinitionArgument> DefinitionArguments { get; }
         public IPersistor<Contact> Contacts { get; }
+
+        private Persistors.CronPersistor<ContactRegistration> _contactRegistrations = null;
+        public IPersistor<ContactRegistration> ContactRegistrations => _contactRegistrations;
         public IPersistor<User> Users { get; }
 
         public override GoudaContext Context => new GoudaContext(this);
@@ -34,9 +40,17 @@ namespace Gouda.Persistence.EFCore
 
             Satellites = new Persistors.Satellite(this);
             Definitions = new Persistors.Definition(this);
+            _definitionRegistrations = new Persistors.DefinitionRegistration(this);
             DefinitionArguments = new Persistors.DefinitionArgument(this);
             Contacts = new Persistors.Contact(this);
+            _contactRegistrations = new Persistors.ContactRegistration(this);
             Users = new Persistors.User(this);
+        }
+
+        public void Initialize()
+        {
+            _definitionRegistrations.LoadEntities();
+            _contactRegistrations.LoadEntities();
         }
 
         public Task<User> FindByEmail(string email)
@@ -66,20 +80,9 @@ namespace Gouda.Persistence.EFCore
 
         public async Task<List<Contact>> FilterContacts(int definitionID, DateTime eventTime)
         {
-            using (GoudaContext context = Context)
-            {
-                HashSet<int> interestedUsers = new HashSet<int>(await InterestedUsers(context, definitionID, eventTime));
-                return await ActiveContacts(context, interestedUsers, eventTime);
-            }
+            var interestedUsers = _definitionRegistrations.Filter(definitionID, eventTime);
+            var activeContacts = _contactRegistrations.FilterMany(interestedUsers, eventTime);
+            return await Contacts.LookupMany(activeContacts);
         }
-        private Task<List<int>> InterestedUsers(GoudaContext context, int definitionID, DateTime eventTime) => 
-            context.DefinitionRegistrations
-                .Where(r => r.DefinitionID == definitionID)
-                .Select(u => u.UserID)
-                .ToListAsync();
-        private Task<List<Contact>> ActiveContacts(GoudaContext context, HashSet<int> interestedUsers, DateTime eventTime) =>
-            context.Contacts
-                .Where(c => interestedUsers.Contains(c.UserID))
-                .ToListAsync();
     }
 }

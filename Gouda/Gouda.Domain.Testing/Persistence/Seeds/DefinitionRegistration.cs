@@ -11,9 +11,9 @@ namespace Gouda.Domain.Persistence.Seeds
     {
         public static Check.DefinitionRegistration[] Data => new Check.DefinitionRegistration[]
         {
-            new Check.DefinitionRegistration() { ID = 1, DefinitionID = MockDefinition.SampleID, UserID = MockUser.One.ID },
-            new Check.DefinitionRegistration() { ID = 2, DefinitionID = MockDefinition.SampleID, UserID = MockUser.Two.ID },
-            new Check.DefinitionRegistration() { ID = 3, DefinitionID = MockDefinition.SampleID, UserID = MockUser.Three.ID },
+            new Check.DefinitionRegistration() { ID = 1, DefinitionID = MockDefinition.SampleID, UserID = MockUser.One.ID, CronString = Testing.AlwaysCronString },
+            new Check.DefinitionRegistration() { ID = 2, DefinitionID = MockDefinition.SampleID, UserID = MockUser.Two.ID, CronString = Testing.AlwaysCronString },
+            new Check.DefinitionRegistration() { ID = 3, DefinitionID = MockDefinition.SampleID, UserID = MockUser.Three.ID, CronString = Testing.AlwaysCronString },
         };
     }
 }

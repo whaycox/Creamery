@@ -37,6 +37,18 @@ namespace Gouda.Domain.Persistence
                 Users.Delete(user.ID);
         }
 
+        public void EmptyContactRegistrations()
+        {
+            foreach (ContactRegistration registration in ContactRegistrations.FetchAll().AwaitResult())
+                ContactRegistrations.Delete(registration.ID);
+        }
+
+        public void EmptyDefinitionRegistrations()
+        {
+            foreach (DefinitionRegistration registration in DefinitionRegistrations.FetchAll().AwaitResult())
+                DefinitionRegistrations.Delete(registration.ID);
+        }
+
         public override void ConfigureContext(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseInMemoryDatabase(nameof(MockPersistence));
 
         public override void SeedData(ModelBuilder modelBuilder)

@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 using Gouda.Application.Communication;
-using Gouda.Domain.Communication;
 using Gouda.Infrastructure.Communication;
-using Gouda.Domain.Check;
-using Gouda.Domain.Enumerations;
 
 namespace Gouda.Domain.Communication.ContactAdapters
 {
+    using Communication;
+    using Check;
+    using Enumerations;
+
     public class MockContactOneAdapter : BaseContactAdapter
     {
         public static List<(int userNotified, StatusChange changeInformation)> Notifications = new List<(int userNotified, StatusChange changeInformation)>();

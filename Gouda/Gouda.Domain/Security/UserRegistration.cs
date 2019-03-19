@@ -5,7 +5,7 @@ using Curds.Domain.Persistence;
 
 namespace Gouda.Domain.Security
 {
-    public abstract class UserRegistration : Entity
+    public abstract class UserRegistration : Entity, ICronEntity
     {
         public string CronString { get; set; }
 
