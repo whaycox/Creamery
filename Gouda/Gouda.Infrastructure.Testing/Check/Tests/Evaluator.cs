@@ -73,24 +73,22 @@ namespace Gouda.Infrastructure.Check.Tests
         {
             MockCheck.ShouldFail = true;
             TestObject.Evaluate(Definition, Response).AwaitResult();
-            Assert.AreEqual(1, MockContactOneAdapter.Notifications.Count);
+            Assert.AreEqual(3, MockContactOneAdapter.Notifications.Count);
             Assert.AreEqual(1, MockContactOneAdapter.Notifications[0].userNotified);
+            Assert.AreEqual(2, MockContactOneAdapter.Notifications[1].userNotified);
+            Assert.AreEqual(3, MockContactOneAdapter.Notifications[2].userNotified);
             Assert.AreEqual(Status.Critical, MockContactOneAdapter.Notifications[0].changeInformation.New);
-            Assert.AreEqual(1, MockContactTwoAdapter.Notifications.Count);
-            Assert.AreEqual(2, MockContactTwoAdapter.Notifications[0].userNotified);
-            Assert.AreEqual(Status.Critical, MockContactTwoAdapter.Notifications[0].changeInformation.New);
         }
 
         [TestMethod]
         public void NotifiesOfGoodChange()
         {
             TestObject.Evaluate(Definition, Response).AwaitResult();
-            Assert.AreEqual(1, MockContactOneAdapter.Notifications.Count);
+            Assert.AreEqual(3, MockContactOneAdapter.Notifications.Count);
             Assert.AreEqual(1, MockContactOneAdapter.Notifications[0].userNotified);
+            Assert.AreEqual(2, MockContactOneAdapter.Notifications[1].userNotified);
+            Assert.AreEqual(3, MockContactOneAdapter.Notifications[2].userNotified);
             Assert.AreEqual(Status.Good, MockContactOneAdapter.Notifications[0].changeInformation.New);
-            Assert.AreEqual(1, MockContactTwoAdapter.Notifications.Count);
-            Assert.AreEqual(2, MockContactTwoAdapter.Notifications[0].userNotified);
-            Assert.AreEqual(Status.Good, MockContactTwoAdapter.Notifications[0].changeInformation.New);
         }
 
         [TestMethod]
@@ -107,12 +105,11 @@ namespace Gouda.Infrastructure.Check.Tests
         {
             Definition.CheckGuid = HeartbeatCheck.ID;
             TestObject.Evaluate(Definition, new Success()).AwaitResult();
-            Assert.AreEqual(1, MockContactOneAdapter.Notifications.Count);
+            Assert.AreEqual(3, MockContactOneAdapter.Notifications.Count);
             Assert.AreEqual(1, MockContactOneAdapter.Notifications[0].userNotified);
+            Assert.AreEqual(2, MockContactOneAdapter.Notifications[1].userNotified);
+            Assert.AreEqual(3, MockContactOneAdapter.Notifications[2].userNotified);
             Assert.AreEqual(Status.Good, MockContactOneAdapter.Notifications[0].changeInformation.New);
-            Assert.AreEqual(1, MockContactTwoAdapter.Notifications.Count);
-            Assert.AreEqual(2, MockContactTwoAdapter.Notifications[0].userNotified);
-            Assert.AreEqual(Status.Good, MockContactTwoAdapter.Notifications[0].changeInformation.New);
         }
 
     }

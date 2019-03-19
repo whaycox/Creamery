@@ -1,7 +1,6 @@
-﻿using System;
+﻿using Curds.Application.Cron;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using Curds.Application.Cron;
 using System.Linq;
 
 namespace Curds.Infrastructure.Cron
@@ -25,9 +24,12 @@ namespace Curds.Infrastructure.Cron
 
         private List<ICronObject> Children = new List<ICronObject>();
 
+        private string OriginalExpression { get; }
+
         public Expression(string expression)
         {
             ParseExpression(expression.Split(SeparatorArray, StringSplitOptions.RemoveEmptyEntries));
+            OriginalExpression = expression;
         }
         private void ParseExpression(string[] expressionParts)
         {
@@ -48,5 +50,7 @@ namespace Curds.Infrastructure.Cron
 
         public bool Test(DateTime testTime) => !AreAnyFails(testTime);
         private bool AreAnyFails(DateTime testTime) => Children.Where(c => !c.Test(testTime)).Any();
+
+        public override string ToString() => OriginalExpression;
     }
 }
