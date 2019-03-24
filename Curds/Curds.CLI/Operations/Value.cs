@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Curds.CLI.Formatting;
 
-namespace Queso.CLI
+namespace Curds.CLI.Operations
 {
     public abstract class Value : OptionValue
     {
@@ -18,5 +19,17 @@ namespace Queso.CLI
             RawValue = crawler.Parse();
             return this;
         }
+
+        public override FormattedText Usage
+        {
+            get
+            {
+                FormattedText usage = new FormattedText();
+                usage.AddLine(PlainTextToken.Create(ToString()));
+                return usage;
+            }
+        }
+
+        public override string ToString() => $"{Name}: {Description}";
     }
 }

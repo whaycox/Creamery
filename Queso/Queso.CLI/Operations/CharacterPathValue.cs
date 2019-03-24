@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Curds.Application.Text;
+using Curds.CLI.Operations;
 
 namespace Queso.CLI.Operations
 {
@@ -10,9 +11,5 @@ namespace Queso.CLI.Operations
         public override string Name => "character-path";
 
         public override string Description => "Path to the .d2s character file.";
-
-        public override void Append(IIndentedWriter writer) => writer.AddLine(ToString());
-
-        public override string ToString() => $"{Name}: {Description}";
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Queso.CLI
+namespace Curds.CLI.Operations
 {
     public abstract class Argument : OptionValue
     {

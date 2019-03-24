@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Curds\Curds.Application\Curds.Application.csproj" />
+    <ProjectReference Include="..\..\Curds\Curds.CLI\Curds.CLI.csproj" />
     <ProjectReference Include="..\..\Curds\Curds.Domain\Curds.Domain.csproj" />
     <ProjectReference Include="..\..\Curds\Curds.Infrastructure\Curds.Infrastructure.csproj" />
     <ProjectReference Include="..\Queso.Application\Queso.Application.csproj" />

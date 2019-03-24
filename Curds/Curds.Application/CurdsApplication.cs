@@ -9,6 +9,8 @@ namespace Curds.Application
         protected DateTimes.IDateTime Time { get; }
         protected Cron.ICron Cron { get; }
 
+        public abstract string Description { get; }
+
         public CurdsApplication(CurdsOptions options)
         {
             Time = options.Time;

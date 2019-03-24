@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Queso.CLI
+namespace Curds.CLI
 {
     public class ArgumentCrawler
     {

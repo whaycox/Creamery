@@ -9,6 +9,8 @@ namespace Queso.Application
     {
         internal Character.ICharacter Character { get; }
 
+        public override string Description => "An application for Diablo 2 character management.";
+
         public Message.Command.Dispatch Commands { get; set; }
 
         public QuesoApplication(QuesoOptions options)

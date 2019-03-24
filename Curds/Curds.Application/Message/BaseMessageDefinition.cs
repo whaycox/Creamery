@@ -5,7 +5,17 @@ using System.Threading.Tasks;
 
 namespace Curds.Application.Message
 {
-    public abstract class BaseMessageDefinition<T, U, V, W> : ReferencingObject<T>
+    public abstract class BaseMessageDefinition<T> : ReferencingObject<T> where T : CurdsApplication
+    {
+        public abstract string Name { get; }
+        public abstract string Description { get; }
+
+        public BaseMessageDefinition(T application)
+            : base(application)
+        { }
+    }
+
+    public abstract class BaseMessageDefinition<T, U, V, W> : BaseMessageDefinition<T>
         where T : CurdsApplication 
         where U : BaseMessage<W>
         where V : BaseMessageHandler<T, U, W>

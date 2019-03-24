@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using Curds.Application.Text;
 
-namespace Queso.CLI
+namespace Curds.CLI.Operations
 {
+    using Formatting;
+
     public abstract class OptionValue
     {
         public const string Indent = "\t";
@@ -13,6 +15,6 @@ namespace Queso.CLI
         public abstract string Name { get; }
         public abstract string Description { get; }
 
-        public abstract void Append(IIndentedWriter writer);
+        public abstract FormattedText Usage { get; }
     }
 }
