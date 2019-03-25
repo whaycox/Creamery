@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Curds.Application;
+﻿using Curds.Application;
 using Curds.Application.Message;
 using Curds.CLI.Formatting;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Curds.CLI.Operations
 {
+    using Formatting.Tokens;
+
     public abstract class ArgumentlessOperation<T> : Operation<T> where T : CurdsApplication
     {
         public const string Argumentless = nameof(Argumentless);
@@ -31,18 +33,10 @@ namespace Curds.CLI.Operations
             return builder.ToString();
         }
 
-        protected override FormattedText ArgumentsUsage()
-        {
-            FormattedText toReturn = new FormattedText();
-            toReturn.AddLine(PlainTextToken.Create("Values:"));
-            using (IndentedText indented = new IndentedText())
-            {
-                foreach (Value value in Values)
-                    indented.Add(value.Usage);
-                toReturn.Add(indented);
-            }
-            return toReturn;
-        }
+        protected override FormattedText ArgumentsUsage() => FormattedText.New
+            .ColorLine(CLIEnvironment.Value, Header)
+            .Indent(Values.Select(v => v.Usage));
+        private BaseTextToken Header => PlainTextToken.Create("Values:");
 
         public override Dictionary<string, List<Value>> Parse(ArgumentCrawler crawler)
         {

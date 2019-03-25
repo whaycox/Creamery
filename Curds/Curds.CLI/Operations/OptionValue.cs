@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Curds.Application.Text;
-
-namespace Curds.CLI.Operations
+﻿namespace Curds.CLI.Operations
 {
     using Formatting;
 

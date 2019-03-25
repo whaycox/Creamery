@@ -1,10 +1,11 @@
 ﻿using Curds.Application;
 using System.Collections.Generic;
-using System;
+using System.Linq;
 
 namespace Curds.CLI.Operations
 {
     using Formatting;
+    using Formatting.Tokens;
 
     public class OperationParser<T> where T : CurdsApplication
     {
@@ -32,18 +33,10 @@ namespace Curds.CLI.Operations
             return toReturn;
         }
 
-        public FormattedText OperationUsages(IEnumerable<Operation<T>> operations)
-        {
-            FormattedText toReturn = new FormattedText();
-            toReturn.AddLine(PlainTextToken.Create("Operations:"));
-            using (IndentedText indented = new IndentedText())
-            {
-                foreach (Operation<T> operation in operations)
-                    indented.Add(operation.Usage);
-                toReturn.Add(indented);
-            }
-            return toReturn;
-        }
+        public FormattedText OperationUsages(IEnumerable<Operation<T>> operations) => FormattedText.New
+            .ColorLine(CLIEnvironment.Operations, Header)
+            .Indent(operations.Select(o => o.Usage));
+        private BaseTextToken Header => PlainTextToken.Create("Operations:");
 
         public class ParsedPair
         {

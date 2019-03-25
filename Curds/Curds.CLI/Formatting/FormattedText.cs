@@ -3,6 +3,8 @@ using System.Linq;
 
 namespace Curds.CLI.Formatting
 {
+    using Tokens;
+
     public class FormattedText : BaseTextToken
     {
         private List<BaseTextToken> Buffer { get; }
@@ -32,10 +34,12 @@ namespace Curds.CLI.Formatting
             Add(NewLineToken.New);
         }
 
-        public override void Write(ConsoleWriter writer)
+        public override void Write(IConsoleWriter writer)
         {
             foreach (BaseTextToken token in Buffer)
                 token.Write(writer);
         }
+
+        public static FormattedText New => new FormattedText();
     }
 }

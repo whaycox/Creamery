@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Curds.CLI.Formatting;
-
-namespace Curds.CLI.Operations
+﻿namespace Curds.CLI.Operations
 {
+    using Formatting;
+    using Formatting.Tokens;
+
     public abstract class Value : OptionValue
     {
         public const string SyntaxStart = "<";
@@ -20,16 +18,8 @@ namespace Curds.CLI.Operations
             return this;
         }
 
-        public override FormattedText Usage
-        {
-            get
-            {
-                FormattedText usage = new FormattedText();
-                usage.AddLine(PlainTextToken.Create(ToString()));
-                return usage;
-            }
-        }
-
-        public override string ToString() => $"{Name}: {Description}";
+        public override FormattedText Usage => FormattedText.New
+            .Color(CLIEnvironment.Value, PlainTextToken.Create(Name))
+            .AppendLine(PlainTextToken.Create($": {Description}"));
     }
 }

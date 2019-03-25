@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Curds.Application\Curds.Application.csproj" />
+    <ProjectReference Include="..\Curds.CLI\Curds.CLI.csproj" />
     <ProjectReference Include="..\Curds.Domain\Curds.Domain.csproj" />
     <ProjectReference Include="..\Curds.Infrastructure\Curds.Infrastructure.csproj" />
     <ProjectReference Include="..\Curds.Persistence\Curds.Persistence.csproj" />

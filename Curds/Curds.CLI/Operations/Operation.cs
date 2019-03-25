@@ -7,6 +7,7 @@ using System.Text;
 namespace Curds.CLI.Operations
 {
     using Formatting;
+    using Formatting.Tokens;
 
     public abstract class Operation<T> where T : CurdsApplication
     {
@@ -20,17 +21,10 @@ namespace Curds.CLI.Operations
         protected abstract IEnumerable<Argument> Arguments { get; }
 
         public abstract IEnumerable<string> Aliases { get; }
-        public FormattedText Usage
-        {
-            get
-            {
-                FormattedText toReturn = new FormattedText();
-                toReturn.AddLine(PlainTextToken.Create(NameAndSyntax));
-                toReturn.AddLine(PlainTextToken.Create(Definition.Description));
-                toReturn.Add(ArgumentsUsage());
-                return toReturn;
-            }
-        }
+        public FormattedText Usage => FormattedText.New
+            .Append(Syntax)
+            .Append(OperationDescription)
+            .Append(ArgumentsUsage());
 
         private bool AllArgumentsParsed => throw new NotImplementedException();
 
@@ -38,7 +32,6 @@ namespace Curds.CLI.Operations
         {
             Definition = definition;
         }
-
 
         public virtual Dictionary<string, List<Value>> Parse(ArgumentCrawler crawler)
         {
@@ -68,7 +61,9 @@ namespace Curds.CLI.Operations
             return aliasMap[current];
         }
 
-        protected string NameAndSyntax => $"{Definition.Name} {ComposedAliases()} {ArgumentSyntax()}";
+        protected FormattedText Syntax => FormattedText.New
+            .Color(CLIEnvironment.Operations, PlainTextToken.Create(ComposedAliases()))
+            .ColorLine(CLIEnvironment.Value, PlainTextToken.Create(ArgumentSyntax()));
         private string ComposedAliases()
         {
             StringBuilder builder = new StringBuilder();
@@ -81,46 +76,15 @@ namespace Curds.CLI.Operations
                 builder.Append($"{OperationIdentifier}{alias}");
             }
             builder.Append(AliasEnd);
+            builder.Append(" ");
             return builder.ToString();
         }
         protected abstract string ArgumentSyntax();
 
+        private FormattedText OperationDescription => FormattedText.New
+            .Color(CLIEnvironment.Operations, PlainTextToken.Create($"{Definition.Name}"))
+            .AppendLine(PlainTextToken.Create($": {Definition.Description}"));
+
         protected abstract FormattedText ArgumentsUsage();
-
-        //public override string Syntax
-        //{
-        //    get
-        //    {
-        //        StringBuilder aliases = new StringBuilder();
-        //        aliases.Append(AliasStart);
-        //        int aliasCount = 0;
-        //        foreach (string alias in OperationAliases)
-        //        {
-        //            if (aliasCount++ > 0)
-        //                aliases.Append(AliasSeparator);
-        //            aliases.Append($"{OperationIdentifier}{alias}");
-        //        }
-        //        aliases.Append(AliasEnd);
-        //        return aliases.ToString();
-        //    }
-        //}
-
-        //public override void Append(IIndentedWriter writer)
-        //{
-        //    AppendDescriptionAndAliases(writer);
-        //    AppendArguments(writer);
-        //}
-        //private void AppendDescriptionAndAliases(IIndentedWriter writer)
-        //{
-        //    writer.AddLine($"{Name} {Syntax}");
-        //    writer.AddLine(Description);
-        //}
-        //protected virtual void AppendArguments(IIndentedWriter writer)
-        //{
-        //    writer.AddLine("Arguments:");
-        //    using (var scope = writer.Scope())
-        //        foreach (Argument arg in Arguments)
-        //            arg.Append(writer);
-        //}
     }
 }

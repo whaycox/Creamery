@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Curds.CLI.Formatting
+namespace Curds.CLI.Formatting.Tokens
 {
     public class PlainTextToken : BaseTextToken
     {
@@ -13,7 +13,7 @@ namespace Curds.CLI.Formatting
             Value = value;
         }
 
-        public override void Write(ConsoleWriter writer) => writer.Write(Value);
+        public override void Write(IConsoleWriter writer) => writer.Write(Value);
 
         public static PlainTextToken Create(string value) => new PlainTextToken(value);
     }

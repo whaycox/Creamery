@@ -6,6 +6,6 @@ namespace Curds.CLI.Formatting
 {
     public abstract class BaseTextToken
     {
-        public abstract void Write(ConsoleWriter writer);
+        public abstract void Write(IConsoleWriter writer);
     }
 }
