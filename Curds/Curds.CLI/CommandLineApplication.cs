@@ -42,6 +42,8 @@ namespace Curds.CLI
 
         public void Execute(string[] args)
         {
+            if (args == null || args.Length == 0)
+                Usage(1, "Please provide arguments");
             try
             {
                 ExecuteOperations(Parser.Parse(Operations, args));
