@@ -17,6 +17,9 @@ namespace Queso.CLI.Operations
             "rez",
         };
 
+        public override string Name => "Resurrect";
+        public override string Description => "Bring a dead hardcore character back to life.";
+
         public override IEnumerable<string> Aliases => _aliases;
 
         public override List<Value> Values => new List<Value>

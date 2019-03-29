@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Curds.CLI
 {
@@ -13,6 +14,9 @@ namespace Curds.CLI
 
         public ArgumentCrawler(string[] args)
         {
+            if (args == null || args.Length == 0)
+                throw new ArgumentNullException(nameof(args));
+
             Arguments = args;
         }
 
@@ -21,6 +25,7 @@ namespace Curds.CLI
             if (AtStart)
                 throw new InvalidOperationException("Already at the first argument");
             CurrentIndex--;
+            Debug.WriteLine($"NewIndex: {CurrentIndex}");
         }
 
         public void Next()
@@ -28,6 +33,7 @@ namespace Curds.CLI
             if (AtEnd)
                 throw new InvalidOperationException("Already at the last argument");
             CurrentIndex++;
+            Debug.WriteLine($"NewIndex: {CurrentIndex}");
         }
 
         public string Parse() => Arguments[CurrentIndex];

@@ -7,6 +7,10 @@ namespace Curds.Domain.CLI
 {
     public class MockConsoleWriter : BaseConsoleWriter
     {
+        public static string StartOfNewLineWrite(bool newValue) => $"{nameof(StartOfNewLine)} changes to {newValue}";
+        public static string TextColorChangeWrite(ConsoleColor textColor) => $"Color changes to {textColor}";
+        public static string IndentsWrite(int indents) => $"Changing indents to {indents}";
+
         public List<string> Writes = new List<string>();
 
         public override string Indentation { get; set; }
@@ -38,10 +42,6 @@ namespace Curds.Domain.CLI
                 _startOfNewLine = value;
             }
         }
-
-        public string StartOfNewLineWrite(bool newValue) => $"{nameof(StartOfNewLine)} changes to {newValue}";
-        public string TextColorChangeWrite(ConsoleColor textColor) => $"Color changes to {textColor}";
-        public string IndentsWrite(int indents) => $"Changing indents to {indents}";
 
         public override void ResetTextColor() => Writes.Add(TextColorChangeWrite(CLIEnvironment.DefaultTextColor));
         public override void SetTextColor(ConsoleColor color) => Writes.Add(TextColorChangeWrite(color));

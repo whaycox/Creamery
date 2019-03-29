@@ -2,6 +2,7 @@
 using Curds.Application.Message;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Curds.CLI.Operations
@@ -9,7 +10,7 @@ namespace Curds.CLI.Operations
     using Formatting;
     using Formatting.Tokens;
 
-    public abstract class Operation<T> where T : CurdsApplication
+    public abstract class Operation<T> : OptionValue where T : CurdsApplication
     {
         public const string OperationIdentifier = "-";
         public const string AliasStart = "{";
@@ -21,10 +22,38 @@ namespace Curds.CLI.Operations
         protected abstract IEnumerable<Argument> Arguments { get; }
 
         public abstract IEnumerable<string> Aliases { get; }
-        public FormattedText Usage => FormattedText.New
+
+        public override FormattedText Syntax => FormattedText.New
+            .Color(CLIEnvironment.Operations, PlainTextToken.Create(ComposedAliases()))
+            .ColorLine(CLIEnvironment.Value, PlainTextToken.Create(ArgumentSyntax()));
+        private string ComposedAliases()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(AliasStart);
+            int aliasCount = 0;
+            foreach (string alias in Aliases)
+            {
+                if (aliasCount++ > 0)
+                    builder.Append(AliasSeparator);
+                builder.Append($"{OperationIdentifier}{alias}");
+            }
+            builder.Append(AliasEnd);
+            builder.Append(" ");
+            return builder.ToString();
+        }
+        protected abstract string ArgumentSyntax();
+
+        public override FormattedText Usage => FormattedText.New
             .Append(Syntax)
             .Append(OperationDescription)
             .Append(ArgumentsUsage());
+        private FormattedText OperationDescription => FormattedText.New
+            .Color(CLIEnvironment.Operations, PlainTextToken.Create("Name"))
+            .AppendLine(PlainTextToken.Create($": {Description}"));
+        protected virtual FormattedText ArgumentsUsage() => FormattedText.New
+            .ColorLine(CLIEnvironment.Arguments, Header)
+            .Indent(Arguments.Select(a => a.Usage));
+        private BaseTextToken Header => PlainTextToken.Create("Arguments:");
 
         private bool AllArgumentsParsed => throw new NotImplementedException();
 
@@ -60,31 +89,5 @@ namespace Curds.CLI.Operations
                 throw new KeyNotFoundException($"Unexpected argument alias {current}");
             return aliasMap[current];
         }
-
-        protected FormattedText Syntax => FormattedText.New
-            .Color(CLIEnvironment.Operations, PlainTextToken.Create(ComposedAliases()))
-            .ColorLine(CLIEnvironment.Value, PlainTextToken.Create(ArgumentSyntax()));
-        private string ComposedAliases()
-        {
-            StringBuilder builder = new StringBuilder();
-            builder.Append(AliasStart);
-            int aliasCount = 0;
-            foreach(string alias in Aliases)
-            {
-                if (aliasCount++ > 0)
-                    builder.Append(AliasSeparator);
-                builder.Append($"{OperationIdentifier}{alias}");
-            }
-            builder.Append(AliasEnd);
-            builder.Append(" ");
-            return builder.ToString();
-        }
-        protected abstract string ArgumentSyntax();
-
-        private FormattedText OperationDescription => FormattedText.New
-            .Color(CLIEnvironment.Operations, PlainTextToken.Create($"{Definition.Name}"))
-            .AppendLine(PlainTextToken.Create($": {Definition.Description}"));
-
-        protected abstract FormattedText ArgumentsUsage();
     }
 }

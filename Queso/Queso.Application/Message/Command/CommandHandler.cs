@@ -5,8 +5,8 @@ using Curds.Application.Message;
 
 namespace Queso.Application.Message.Command
 {
-    public abstract class CommandHandler<T, U> : BaseCommandHandler<QuesoApplication, T, U>
-        where T : BaseCommand<U>
+    public abstract class CommandHandler<T, U> : BaseMessageHandler<QuesoApplication, T, U>
+        where T : BaseMessage<U>
         where U : BaseViewModel
     {
         public CommandHandler(QuesoApplication application)

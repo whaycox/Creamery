@@ -1,4 +1,6 @@
-﻿namespace Curds.CLI.Operations
+﻿using System;
+
+namespace Curds.CLI.Operations
 {
     using Formatting;
     using Formatting.Tokens;
@@ -8,8 +10,8 @@
         public const string SyntaxStart = "<";
         public const string SyntaxEnd = ">";
 
-        public override string Syntax => $"{SyntaxStart}{Name}{SyntaxEnd}";
-
+        public override FormattedText Syntax => FormattedText.New
+            .Color(CLIEnvironment.Value, PlainTextToken.Create($"{SyntaxStart}{Name}{SyntaxEnd}"));
         public string RawValue { get; private set; }
 
         public Value Parse(ArgumentCrawler crawler)

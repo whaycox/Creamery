@@ -1,0 +1,36 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Curds.Domain;
+using Curds.Domain.CLI;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace Curds.CLI.Formatting
+{
+    public abstract class FormattingTemplate<T> : TestTemplate<T>
+    {
+        protected string NewLine(bool newValue) => MockConsoleWriter.StartOfNewLineWrite(newValue);
+        protected string TextColor(ConsoleColor textColor) => MockConsoleWriter.TextColorChangeWrite(textColor);
+        protected string Indents(int indents) => MockConsoleWriter.IndentsWrite(indents);
+    }
+
+    public static class FormattingTemplateExtensions
+    {
+        private static void Compare((MockConsoleWriter writer, int index) pair, string expected) => Assert.AreEqual(expected, pair.writer.Writes[pair.index]);
+
+        public static (MockConsoleWriter writer, int index) StartsWith(this MockConsoleWriter writer, string expected)
+        {
+            (MockConsoleWriter writer, int index) pair = (writer, 0);
+            Compare(pair, expected);
+            pair.index++;
+            return pair;
+        }
+
+        public static (MockConsoleWriter writer, int index) ThenHas(this (MockConsoleWriter writer, int index) pair, string expected)
+        {
+            Compare(pair, expected);
+            pair.index++;
+            return pair;
+        }
+    }
+}

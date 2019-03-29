@@ -12,12 +12,14 @@ namespace Curds.CLI.Formatting
         public IEnumerable<BaseTextToken> Output => Buffer.ToList();
 
         public FormattedText()
-            : this(new List<BaseTextToken>())
-        { }
-
-        public FormattedText(IEnumerable<BaseTextToken> tokens)
         {
-            Buffer = tokens.ToList();
+            Buffer = new List<BaseTextToken>();
+        }
+
+        public FormattedText(FormattedText text)
+        {
+            text = text ?? New;
+            Buffer = text.Output.ToList();
         }
 
         public void Add(BaseTextToken token) => Buffer.Add(token);

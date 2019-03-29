@@ -6,10 +6,10 @@
     {
         public const string Indent = "\t";
 
-        public abstract string Syntax { get; }
         public abstract string Name { get; }
         public abstract string Description { get; }
 
+        public abstract FormattedText Syntax { get; }
         public abstract FormattedText Usage { get; }
     }
 }

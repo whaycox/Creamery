@@ -6,7 +6,7 @@ using Curds.Application.Message;
 
 namespace Queso.Application.Message.Command.Character
 {
-    public class ResurrectCommand : BaseCommand<ViewModel>
+    public class ResurrectCommand : BaseMessage<ViewModel>
     {
         public string CharacterPath { get; }
 
@@ -28,9 +28,6 @@ namespace Queso.Application.Message.Command.Character
 
     public class ResurrectDefinition : CommandDefinition<ResurrectCommand, ResurrectHandler, ViewModel>
     {
-        public override string Name => "Resurrect";
-        public override string Description => "Bring a dead hardcore character back to life.";
-
         public ResurrectDefinition(QuesoApplication application)
             : base(application)
         { }
