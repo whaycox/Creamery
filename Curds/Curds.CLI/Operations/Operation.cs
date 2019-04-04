@@ -10,52 +10,25 @@ namespace Curds.CLI.Operations
     using Formatting;
     using Formatting.Tokens;
 
-    public abstract class Operation<T> : OptionValue where T : CurdsApplication
+    public abstract class Operation<T> : AliasedOptionValue where T : CurdsApplication
     {
         public const string OperationIdentifier = "-";
-        public const string AliasStart = "{";
-        public const string AliasSeparator = " | ";
-        public const string AliasEnd = "}";
+        public override string AliasPrefix => OperationIdentifier;
 
         protected BaseMessageDefinition<T> Definition { get; }
 
         protected abstract IEnumerable<Argument> Arguments { get; }
 
-        public abstract IEnumerable<string> Aliases { get; }
+        protected override FormattedText ComposeAliases() => base.ComposeAliases()
+            .Color(CLIEnvironment.Operation);
 
         public override FormattedText Syntax => FormattedText.New
-            .Color(CLIEnvironment.Operations, PlainTextToken.Create(ComposedAliases()))
-            .ColorLine(CLIEnvironment.Value, PlainTextToken.Create(ArgumentSyntax()));
-        private string ComposedAliases()
-        {
-            StringBuilder builder = new StringBuilder();
-            builder.Append(AliasStart);
-            int aliasCount = 0;
-            foreach (string alias in Aliases)
-            {
-                if (aliasCount++ > 0)
-                    builder.Append(AliasSeparator);
-                builder.Append($"{OperationIdentifier}{alias}");
-            }
-            builder.Append(AliasEnd);
-            builder.Append(" ");
-            return builder.ToString();
-        }
-        protected abstract string ArgumentSyntax();
+            .Concatenate(null, " ", null, new List<BaseTextToken> { ComposeAliases(), FormattedNameAndDescription(CLIEnvironment.Operation) });
 
         public override FormattedText Usage => FormattedText.New
-            .Append(Syntax)
-            .Append(OperationDescription)
+            .AppendLine(Syntax)
             .Append(ArgumentsUsage());
-        private FormattedText OperationDescription => FormattedText.New
-            .Color(CLIEnvironment.Operations, PlainTextToken.Create("Name"))
-            .AppendLine(PlainTextToken.Create($": {Description}"));
-        protected virtual FormattedText ArgumentsUsage() => FormattedText.New
-            .ColorLine(CLIEnvironment.Arguments, Header)
-            .Indent(Arguments.Select(a => a.Usage));
-        private BaseTextToken Header => PlainTextToken.Create("Arguments:");
-
-        private bool AllArgumentsParsed => throw new NotImplementedException();
+        protected virtual FormattedText ArgumentsUsage() => IndentChildren("Arguments:", CLIEnvironment.Argument, Arguments.Select(a => a.Usage));
 
         public Operation(BaseMessageDefinition<T> definition)
         {
@@ -64,30 +37,22 @@ namespace Curds.CLI.Operations
 
         public virtual Dictionary<string, List<Value>> Parse(ArgumentCrawler crawler)
         {
-            Dictionary<string, List<Value>> provided = new Dictionary<string, List<Value>>();
-            var aliasMap = AliasMap();
-            while (crawler.AtEnd && AllArgumentsParsed)
+            ParsedOperationArguments parsedResults = new ParsedOperationArguments(AliasMap());
+            try
             {
-                Argument argument = LookupArgument(aliasMap, crawler);
-                crawler.Next();
-                provided.Add(argument.Name, argument.Parse(crawler));
+                parsedResults.Parse(crawler);
             }
-            return provided;
+            catch (KeyNotFoundException)
+            { }
+            return parsedResults.Provided;
         }
         private Dictionary<string, Argument> AliasMap()
         {
             Dictionary<string, Argument> toReturn = new Dictionary<string, Argument>(StringComparer.OrdinalIgnoreCase);
             foreach (Argument argument in Arguments)
-                foreach (string alias in argument.ArgumentAliases)
-                    toReturn.Add(alias, argument);
+                foreach (string alias in argument.Aliases)
+                    toReturn.Add($"{Argument.ArgumentIdentifier}{alias}", argument);
             return toReturn;
-        }
-        private Argument LookupArgument(Dictionary<string, Argument> aliasMap, ArgumentCrawler crawler)
-        {
-            string current = crawler.Parse();
-            if (!aliasMap.ContainsKey(current))
-                throw new KeyNotFoundException($"Unexpected argument alias {current}");
-            return aliasMap[current];
         }
     }
 }

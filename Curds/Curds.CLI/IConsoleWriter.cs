@@ -9,6 +9,8 @@ namespace Curds.CLI
 
         bool StartOfNewLine { get; set; }
 
+        ConsoleColor CurrentColor { get; }
+
         void SetTextColor(ConsoleColor color);
         void ResetTextColor();
 

@@ -11,26 +11,20 @@ namespace Curds.Domain.CLI.Operations
 
     public class MockOperation : Operation<MockApplication>
     {
-        public override string Name => throw new NotImplementedException();
+        public override string Name => nameof(MockOperation);
 
-        public override string Description => throw new NotImplementedException();
+        public override string Description => $"{nameof(MockOperation)}{nameof(Description)}";
 
-        public override IEnumerable<string> Aliases => throw new NotImplementedException();
+        public override IEnumerable<string> Aliases => new string[] { nameof(MockOperation), $"{nameof(MockOperation)}{nameof(Aliases)}" };
 
-        protected override IEnumerable<Argument> Arguments => throw new NotImplementedException();
+        protected override IEnumerable<Argument> Arguments => new List<Argument>
+        {
+            new MockArgument(1, false),
+            new MockArgument(2, true),
+        };
 
         public MockOperation(MockCommandDefinition commandDefinition)
             : base(commandDefinition)
         { }
-
-        protected override FormattedText ArgumentsUsage()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override string ArgumentSyntax()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

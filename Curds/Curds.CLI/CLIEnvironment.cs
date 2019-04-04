@@ -10,9 +10,10 @@ namespace Curds.CLI
 
         public static ConsoleColor DefaultTextColor = ConsoleColor.White;
 
-        public static ConsoleColor Error = ConsoleColor.Red;       
-        public static ConsoleColor Operations = ConsoleColor.Cyan;
-        public static ConsoleColor Arguments = ConsoleColor.Green;
+        public static ConsoleColor Error = ConsoleColor.Red;
+        public static ConsoleColor Application = ConsoleColor.Magenta;
+        public static ConsoleColor Operation = ConsoleColor.Cyan;
+        public static ConsoleColor Argument = ConsoleColor.Green;
         public static ConsoleColor Value = ConsoleColor.Yellow;
     }
 }

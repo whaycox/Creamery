@@ -6,13 +6,17 @@ namespace Curds.CLI.Formatting.Tokens
     {
         private ConsoleColor Color { get; }
 
-        public ColoredText(ConsoleColor color)
+        private ConsoleColor PreviousColor { get; set; }
+
+        public ColoredText(FormattedText parentText, ConsoleColor color)
+            : base(parentText)
         {
             Color = color;
+            PreviousColor = CLIEnvironment.DefaultTextColor;
         }
         
         protected override BaseTextToken EngageToken() => new ColorTextToken(this);
-        protected override BaseTextToken DisengageToken() => new ResetTextColorToken();
+        protected override BaseTextToken DisengageToken() => new ResetTextColorToken(this);
 
         private class ColorTextToken : BaseTextToken
         {
@@ -23,12 +27,26 @@ namespace Curds.CLI.Formatting.Tokens
                 Parent = parent;
             }
 
-            public override void Write(IConsoleWriter writer) => writer.SetTextColor(Parent.Color);
+            public override void Write(IConsoleWriter writer)
+            {
+                Parent.PreviousColor = writer.CurrentColor;
+                writer.SetTextColor(Parent.Color);
+            }
         }
 
         private class ResetTextColorToken : BaseTextToken
         {
-            public override void Write(IConsoleWriter writer) => writer.ResetTextColor();
+            private ColoredText Parent { get; }
+
+            public ResetTextColorToken(ColoredText parent)
+            {
+                Parent = parent;
+            }
+
+            public override void Write(IConsoleWriter writer)
+            {
+                writer.SetTextColor(Parent.PreviousColor);
+            }
         }
     }
 }

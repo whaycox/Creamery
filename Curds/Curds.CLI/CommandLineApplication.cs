@@ -1,6 +1,7 @@
 ﻿using Curds.Application;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Curds.CLI
 {
@@ -11,7 +12,7 @@ namespace Curds.CLI
 
     public abstract class CommandLineApplication<T> where T : CurdsApplication
     {
-        protected static string ImplicitArgument = ArgumentlessOperation<CurdsApplication>.Argumentless;
+        protected static string ImplicitArgument = ArgumentlessOperation<CurdsApplication>.ArgumentlessKey;
 
         private OperationParser<T> Parser = new OperationParser<T>();
 
@@ -35,10 +36,17 @@ namespace Curds.CLI
         }
         private FormattedText Usage(string message) => FormattedText.New
             .Color(CLIEnvironment.Error, UsageMessage(message))
-            .AppendLine(Header)
-            .Append(Parser.OperationUsages(Operations));
+            .AppendLine(ApplicationDescription)
+            .Append(OperationUsages);
         private FormattedText UsageMessage(string message) => FormattedText.New.AppendLine(PlainTextToken.Create(message));
-        private BaseTextToken Header => PlainTextToken.Create($"{AppDomain.CurrentDomain.FriendlyName} | {Application.Description}");
+        private FormattedText ApplicationDescription => FormattedText.New
+            .Concatenate(null, " | ", null, new List<BaseTextToken> { AppName, PlainTextToken.Create(Application.Description) });
+        private FormattedText AppName => FormattedText.New
+            .Color(CLIEnvironment.Application, PlainTextToken.Create(AppDomain.CurrentDomain.FriendlyName));
+        private FormattedText OperationUsages => FormattedText.New
+            .ColorLine(CLIEnvironment.Operation, OperationHeader)
+            .Indent(Operations.Select(o => o.Usage));
+        private BaseTextToken OperationHeader => PlainTextToken.Create("Operations:");
 
         public void Execute(string[] args)
         {

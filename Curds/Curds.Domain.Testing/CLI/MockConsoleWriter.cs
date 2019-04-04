@@ -15,6 +15,9 @@ namespace Curds.Domain.CLI
 
         public override string Indentation { get; set; }
 
+        private ConsoleColor _current = CLIEnvironment.DefaultTextColor;
+        public override ConsoleColor CurrentColor => _current;
+
         private int _indents = default(int);
         public override int Indents
         {
@@ -44,7 +47,11 @@ namespace Curds.Domain.CLI
         }
 
         public override void ResetTextColor() => Writes.Add(TextColorChangeWrite(CLIEnvironment.DefaultTextColor));
-        public override void SetTextColor(ConsoleColor color) => Writes.Add(TextColorChangeWrite(color));
+        public override void SetTextColor(ConsoleColor color)
+        {
+            _current = color;
+            Writes.Add(TextColorChangeWrite(color));
+        }
         protected override void WriteInternal(string message) => Writes.Add(message);
     }
 }

@@ -10,6 +10,8 @@ namespace Curds.CLI.Writer
         public abstract int Indents { get; set; }
         public abstract bool StartOfNewLine { get; set; }
 
+        public abstract ConsoleColor CurrentColor { get; }
+
         public BaseConsoleWriter()
         {
             Indentation = CLIEnvironment.DefaultIndentation;

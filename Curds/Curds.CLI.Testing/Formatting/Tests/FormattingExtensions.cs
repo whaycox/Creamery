@@ -1,5 +1,4 @@
-﻿using Curds.Domain.CLI;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 
@@ -10,8 +9,6 @@ namespace Curds.CLI.Formatting.Tests
     [TestClass]
     public class FormattingExtensions : FormattingTemplate<Formatting.FormattedText>
     {
-        private MockConsoleWriter Writer = new MockConsoleWriter();
-
         private BaseTextToken SampleToken(string message) => PlainTextToken.Create(message);
 
         private IEnumerable<BaseTextToken> Samples => new List<BaseTextToken>
@@ -45,6 +42,54 @@ namespace Curds.CLI.Formatting.Tests
             Writer.StartsWith(NewLine(true))
                 .ThenHas(NewLine(false))
                 .ThenHas(nameof(AppendLine))
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true));
+        }
+
+        [TestMethod]
+        public void AppendMany()
+        {
+            var test = TestObject.Append(Samples);
+            test.Write(Writer);
+            Assert.AreEqual(9, Writer.Writes.Count);
+            Writer.StartsWith(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas($"{nameof(Samples)}_1")
+                .ThenHas($"{nameof(Samples)}_2")
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas($"{nameof(Samples)}_3")
+                .ThenHas($"{nameof(Samples)}_4");
+        }
+
+        [TestMethod]
+        public void AppendLineManyInsertsNewLineBetweenEach()
+        {
+            var test = TestObject.AppendLine(Samples);
+            test.Write(Writer);
+            Assert.AreEqual(23, Writer.Writes.Count);
+            Writer.StartsWith(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas($"{nameof(Samples)}_1")
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas($"{nameof(Samples)}_2")
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas($"{nameof(Samples)}_3")
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas($"{nameof(Samples)}_4")
                 .ThenHas(Environment.NewLine)
                 .ThenHas(NewLine(true));
         }
@@ -97,6 +142,39 @@ namespace Curds.CLI.Formatting.Tests
         }
 
         [TestMethod]
+        public void IndentLineManyInsertsNewLineBetweenEach()
+        {
+            var test = TestObject.IndentLine(Samples);
+            test.Write(Writer);
+            Assert.AreEqual(25, Writer.Writes.Count);
+            Writer.StartsWith(NewLine(true))
+                .ThenHas(Indents(1))
+                .ThenHas(NewLine(false))
+                .ThenHas($"\t{nameof(Samples)}_1")
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas($"\t{nameof(Samples)}_2")
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas($"\t{Environment.NewLine}")
+                .ThenHas(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas($"\t{Environment.NewLine}")
+                .ThenHas(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas($"\t{nameof(Samples)}_3")
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas($"\t{nameof(Samples)}_4")
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
+                .ThenHas(Indents(0));
+        }
+
+        [TestMethod]
         public void Color()
         {
             var test = TestObject.Color(ConsoleColor.Cyan, SampleToken(nameof(Color)));
@@ -141,6 +219,121 @@ namespace Curds.CLI.Formatting.Tests
                 .ThenHas($"{nameof(Samples)}_3")
                 .ThenHas($"{nameof(Samples)}_4")
                 .ThenHas(TextColor(CLIEnvironment.DefaultTextColor));
+        }
+
+        [TestMethod]
+        public void ColorCanStack()
+        {
+            var test = TestObject.Color(ConsoleColor.Cyan, StackedColors());
+            test.Write(Writer);
+            Assert.AreEqual(9, Writer.Writes.Count);
+            Writer.StartsWith(NewLine(true))
+                .ThenHas(TextColor(ConsoleColor.Cyan))
+                .ThenHas(NewLine(false))
+                .ThenHas(CurrentColor)
+                .ThenHas(TextColor(ConsoleColor.Green))
+                .ThenHas(StackedColor)
+                .ThenHas(TextColor(ConsoleColor.Cyan))
+                .ThenHas(PreviousColor)
+                .ThenHas(TextColor(CLIEnvironment.DefaultTextColor));
+        }
+        private Formatting.FormattedText StackedColors() => TestObject.Append(SampleToken(CurrentColor)).Color(ConsoleColor.Green, SampleToken(StackedColor)).Append(SampleToken(PreviousColor));
+        private string CurrentColor => nameof(CurrentColor);
+        private string StackedColor => nameof(StackedColor);
+        private string PreviousColor => nameof(PreviousColor);
+
+        private const string TestStart = "[ ";
+        private const string TestEnd = " ]";
+        private const string TestBetween = " | ";
+
+        [TestMethod]
+        public void ConcatenateThrowsWithoutOneElement()
+        {
+            Assert.ThrowsException<ArgumentNullException>(() => TestObject.Concatenate(TestStart, TestBetween, TestEnd, new BaseTextToken[0]));
+            Assert.ThrowsException<ArgumentNullException>(() => TestObject.Concatenate(TestStart, TestBetween, TestEnd, null));
+        }
+
+        [TestMethod]
+        public void NullStartIsEmpty()
+        {
+            var test = TestObject.Concatenate(null, TestBetween, TestEnd, Samples);
+            test.Write(Writer);
+            Assert.AreEqual(13, Writer.Writes.Count);
+            Writer.StartsWith(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas($"{nameof(Samples)}_1")
+                .ThenHas(TestBetween)
+                .ThenHas($"{nameof(Samples)}_2")
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas(TestBetween)
+                .ThenHas($"{nameof(Samples)}_3")
+                .ThenHas(TestBetween)
+                .ThenHas($"{nameof(Samples)}_4")
+                .ThenHas(TestEnd);
+        }
+
+        [TestMethod]
+        public void NullEndIsEmpty()
+        {
+            var test = TestObject.Concatenate(TestStart, TestBetween, null, Samples);
+            test.Write(Writer);
+            Assert.AreEqual(13, Writer.Writes.Count);
+            Writer.StartsWith(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas(TestStart)
+                .ThenHas($"{nameof(Samples)}_1")
+                .ThenHas(TestBetween)
+                .ThenHas($"{nameof(Samples)}_2")
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas(TestBetween)
+                .ThenHas($"{nameof(Samples)}_3")
+                .ThenHas(TestBetween)
+                .ThenHas($"{nameof(Samples)}_4");
+        }
+
+        [TestMethod]
+        public void NullBetweenIsEmpty()
+        {
+            var test = TestObject.Concatenate(TestStart, null, TestEnd, Samples);
+            test.Write(Writer);
+            Assert.AreEqual(11, Writer.Writes.Count);
+            Writer.StartsWith(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas(TestStart)
+                .ThenHas($"{nameof(Samples)}_1")
+                .ThenHas($"{nameof(Samples)}_2")
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas($"{nameof(Samples)}_3")
+                .ThenHas($"{nameof(Samples)}_4")
+                .ThenHas(TestEnd);
+        }
+
+        [TestMethod]
+        public void ConcatenateSurroundsProperly()
+        {
+            var test = TestObject.Concatenate(TestStart, TestBetween, TestEnd, Samples);
+            test.Write(Writer);
+            Assert.AreEqual(14, Writer.Writes.Count);
+            Writer.StartsWith(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas(TestStart)
+                .ThenHas($"{nameof(Samples)}_1")
+                .ThenHas(TestBetween)
+                .ThenHas($"{nameof(Samples)}_2")
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas(TestBetween)
+                .ThenHas($"{nameof(Samples)}_3")
+                .ThenHas(TestBetween)
+                .ThenHas($"{nameof(Samples)}_4")
+                .ThenHas(TestEnd);
         }
     }
 }

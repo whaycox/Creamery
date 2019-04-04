@@ -11,9 +11,9 @@ namespace Curds.CLI.Operations
 
     public abstract class ArgumentlessOperation<T> : Operation<T> where T : CurdsApplication
     {
-        public const string Argumentless = nameof(Argumentless);
+        public const string ArgumentlessKey = nameof(ArgumentlessKey);
 
-        protected override IEnumerable<Argument> Arguments => new List<Argument>();
+        protected sealed override IEnumerable<Argument> Arguments => new List<Argument>();
 
         public abstract List<Value> Values { get; }
 
@@ -21,22 +21,17 @@ namespace Curds.CLI.Operations
             : base(definition)
         { }
 
-        protected override string ArgumentSyntax()
-        {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < Values.Count; i++)
-            {
-                if (i != 0)
-                    builder.Append(" ");
-                builder.Append(Values[i].Syntax);
-            }
-            return builder.ToString();
-        }
+        public override FormattedText Syntax => FormattedText.New
+            .Concatenate(null, " ", null, new List<BaseTextToken> { ComposeAliases(), ValueSyntax() });
+        private FormattedText ValueSyntax() => FormattedText.New
+            .Concatenate(null, " ", null, Values.Select(v => v.Syntax))
+            .Color(CLIEnvironment.Value);
 
-        protected override FormattedText ArgumentsUsage() => FormattedText.New
-            .ColorLine(CLIEnvironment.Value, Header)
-            .Indent(Values.Select(v => v.Usage));
-        private BaseTextToken Header => PlainTextToken.Create("Values:");
+        public override FormattedText Usage => FormattedText.New
+            .AppendLine(Syntax)
+            .AppendLine(FormattedNameAndDescription(CLIEnvironment.Operation))
+            .Append(ValuesUsage());
+        protected FormattedText ValuesUsage() => IndentChildren("Values:", CLIEnvironment.Value, Values.Select(v => v.Usage));
 
         public override Dictionary<string, List<Value>> Parse(ArgumentCrawler crawler)
         {
@@ -45,7 +40,7 @@ namespace Curds.CLI.Operations
                 provided.Add(value.Parse(crawler));
             return new Dictionary<string, List<Value>>
                 {
-                    { Argumentless, provided }
+                    { ArgumentlessKey, provided }
                 };
         }
     }

@@ -16,8 +16,6 @@ namespace Curds.CLI.Formatting.Tests
             .Append(Token)
             .Append(Token);
 
-        private MockConsoleWriter Writer = new MockConsoleWriter();
-
         protected override Formatting.FormattedText TestObject { get; } = Formatting.FormattedText.New;
 
         [TestMethod]

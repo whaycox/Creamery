@@ -7,7 +7,7 @@ namespace Curds.CLI.Formatting
 
     public class FormattedText : BaseTextToken
     {
-        private List<BaseTextToken> Buffer { get; }
+        protected List<BaseTextToken> Buffer { get; }
 
         public IEnumerable<BaseTextToken> Output => Buffer.ToList();
 
@@ -22,14 +22,20 @@ namespace Curds.CLI.Formatting
             Buffer = text.Output.ToList();
         }
 
-        public void Add(BaseTextToken token) => Buffer.Add(token);
+        protected virtual void AddToBuffer(BaseTextToken token) => Buffer.Add(token);
+
+        public void Add(BaseTextToken token) => AddToBuffer(token);
         public void AddLine(BaseTextToken token)
         {
             Add(token);
             Add(NewLineToken.New);
         }
 
-        public void Add(FormattedText tokens) => Buffer.AddRange(tokens.Output);
+        public void Add(FormattedText tokens)
+        {
+            foreach (BaseTextToken token in tokens.Output)
+                AddToBuffer(token);
+        }
         public void AddLine(FormattedText tokens)
         {
             Add(tokens);

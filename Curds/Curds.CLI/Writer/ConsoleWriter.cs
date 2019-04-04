@@ -10,6 +10,8 @@ namespace Curds.CLI.Writer
 
         public override bool StartOfNewLine { get; set; }
 
+        public override ConsoleColor CurrentColor => Console.ForegroundColor;
+
         public ConsoleWriter()
         {
             Console.ForegroundColor = CLIEnvironment.DefaultTextColor;
