@@ -24,13 +24,13 @@ namespace Curds.CLI.Operations
         public override FormattedText Usage => FormattedText.New
             .AppendLine(Syntax)
             .AppendLine(FormattedNameAndDescription(CLIEnvironment.Argument))
-            .Append(ValueUsage());
-        private FormattedText ValueUsage() => IndentChildren("Values:", CLIEnvironment.Value, Values.Select(v => v.Usage));
+            .Append(ValuesUsage());
+        protected virtual FormattedText ValuesUsage() => IndentChildren("Values:", CLIEnvironment.Value, Values.Select(v => v.Usage));
 
         public abstract bool Required { get; }
         public abstract List<Value> Values { get; }
 
-        public List<Value> Parse(ArgumentCrawler crawler)
+        public virtual List<Value> Parse(ArgumentCrawler crawler)
         {
             List<Value> toReturn = Values;
             for (int i = 0; i < toReturn.Count; i++)

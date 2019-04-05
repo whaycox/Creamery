@@ -31,7 +31,7 @@ namespace Curds.CLI
         private void Usage(int exitCode, string message, params object[] args) => Usage(exitCode, string.Format(message, args));
         private void Usage(int exitCode, string message)
         {
-            Writer.OutputText(Usage(message));
+            Usage(message).Write(Writer);
             Environment.Exit(exitCode);
         }
         private FormattedText Usage(string message) => FormattedText.New

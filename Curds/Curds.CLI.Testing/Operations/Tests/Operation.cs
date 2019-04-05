@@ -16,7 +16,7 @@ namespace Curds.CLI.Operations.Tests
         private Operation<MockApplication> _obj = null;
         protected override Operation<MockApplication> TestObject => _obj;
 
-        protected override int ExpectedUsageWrites => 106;
+        protected override int ExpectedUsageWrites => 126;
 
         [TestInitialize]
         public void BuildObj()
@@ -127,6 +127,26 @@ namespace Curds.CLI.Operations.Tests
                 .ThenHas(Environment.NewLine)
                 .ThenHas(NewLine(true))
                 .ThenHas(Indents(1))
+                .ThenHas(NewLine(false))
+                .ThenHas($"\t{Environment.NewLine}")
+                .ThenHas(NewLine(true))
+                .ThenHas(TextColor(CLIEnvironment.Argument))
+                .ThenHas(NewLine(false))
+                .ThenHas($"\t{AliasedOptionValue.AliasStart}")
+                .ThenHas($"{Operations.Argument.ArgumentIdentifier}{nameof(MockBooleanArgument)}")
+                .ThenHas(AliasedOptionValue.AliasSeparator)
+                .ThenHas($"{Operations.Argument.ArgumentIdentifier}{nameof(MockBooleanArgument)}{nameof(MockBooleanArgument.Aliases)}")
+                .ThenHas(AliasedOptionValue.AliasEnd)
+                .ThenHas(TextColor(CLIEnvironment.DefaultTextColor))
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
+                .ThenHas(TextColor(CLIEnvironment.Argument))
+                .ThenHas(NewLine(false))
+                .ThenHas($"\t{nameof(MockBooleanArgument)}")
+                .ThenHas(TextColor(CLIEnvironment.DefaultTextColor))
+                .ThenHas($": {nameof(MockBooleanArgument)}{nameof(MockBooleanArgument.Description)}")
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
                 .ThenHas(NewLine(false))
                 .ThenHas($"\t{Environment.NewLine}")
                 .ThenHas(NewLine(true))

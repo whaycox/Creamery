@@ -23,7 +23,7 @@ namespace Curds.CLI.Operations
 
         public override FormattedText Syntax => FormattedText.New
             .Concatenate(null, " ", null, new List<BaseTextToken> { ComposeAliases(), ValueSyntax() });
-        private FormattedText ValueSyntax() => FormattedText.New
+        protected virtual FormattedText ValueSyntax() => FormattedText.New
             .Concatenate(null, " ", null, Values.Select(v => v.Syntax))
             .Color(CLIEnvironment.Value);
 
@@ -31,7 +31,7 @@ namespace Curds.CLI.Operations
             .AppendLine(Syntax)
             .AppendLine(FormattedNameAndDescription(CLIEnvironment.Operation))
             .Append(ValuesUsage());
-        protected FormattedText ValuesUsage() => IndentChildren("Values:", CLIEnvironment.Value, Values.Select(v => v.Usage));
+        protected virtual FormattedText ValuesUsage() => IndentChildren("Values:", CLIEnvironment.Value, Values.Select(v => v.Usage));
 
         public override Dictionary<string, List<Value>> Parse(ArgumentCrawler crawler)
         {

@@ -21,6 +21,7 @@ namespace Curds.Domain.CLI.Operations
         {
             new MockArgument(1, false),
             new MockArgument(2, true),
+            new MockBooleanArgument(),
         };
 
         public MockOperation(MockCommandDefinition commandDefinition)

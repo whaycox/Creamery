@@ -9,7 +9,6 @@ namespace Queso.CLI.Operations
     public class CharacterPathValue : Value
     {
         public override string Name => "character-path";
-
         public override string Description => "Path to the .d2s character file.";
     }
 }
