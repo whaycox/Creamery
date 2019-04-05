@@ -32,7 +32,7 @@ namespace Curds.CLI
         private void Usage(int exitCode, string message)
         {
             Usage(message).Write(Writer);
-            Environment.Exit(exitCode);
+            Writer.Exit(exitCode);
         }
         private FormattedText Usage(string message) => FormattedText.New
             .Color(CLIEnvironment.Error, UsageMessage(message))

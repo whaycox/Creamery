@@ -17,6 +17,8 @@ namespace Curds.CLI.Writer
             Indentation = CLIEnvironment.DefaultIndentation;
             StartOfNewLine = true;
         }
+        
+        public abstract void Exit(int exitCode);
 
         public abstract void ResetTextColor();
         public abstract void SetTextColor(ConsoleColor color);

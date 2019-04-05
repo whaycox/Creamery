@@ -11,9 +11,12 @@ namespace Curds.CLI
 
         ConsoleColor CurrentColor { get; }
 
+        void Exit(int exitCode);
+
         void SetTextColor(ConsoleColor color);
         void ResetTextColor();
 
         void Write(string message);
+
     }
 }

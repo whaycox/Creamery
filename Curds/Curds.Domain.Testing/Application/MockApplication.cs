@@ -7,7 +7,7 @@ namespace Curds.Domain.Application
 {
     public class MockApplication : CurdsApplication
     {
-        public override string Description => throw new NotImplementedException();
+        public override string Description => nameof(MockApplication);
 
         public Message.MockDispatch Dispatch { get; }
 

@@ -10,6 +10,7 @@ namespace Curds.Domain.CLI
         public static string StartOfNewLineWrite(bool newValue) => $"{nameof(StartOfNewLine)} changes to {newValue}";
         public static string TextColorChangeWrite(ConsoleColor textColor) => $"Color changes to {textColor}";
         public static string IndentsWrite(int indents) => $"Changing indents to {indents}";
+        public static string EnvironmentExit(int exitCode) => $"Exiting the environment with a code of {exitCode}";
 
         public List<string> Writes = new List<string>();
 
@@ -45,6 +46,8 @@ namespace Curds.Domain.CLI
                 _startOfNewLine = value;
             }
         }
+
+        public override void Exit(int exitCode) => Writes.Add(EnvironmentExit(exitCode));
 
         public override void ResetTextColor() => Writes.Add(TextColorChangeWrite(CLIEnvironment.DefaultTextColor));
         public override void SetTextColor(ConsoleColor color)

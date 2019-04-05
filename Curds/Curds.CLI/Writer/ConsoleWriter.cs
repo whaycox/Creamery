@@ -17,6 +17,8 @@ namespace Curds.CLI.Writer
             Console.ForegroundColor = CLIEnvironment.DefaultTextColor;
         }
 
+        public override void Exit(int exitCode) => Environment.Exit(exitCode);
+
         public override void SetTextColor(ConsoleColor color) => Console.ForegroundColor = color;
         public override void ResetTextColor() => Console.ForegroundColor = CLIEnvironment.DefaultTextColor;
 
