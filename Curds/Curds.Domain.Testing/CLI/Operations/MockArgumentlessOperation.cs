@@ -20,6 +20,8 @@ namespace Curds.Domain.CLI.Operations
         public override List<Value> Values => new List<Value>
         {
             new MockValue(),
+            new MockValue(),
+            new MockValue(),
         };
 
         public MockArgumentlessOperation(MockQueryDefinition query)

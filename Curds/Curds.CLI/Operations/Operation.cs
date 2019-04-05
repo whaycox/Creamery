@@ -22,11 +22,11 @@ namespace Curds.CLI.Operations
         protected override FormattedText ComposeAliases() => base.ComposeAliases()
             .Color(CLIEnvironment.Operation);
 
-        public override FormattedText Syntax => FormattedText.New
-            .Concatenate(null, " ", null, new List<BaseTextToken> { ComposeAliases(), FormattedNameAndDescription(CLIEnvironment.Operation) });
+        public override FormattedText Syntax => ComposeAliases();
 
         public override FormattedText Usage => FormattedText.New
             .AppendLine(Syntax)
+            .AppendLine(FormattedNameAndDescription(CLIEnvironment.Operation))
             .Append(ArgumentsUsage());
         protected virtual FormattedText ArgumentsUsage() => IndentChildren("Arguments:", CLIEnvironment.Argument, Arguments.Select(a => a.Usage));
 

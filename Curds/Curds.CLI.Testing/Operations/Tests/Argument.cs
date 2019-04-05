@@ -69,7 +69,7 @@ namespace Curds.CLI.Operations.Tests
                 .ThenHas(Indents(1))
                 .ThenHas(TextColor(CLIEnvironment.Value))
                 .ThenHas(NewLine(false))
-                .ThenHas($"\t{nameof(MockValue)}")
+                .ThenHas($"{CLIEnvironment.DefaultIndentation}{nameof(MockValue)}")
                 .ThenHas(TextColor(CLIEnvironment.DefaultTextColor))
                 .ThenHas($": {nameof(MockValue)}{nameof(MockValue.Description)}")
                 .ThenHas(Environment.NewLine)

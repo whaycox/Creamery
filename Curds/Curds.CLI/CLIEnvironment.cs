@@ -6,7 +6,7 @@ namespace Curds.CLI
 {
     public static class CLIEnvironment
     {
-        public const string DefaultIndentation = "\t";
+        public const string DefaultIndentation = "    ";
 
         public static ConsoleColor DefaultTextColor = ConsoleColor.White;
 

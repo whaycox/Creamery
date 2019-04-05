@@ -45,7 +45,7 @@ namespace Curds.CLI
             .Color(CLIEnvironment.Application, PlainTextToken.Create(AppDomain.CurrentDomain.FriendlyName));
         private FormattedText OperationUsages => FormattedText.New
             .ColorLine(CLIEnvironment.Operation, OperationHeader)
-            .Indent(Operations.Select(o => o.Usage));
+            .IndentLine(Operations.Select(o => o.Usage));
         private BaseTextToken OperationHeader => PlainTextToken.Create("Operations:");
 
         public void Execute(string[] args)
@@ -60,7 +60,6 @@ namespace Curds.CLI
             {
                 Usage(1, $"Failed to {nameof(Execute)}: {ex}");
             }
-            throw new NotImplementedException();
         }
         private void ExecuteOperations(List<OperationParser<T>.ParsedPair> parsedPairs)
         {

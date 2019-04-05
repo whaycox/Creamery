@@ -16,7 +16,7 @@ namespace Curds.CLI.Operations.Tests
         private ArgumentlessOperation<MockApplication> _obj = null;
         protected override ArgumentlessOperation<MockApplication> TestObject => _obj;
 
-        protected override int ExpectedUsageWrites => 39;
+        protected override int ExpectedUsageWrites => 61;
 
         [TestInitialize]
         public void BuildObj()
@@ -39,6 +39,14 @@ namespace Curds.CLI.Operations.Tests
                 .ThenHas(Operations.Value.SyntaxStart)
                 .ThenHas(nameof(MockValue))
                 .ThenHas(Operations.Value.SyntaxEnd)
+                .ThenHas(" ")
+                .ThenHas(Operations.Value.SyntaxStart)
+                .ThenHas(nameof(MockValue))
+                .ThenHas(Operations.Value.SyntaxEnd)
+                .ThenHas(" ")
+                .ThenHas(Operations.Value.SyntaxStart)
+                .ThenHas(nameof(MockValue))
+                .ThenHas(Operations.Value.SyntaxEnd)
                 .ThenHas(TextColor(CLIEnvironment.DefaultTextColor))
                 .ThenHas(Environment.NewLine)
                 .ThenHas(NewLine(true))
@@ -58,7 +66,21 @@ namespace Curds.CLI.Operations.Tests
                 .ThenHas(Indents(1))
                 .ThenHas(TextColor(CLIEnvironment.Value))
                 .ThenHas(NewLine(false))
-                .ThenHas($"\t{nameof(MockValue)}")
+                .ThenHas($"{CLIEnvironment.DefaultIndentation}{nameof(MockValue)}")
+                .ThenHas(TextColor(CLIEnvironment.DefaultTextColor))
+                .ThenHas($": {nameof(MockValue)}{nameof(MockValue.Description)}")
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
+                .ThenHas(TextColor(CLIEnvironment.Value))
+                .ThenHas(NewLine(false))
+                .ThenHas($"{CLIEnvironment.DefaultIndentation}{nameof(MockValue)}")
+                .ThenHas(TextColor(CLIEnvironment.DefaultTextColor))
+                .ThenHas($": {nameof(MockValue)}{nameof(MockValue.Description)}")
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
+                .ThenHas(TextColor(CLIEnvironment.Value))
+                .ThenHas(NewLine(false))
+                .ThenHas($"{CLIEnvironment.DefaultIndentation}{nameof(MockValue)}")
                 .ThenHas(TextColor(CLIEnvironment.DefaultTextColor))
                 .ThenHas($": {nameof(MockValue)}{nameof(MockValue.Description)}")
                 .ThenHas(Environment.NewLine)
