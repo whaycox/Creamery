@@ -26,10 +26,31 @@ namespace Curds.CLI.Tests
         }
 
         [TestMethod]
-        public void UsageIsExpected()
+        public void NullArgumentsProvidesStandardUsage()
         {
             TestObject.Execute(null);
-            Assert.AreEqual(1, Writer.Writes.Count);
+            Writer.StartsWith(NewLine(true))
+                .ThenHas(TextColor(CLIEnvironment.Error))
+                .ThenHas(NewLine(false))
+                .ThenHas("Please provide arguments")
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
+                .ThenHas(TextColor(CLIEnvironment.DefaultTextColor))
+                .ThenHas(TextColor(CLIEnvironment.Application))
+                .ThenHas(NewLine(false))
+                .ThenHas(Testing.ApplicationName)
+                .ThenHas(TextColor(CLIEnvironment.DefaultTextColor))
+                .ThenHas(" | ")
+                .ThenHas(nameof(MockApplication))
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
+                .ThenHas(TextColor(CLIEnvironment.Operation))
+                .ThenHas(NewLine(false))
+                .ThenHas("Operations:")
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
+                .ThenHas(TextColor(CLIEnvironment.DefaultTextColor))
+                .ThenHas(Indents(1));
         }
     }
 
