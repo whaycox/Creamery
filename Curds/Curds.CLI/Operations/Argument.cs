@@ -10,6 +10,7 @@ namespace Curds.CLI.Operations
     public abstract class Argument : AliasedOptionValue
     {
         public const string ArgumentIdentifier = "--";
+        public static string PrependIdentifier(string argument) => $"{ArgumentIdentifier}{argument}";
         public override string AliasPrefix => ArgumentIdentifier;
 
         protected override FormattedText ComposeAliases() => base.ComposeAliases()

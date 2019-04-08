@@ -11,18 +11,19 @@ namespace Curds.Domain.CLI.Operations
 
     public class MockOperation : Operation<MockApplication>
     {
-        public override string Name => nameof(MockOperation);
-
-        public override string Description => $"{nameof(MockOperation)}{nameof(Description)}";
-
         public override IEnumerable<string> Aliases => new string[] { nameof(MockOperation), $"{nameof(MockOperation)}{nameof(Aliases)}" };
+
+        public override string Name => nameof(MockOperation);
+        public override string Description => $"{nameof(MockOperation)}{nameof(Description)}";
 
         protected override IEnumerable<Argument> Arguments => new List<Argument>
         {
-            new MockArgument(1, false),
-            new MockArgument(2, true),
+            new MockArgument(OptionalIdentifier, false),
+            new MockArgument(RequiredIdentifier, true),
             new MockBooleanArgument(),
         };
+        public const int OptionalIdentifier = 1;
+        public const int RequiredIdentifier = 2;
 
         public MockOperation(MockCommandDefinition commandDefinition)
             : base(commandDefinition)

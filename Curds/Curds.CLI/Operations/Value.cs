@@ -17,9 +17,7 @@ namespace Curds.CLI.Operations
 
         public Value Parse(ArgumentCrawler crawler)
         {
-            RawValue = crawler.Parse();
-            if (!crawler.AtEnd)
-                crawler.Next();
+            RawValue = crawler.Consume();
             return this;
         }
     }

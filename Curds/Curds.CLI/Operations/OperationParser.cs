@@ -16,18 +16,15 @@ namespace Curds.CLI.Operations
             Dictionary<string, Operation<T>> aliasMap = OperationAliasMap(operations);
             List<ParsedPair> parsedOperations = new List<ParsedPair>();
 
-            if (args.Length == 1)
+            while (!crawler.FullyConsumed)
                 parsedOperations.Add(BuildPair(aliasMap, crawler));
-            else
-                while (!crawler.AtEnd)
-                    parsedOperations.Add(BuildPair(aliasMap, crawler));
             return parsedOperations;
         }
         private ParsedPair BuildPair(Dictionary<string, Operation<T>> aliasMap, ArgumentCrawler crawler)
         {
-            if (!aliasMap.TryGetValue(crawler.Parse(), out Operation<T> selected))
-                throw new KeyNotFoundException($"Unexpected operation {crawler.Parse()}");
-            crawler.Next();
+            string operation = crawler.Consume();
+            if (!aliasMap.TryGetValue(operation, out Operation<T> selected))
+                throw new KeyNotFoundException($"Unexpected operation {operation}");
             return new ParsedPair(selected, selected.Parse(crawler));
         }
         private Dictionary<string, Operation<T>> OperationAliasMap(IEnumerable<Operation<T>> operations)
@@ -35,7 +32,7 @@ namespace Curds.CLI.Operations
             Dictionary<string, Operation<T>> toReturn = new Dictionary<string, Operation<T>>();
             foreach (Operation<T> operation in operations)
                 foreach (string alias in operation.Aliases)
-                    toReturn.Add($"{Operation<T>.OperationIdentifier}{alias}", operation);
+                    toReturn.Add(Operation.PrependIdentifier(alias), operation);
             return toReturn;
         }
 

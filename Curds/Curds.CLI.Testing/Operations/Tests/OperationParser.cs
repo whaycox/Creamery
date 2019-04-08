@@ -20,21 +20,22 @@ namespace Curds.CLI.Operations.Tests
 
         private string[] MockOptionalOperationArguments => new string[]
         {
-            $"{MockOperation.OperationIdentifier}{nameof(MockOperation)}",
-            $"{CLI.Operations.Argument.ArgumentIdentifier}1{nameof(MockArgument)}",
+            CLI.Operations.Operation.PrependIdentifier(nameof(MockOperation)),
+            CLI.Operations.Argument.PrependIdentifier(MockArgument.IdentifiedName(MockOperation.OptionalIdentifier)),
             nameof(MockValue),
         };
         private string[] MockRequiredOperationArguments => new string[] 
         {
-            $"{MockOperation.OperationIdentifier}{nameof(MockOperation)}",
-            $"{CLI.Operations.Argument.ArgumentIdentifier}{RequiredArgument}",
+            CLI.Operations.Operation.PrependIdentifier(nameof(MockOperation)),
+            CLI.Operations.Argument.PrependIdentifier(MockArgument.IdentifiedName(MockOperation.RequiredIdentifier)),
             nameof(MockValue),
         };
-        private string RequiredArgument = $"2{nameof(MockArgument)}";
 
         private string[] MockArgumentlessOperationArguments => new string[]
         {
-            $"{MockOperation.OperationIdentifier}{nameof(MockArgumentlessOperation)}",
+            CLI.Operations.Operation.PrependIdentifier(nameof(MockArgumentlessOperation)),
+            nameof(MockValue),
+            nameof(MockValue),
             nameof(MockValue),
         };
 
@@ -75,8 +76,8 @@ namespace Curds.CLI.Operations.Tests
 
             var results = TestObject.Parse(Operations, testArgs.ToArray());
             Assert.AreEqual(2, results.Count);
-            Assert.AreEqual(nameof(MockValue), results[0].Arguments[RequiredArgument][0].RawValue);
-            Assert.AreEqual(nameof(CanAcceptMultipleOfSameOperation), results[1].Arguments[RequiredArgument][0].RawValue);
+            Assert.AreEqual(nameof(MockValue), results[0].Arguments[MockArgument.IdentifiedName(MockOperation.RequiredIdentifier)][0].RawValue);
+            Assert.AreEqual(nameof(CanAcceptMultipleOfSameOperation), results[1].Arguments[MockArgument.IdentifiedName(MockOperation.RequiredIdentifier)][0].RawValue);
         }
 
         [TestMethod]
@@ -118,21 +119,25 @@ namespace Curds.CLI.Operations.Tests
         [TestMethod]
         public void CanSupplyAnyAliasForOperation()
         {
-            var args = MockRequiredOperationArguments;
+            string[] args = MockRequiredOperationArguments;
             var firstParsed = TestObject.Parse(Operations, args);
-            args[1] = $"{CLI.Operations.Argument.ArgumentIdentifier}2{nameof(MockArgument.Aliases)}";
+            args[1] = CLI.Operations.Argument.PrependIdentifier($"{MockOperation.RequiredIdentifier}{nameof(MockArgument.Aliases)}");
             var secondParsed = TestObject.Parse(Operations, args);
 
             Assert.AreEqual(firstParsed.Count, secondParsed.Count);
             Assert.AreEqual(firstParsed[0].Operation.Name, secondParsed[0].Operation.Name);
-            Assert.AreEqual(firstParsed[0].Arguments[RequiredArgument][0].RawValue, secondParsed[0].Arguments[RequiredArgument][0].RawValue);
+            Assert.AreEqual(firstParsed[0].Arguments[MockArgument.IdentifiedName(MockOperation.RequiredIdentifier)][0].RawValue, 
+                secondParsed[0].Arguments[MockArgument.IdentifiedName(MockOperation.RequiredIdentifier)][0].RawValue);
         }
 
         [TestMethod]
         public void ArgumentlessOperationHasImplicitKey()
         {
             var parsed = TestObject.Parse(Operations, MockArgumentlessOperationArguments);
+            Assert.AreEqual(3, parsed[0].Arguments[MockArgumentlessOperation.ArgumentlessKey].Count);
             Assert.AreEqual(nameof(MockValue), parsed[0].Arguments[MockArgumentlessOperation.ArgumentlessKey][0].RawValue);
+            Assert.AreEqual(nameof(MockValue), parsed[0].Arguments[MockArgumentlessOperation.ArgumentlessKey][1].RawValue);
+            Assert.AreEqual(nameof(MockValue), parsed[0].Arguments[MockArgumentlessOperation.ArgumentlessKey][2].RawValue);
         }
     }
 }

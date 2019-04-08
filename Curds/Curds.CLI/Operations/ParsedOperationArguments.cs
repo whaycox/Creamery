@@ -21,7 +21,7 @@ namespace Curds.CLI.Operations
 
         public void Parse(ArgumentCrawler crawler)
         {
-            while (!crawler.AtEnd && !AllArgumentsParsed)
+            while (!crawler.FullyConsumed && !AllArgumentsParsed)
                 ParseArgument(crawler);
             if (RequiredArgumentsMissing())
                 throw new InvalidOperationException("Not all required arguments have been provided");
@@ -36,9 +36,9 @@ namespace Curds.CLI.Operations
         }
         private void ParseArgument(ArgumentCrawler crawler)
         {
-            if (!AliasMap.TryGetValue(crawler.Parse(), out Argument selected))
-                throw new KeyNotFoundException($"Unexpected argument {crawler.Parse()}");
-            crawler.Next();
+            string argument = crawler.Consume();
+            if (!AliasMap.TryGetValue(argument, out Argument selected))
+                throw new KeyNotFoundException($"Unexpected argument {argument}");
             Provided.Add(selected.Name, selected.Parse(crawler));
         }
     }

@@ -29,51 +29,58 @@ namespace Curds.CLI.Tests
         }
 
         [TestMethod]
-        public void AtStartIsTrueOnlyAtStart()
+        public void FullyConsumedIsFalseAtStart()
         {
-            Assert.IsTrue(TestObject.AtStart);
-            TestObject.Next();
-            Assert.IsFalse(TestObject.AtStart);
-            TestObject.Next();
-            Assert.IsFalse(TestObject.AtStart);
+            Assert.IsFalse(TestObject.FullyConsumed);
         }
 
         [TestMethod]
-        public void AtEndIsTrueOnlyAtEnd()
+        public void StepBackwardsThrowsAtStart()
         {
-            Assert.IsFalse(TestObject.AtEnd);
-            TestObject.Next();
-            Assert.IsFalse(TestObject.AtEnd);
-            TestObject.Next();
-            Assert.IsTrue(TestObject.AtEnd);
+            Assert.ThrowsException<InvalidOperationException>(() => TestObject.StepBackwards());
         }
 
         [TestMethod]
-        public void CrawlsCorrectly()
+        public void FullyConsumedIsTrueOnlyAtEnd()
         {
-            Assert.AreEqual(One, TestObject.Parse());
-            TestObject.Next();
-            Assert.AreEqual(Two, TestObject.Parse());
-            TestObject.Next();
-            Assert.AreEqual(Three, TestObject.Parse());
-            TestObject.Previous();
-            Assert.AreEqual(Two, TestObject.Parse());
-            TestObject.Previous();
-            Assert.AreEqual(One, TestObject.Parse());
+            Assert.IsFalse(TestObject.FullyConsumed);
+            TestObject.Consume();
+            Assert.IsFalse(TestObject.FullyConsumed);
+            TestObject.Consume();
+            Assert.IsFalse(TestObject.FullyConsumed);
+            TestObject.Consume();
+            Assert.IsTrue(TestObject.FullyConsumed);
         }
 
         [TestMethod]
-        public void CannotCrawlBeforeStart()
+        public void ConsumesCorrectly()
         {
-            Assert.ThrowsException<InvalidOperationException>(() => TestObject.Previous());
+            Assert.AreEqual(One, TestObject.Consume());
+            Assert.AreEqual(Two, TestObject.Consume());
+            Assert.AreEqual(Three, TestObject.Consume());
         }
 
         [TestMethod]
-        public void CannotCrawlAfterEnd()
+        public void StepsBackwardCorrectly()
         {
-            TestObject.Next();
-            TestObject.Next();
-            Assert.ThrowsException<InvalidOperationException>(() => TestObject.Next());
+            for (int i = 0; i < 3; i++)
+                TestObject.Consume();
+
+            TestObject.StepBackwards();
+            Assert.AreEqual(Three, TestObject.Consume());
+
+            TestObject.StepBackwards();
+            TestObject.StepBackwards();
+            Assert.AreEqual(Two, TestObject.Consume());
+        }
+
+        [TestMethod]
+        public void CannotConsumeAfterEnd()
+        {
+            TestObject.Consume();
+            TestObject.Consume();
+            TestObject.Consume();
+            Assert.ThrowsException<InvalidOperationException>(() => TestObject.Consume());
         }
 
     }

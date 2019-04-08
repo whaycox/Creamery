@@ -6,7 +6,7 @@ namespace Curds.CLI
 {
     public static class CLIEnvironment
     {
-        public const string DefaultIndentation = "    ";
+        public const string DefaultIndentation = "    "; //Four spaces
 
         public static ConsoleColor DefaultTextColor = ConsoleColor.White;
 

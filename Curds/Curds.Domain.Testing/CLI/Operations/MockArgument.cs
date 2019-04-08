@@ -8,6 +8,8 @@ namespace Curds.Domain.CLI.Operations
 {
     public class MockArgument : Argument
     {
+        public static string IdentifiedName(int identifier) => $"{identifier}{nameof(MockArgument)}";
+
         public override IEnumerable<string> Aliases => new string[] { Name, $"{Identifier}{nameof(Aliases)}" };
 
         private int Identifier { get; }
@@ -19,7 +21,7 @@ namespace Curds.Domain.CLI.Operations
             new MockValue(),
         };
 
-        public override string Name => $"{Identifier}{nameof(MockArgument)}";
+        public override string Name => IdentifiedName(Identifier);
         public override string Description => $"{nameof(MockArgument)}{nameof(Description)}";
 
         public MockArgument(int identifier, bool required)

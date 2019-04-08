@@ -11,11 +11,10 @@ namespace Curds.Domain.CLI.Operations
 
     public class MockArgumentlessOperation : ArgumentlessOperation<MockApplication>
     {
-        public override string Name => nameof(MockArgumentlessOperation);
-
-        public override string Description => $"{nameof(MockArgumentlessOperation)}{nameof(Description)}";
-
         public override IEnumerable<string> Aliases => new string[] { nameof(MockArgumentlessOperation), $"{nameof(MockArgumentlessOperation)}{nameof(Aliases)}" };
+
+        public override string Name => nameof(MockArgumentlessOperation);
+        public override string Description => $"{nameof(MockArgumentlessOperation)}{nameof(Description)}";
 
         public override List<Value> Values => new List<Value>
         {

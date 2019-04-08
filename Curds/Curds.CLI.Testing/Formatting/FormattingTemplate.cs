@@ -14,6 +14,7 @@ namespace Curds.CLI.Formatting
         protected string NewLine(bool newValue) => MockConsoleWriter.StartOfNewLineWrite(newValue);
         protected string TextColor(ConsoleColor textColor) => MockConsoleWriter.TextColorChangeWrite(textColor);
         protected string Indents(int indents) => MockConsoleWriter.IndentsWrite(indents);
+        protected string EnvironmentExit(int exitCode) => MockConsoleWriter.EnvironmentExit(exitCode);
     }
 
     public static class FormattingTemplateExtensions
@@ -34,5 +35,7 @@ namespace Curds.CLI.Formatting
             pair.index++;
             return pair;
         }
+
+        public static void EndsWith(this MockConsoleWriter writer, string expected) => Assert.AreEqual(writer.Writes[writer.Writes.Count - 1], expected);
     }
 }

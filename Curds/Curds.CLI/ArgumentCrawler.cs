@@ -5,12 +5,10 @@ namespace Curds.CLI
 {
     public class ArgumentCrawler
     {
-        private int CurrentIndex = 0;
-
+        private int ArgumentsConsumed = 0;
         private string[] Arguments { get; }
 
-        public bool AtStart => CurrentIndex == 0;
-        public bool AtEnd => CurrentIndex == Arguments.Length - 1;
+        public bool FullyConsumed => ArgumentsConsumed == Arguments.Length;
 
         public ArgumentCrawler(string[] args)
         {
@@ -20,22 +18,17 @@ namespace Curds.CLI
             Arguments = args;
         }
 
-        public void Previous()
+        public string Consume()
         {
-            if (AtStart)
-                throw new InvalidOperationException("Already at the first argument");
-            CurrentIndex--;
-            Debug.WriteLine($"NewIndex: {CurrentIndex}");
+            if (FullyConsumed)
+                throw new InvalidOperationException("Cannot consumed when already fully consumed");
+            return Arguments[ArgumentsConsumed++];
         }
-
-        public void Next()
+        public void StepBackwards()
         {
-            if (AtEnd)
-                throw new InvalidOperationException("Already at the last argument");
-            CurrentIndex++;
-            Debug.WriteLine($"NewIndex: {CurrentIndex}");
+            if (ArgumentsConsumed == 0)
+                throw new InvalidOperationException("Cannot step before the start");
+            ArgumentsConsumed--;
         }
-
-        public string Parse() => Arguments[CurrentIndex];
     }
 }

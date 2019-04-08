@@ -10,12 +10,11 @@ namespace Curds.CLI.Operations
     using Formatting;
     using Formatting.Tokens;
 
-    public abstract class Operation<T> : AliasedOptionValue where T : CurdsApplication
+    public abstract class Operation : AliasedOptionValue
     {
         public const string OperationIdentifier = "-";
+        public static string PrependIdentifier(string value) => $"{OperationIdentifier}{value}";
         public override string AliasPrefix => OperationIdentifier;
-
-        protected BaseMessageDefinition<T> Definition { get; }
 
         protected abstract IEnumerable<Argument> Arguments { get; }
 
@@ -30,11 +29,6 @@ namespace Curds.CLI.Operations
             .Append(ArgumentsUsage());
         protected virtual FormattedText ArgumentsUsage() => IndentChildren("Arguments:", CLIEnvironment.Argument, Arguments.Select(a => a.Usage));
 
-        public Operation(BaseMessageDefinition<T> definition)
-        {
-            Definition = definition;
-        }
-
         public virtual Dictionary<string, List<Value>> Parse(ArgumentCrawler crawler)
         {
             ParsedOperationArguments parsedResults = new ParsedOperationArguments(AliasMap());
@@ -43,7 +37,9 @@ namespace Curds.CLI.Operations
                 parsedResults.Parse(crawler);
             }
             catch (KeyNotFoundException)
-            { }
+            {
+                crawler.StepBackwards();
+            }
             return parsedResults.Provided;
         }
         private Dictionary<string, Argument> AliasMap()
@@ -53,6 +49,17 @@ namespace Curds.CLI.Operations
                 foreach (string alias in argument.Aliases)
                     toReturn.Add($"{Argument.ArgumentIdentifier}{alias}", argument);
             return toReturn;
+        }
+
+    }
+
+    public abstract class Operation<T> : Operation where T : CurdsApplication
+    {
+        protected BaseMessageDefinition<T> Definition { get; }
+
+        public Operation(BaseMessageDefinition<T> definition)
+        {
+            Definition = definition;
         }
     }
 }

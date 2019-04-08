@@ -8,7 +8,6 @@ namespace Curds.CLI
     using Formatting;
     using Formatting.Tokens;
     using Operations;
-    using Writer;
 
     public abstract class CommandLineApplication<T> where T : CurdsApplication
     {
@@ -16,7 +15,7 @@ namespace Curds.CLI
 
         private OperationParser<T> Parser = new OperationParser<T>();
 
-        private IConsoleWriter Writer { get; }
+        protected IConsoleWriter Writer { get; }
 
         protected abstract IEnumerable<Operation<T>> Operations { get; }
 

@@ -5,9 +5,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Curds.Domain.CLI.Formatting;
 using Curds.Domain.Application;
 using Curds.Domain.CLI;
+using Curds.Domain.CLI.Operations;
 
 namespace Curds.CLI.Tests
 {
+    using Operations;
     using Formatting;
 
     [TestClass]
@@ -17,6 +19,10 @@ namespace Curds.CLI.Tests
         private MockApplication Application = null;
         private CommandLineApplication<MockApplication> _obj = null;
         protected override CommandLineApplication<MockApplication> TestObject => _obj;
+
+        private string MockExecutionMessage(string operationName) => MockCommandLineApplication.ExecutionMessage(operationName);
+
+        private string[] BooleanOperationArguments => new string[] { Operation.PrependIdentifier(nameof(MockBooleanOperation)) };
 
         [TestInitialize]
         public void Init()
@@ -51,6 +57,17 @@ namespace Curds.CLI.Tests
                 .ThenHas(NewLine(true))
                 .ThenHas(TextColor(CLIEnvironment.DefaultTextColor))
                 .ThenHas(Indents(1));
+            Writer.EndsWith(EnvironmentExit(1));
+        }
+
+        [TestMethod]
+        public void BooleanOperationExecutesProperly()
+        {
+            TestObject.Execute(BooleanOperationArguments);
+            Assert.AreEqual(3, Writer.Writes.Count);
+            Writer.StartsWith(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas(MockExecutionMessage(nameof(MockBooleanOperation)));
         }
     }
 

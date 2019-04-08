@@ -11,6 +11,8 @@ namespace Curds.Domain.CLI
 
     public class MockCommandLineApplication : CommandLineApplication<MockApplication>
     {
+        public static string ExecutionMessage(string operationName) => $"{operationName} has executed";
+
         protected override IEnumerable<Operation<MockApplication>> Operations => new List<Operation<MockApplication>>
         {
             new MockOperation(Application.Dispatch.MockCommand),
@@ -24,7 +26,14 @@ namespace Curds.Domain.CLI
 
         protected override void ExecuteOperation(OperationParser<MockApplication>.ParsedPair parsedPair)
         {
-            throw new NotImplementedException();
+            switch (parsedPair.Operation)
+            {
+                case MockBooleanOperation booleanOperation:
+                    Writer.Write(ExecutionMessage(nameof(MockBooleanOperation)));
+                    break;
+                default:
+                    throw new InvalidOperationException($"Unexpected operation {parsedPair.Operation.GetType().FullName}");
+            }
         }
     }
 }
