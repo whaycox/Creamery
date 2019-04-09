@@ -29,7 +29,21 @@ namespace Curds.Domain.CLI
             switch (parsedPair.Operation)
             {
                 case MockBooleanOperation booleanOperation:
-                    Writer.Write(ExecutionMessage(nameof(MockBooleanOperation)));
+                    Writer.WriteLine(ExecutionMessage(nameof(MockBooleanOperation)));
+                    break;
+                case MockArgumentlessOperation argumentlessOperation:
+                    foreach (Value value in parsedPair.Arguments[MockArgumentlessOperation.ArgumentlessKey])
+                        Writer.WriteLine(value.RawValue);
+                    Writer.WriteLine(ExecutionMessage(nameof(MockArgumentlessOperation)));
+                    break;
+                case MockOperation operation:
+                    foreach (var arguments in parsedPair.Arguments)
+                    {
+                        Writer.WriteLine(arguments.Key);
+                        foreach (Value value in arguments.Value)
+                            Writer.WriteLine(value.RawValue);
+                    }
+                    Writer.WriteLine(ExecutionMessage(nameof(MockOperation)));
                     break;
                 default:
                     throw new InvalidOperationException($"Unexpected operation {parsedPair.Operation.GetType().FullName}");

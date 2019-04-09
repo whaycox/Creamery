@@ -23,6 +23,12 @@ namespace Curds.CLI.Writer
         public abstract void ResetTextColor();
         public abstract void SetTextColor(ConsoleColor color);
 
+        public void WriteLine(string message)
+        {
+            Write(message);
+            Write(Environment.NewLine);
+            StartOfNewLine = true;
+        }
         public void Write(string message)
         {
             if (StartOfNewLine)

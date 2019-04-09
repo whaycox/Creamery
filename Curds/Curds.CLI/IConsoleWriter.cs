@@ -17,6 +17,6 @@ namespace Curds.CLI
         void ResetTextColor();
 
         void Write(string message);
-
+        void WriteLine(string message);
     }
 }

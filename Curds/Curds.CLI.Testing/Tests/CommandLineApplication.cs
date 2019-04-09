@@ -23,6 +23,8 @@ namespace Curds.CLI.Tests
         private string MockExecutionMessage(string operationName) => MockCommandLineApplication.ExecutionMessage(operationName);
 
         private string[] BooleanOperationArguments => new string[] { Operation.PrependIdentifier(nameof(MockBooleanOperation)) };
+        private string[] ArgumentlessOperationArguments => new string[] { Operation.PrependIdentifier(nameof(MockArgumentlessOperation)), nameof(MockValue), $"1{nameof(MockValue)}", nameof(MockValue) };
+        private string[] OperationArguments => new string[] { Operation.PrependIdentifier(nameof(MockOperation)), Argument.PrependIdentifier(MockArgument.IdentifiedName(2)), nameof(MockValue), Argument.PrependIdentifier(nameof(MockBooleanArgument)) };
 
         [TestInitialize]
         public void Init()
@@ -64,10 +66,60 @@ namespace Curds.CLI.Tests
         public void BooleanOperationExecutesProperly()
         {
             TestObject.Execute(BooleanOperationArguments);
-            Assert.AreEqual(3, Writer.Writes.Count);
+            Assert.AreEqual(5, Writer.Writes.Count);
             Writer.StartsWith(NewLine(true))
                 .ThenHas(NewLine(false))
-                .ThenHas(MockExecutionMessage(nameof(MockBooleanOperation)));
+                .ThenHas(MockExecutionMessage(nameof(MockBooleanOperation)))
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true));
+        }
+
+        [TestMethod]
+        public void ArgumentlessOperationExecutesProperly()
+        {
+            TestObject.Execute(ArgumentlessOperationArguments);
+            Assert.AreEqual(17, Writer.Writes.Count);
+            Writer.StartsWith(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas(nameof(MockValue))
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas($"1{nameof(MockValue)}")
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas(nameof(MockValue))
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas(MockExecutionMessage(nameof(MockArgumentlessOperation)))
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true));
+        }
+
+        [TestMethod]
+        public void OperationExecutesProperly()
+        {
+            TestObject.Execute(OperationArguments);
+            Assert.AreEqual(17, Writer.Writes.Count);
+            Writer.StartsWith(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas(MockArgument.IdentifiedName(2))
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas(nameof(MockValue))
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas(nameof(MockBooleanArgument))
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true))
+                .ThenHas(NewLine(false))
+                .ThenHas(MockExecutionMessage(nameof(MockOperation)))
+                .ThenHas(Environment.NewLine)
+                .ThenHas(NewLine(true));
         }
     }
 
