@@ -7,7 +7,7 @@ using Curds.CLI.Formatting;
 namespace Curds.Domain.CLI.Operations
 {
     using Application;
-    using Application.Message.Query;
+    using Application.Message.Command;
 
     public class MockArgumentlessOperation : ArgumentlessOperation<MockApplication>
     {
@@ -23,8 +23,8 @@ namespace Curds.Domain.CLI.Operations
             new MockValue(),
         };
 
-        public MockArgumentlessOperation(MockQueryDefinition query)
-            : base(query)
+        public MockArgumentlessOperation(MockQueryingCommandDefinition commandDefinition)
+            : base(commandDefinition)
         { }
     }
 }

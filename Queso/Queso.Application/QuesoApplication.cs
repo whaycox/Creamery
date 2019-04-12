@@ -12,12 +12,14 @@ namespace Queso.Application
         public override string Description => "An application for Diablo 2 character management.";
 
         public Message.Command.Dispatch Commands { get; }
+        public Message.Query.Dispatch Queries { get; }
 
         public QuesoApplication(QuesoOptions options)
             : base(options)
         {
             Character = options.Character;
             Commands = new Message.Command.Dispatch(this);
+            Queries = new Message.Query.Dispatch(this);
         }
     }
 }

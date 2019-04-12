@@ -47,8 +47,8 @@ namespace Curds.CLI.Operations.Tests
             Application = new MockApplication(Options);
             Operations = new List<Operation<MockApplication>>
             {
-                new MockOperation(Application.Dispatch.MockCommand),
-                new MockArgumentlessOperation(Application.Dispatch.MockQuery),
+                new MockOperation(Application.Dispatch.MockVoidCommand),
+                new MockArgumentlessOperation(Application.Dispatch.MockQueryingCommand),
             };
         }
 

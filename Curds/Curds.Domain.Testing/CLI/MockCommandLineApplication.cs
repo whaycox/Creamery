@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Curds.CLI;
 using Curds.CLI.Operations;
+using System.Threading.Tasks;
 
 namespace Curds.Domain.CLI
 {
@@ -15,8 +16,8 @@ namespace Curds.Domain.CLI
 
         protected override IEnumerable<Operation<MockApplication>> Operations => new List<Operation<MockApplication>>
         {
-            new MockOperation(Application.Dispatch.MockCommand),
-            new MockArgumentlessOperation(Application.Dispatch.MockQuery),
+            new MockOperation(Application.Dispatch.MockVoidCommand),
+            new MockArgumentlessOperation(Application.Dispatch.MockQueryingCommand),
             new MockBooleanOperation(Application.Dispatch.MockQuery),
         };
 
@@ -24,7 +25,8 @@ namespace Curds.Domain.CLI
             : base(application, writer)
         { }
 
-        protected override void ExecuteOperation(OperationParser<MockApplication>.ParsedPair parsedPair)
+        protected override Task ExecuteOperation(OperationParser<MockApplication>.ParsedPair parsedPair) => Task.Factory.StartNew(() => ExecuteInternal(parsedPair));
+        private void ExecuteInternal(OperationParser<MockApplication>.ParsedPair parsedPair)
         {
             switch (parsedPair.Operation)
             {

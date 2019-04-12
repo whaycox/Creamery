@@ -21,7 +21,7 @@ namespace Curds.CLI.Operations.Tests
         [TestInitialize]
         public void BuildObj()
         {
-            _obj = new MockArgumentlessOperation(Application.Dispatch.MockQuery);
+            _obj = new MockArgumentlessOperation(Application.Dispatch.MockQueryingCommand);
         }
 
         protected override void VerifyUsage(MockConsoleWriter writer) =>

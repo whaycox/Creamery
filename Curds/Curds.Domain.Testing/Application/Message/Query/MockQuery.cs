@@ -3,39 +3,17 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Curds.Application.Message;
+using Curds.Application.Message.Query;
 
 namespace Curds.Domain.Application.Message.Query
 {
-    public class MockQuery : BaseMessage<MockViewModel>
+    public class MockQuery : BaseQuery
     {
-        public MockQuery(MockViewModel viewModel)
-            : base(viewModel)
-        { }
-    }
+        public string Message { get; }
 
-    public class MockQueryHandler : BaseMessageHandler<MockApplication, MockQuery, MockViewModel>
-    {
-        public MockQueryHandler(MockApplication application)
-            : base(application)
-        { }
-    }
-
-    public class MockQueryDefinition : BaseMessageDefinition<MockApplication, MockQuery, MockQueryHandler, MockViewModel>
-    {
-        protected override MockQueryHandler Handler => throw new NotImplementedException();
-
-        public MockQueryDefinition(MockApplication application)
-            : base(application)
-        { }
-
-        public override Task<BaseViewModel> ViewModel()
+        public MockQuery(string message)
         {
-            throw new NotImplementedException();
-        }
-
-        protected override MockQuery BuildMessage(MockViewModel viewModel)
-        {
-            throw new NotImplementedException();
+            Message = message;
         }
     }
 }

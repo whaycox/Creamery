@@ -21,7 +21,7 @@ namespace Curds.CLI.Operations.Tests
         [TestInitialize]
         public void BuildObj()
         {
-            _obj = new MockOperation(Application.Dispatch.MockCommand);
+            _obj = new MockOperation(Application.Dispatch.MockVoidCommand);
         }
 
         protected override void VerifyUsage(MockConsoleWriter writer) =>

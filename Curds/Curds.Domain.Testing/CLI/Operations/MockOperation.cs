@@ -25,7 +25,7 @@ namespace Curds.Domain.CLI.Operations
         public const int OptionalIdentifier = 1;
         public const int RequiredIdentifier = 2;
 
-        public MockOperation(MockCommandDefinition commandDefinition)
+        public MockOperation(MockVoidCommandDefinition commandDefinition)
             : base(commandDefinition)
         { }
     }

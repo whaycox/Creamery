@@ -1,41 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
-using Curds.Application.Message;
+using Curds.Application.Message.Command;
 
 namespace Curds.Domain.Application.Message.Command
 {
-    public class MockCommand : BaseMessage<MockViewModel>
+    public class MockCommand : BaseCommand
     {
-        public MockCommand(MockViewModel viewModel)
-            : base(viewModel)
-        { }
-    }
+        public string Message { get; }
 
-    public class MockCommandHandler : BaseMessageHandler<MockApplication, MockCommand, MockViewModel>
-    {
-        public MockCommandHandler(MockApplication application)
-            : base(application)
-        { }
-    }
-
-    public class MockCommandDefinition : BaseMessageDefinition<MockApplication, MockCommand, MockCommandHandler, MockViewModel>
-    {
-        protected override MockCommandHandler Handler => throw new NotImplementedException();
-
-        public MockCommandDefinition(MockApplication application)
-            : base(application)
-        { }
-
-        public override Task<BaseViewModel> ViewModel()
+        public MockCommand(string message)
         {
-            throw new NotImplementedException();
-        }
-
-        protected override MockCommand BuildMessage(MockViewModel viewModel)
-        {
-            throw new NotImplementedException();
+            Message = message;
         }
     }
 }

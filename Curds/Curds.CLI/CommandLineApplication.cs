@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Curds.CLI
 {
@@ -53,18 +54,18 @@ namespace Curds.CLI
                 Usage(1, "Please provide arguments");
             try
             {
-                ExecuteOperations(Parser.Parse(Operations, args));
+                ExecuteOperations(Parser.Parse(Operations, args)).AwaitResult();
             }
             catch (Exception ex)
             {
                 Usage(1, $"Failed to {nameof(Execute)}: {ex}");
             }
         }
-        private void ExecuteOperations(List<OperationParser<T>.ParsedPair> parsedPairs)
+        private async Task ExecuteOperations(List<OperationParser<T>.ParsedPair> parsedPairs)
         {
             foreach (var pair in parsedPairs)
-                ExecuteOperation(pair);
+                await ExecuteOperation(pair);
         }
-        protected abstract void ExecuteOperation(OperationParser<T>.ParsedPair parsedPair);
+        protected abstract Task ExecuteOperation(OperationParser<T>.ParsedPair parsedPair);
     }
 }

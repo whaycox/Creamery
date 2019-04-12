@@ -4,9 +4,7 @@ using System.Text;
 
 namespace Curds.Application.Message
 {
-    public abstract class BaseMessage<T> where T : BaseViewModel
+    public abstract class BaseMessage
     {
-        public BaseMessage(T viewModel)
-        { }
     }
 }
