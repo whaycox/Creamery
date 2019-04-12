@@ -30,8 +30,8 @@ namespace Queso.Application.Message.Command.Character
         {
             Application.Character.Resurrect(command.CharacterPath);
             ScanQuery returnedQuery = new ScanQuery(command.CharacterPath);
-            ScanHandler handler = Application.Queries.Scan.Handler();
-            return await handler.Execute(returnedQuery);
+            ScanDefinition queryDefinition = Application.Queries.Request<ScanDefinition>();
+            return await queryDefinition.Handler().Execute(returnedQuery);
         }
     }
 

@@ -5,16 +5,18 @@ using Curds.Application;
 
 namespace Curds.Domain.Application
 {
+    using Message.Dispatch;
+
     public class MockApplication : CurdsApplication
     {
         public override string Description => nameof(MockApplication);
 
-        public Message.MockDispatch Dispatch { get; }
+        public MockSimpleDispatch SimpleDispatch { get; }
 
         public MockApplication(MockOptions options)
             : base(options)
         {
-            Dispatch = new Message.MockDispatch(this);
+            SimpleDispatch = new MockSimpleDispatch(this);
         }
     }
 }

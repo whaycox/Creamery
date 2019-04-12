@@ -8,6 +8,8 @@ using Queso.Application.Message.Query.Character;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Curds.CLI.Formatting;
+using Curds.CLI.Formatting.Tokens;
 
 namespace Queso.CLI
 {
@@ -27,12 +29,19 @@ namespace Queso.CLI
             {
                 case ResurrectOperation rez:
                     string pathToChar = parsedPair.Arguments[ImplicitArgument][0].RawValue;
-                    ResurrectHandler handler = Application.Commands.Resurrect.Handler();
-                    await handler.Execute(new ResurrectCommand(pathToChar));
+                    ResurrectCommand command = new ResurrectCommand(pathToChar);
+                    ResurrectDefinition commandDefinition = Application.Commands.Request<ResurrectDefinition>();
+                    Character scan = await commandDefinition.Handler().Execute(command);
+                    RenderCharacter(scan).Write(Writer);
                     break;
                 default:
                     throw new InvalidOperationException("Unexpected operation");
             }
         }
+
+        private FormattedText RenderCharacter(Character viewModel) => FormattedText.New
+            .AppendLine(PlainTextToken.Create($"Name: {viewModel.Name}"))
+            .AppendLine(PlainTextToken.Create($"Class: {viewModel.Class}"))
+            .AppendLine(PlainTextToken.Create($"IsAlive? {viewModel.Alive}"));
     }
 }

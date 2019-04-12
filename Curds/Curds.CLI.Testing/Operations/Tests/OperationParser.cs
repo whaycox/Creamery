@@ -6,6 +6,7 @@ using System.Linq;
 using Curds.Domain;
 using Curds.Domain.Application;
 using Curds.Domain.CLI.Operations;
+using Curds.Domain.Application.Message.Command;
 
 namespace Curds.CLI.Operations.Tests
 {
@@ -47,8 +48,8 @@ namespace Curds.CLI.Operations.Tests
             Application = new MockApplication(Options);
             Operations = new List<Operation<MockApplication>>
             {
-                new MockOperation(Application.Dispatch.MockVoidCommand),
-                new MockArgumentlessOperation(Application.Dispatch.MockQueryingCommand),
+                new MockOperation(Application.SimpleDispatch.Request<MockVoidCommandDefinition>()),
+                new MockArgumentlessOperation(Application.SimpleDispatch.Request<MockQueryingCommandDefinition>()),
             };
         }
 

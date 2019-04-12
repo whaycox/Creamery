@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using Curds.Domain.CLI;
 
 namespace Curds.CLI.Formatting.Tests
 {

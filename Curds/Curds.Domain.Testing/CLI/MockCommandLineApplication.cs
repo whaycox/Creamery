@@ -9,6 +9,8 @@ namespace Curds.Domain.CLI
 {
     using Application;
     using Operations;
+    using Application.Message.Command;
+    using Application.Message.Query;
 
     public class MockCommandLineApplication : CommandLineApplication<MockApplication>
     {
@@ -16,9 +18,9 @@ namespace Curds.Domain.CLI
 
         protected override IEnumerable<Operation<MockApplication>> Operations => new List<Operation<MockApplication>>
         {
-            new MockOperation(Application.Dispatch.MockVoidCommand),
-            new MockArgumentlessOperation(Application.Dispatch.MockQueryingCommand),
-            new MockBooleanOperation(Application.Dispatch.MockQuery),
+            new MockOperation(Application.SimpleDispatch.Request<MockVoidCommandDefinition>()),
+            new MockArgumentlessOperation(Application.SimpleDispatch.Request<MockQueryingCommandDefinition>()),
+            new MockBooleanOperation(Application.SimpleDispatch.Request<MockQueryDefinition>()),
         };
 
         public MockCommandLineApplication(MockApplication application, IConsoleWriter writer)

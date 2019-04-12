@@ -26,9 +26,16 @@ namespace Queso.Application.Message.Query.Character
             : base(application)
         { }
 
-        public override Task<Character> Execute(ScanQuery query)
+        public override Task<Character> Execute(ScanQuery query) => Task.Factory.StartNew(() => ExecuteAndReturn(query));
+        private Character ExecuteAndReturn(ScanQuery query)
         {
-            throw new NotImplementedException();
+            Domain.Character loaded = Application.Character.Load(query.CharacterPath);
+            return new Character()
+            {
+                Name = loaded.Name,
+                Class = loaded.Class,
+                Alive = loaded.Alive,
+            };
         }
     }
 

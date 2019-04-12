@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Curds.Domain.Application;
 using Curds.Domain.CLI.Operations;
 using Curds.Domain.CLI;
+using Curds.Domain.Application.Message.Command;
 
 namespace Curds.CLI.Operations.Tests
 {
@@ -21,7 +22,7 @@ namespace Curds.CLI.Operations.Tests
         [TestInitialize]
         public void BuildObj()
         {
-            _obj = new MockArgumentlessOperation(Application.Dispatch.MockQueryingCommand);
+            _obj = new MockArgumentlessOperation(Application.SimpleDispatch.Request<MockQueryingCommandDefinition>());
         }
 
         protected override void VerifyUsage(MockConsoleWriter writer) =>
