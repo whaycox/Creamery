@@ -20,13 +20,12 @@ namespace Queso.Application.Message.Command.Character
         }
     }
 
-    public class ResurrectDefinition : BaseCommandDefinition<QuesoApplication, CharacterPath, ResurrectCommand, ScanQuery>
+    public class ResurrectDefinition : BaseCommandDefinition<QuesoApplication, ResurrectCommand, ScanQuery>
     {
         public ResurrectDefinition(QuesoApplication application)
             : base(application)
         { }
 
-        public override CharacterPath ViewModel => new CharacterPath();
         public override Task<ScanQuery> Execute(ResurrectCommand message) => Task.Factory.StartNew(() => ExecuteAndReturn(message));
         private ScanQuery ExecuteAndReturn(ResurrectCommand command)
         {

@@ -1,31 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Curds.CLI;
+﻿using Curds.CLI;
 using Curds.CLI.Operations;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Curds.Domain.CLI
 {
     using Application;
     using Operations;
-    using Application.Message.Command;
-    using Application.Message.Query;
 
     public class MockCommandLineApplication : CommandLineApplication<MockApplication>
     {
         public static string ExecutionMessage(string operationName) => $"{operationName} has executed";
 
-        protected override IEnumerable<Operation> Operations => new List<Operation>
-        {
-            new MockOperation(),
-            new MockArgumentlessOperation(),
-            new MockBooleanOperation(),
-        };
-
         public MockCommandLineApplication(MockApplication application, IConsoleWriter writer)
             : base(application, writer)
         { }
+
+        protected override List<Operation> BuildOperations(List<Operation> operations)
+        {
+            operations = base.BuildOperations(operations);
+            operations.Add(new MockOperation());
+            operations.Add(new MockArgumentlessOperation());
+            operations.Add(new MockBooleanOperation());
+            return operations;
+        }
 
         protected override Task ExecuteOperation(OperationParser<MockApplication>.ParsedPair parsedPair) => Task.Factory.StartNew(() => ExecuteInternal(parsedPair));
         private void ExecuteInternal(OperationParser<MockApplication>.ParsedPair parsedPair)
@@ -36,7 +35,7 @@ namespace Curds.Domain.CLI
                     Writer.WriteLine(ExecutionMessage(nameof(MockBooleanOperation)));
                     break;
                 case MockArgumentlessOperation argumentlessOperation:
-                    foreach (Value value in parsedPair.Arguments[MockArgumentlessOperation.ArgumentlessKey])
+                    foreach (Value value in parsedPair.Arguments[ArgumentlessOperation.ArgumentlessKey])
                         Writer.WriteLine(value.RawValue);
                     Writer.WriteLine(ExecutionMessage(nameof(MockArgumentlessOperation)));
                     break;

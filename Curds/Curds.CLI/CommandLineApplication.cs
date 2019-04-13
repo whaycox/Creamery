@@ -1,13 +1,10 @@
 ﻿using Curds.Application;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Curds.CLI
 {
-    using Formatting;
-    using Formatting.Tokens;
     using Operations;
 
     public abstract class CommandLineApplication<T> where T : CurdsApplication
@@ -15,10 +12,11 @@ namespace Curds.CLI
         protected static string ImplicitArgument = ArgumentlessOperation.ArgumentlessKey;
 
         private OperationParser<T> Parser = new OperationParser<T>();
+        private UsageOperation Help = new UsageOperation();
 
         protected IConsoleWriter Writer { get; }
 
-        protected abstract IEnumerable<Operation> Operations { get; }
+        protected IEnumerable<Operation> Operations { get; }
 
         protected T Application { get; }
 
@@ -26,27 +24,15 @@ namespace Curds.CLI
         {
             Application = application;
             Writer = writer;
+
+            Operations = BuildOperations(new List<Operation>());
         }
 
-        private void Usage(int exitCode, string message, params object[] args) => Usage(exitCode, string.Format(message, args));
-        private void Usage(int exitCode, string message)
+        protected virtual List<Operation> BuildOperations(List<Operation> operations)
         {
-            Usage(message).Write(Writer);
-            Writer.Exit(exitCode);
+            operations.Add(Help);
+            return operations;
         }
-        private FormattedText Usage(string message) => FormattedText.New
-            .Color(CLIEnvironment.Error, UsageMessage(message))
-            .AppendLine(ApplicationDescription)
-            .Append(OperationUsages);
-        private FormattedText UsageMessage(string message) => FormattedText.New.AppendLine(PlainTextToken.Create(message));
-        private FormattedText ApplicationDescription => FormattedText.New
-            .Concatenate(null, " | ", null, new List<BaseTextToken> { AppName, PlainTextToken.Create(Application.Description) });
-        private FormattedText AppName => FormattedText.New
-            .Color(CLIEnvironment.Application, PlainTextToken.Create(AppDomain.CurrentDomain.FriendlyName));
-        private FormattedText OperationUsages => FormattedText.New
-            .ColorLine(CLIEnvironment.Operation, OperationHeader)
-            .IndentLine(Operations.Select(o => o.Usage));
-        private BaseTextToken OperationHeader => PlainTextToken.Create("Operations:");
 
         public void Execute(string[] args)
         {
@@ -67,5 +53,11 @@ namespace Curds.CLI
                 await ExecuteOperation(pair);
         }
         protected abstract Task ExecuteOperation(OperationParser<T>.ParsedPair parsedPair);
+        private void Usage(int exitCode, string message, params object[] args) => Usage(exitCode, string.Format(message, args));
+        private void Usage(int exitCode, string message)
+        {
+            Help.Format(message, Application.Description, Operations).Write(Writer);
+            Writer.Exit(exitCode);
+        }
     }
 }

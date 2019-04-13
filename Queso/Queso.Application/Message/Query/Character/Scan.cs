@@ -20,13 +20,12 @@ namespace Queso.Application.Message.Query.Character
         }
     }
 
-    public class ScanDefinition : BaseQueryDefinition<QuesoApplication, CharacterPath, ScanQuery, Character>
+    public class ScanDefinition : BaseQueryDefinition<QuesoApplication, ScanQuery, Character>
     {
         public ScanDefinition(QuesoApplication application)
             : base(application)
         { }
 
-        public override CharacterPath ViewModel => new CharacterPath();
         public override Task<Character> Execute(ScanQuery message) => Task.Factory.StartNew(() => ExecuteAndReturn(message));
         private Character ExecuteAndReturn(ScanQuery query)
         {

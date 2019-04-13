@@ -13,21 +13,24 @@ using Curds.CLI.Formatting.Tokens;
 
 namespace Queso.CLI
 {
-    using Operations;
-
     public class QuesoCommandLine : CommandLineApplication<QuesoApplication>
     {
-        protected override IEnumerable<Operation> Operations => QuesoOperations.Operations(Application);
-
         public QuesoCommandLine(QuesoApplication application, IConsoleWriter writer)
             : base(application, writer)
         { }
+
+        protected override List<Operation> BuildOperations(List<Operation> operations)
+        {
+            operations = base.BuildOperations(operations);
+            operations.Add(new Operations.ResurrectOperation());
+            return operations;
+        }
 
         protected async override Task ExecuteOperation(OperationParser<QuesoApplication>.ParsedPair parsedPair)
         {
             switch (parsedPair.Operation)
             {
-                case ResurrectOperation rez:
+                case Operations.ResurrectOperation rez:
                     string pathToChar = parsedPair.Arguments[ImplicitArgument][0].RawValue;
                     ResurrectCommand command = new ResurrectCommand(pathToChar);
                     ScanQuery query = await Application.Commands.Resurrect.Execute(command);

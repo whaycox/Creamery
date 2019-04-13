@@ -6,13 +6,11 @@ namespace Curds.Domain.Application.Message.Command
 {
     using Query;
 
-    public class MockCommandDefinition : BaseCommandDefinition<MockApplication, MockViewModel, MockCommand, MockQuery>
+    public class MockCommandDefinition : BaseCommandDefinition<MockApplication, MockCommand, MockQuery>
     {
         public MockCommandDefinition(MockApplication application)
             : base(application)
         { }
-        
-        public override MockViewModel ViewModel => new MockViewModel() { String = nameof(MockCommandDefinition) };
 
         public override Task<MockQuery> Execute(MockCommand message) => Task.Factory.StartNew(() => ExecuteAndReturn(message));
         private MockQuery ExecuteAndReturn(MockCommand command)
