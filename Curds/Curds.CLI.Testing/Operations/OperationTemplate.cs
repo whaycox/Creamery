@@ -9,17 +9,8 @@ namespace Curds.CLI.Operations
 {
     using Formatting;
 
-    public abstract class OperationTemplate<T> : FormattingTemplate<T> where T : Operation<MockApplication>
+    public abstract class OperationTemplate<T> : FormattingTemplate<T> where T : Operation
     {
-        private MockOptions Options => new MockOptions();
-        protected MockApplication Application = null;
-
-        [TestInitialize]
-        public void Init()
-        {
-            Application = new MockApplication(Options);
-        }
-
         [TestMethod]
         public void UsageIsProperlyFormatted()
         {

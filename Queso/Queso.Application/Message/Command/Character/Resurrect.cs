@@ -20,28 +20,18 @@ namespace Queso.Application.Message.Command.Character
         }
     }
 
-    public class ResurrectHandler : QueryingCommandHandler<QuesoApplication, ResurrectCommand, Character>
-    {
-        public ResurrectHandler(QuesoApplication application)
-            : base(application)
-        { }
-
-        public async override Task<Character> Execute(ResurrectCommand command)
-        {
-            Application.Character.Resurrect(command.CharacterPath);
-            ScanQuery returnedQuery = new ScanQuery(command.CharacterPath);
-            ScanDefinition queryDefinition = Application.Queries.Request<ScanDefinition>();
-            return await queryDefinition.Handler().Execute(returnedQuery);
-        }
-    }
-
-    public class ResurrectDefinition : BaseCommandDefinition<QuesoApplication, ResurrectHandler, ResurrectCommand, CharacterPath>
+    public class ResurrectDefinition : BaseCommandDefinition<QuesoApplication, CharacterPath, ResurrectCommand, ScanQuery>
     {
         public ResurrectDefinition(QuesoApplication application)
             : base(application)
         { }
 
         public override CharacterPath ViewModel => new CharacterPath();
-        public override ResurrectHandler Handler() => new ResurrectHandler(Application);
+        public override Task<ScanQuery> Execute(ResurrectCommand message) => Task.Factory.StartNew(() => ExecuteAndReturn(message));
+        private ScanQuery ExecuteAndReturn(ResurrectCommand command)
+        {
+            Application.Character.Resurrect(command.CharacterPath);
+            return new ScanQuery(command.CharacterPath);
+        }
     }
 }

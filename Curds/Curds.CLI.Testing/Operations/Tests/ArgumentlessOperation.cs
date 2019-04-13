@@ -12,17 +12,17 @@ namespace Curds.CLI.Operations.Tests
     using Formatting;
 
     [TestClass]
-    public class ArgumentlessOperation : OperationTemplate<ArgumentlessOperation<MockApplication>>
+    public class ArgumentlessOperation : OperationTemplate<Operations.ArgumentlessOperation>
     {
-        private ArgumentlessOperation<MockApplication> _obj = null;
-        protected override ArgumentlessOperation<MockApplication> TestObject => _obj;
+        private Operations.ArgumentlessOperation _obj = null;
+        protected override Operations.ArgumentlessOperation TestObject => _obj;
 
         protected override int ExpectedUsageWrites => 61;
 
         [TestInitialize]
         public void BuildObj()
         {
-            _obj = new MockArgumentlessOperation(Application.SimpleDispatch.Request<MockQueryingCommandDefinition>());
+            _obj = new MockArgumentlessOperation();
         }
 
         protected override void VerifyUsage(MockConsoleWriter writer) =>

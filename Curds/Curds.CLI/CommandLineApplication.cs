@@ -12,13 +12,13 @@ namespace Curds.CLI
 
     public abstract class CommandLineApplication<T> where T : CurdsApplication
     {
-        protected static string ImplicitArgument = ArgumentlessOperation<CurdsApplication>.ArgumentlessKey;
+        protected static string ImplicitArgument = ArgumentlessOperation.ArgumentlessKey;
 
         private OperationParser<T> Parser = new OperationParser<T>();
 
         protected IConsoleWriter Writer { get; }
 
-        protected abstract IEnumerable<Operation<T>> Operations { get; }
+        protected abstract IEnumerable<Operation> Operations { get; }
 
         protected T Application { get; }
 

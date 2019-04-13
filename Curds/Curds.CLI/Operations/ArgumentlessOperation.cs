@@ -9,17 +9,13 @@ namespace Curds.CLI.Operations
 {
     using Formatting.Tokens;
 
-    public abstract class ArgumentlessOperation<T> : Operation<T> where T : CurdsApplication
+    public abstract class ArgumentlessOperation : Operation
     {
         public const string ArgumentlessKey = nameof(ArgumentlessKey);
 
         protected sealed override IEnumerable<Argument> Arguments => new List<Argument>();
 
         public abstract List<Value> Values { get; }
-
-        public ArgumentlessOperation(BaseMessageDefinition<T> definition)
-            : base(definition)
-        { }
 
         public override FormattedText Syntax => FormattedText.New
             .Concatenate(null, " ", null, new List<BaseTextToken> { ComposeAliases(), ValueSyntax() });

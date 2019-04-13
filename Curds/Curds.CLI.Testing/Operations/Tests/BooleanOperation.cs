@@ -9,31 +9,28 @@ using Curds.Domain.Application.Message.Query;
 
 namespace Curds.CLI.Operations.Tests
 {
-    using Formatting;
-
     [TestClass]
-    public class BooleanOperation : OperationTemplate<BooleanOperation<MockApplication>>
+    public class BooleanOperation : OperationTemplate<Operations.BooleanOperation>
     {
-        private BooleanOperation<MockApplication> _obj = null;
-        protected override BooleanOperation<MockApplication> TestObject => _obj;
+        private Operations.BooleanOperation _obj = null;
+        protected override Operations.BooleanOperation TestObject => _obj;
 
         protected override int ExpectedUsageWrites => 19;
 
         [TestInitialize]
         public void BuildObj()
         {
-            _obj = new MockBooleanOperation(Application.SimpleDispatch.Request<MockQueryDefinition>());
+            _obj = new MockBooleanOperation();
         }
-
-
+        
         protected override void VerifyUsage(MockConsoleWriter writer) =>
             writer.StartsWith(NewLine(true))
                 .ThenHas(TextColor(CLIEnvironment.Operation))
                 .ThenHas(NewLine(false))
                 .ThenHas(AliasedOptionValue.AliasStart)
-                .ThenHas($"{MockOperation.OperationIdentifier}{nameof(MockBooleanOperation)}")
+                .ThenHas($"{Operations.Operation.OperationIdentifier}{nameof(MockBooleanOperation)}")
                 .ThenHas(AliasedOptionValue.AliasSeparator)
-                .ThenHas($"{MockOperation.OperationIdentifier}{nameof(MockBooleanOperation)}{nameof(MockBooleanOperation.Aliases)}")
+                .ThenHas($"{Operations.Operation.OperationIdentifier}{nameof(MockBooleanOperation)}{nameof(MockBooleanOperation.Aliases)}")
                 .ThenHas(AliasedOptionValue.AliasEnd)
                 .ThenHas(TextColor(CLIEnvironment.DefaultTextColor))
                 .ThenHas(" ")

@@ -50,16 +50,5 @@ namespace Curds.CLI.Operations
                     toReturn.Add($"{Argument.ArgumentIdentifier}{alias}", argument);
             return toReturn;
         }
-
-    }
-
-    public abstract class Operation<T> : Operation where T : CurdsApplication
-    {
-        protected BaseMessageDefinition<T> Definition { get; }
-
-        public Operation(BaseMessageDefinition<T> definition)
-        {
-            Definition = definition;
-        }
     }
 }

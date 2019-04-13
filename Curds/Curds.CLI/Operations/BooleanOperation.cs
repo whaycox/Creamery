@@ -7,13 +7,9 @@ using Curds.CLI.Formatting;
 
 namespace Curds.CLI.Operations
 {
-    public abstract class BooleanOperation<T> : ArgumentlessOperation<T> where T : CurdsApplication
+    public abstract class BooleanOperation : ArgumentlessOperation
     {
         public override List<Value> Values => new List<Value>();
-
-        public BooleanOperation(BaseMessageDefinition<T> definition)
-            : base(definition)
-        { }
 
         protected override FormattedText ValueSyntax() => FormattedText.New;
         protected override FormattedText ValuesUsage() => FormattedText.New;

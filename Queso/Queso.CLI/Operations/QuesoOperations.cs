@@ -9,9 +9,9 @@ namespace Queso.CLI.Operations
 {
     public static class QuesoOperations
     {
-        public static IEnumerable<Operation<QuesoApplication>> Operations(QuesoApplication application)
+        public static IEnumerable<Operation> Operations(QuesoApplication application)
         {
-            yield return new ResurrectOperation(application.Commands.Request<ResurrectDefinition>());
+            yield return new ResurrectOperation();
         }
 
     }

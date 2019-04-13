@@ -9,7 +9,7 @@ namespace Curds.Domain.CLI.Operations
     using Application;
     using Application.Message.Command;
 
-    public class MockOperation : Operation<MockApplication>
+    public class MockOperation : Operation
     {
         public override IEnumerable<string> Aliases => new string[] { nameof(MockOperation), $"{nameof(MockOperation)}{nameof(Aliases)}" };
 
@@ -24,9 +24,5 @@ namespace Curds.Domain.CLI.Operations
         };
         public const int OptionalIdentifier = 1;
         public const int RequiredIdentifier = 2;
-
-        public MockOperation(MockVoidCommandDefinition commandDefinition)
-            : base(commandDefinition)
-        { }
     }
 }

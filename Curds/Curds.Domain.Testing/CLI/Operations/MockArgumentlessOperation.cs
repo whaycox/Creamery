@@ -9,7 +9,7 @@ namespace Curds.Domain.CLI.Operations
     using Application;
     using Application.Message.Command;
 
-    public class MockArgumentlessOperation : ArgumentlessOperation<MockApplication>
+    public class MockArgumentlessOperation : ArgumentlessOperation
     {
         public override IEnumerable<string> Aliases => new string[] { nameof(MockArgumentlessOperation), $"{nameof(MockArgumentlessOperation)}{nameof(Aliases)}" };
 
@@ -22,9 +22,5 @@ namespace Curds.Domain.CLI.Operations
             new MockValue(),
             new MockValue(),
         };
-
-        public MockArgumentlessOperation(MockQueryingCommandDefinition commandDefinition)
-            : base(commandDefinition)
-        { }
     }
 }

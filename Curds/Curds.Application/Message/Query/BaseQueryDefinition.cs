@@ -5,12 +5,11 @@ using System.Threading.Tasks;
 
 namespace Curds.Application.Message.Query
 {
-    public abstract class BaseQueryDefinition<T, U, V, W, X> : BaseMessageDefinition<T, U, X>
+    public abstract class BaseQueryDefinition<T, U, V, W> : BaseMessageDefinition<T, U, V, W>
         where T : CurdsApplication
-        where U : BaseQueryHandler<T, V, W>
+        where U : BaseViewModel
         where V : BaseQuery
         where W : BaseViewModel
-        where X : BaseViewModel
     {
         public BaseQueryDefinition(T application)
             : base(application)

@@ -17,7 +17,7 @@ namespace Queso.CLI
 
     public class QuesoCommandLine : CommandLineApplication<QuesoApplication>
     {
-        protected override IEnumerable<Operation<QuesoApplication>> Operations => QuesoOperations.Operations(Application);
+        protected override IEnumerable<Operation> Operations => QuesoOperations.Operations(Application);
 
         public QuesoCommandLine(QuesoApplication application, IConsoleWriter writer)
             : base(application, writer)
@@ -30,9 +30,8 @@ namespace Queso.CLI
                 case ResurrectOperation rez:
                     string pathToChar = parsedPair.Arguments[ImplicitArgument][0].RawValue;
                     ResurrectCommand command = new ResurrectCommand(pathToChar);
-                    ResurrectDefinition commandDefinition = Application.Commands.Request<ResurrectDefinition>();
-                    Character scan = await commandDefinition.Handler().Execute(command);
-                    RenderCharacter(scan).Write(Writer);
+                    ScanQuery query = await Application.Commands.Resurrect.Execute(command);
+                    RenderCharacter(await Application.Queries.Scan.Execute(query)).Write(Writer);
                     break;
                 default:
                     throw new InvalidOperationException("Unexpected operation");

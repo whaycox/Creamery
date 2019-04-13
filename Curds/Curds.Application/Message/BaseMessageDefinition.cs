@@ -12,17 +12,17 @@ namespace Curds.Application.Message
         { }
     }
 
-    public abstract class BaseMessageDefinition<T, U, V> : BaseMessageDefinition<T>
+    public abstract class BaseMessageDefinition<T, U, V, W> : BaseMessageDefinition<T>
         where T : CurdsApplication
-        where U : BaseMessageHandler<T>
-        where V : BaseViewModel
+        where U : BaseViewModel
+        where V : BaseMessage
     {
-        public abstract V ViewModel { get; }
+        public abstract U ViewModel { get; }
 
         public BaseMessageDefinition(T application)
             : base(application)
         { }
 
-        public abstract U Handler();
+        public abstract Task<W> Execute(V message);
     }
 }

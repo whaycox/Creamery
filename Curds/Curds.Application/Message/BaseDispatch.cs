@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Curds.Application.Message.Dispatch
+namespace Curds.Application.Message
 {
     public abstract class BaseDispatch<T> : ReferencingObject<T> where T : CurdsApplication
     {
@@ -18,10 +18,10 @@ namespace Curds.Application.Message.Dispatch
 
         protected U Lookup<U>() where U : BaseMessageDefinition<T>
         {
-            Type handlerType = typeof(U);
-            if (!Map.TryGetValue(handlerType, out BaseMessageDefinition<T> handler))
-                throw new KeyNotFoundException($"No handler found for {handlerType.FullName}");
-            return handler as U;
+            Type definitionType = typeof(U);
+            if (!Map.TryGetValue(definitionType, out BaseMessageDefinition<T> definition))
+                throw new KeyNotFoundException($"No {nameof(definition)} found for {definitionType.FullName}");
+            return definition as U;
         }
     }
 }

@@ -20,13 +20,14 @@ namespace Queso.Application.Message.Query.Character
         }
     }
 
-    public class ScanHandler : BaseQueryHandler<QuesoApplication, ScanQuery, Character>
+    public class ScanDefinition : BaseQueryDefinition<QuesoApplication, CharacterPath, ScanQuery, Character>
     {
-        public ScanHandler(QuesoApplication application)
+        public ScanDefinition(QuesoApplication application)
             : base(application)
         { }
 
-        public override Task<Character> Execute(ScanQuery query) => Task.Factory.StartNew(() => ExecuteAndReturn(query));
+        public override CharacterPath ViewModel => new CharacterPath();
+        public override Task<Character> Execute(ScanQuery message) => Task.Factory.StartNew(() => ExecuteAndReturn(message));
         private Character ExecuteAndReturn(ScanQuery query)
         {
             Domain.Character loaded = Application.Character.Load(query.CharacterPath);
@@ -37,15 +38,5 @@ namespace Queso.Application.Message.Query.Character
                 Alive = loaded.Alive,
             };
         }
-    }
-
-    public class ScanDefinition : BaseQueryDefinition<QuesoApplication, ScanHandler, ScanQuery, Character, CharacterPath>
-    {
-        public ScanDefinition(QuesoApplication application)
-            : base(application)
-        { }
-
-        public override CharacterPath ViewModel => new CharacterPath();
-        public override ScanHandler Handler() => new ScanHandler(Application);
     }
 }

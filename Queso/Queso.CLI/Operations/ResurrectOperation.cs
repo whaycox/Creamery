@@ -8,7 +8,7 @@ using Queso.Application;
 
 namespace Queso.CLI.Operations
 {
-    public class ResurrectOperation : ArgumentlessOperation<QuesoApplication>
+    public class ResurrectOperation : ArgumentlessOperation
     {
         private static readonly List<string> _aliases = new List<string>
         {
@@ -26,10 +26,5 @@ namespace Queso.CLI.Operations
         {
             new CharacterPathValue(),
         };
-
-        public ResurrectOperation(ResurrectDefinition definition)
-            : base(definition)
-        { }
-
     }
 }

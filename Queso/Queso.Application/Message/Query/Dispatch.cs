@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Curds.Application.Message;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using Curds.Application.Message;
-using Curds.Application.Message.Dispatch;
 
 namespace Queso.Application.Message.Query
 {
-    public class Dispatch : SimpleDispatch<QuesoApplication>
+    public class Dispatch : BaseDispatch<QuesoApplication>
     {
+        public Character.ScanDefinition Scan => Lookup<Character.ScanDefinition>();
+
         public Dispatch(QuesoApplication application)
             : base(application)
         { }
@@ -15,7 +15,6 @@ namespace Queso.Application.Message.Query
         protected override Dictionary<Type, BaseMessageDefinition<QuesoApplication>> BuildMapping(Dictionary<Type, BaseMessageDefinition<QuesoApplication>> requestMap)
         {
             requestMap.Add(typeof(Character.ScanDefinition), new Character.ScanDefinition(Application));
-
             return requestMap;
         }
     }

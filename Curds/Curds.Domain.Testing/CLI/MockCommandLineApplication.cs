@@ -16,11 +16,11 @@ namespace Curds.Domain.CLI
     {
         public static string ExecutionMessage(string operationName) => $"{operationName} has executed";
 
-        protected override IEnumerable<Operation<MockApplication>> Operations => new List<Operation<MockApplication>>
+        protected override IEnumerable<Operation> Operations => new List<Operation>
         {
-            new MockOperation(Application.SimpleDispatch.Request<MockVoidCommandDefinition>()),
-            new MockArgumentlessOperation(Application.SimpleDispatch.Request<MockQueryingCommandDefinition>()),
-            new MockBooleanOperation(Application.SimpleDispatch.Request<MockQueryDefinition>()),
+            new MockOperation(),
+            new MockArgumentlessOperation(),
+            new MockBooleanOperation(),
         };
 
         public MockCommandLineApplication(MockApplication application, IConsoleWriter writer)

@@ -17,7 +17,7 @@ namespace Curds.CLI.Operations.Tests
     {
         private MockOptions Options = new MockOptions();
         private MockApplication Application = null;
-        private List<Operation<MockApplication>> Operations = null;
+        private List<Operations.Operation> Operations = null;
 
         private string[] MockOptionalOperationArguments => new string[]
         {
@@ -46,13 +46,12 @@ namespace Curds.CLI.Operations.Tests
         public void Init()
         {
             Application = new MockApplication(Options);
-            Operations = new List<Operation<MockApplication>>
+            Operations = new List<Operations.Operation>
             {
-                new MockOperation(Application.SimpleDispatch.Request<MockVoidCommandDefinition>()),
-                new MockArgumentlessOperation(Application.SimpleDispatch.Request<MockQueryingCommandDefinition>()),
+                new MockOperation(),
+                new MockArgumentlessOperation(),
             };
         }
-
 
         [TestMethod]
         public void ParseThrowsWithNoArgs()

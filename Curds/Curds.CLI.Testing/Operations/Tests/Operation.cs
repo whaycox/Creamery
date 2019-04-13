@@ -9,20 +9,18 @@ using Curds.Domain.Application.Message.Command;
 
 namespace Curds.CLI.Operations.Tests
 {
-    using Formatting;
-
     [TestClass]
-    public class Operation : OperationTemplate<Operation<MockApplication>>
+    public class Operation : OperationTemplate<Operations.Operation>
     {
-        private Operation<MockApplication> _obj = null;
-        protected override Operation<MockApplication> TestObject => _obj;
+        private Operations.Operation _obj = null;
+        protected override Operations.Operation TestObject => _obj;
 
         protected override int ExpectedUsageWrites => 128;
 
         [TestInitialize]
         public void BuildObj()
         {
-            _obj = new MockOperation(Application.SimpleDispatch.Request<MockVoidCommandDefinition>());
+            _obj = new MockOperation();
         }
 
         protected override void VerifyUsage(MockConsoleWriter writer) =>
@@ -30,9 +28,9 @@ namespace Curds.CLI.Operations.Tests
                 .ThenHas(TextColor(CLIEnvironment.Operation))
                 .ThenHas(NewLine(false))
                 .ThenHas(AliasedOptionValue.AliasStart)
-                .ThenHas($"{MockOperation.OperationIdentifier}{nameof(MockOperation)}")
+                .ThenHas($"{Operations.Operation.OperationIdentifier}{nameof(MockOperation)}")
                 .ThenHas(AliasedOptionValue.AliasSeparator)
-                .ThenHas($"{MockOperation.OperationIdentifier}{nameof(MockOperation)}{nameof(MockOperation.Aliases)}")
+                .ThenHas($"{Operations.Operation.OperationIdentifier}{nameof(MockOperation)}{nameof(MockOperation.Aliases)}")
                 .ThenHas(AliasedOptionValue.AliasEnd)
                 .ThenHas(TextColor(CLIEnvironment.DefaultTextColor))
                 .ThenHas(Environment.NewLine)
