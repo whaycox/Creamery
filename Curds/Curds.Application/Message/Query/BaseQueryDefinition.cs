@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 
 namespace Curds.Application.Message.Query
 {
+    using ViewModel;
+
     public abstract class BaseQueryDefinition<T, U, V> : BaseMessageDefinition<T, U, V>
         where T : CurdsApplication
         where U : BaseQuery

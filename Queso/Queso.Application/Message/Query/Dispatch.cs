@@ -1,4 +1,5 @@
 ﻿using Curds.Application.Message;
+using Curds.Application.Message.Dispatch;
 using System;
 using System.Collections.Generic;
 

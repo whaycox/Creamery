@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Curds.Application
+﻿namespace Curds.Application
 {
     public abstract class CurdsOptions
     {

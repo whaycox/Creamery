@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Curds.Application.Message.Query;
-using Curds.Application.Message;
-using Queso.Application.Message.ViewModels;
+﻿using Curds.Application.Message.Query;
 using System.Threading.Tasks;
 
 namespace Queso.Application.Message.Query.Character

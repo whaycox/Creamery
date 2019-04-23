@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Gouda.Application.Persistence;
 using Curds.Application.Cron;
-using Curds.Application.Persistence;
+using Curds.Application.Persistence.Persistor;
 using Gouda.Domain.Check;
 using Gouda.Domain.Communication;
 using Gouda.Domain.Security;
@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Curds;
 using Curds.Persistence.EFCore;
+using Curds.Domain.Security;
 
 namespace Gouda.Persistence.EFCore
 {
@@ -20,31 +21,33 @@ namespace Gouda.Persistence.EFCore
     {
         public ICron Cron { get; }
 
-        public IPersistor<Satellite> Satellites { get; }
-        public IPersistor<Definition> Definitions { get; }
+        public IEntityPersistor<Satellite> Satellites { get; }
+        public IEntityPersistor<Definition> Definitions { get; }
 
-        private Persistors.CronPersistor<DefinitionRegistration> _definitionRegistrations = null;
-        public IPersistor<DefinitionRegistration> DefinitionRegistrations => _definitionRegistrations;
-        public IPersistor<DefinitionArgument> DefinitionArguments { get; }
-        public IPersistor<Contact> Contacts { get; }
+        private Persistor.CronPersistor<DefinitionRegistration> _definitionRegistrations = null;
+        public IEntityPersistor<DefinitionRegistration> DefinitionRegistrations => _definitionRegistrations;
+        public IEntityPersistor<DefinitionArgument> DefinitionArguments { get; }
+        public IEntityPersistor<Contact> Contacts { get; }
 
-        private Persistors.CronPersistor<ContactRegistration> _contactRegistrations = null;
-        public IPersistor<ContactRegistration> ContactRegistrations => _contactRegistrations;
-        public IPersistor<User> Users { get; }
+        private Persistor.CronPersistor<ContactRegistration> _contactRegistrations = null;
+        public IEntityPersistor<ContactRegistration> ContactRegistrations => _contactRegistrations;
+        public IUserPersistor<User> Users { get; }
+        public ISessionPersistor<Session> Sessions { get; }
+        public IReAuthPersistor<ReAuth> ReAuthentications { get; }
 
-        public override GoudaContext Context => new GoudaContext(this);
+        protected override GoudaContext ContextInternal => new GoudaContext(this);
 
         public GoudaProvider(ICron cronProvider)
         {
             Cron = cronProvider;
 
-            Satellites = new Persistors.Satellite(this);
-            Definitions = new Persistors.Definition(this);
-            _definitionRegistrations = new Persistors.DefinitionRegistration(this);
-            DefinitionArguments = new Persistors.DefinitionArgument(this);
-            Contacts = new Persistors.Contact(this);
-            _contactRegistrations = new Persistors.ContactRegistration(this);
-            Users = new Persistors.User(this);
+            Satellites = new Persistor.Satellite(this);
+            Definitions = new Persistor.Definition(this);
+            _definitionRegistrations = new Persistor.DefinitionRegistration(this);
+            DefinitionArguments = new Persistor.DefinitionArgument(this);
+            Contacts = new Persistor.Contact(this);
+            _contactRegistrations = new Persistor.ContactRegistration(this);
+            Users = new Persistor.User(this);
         }
 
         public void Initialize()
@@ -55,24 +58,22 @@ namespace Gouda.Persistence.EFCore
 
         public Task<User> FindByEmail(string email)
         {
-            using (GoudaContext context = Context)
-                return context.Users
-                    .Where(u => u.Email == email)
-                    .SingleAsync();
+            throw new NotImplementedException();
         }
 
         public async Task AddSession(Session session)
         {
-            using (GoudaContext context = Context)
-            {
-                await context.Sessions.AddAsync(session);
-                await context.SaveChangesAsync();
-            }
+            throw new NotImplementedException();
+            //using (GoudaContext context = Context)
+            //{
+            //    await context.Sessions.AddAsync(session);
+            //    await context.SaveChangesAsync();
+            //}
         }
 
         public Task<List<DefinitionArgument>> GenerateArguments(int definitionID)
         {
-            using (GoudaContext context = Context)
+            using (GoudaContext context = ContextInternal)
                 return context.DefinitionArguments
                     .Where(d => d.DefinitionID == definitionID)
                     .ToListAsync();

@@ -13,13 +13,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Curds\Curds.Application\Curds.Application.csproj" />
-    <ProjectReference Include="..\Gouda.Domain\Gouda.Domain.csproj" />
+    <Compile Remove="Message\Command\Scheduling\**" />
+    <EmbeddedResource Remove="Message\Command\Scheduling\**" />
+    <None Remove="Message\Command\Scheduling\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Message\Command\Scheduling\" />
-    <Folder Include="Message\Query\" />
+    <ProjectReference Include="..\..\Curds\Curds.Application\Curds.Application.csproj" />
+    <ProjectReference Include="..\Gouda.Domain\Gouda.Domain.csproj" />
   </ItemGroup>
 
 </Project>

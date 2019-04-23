@@ -6,7 +6,7 @@ namespace Curds.Domain.EventArgs
 {
     using Persistence;
 
-    public class EntityModifiedArgs<T> : System.EventArgs where T : Entity
+    public class EntityModifiedArgs<T> : System.EventArgs where T : BaseEntity
     {
         public T Entity { get; }
 

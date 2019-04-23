@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Curds.Application.Message;
-using Curds.Application;
+using Curds.Application.Message.Dispatch;
 
 namespace Curds.Domain.Application.Message
 {

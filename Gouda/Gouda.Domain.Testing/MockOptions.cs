@@ -8,13 +8,13 @@ using Gouda.Application.Persistence;
 using Curds.Application.Cron;
 using Curds.Application.DateTimes;
 using Curds.Infrastructure.Cron;
-using Gouda.Application.Security;
+using Curds.Application.Security;
 
 namespace Gouda.Domain
 {
     using Check;
     using Communication;
-    using Persistence;
+    using Persistence.EFCore;
     using Security;
 
     public class MockOptions : GoudaOptions
@@ -67,7 +67,7 @@ namespace Gouda.Domain
             MockNotifier = new MockNotifier(MockDateTime, MockPersistence);
             MockSender = new MockSender(MockPersistence);
 
-            MockSecurity = new MockSecurityProvider(Time, Persistence);
+            MockSecurity = new MockSecurityProvider(Time, MockPersistence);
         }
 
     }

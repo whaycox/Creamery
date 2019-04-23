@@ -1,12 +1,13 @@
 ﻿using Curds.Application;
+using Curds.Application.Security;
 
 namespace Gouda.Application
 {
     public abstract class GoudaOptions : CurdsOptions
     {
-        public abstract Persistence.IPersistence Persistence { get; }
+        public abstract ISecurity Security { get; }
 
-        public abstract Security.ISecurity Security { get; }
+        public abstract Persistence.IPersistence Persistence { get; }
 
         public abstract Check.IExecutor Executor { get; }
         public abstract Check.IEvaluator Evaluator { get; }

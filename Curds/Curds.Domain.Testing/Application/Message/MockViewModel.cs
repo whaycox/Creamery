@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Curds.Application.Message;
+using Curds.Application.Message.ViewModel;
 
 namespace Curds.Domain.Application.Message
 {
