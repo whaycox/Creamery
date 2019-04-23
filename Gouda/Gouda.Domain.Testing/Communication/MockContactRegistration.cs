@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Curds.Domain.Security;
 
 namespace Gouda.Domain.Communication
 {
-    using Security;
-
     public class MockContactRegistration
     {
         private static int Users = MockUser.Samples.Length;

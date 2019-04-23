@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Gouda.Domain.Persistence;
+using Gouda.Domain.Persistence.EFCore;
 using Gouda.Domain.Communication;
 using Gouda.Domain.Check;
 using Gouda.Domain.Check.Responses;

@@ -1,13 +1,14 @@
 ﻿using System;
 using Curds.Application;
+using Curds.Application.Security;
 
 namespace Gouda.Application
 {
     public sealed class GoudaApplication : CurdsApplication, IDisposable
     {
-        internal Persistence.IPersistence Persistence { get; set; }
+        internal ISecurity Security { get; set; }
 
-        internal Security.ISecurity Security { get; set; }
+        internal Persistence.IPersistence Persistence { get; set; }
 
         internal Check.IExecutor Executor { get; set; }
         internal Check.IEvaluator Evaluator { get; set; }
@@ -18,6 +19,8 @@ namespace Gouda.Application
         internal Communication.INotifier Notifier { get; set; }
 
         public Message.Command.Dispatch Commands { get; private set; }
+
+        public override string Description => "A systems monitoring application";
 
         public GoudaApplication(GoudaOptions options)
             : base(options)

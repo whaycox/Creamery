@@ -1,34 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Curds.Application.DateTimes;
+using Curds.Application.Persistence;
+using Curds.Application.Security;
+using Curds.Application.Security.Command;
+using Curds.Domain.Security;
+using System;
 using System.Threading.Tasks;
-using Curds.Application.DateTimes;
-using Gouda.Application.Persistence;
-using Gouda.Application.Security;
-using Gouda.Infrastructure.Security;
 
 namespace Gouda.Domain.Security
 {
     public class MockSecurityProvider : ISecurity
     {
-        private SecurityProvider Security = null;
-
         public IDateTime Time { get; }
-        public IPersistence Persistence { get; }
+        public ISecurityPersistence Persistence { get; }
 
-        public MockSecurityProvider(IDateTime time, IPersistence persistence)
+        public bool Validates { get; set; }
+
+        public MockSecurityProvider(IDateTime time, ISecurityPersistence persistence)
         {
             Time = time;
             Persistence = persistence;
-
-            Security = new SecurityProvider(Time, Persistence);
+            Validates = true;
         }
 
-        public string EncryptPassword(string salt, string password) => Security.EncryptPassword(salt, password);
+        private Authentication MockAuth => new MockAuthentication(MockUser.One.ID);
 
-        public string GenerateSalt() => Curds.Testing.TestSalt;
-
-        public string GenerateSessionIdentifier() => throw new NotImplementedException();
-        public Task<Session> GenerateSession(string deviceIdentifier, string email, string password) => Security.GenerateSession(deviceIdentifier, email, password);
+        public Task<Authentication> Login(Login command) => Task.Factory.StartNew(() => MockAuth);
+        public Task Logout(LogoutUser command) => Task.Delay(5);
+        public Task Logout(LogoutSeries command) => Task.Delay(5);
+        public Task<Authentication> ReAuthenticate(ReAuthenticate command) => Task.Factory.StartNew(() => MockAuth);
+        public Task<bool> Validate(ValidateSession command) => Task.Factory.StartNew(() => Validates);
+        public Task<Authentication> CreateInitialUser(CreateInitialUser command) => Task.Factory.StartNew(() => MockAuth);
     }
 }

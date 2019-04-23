@@ -1,7 +1,7 @@
 ﻿using Curds.Domain;
 using Gouda.Domain.Check;
 using Gouda.Domain.Communication;
-using Gouda.Domain.Persistence;
+using Gouda.Domain.Persistence.EFCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;

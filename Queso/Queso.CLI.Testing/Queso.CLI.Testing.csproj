@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+
+    <RootNamespace>Queso.CLI</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.4.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Curds\Curds.Application\Curds.Application.csproj" />
+    <ProjectReference Include="..\..\Curds\Curds.CLI.Testing\Curds.CLI.Testing.csproj" />
+    <ProjectReference Include="..\..\Curds\Curds.CLI\Curds.CLI.csproj" />
+    <ProjectReference Include="..\..\Curds\Curds.Domain.Testing\Curds.Domain.Testing.csproj" />
+    <ProjectReference Include="..\..\Curds\Curds.Domain\Curds.Domain.csproj" />
+    <ProjectReference Include="..\..\Curds\Curds.Infrastructure\Curds.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Curds\Curds.Persistence\Curds.Persistence.csproj" />
+    <ProjectReference Include="..\Queso.Application\Queso.Application.csproj" />
+    <ProjectReference Include="..\Queso.CLI\Queso.CLI.csproj" />
+    <ProjectReference Include="..\Queso.Domain.Testing\Queso.Domain.Testing.csproj" />
+    <ProjectReference Include="..\Queso.Domain\Queso.Domain.csproj" />
+    <ProjectReference Include="..\Queso.Infrastructure\Queso.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

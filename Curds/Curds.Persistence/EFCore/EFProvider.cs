@@ -14,6 +14,21 @@ namespace Curds.Persistence.EFCore
 
     public abstract class EFProvider<T> : EFProvider where T : CurdsContext
     {
-        public abstract T Context { get; }
+        private bool DatabaseVerified = false;
+
+        public T Context
+        {
+            get
+            {
+                T context = ContextInternal;
+                if (!DatabaseVerified)
+                {
+                    context.Database.EnsureCreated();
+                    DatabaseVerified = true;
+                }
+                return context;
+            }
+        }
+        protected abstract T ContextInternal { get; }
     }
 }

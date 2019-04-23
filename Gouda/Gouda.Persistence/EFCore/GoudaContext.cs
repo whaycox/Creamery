@@ -6,10 +6,11 @@ using Gouda.Domain.Check;
 using Gouda.Domain.Communication;
 using Gouda.Domain.Security;
 using Curds.Persistence.EFCore;
+using Curds.Domain.Security;
 
 namespace Gouda.Persistence.EFCore
 {
-    public class GoudaContext : CurdsContext
+    public class GoudaContext : SecureCurdsContext
     {
         public DbSet<Definition> Definitions { get; set; }
         public DbSet<DefinitionArgument> DefinitionArguments { get; set; }
@@ -19,9 +20,6 @@ namespace Gouda.Persistence.EFCore
         public DbSet<ContactArgument> ContactArguments { get; set; }
         public DbSet<ContactRegistration> ContactRegistrations { get; set; }
         public DbSet<Satellite> Satellites { get; set; }
-
-        public DbSet<User> Users { get; set; }
-        public DbSet<Session> Sessions { get; set; }
 
         public GoudaContext(EFProvider provider)
             : base(provider)
@@ -37,8 +35,8 @@ namespace Gouda.Persistence.EFCore
                     e => TypeConverters.Deserialize(e));
             modelBuilder.Entity<User>()
                 .HasAlternateKey(nameof(User.Email));
-            modelBuilder.Entity<Session>()
-                .HasKey(nameof(Session.Identifier), nameof(Session.DeviceIdentifier));
+            modelBuilder.Entity<ReAuth>()
+                .HasKey(nameof(ReAuth.UserID), nameof(ReAuth.Series), nameof(ReAuth.Token));
         }
     }
 }

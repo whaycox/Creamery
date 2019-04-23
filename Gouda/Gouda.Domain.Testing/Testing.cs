@@ -12,6 +12,5 @@ namespace Gouda
     {
         public const string AlwaysCronString = "* * * * *";
         public static IPEndPoint TestEndpoint => new IPEndPoint(IPAddress.Loopback, Satellite.DefaultPort);
-        public static string TestEmail => nameof(TestEmail);
     }
 }

@@ -19,7 +19,7 @@ namespace Queso.Infrastructure.Character.Tests
         public void MakesATemporaryCopy()
         {
             string temporaryPath = null;
-            using (Character.DisposableCharacter temporary = new Character.DisposableCharacter(Files.StartingCharacters.Amazon))
+            using (Domain.DisposableCharacter temporary = new Domain.DisposableCharacter(Files.StartingCharacters.Amazon))
             {
                 temporaryPath = temporary.Path;
                 Domain.Character tempChar = Provider.Load(temporaryPath);

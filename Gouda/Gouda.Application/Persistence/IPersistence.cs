@@ -8,20 +8,21 @@ using Curds.Application.Persistence;
 using Curds.Application.Cron;
 using Gouda.Domain.Security;
 using System.Threading.Tasks;
+using Curds.Domain.Security;
+using Curds.Application.Persistence.Persistor;
 
 namespace Gouda.Application.Persistence
 {
-    public interface IPersistence
+    public interface IPersistence : ISecurityPersistence
     {
         ICron Cron { get; }
 
-        IPersistor<Satellite> Satellites { get; }
-        IPersistor<Definition> Definitions { get; }
-        IPersistor<DefinitionRegistration> DefinitionRegistrations { get; }
-        IPersistor<DefinitionArgument> DefinitionArguments { get; }
-        IPersistor<Contact> Contacts { get; }
-        IPersistor<ContactRegistration> ContactRegistrations { get; }
-        IPersistor<User> Users { get; }
+        IEntityPersistor<Satellite> Satellites { get; }
+        IEntityPersistor<Definition> Definitions { get; }
+        IEntityPersistor<DefinitionRegistration> DefinitionRegistrations { get; }
+        IEntityPersistor<DefinitionArgument> DefinitionArguments { get; }
+        IEntityPersistor<Contact> Contacts { get; }
+        IEntityPersistor<ContactRegistration> ContactRegistrations { get; }
 
         void Initialize();
 
