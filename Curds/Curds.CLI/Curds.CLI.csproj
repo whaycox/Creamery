@@ -1,12 +1,33 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
+    
+  <PropertyGroup>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Willie Haycox</Authors>
+    <Product>Curds</Product>
+    <Version>0.1.0</Version>
+    <Description>A generic CLI library.</Description>
+    <PackageProjectUrl>https://github.com/whaycox/Creamery</PackageProjectUrl>
+    <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
+  </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Curds.Application\Curds.Application.csproj" />
+  <PropertyGroup>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(Configuration)' == 'Release'">
+    <PackageReference Include="Curds.Domain" Version="0.1.0" />
+    <PackageReference Include="Curds.Application" Version="0.1.0" />
+    <PackageReference Include="Curds.Infrastructure" Version="0.1.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
     <ProjectReference Include="..\Curds.Domain\Curds.Domain.csproj" />
+    <ProjectReference Include="..\Curds.Application\Curds.Application.csproj" />
     <ProjectReference Include="..\Curds.Infrastructure\Curds.Infrastructure.csproj" />
   </ItemGroup>
 
