@@ -3,9 +3,10 @@
 namespace Curds.Cron.Parser.Handler.Implementation
 {
     using Domain;
+    using Range.Domain;
     using Range.Implementation;
 
-    internal class Wildcard : ParsingHandler
+    public class Wildcard : ParsingHandler
     {
         private static readonly Regex WildcardFormat = new Regex(@"^\*(?:/(\d+))?$", RegexOptions.Compiled);
 
@@ -13,22 +14,22 @@ namespace Curds.Cron.Parser.Handler.Implementation
             : base(successor)
         { }
 
-        public override Range.Domain.Basic HandleParse(string range, Token.Domain.Basic token)
+        public override Basic HandleParse(string range)
         {
             Match wildcardMatch = WildcardFormat.Match(range);
             if (wildcardMatch.Success)
-                return ParseWildcard(wildcardMatch, token);
+                return ParseWildcard(wildcardMatch);
             else
-                return Successor.HandleParse(range, token);
+                return Successor.HandleParse(range);
         }
 
-        private Range.Domain.Basic ParseWildcard(Match wildcardMatch, Token.Domain.Basic token)
+        private Basic ParseWildcard(Match wildcardMatch)
         {
             string stepValue = wildcardMatch.Groups[1].Value;
             if (string.IsNullOrEmpty(stepValue))
-                return new Unbounded(token.AbsoluteMin, token.AbsoluteMax);
+                return new Unbounded();
             else
-                return new Step(token.AbsoluteMin, token.AbsoluteMax, int.Parse(stepValue));
+                return new Step(int.Parse(stepValue));
         }
     }
 }

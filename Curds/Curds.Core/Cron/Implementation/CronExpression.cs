@@ -5,19 +5,11 @@ using System.Linq;
 namespace Curds.Cron.Implementation
 {
     using Abstraction;
+    using Enumeration;
     using Token.Implementation;
 
     public class CronExpression : Domain.CronExpression
     {
-        private enum ExpressionPlacement
-        {
-            Minute = 0,
-            Hour = 1,
-            DayOfMonth = 2,
-            Month = 3,
-            DayOfWeek = 4,
-        }
-
         private const string Separator = " ";
         private static readonly string[] SeparatorArray = new string[] { Separator };
         private const int ExpectedParts = 5;
@@ -36,17 +28,27 @@ namespace Curds.Cron.Implementation
             if (expressionParts.Length != ExpectedParts)
                 throw new FormatException($"Invalid format for {nameof(Domain.CronExpression.Expression)}: {expressionParts.Stitch(Separator)}");
 
-            ParseMinute(expressionParts[(int)ExpressionPlacement.Minute]);
-            ParseHour(expressionParts[(int)ExpressionPlacement.Hour]);
-            ParseDayOfMonth(expressionParts[(int)ExpressionPlacement.DayOfMonth]);
-            ParseMonth(expressionParts[(int)ExpressionPlacement.Month]);
-            ParseDayOfWeek(expressionParts[(int)ExpressionPlacement.DayOfWeek]);
+            for (int i = 0; i < ExpectedParts; i++)
+                Children.Add(Parse(expressionParts[i], (Token)i));
         }
-        private void ParseMinute(string minuteRange) => Children.Add(new Minute(minuteRange));
-        private void ParseHour(string hourRange) => Children.Add(new Hour(hourRange));
-        private void ParseDayOfMonth(string dayOfMonthRange) => Children.Add(new DayOfMonth(dayOfMonthRange));
-        private void ParseMonth(string monthRange) => Children.Add(new Month(monthRange));
-        private void ParseDayOfWeek(string dayOfWeekRange) => Children.Add(new DayOfWeek(dayOfWeekRange));
+        private ICronObject Parse(string tokenRanges, Token tokenType)
+        {
+            switch (tokenType)
+            {
+                case Token.Minute:
+                    return new Minute(new Parser.Domain.Basic().ParseRanges(tokenRanges));
+                case Token.Hour:
+                    return new Hour(new Parser.Domain.Basic().ParseRanges(tokenRanges));
+                case Token.DayOfMonth:
+                    return new DayOfMonth(new Parser.Implementation.DayOfMonth().ParseRanges(tokenRanges));
+                case Token.Month:
+                    return new Month(new Parser.Implementation.Month().ParseRanges(tokenRanges));
+                case Token.DayOfWeek:
+                    return new DayOfWeek(new Parser.Implementation.DayOfWeek().ParseRanges(tokenRanges));
+                default:
+                    throw new InvalidOperationException($"Unexpected {nameof(tokenType)}: {tokenType}");
+            }
+        }
 
         public override bool Test(DateTime testTime) => !AreAnyFails(testTime);
         private bool AreAnyFails(DateTime testTime) => Children.Where(c => !c.Test(testTime)).Any();

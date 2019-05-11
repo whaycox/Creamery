@@ -5,13 +5,13 @@ namespace Curds.Cron.Parser.Domain
 {
     using Handler.Domain;
 
-    internal class Basic
+    public class Basic
     {
         private static readonly char[] Separator = new char[] { ',' };
 
         public static ParsingHandler EmptyChain => null;
 
-        public IEnumerable<Range.Domain.Basic> ParseRanges(string ranges, Token.Domain.Basic token)
+        public IEnumerable<Range.Domain.Basic> ParseRanges(string ranges)
         {
             string[] rangeParts = ranges.Trim().Split(Separator, StringSplitOptions.RemoveEmptyEntries);
             if (rangeParts.Length == 0)
@@ -19,7 +19,7 @@ namespace Curds.Cron.Parser.Domain
 
             ParsingHandler chain = Chain;
             foreach (string rangePart in rangeParts)
-                yield return chain.HandleParse(rangePart, token);
+                yield return chain.HandleParse(rangePart);
         }
         protected virtual ParsingHandler Chain => EmptyChain
             .AddWildcard()

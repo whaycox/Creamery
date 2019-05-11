@@ -3,7 +3,7 @@
     using Handler.Domain;
     using Handler.Implementation;
 
-    internal static class Extensions
+    internal static class HandlerExtensions
     {
         public static ParsingHandler AddWildcard(this ParsingHandler chain) => new Wildcard(chain);
         public static ParsingHandler AddDefinite(this ParsingHandler chain) => new Definite(chain);

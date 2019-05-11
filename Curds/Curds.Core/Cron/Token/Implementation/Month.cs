@@ -1,21 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Curds.Cron.Token.Implementation
 {
     using Domain;
+    using Enumeration;
 
     public class Month : Basic
     {
-        public override int AbsoluteMin => 1;
-        public override int AbsoluteMax => 12;
+        public const int MinMonth = 1;
+        public const int MaxMonth = 12;
 
-        public Month(string expressionPart)
-            : base(expressionPart)
+        public override int AbsoluteMin => MinMonth;
+        public override int AbsoluteMax => MaxMonth;
+
+        public override Token TokenType => Token.Month;
+
+        public Month(IEnumerable<Range.Domain.Basic> ranges)
+            : base(ranges)
         { }
-
-        protected override IEnumerable<Range.Domain.Basic> ParseExpressionPart(string expressionPart) => new Parser.Implementation.Month().ParseRanges(expressionPart, this);
-
-        protected override int RetrieveDatePart(DateTime testTime) => testTime.Month;
     }
 }

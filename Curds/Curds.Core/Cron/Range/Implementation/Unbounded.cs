@@ -1,13 +1,15 @@
-﻿namespace Curds.Cron.Range.Implementation
+﻿using System;
+
+namespace Curds.Cron.Range.Implementation
 {
     using Domain;
 
-    internal class Unbounded : Basic
+    public class Unbounded : Basic
     {
-        public Unbounded(int min, int max)
-            : base(min, max)
+        public Unbounded()
+            : base(int.MinValue, int.MaxValue)
         { }
 
-        public override bool Probe(int testValue) => true;
+        public override bool Test(Token.Domain.Basic token, DateTime testTime, int testValue) => true;
     }
 }

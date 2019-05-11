@@ -3,19 +3,23 @@ using System.Collections.Generic;
 
 namespace Curds.Cron.Token.Implementation
 {
-    using Domain;
+    using Enumeration;
     using Range.Implementation;
+    using Domain;
 
     public class DayOfMonth : Basic
     {
-        public override int AbsoluteMin => 1;
-        public override int AbsoluteMax => 31;
+        public const int MinDayOfMonth = 1;
+        public const int MaxDayOfMonth = 31;
 
-        public DayOfMonth(string expressionPart)
-            : base(expressionPart)
+        public override int AbsoluteMin => MinDayOfMonth;
+        public override int AbsoluteMax => MaxDayOfMonth;
+
+        public override Token TokenType => Token.DayOfMonth;
+
+        public DayOfMonth(IEnumerable<Range.Domain.Basic> ranges)
+            : base(ranges)
         { }
-
-        protected override IEnumerable<Range.Domain.Basic> ParseExpressionPart(string expressionPart) => new Parser.Implementation.DayOfMonth().ParseRanges(expressionPart, this);
 
         protected override bool TestChild(DateTime testTime, Range.Domain.Basic childRange)
         {
@@ -57,7 +61,5 @@ namespace Curds.Cron.Token.Implementation
                     return base.TestChild(testTime, nearestWeekdayRange);
             }
         }
-
-        protected override int RetrieveDatePart(DateTime testTime) => testTime.Day;
     }
 }

@@ -3,7 +3,7 @@
     using Domain;
     using Handler.Domain;
 
-    internal class DayOfMonth : Basic
+    public class DayOfMonth : Basic
     {
         protected override ParsingHandler Chain => base.Chain
             .AddWeekdayNearest()

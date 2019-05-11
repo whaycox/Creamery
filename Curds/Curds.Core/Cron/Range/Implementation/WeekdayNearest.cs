@@ -2,7 +2,7 @@
 {
     using Domain;
 
-    internal class WeekdayNearest : Basic
+    public class WeekdayNearest : Basic
     {
         public WeekdayNearest(int dayOfMonth)
             : base(dayOfMonth, dayOfMonth)

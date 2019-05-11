@@ -4,7 +4,7 @@ namespace Curds.Cron.Parser.Handler.Implementation
 {
     using Domain;
 
-    internal class LastDayOfWeek : DayOfWeek
+    public class LastDayOfWeek : DayOfWeek
     {
         private static readonly Regex LastWeekdayMatcher = new Regex($@"^({AcceptableCharacterClass}+)L$", RegexOptions.Compiled);
 
@@ -12,13 +12,13 @@ namespace Curds.Cron.Parser.Handler.Implementation
             : base(successor)
         { }
 
-        public override Range.Domain.Basic HandleParse(string range, Token.Domain.Basic token)
+        public override Range.Domain.Basic HandleParse(string range)
         {
             Match lastMatch = LastWeekdayMatcher.Match(range);
             if (lastMatch.Success)
                 return ParseLastDayOfWeek(lastMatch);
             else
-                return Successor.HandleParse(range, token);
+                return Successor.HandleParse(range);
         }
 
         private Range.Implementation.LastDayOfWeek ParseLastDayOfWeek(Match lastMatch)

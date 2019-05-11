@@ -2,7 +2,7 @@
 {
     using Domain;
 
-    internal class NthDayOfWeek : Basic
+    public class NthDayOfWeek : Basic
     {
         public int NthValue { get; }
 

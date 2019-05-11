@@ -4,7 +4,7 @@ namespace Curds.Cron.Range.Implementation
 {
     using Domain;
 
-    internal class LastDayOfMonth : Basic
+    public class LastDayOfMonth : Basic
     {
         private const int MaxOffset = 20;
 

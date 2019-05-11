@@ -5,7 +5,7 @@ namespace Curds.Cron.Parser.Handler.Implementation
 {
     using Domain;
 
-    internal class DayOfWeek : Definite
+    public class DayOfWeek : Definite
     {
         private static readonly Dictionary<string, int> DaysOfWeek = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
         {

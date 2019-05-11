@@ -12,13 +12,13 @@ namespace Curds.Cron.Parser.Handler.Implementation
             : base(successor)
         { }
 
-        public override Range.Domain.Basic HandleParse(string range, Token.Domain.Basic token)
+        public override Range.Domain.Basic HandleParse(string range)
         {
             Match nearestWeekdayMatch = NearestWeekdayMatcher.Match(range);
             if (nearestWeekdayMatch.Success)
                 return ParseNearestWeekday(nearestWeekdayMatch);
             else
-                return Successor.HandleParse(range, token);
+                return Successor.HandleParse(range);
         }
 
         private Range.Implementation.WeekdayNearest ParseNearestWeekday(Match nearestWeekdayMatch)

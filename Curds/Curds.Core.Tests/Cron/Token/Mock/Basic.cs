@@ -1,23 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Curds.Cron.Token.Mock
 {
+    using Enumeration;
+
     public class Basic : Domain.Basic
     {
-        private int _min;
-        public override int AbsoluteMin => _min;
+        public override int AbsoluteMin { get; } = int.MinValue;
+        public override int AbsoluteMax { get; } = int.MaxValue;
 
-        private int _max;
-        public override int AbsoluteMax => _max;
+        private Token _currentType = Token.Minute;
+        public override Token TokenType => _currentType;
 
-        protected override int RetrieveDatePart(DateTime testTime)
-        {
-            throw new NotImplementedException();
-        }
+        public Basic(Range.Mock.Basic mockRange)
+            : base(new Range.Mock.Basic[] { mockRange })
+        { }
 
-        public void SetMin(int newMin) => _min = newMin;
-        public void SetMax(int newMax) => _max = newMax;
+        public void SetTokenType(Token newType) => _currentType = newType;
     }
 }

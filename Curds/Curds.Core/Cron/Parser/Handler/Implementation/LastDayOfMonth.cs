@@ -4,7 +4,7 @@ namespace Curds.Cron.Parser.Handler.Implementation
 {
     using Domain;
 
-    internal class LastDayOfMonth : ParsingHandler
+    public class LastDayOfMonth : ParsingHandler
     {
         private static readonly Regex LastDayOfMonthMatcher = new Regex(@"^L(?:-(\d+))?$", RegexOptions.Compiled);
 
@@ -12,13 +12,13 @@ namespace Curds.Cron.Parser.Handler.Implementation
             : base(successor)
         { }
 
-        public override Range.Domain.Basic HandleParse(string range, Token.Domain.Basic token)
+        public override Range.Domain.Basic HandleParse(string range)
         {
             Match lastMatch = LastDayOfMonthMatcher.Match(range);
             if (lastMatch.Success)
                 return ParseLastDayOfMonth(lastMatch);
             else
-                return Successor.HandleParse(range, token);
+                return Successor.HandleParse(range);
         }
 
         private Range.Implementation.LastDayOfMonth ParseLastDayOfMonth(Match lastMatch)

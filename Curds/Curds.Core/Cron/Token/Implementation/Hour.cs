@@ -1,18 +1,22 @@
-﻿using System;
+﻿using System.Collections.Generic;
 
 namespace Curds.Cron.Token.Implementation
 {
     using Domain;
+    using Enumeration;
 
     public class Hour : Basic
     {
-        public override int AbsoluteMin => 0;
-        public override int AbsoluteMax => 23;
+        public const int MinHour = 0;
+        public const int MaxHour = 23;
 
-        public Hour(string expressionPart)
-            : base(expressionPart)
+        public override int AbsoluteMin => MinHour;
+        public override int AbsoluteMax => MaxHour;
+
+        public override Token TokenType => Token.Hour;
+
+        public Hour(IEnumerable<Range.Domain.Basic> ranges)
+            : base(ranges)
         { }
-
-        protected override int RetrieveDatePart(DateTime testTime) => testTime.Hour;
     }
 }

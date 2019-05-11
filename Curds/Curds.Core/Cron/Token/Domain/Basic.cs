@@ -5,6 +5,7 @@ using System.Linq;
 namespace Curds.Cron.Token.Domain
 {
     using Abstraction;
+    using Enumeration;
 
     public abstract class Basic : ICronObject
     {
@@ -13,39 +14,35 @@ namespace Curds.Cron.Token.Domain
         public abstract int AbsoluteMin { get; }
         public abstract int AbsoluteMax { get; }
 
-        public Basic(string expressionPart)
+        public abstract Token TokenType { get; }
+
+        public Basic(IEnumerable<Range.Domain.Basic> ranges)
         {
-            foreach (Range.Domain.Basic range in ParseExpressionPart(expressionPart))
-                VerifyAndAddRange(range);
-        }
-        protected virtual IEnumerable<Range.Domain.Basic> ParseExpressionPart(string expressionPart) => new Parser.Domain.Basic().ParseRanges(expressionPart, this);
-        private void VerifyAndAddRange(Range.Domain.Basic childRange)
-        {
-            if (childRange.Min < AbsoluteMin)
-                throw new FormatException($"Cannot have a range less than {AbsoluteMin}");
-            if (childRange.Max > AbsoluteMax)
-                throw new FormatException($"Cannot have a range greater than {AbsoluteMax}");
-            Children.Add(childRange);
+            if (ranges == null || ranges.Count() == 0)
+                throw new ArgumentNullException(nameof(ranges));
+            Children.AddRange(ranges);
         }
 
-        public bool Test(DateTime testTime)
-        {
-            if (!TestAbsolutes(testTime))
-                return false;
-            else
-                return DoAnyChildrenSucceed(testTime);
-        }
-        private bool TestAbsolutes(DateTime testTime)
-        {
-            int datePart = RetrieveDatePart(testTime);
-            if (datePart < AbsoluteMin || datePart > AbsoluteMax)
-                return false;
-            else
-                return true;
-        }
-        protected virtual bool TestChild(DateTime testTime, Range.Domain.Basic childRange) => childRange.Probe(RetrieveDatePart(testTime));
+        public bool Test(DateTime testTime) =>  DoAnyChildrenSucceed(testTime);
         private bool DoAnyChildrenSucceed(DateTime testTime) => Children.Where(c => TestChild(testTime, c)).Any();
-
-        protected abstract int RetrieveDatePart(DateTime testTime);
+        protected virtual bool TestChild(DateTime testTime, Range.Domain.Basic childRange) => childRange.Test(this, testTime, RetrieveDatePart(testTime));
+        private int RetrieveDatePart(DateTime testTime)
+        {
+            switch (TokenType)
+            {
+                case Token.Minute:
+                    return testTime.Minute;
+                case Token.Hour:
+                    return testTime.Hour;
+                case Token.DayOfMonth:
+                    return testTime.Day;
+                case Token.Month:
+                    return testTime.Month;
+                case Token.DayOfWeek:
+                    return (int)testTime.DayOfWeek;
+                default:
+                    throw new InvalidOperationException($"Unexpected {nameof(TokenType)}: {TokenType}");
+            }
+        }
     }
 }

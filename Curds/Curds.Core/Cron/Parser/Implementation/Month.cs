@@ -3,7 +3,7 @@
     using Domain;
     using Handler.Domain;
 
-    internal class Month : Basic
+    public class Month : Basic
     {
         protected override ParsingHandler Chain => base.Chain
             .AddMonth();

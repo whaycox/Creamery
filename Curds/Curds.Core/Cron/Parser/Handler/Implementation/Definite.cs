@@ -4,7 +4,7 @@ namespace Curds.Cron.Parser.Handler.Implementation
 {
     using Domain;
 
-    internal class Definite : ParsingHandler
+    public class Definite : ParsingHandler
     {
         private static readonly Regex DefiniteFormat = new Regex($"^({AcceptableCharacterClass}+)(?:-({AcceptableCharacterClass}+))?$", RegexOptions.Compiled);
 
@@ -12,11 +12,11 @@ namespace Curds.Cron.Parser.Handler.Implementation
             : base(successor)
         { }
 
-        public override Range.Domain.Basic HandleParse(string range, Token.Domain.Basic token)
+        public override Range.Domain.Basic HandleParse(string range)
         {
             Match definiteMatch = DefiniteFormat.Match(range);
             if (!definiteMatch.Success)
-                return Successor.HandleParse(range, token);
+                return Successor.HandleParse(range);
             else
                 return ParseDefinite(definiteMatch);
         }

@@ -3,19 +3,24 @@ using System.Collections.Generic;
 
 namespace Curds.Cron.Token.Implementation
 {
-    using Domain;
+    using Enumeration;
     using Range.Implementation;
+    using Domain;
 
     public class DayOfWeek : Basic
     {
-        public override int AbsoluteMin => 0;
-        public override int AbsoluteMax => 6;
+        public const int MinDayOfWeek = 0;
+        public const int MaxDayOfWeek = 6;
+        public const int DaysInWeek = 7;
 
-        public DayOfWeek(string expressionPart)
-            : base(expressionPart)
+        public override int AbsoluteMin => MinDayOfWeek;
+        public override int AbsoluteMax => MaxDayOfWeek;
+
+        public override Token TokenType => Token.DayOfWeek;
+
+        public DayOfWeek(IEnumerable<Range.Domain.Basic> ranges)
+            : base(ranges)
         { }
-
-        protected override IEnumerable<Range.Domain.Basic> ParseExpressionPart(string expressionPart) => new Parser.Implementation.DayOfWeek().ParseRanges(expressionPart, this);
 
         protected override bool TestChild(DateTime testTime, Range.Domain.Basic childRange)
         {
@@ -32,9 +37,7 @@ namespace Curds.Cron.Token.Implementation
             }
             return base.TestChild(testTime, childRange);
         }
-        private bool IsLastDayOfWeek(DateTime testTime) => testTime.AddDays(7).Month != testTime.Month;
-        private int DayOfWeekOccurrenceThisMonth(DateTime testTime) => (testTime.Day / 7) + 1;
-
-        protected override int RetrieveDatePart(DateTime testTime) => (int)testTime.DayOfWeek;
+        private bool IsLastDayOfWeek(DateTime testTime) => testTime.AddDays(DaysInWeek).Month != testTime.Month;
+        private int DayOfWeekOccurrenceThisMonth(DateTime testTime) => (testTime.Day / DaysInWeek) + 1;
     }
 }

@@ -2,7 +2,7 @@
 {
     using Domain;
 
-    internal class LastDayOfWeek : Basic
+    public class LastDayOfWeek : Basic
     {
         public LastDayOfWeek(int dayOfWeek)
             : base(dayOfWeek, dayOfWeek)

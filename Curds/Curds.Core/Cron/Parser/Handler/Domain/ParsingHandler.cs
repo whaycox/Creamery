@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Curds.Cron.Parser.Handler.Domain
 {
-    internal abstract class ParsingHandler
+    public abstract class ParsingHandler
     {
         public const string AcceptableCharacterClass = "[A-Za-z0-9]";
 
@@ -25,6 +25,6 @@ namespace Curds.Cron.Parser.Handler.Domain
             return int.Parse(rangeComponent);
         }
 
-        public abstract Range.Domain.Basic HandleParse(string range, Token.Domain.Basic token);
+        public abstract Range.Domain.Basic HandleParse(string range);
     }
 }

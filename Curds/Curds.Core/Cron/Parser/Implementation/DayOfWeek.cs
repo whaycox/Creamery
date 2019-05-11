@@ -3,7 +3,7 @@
     using Domain;
     using Handler.Domain;
 
-    internal class DayOfWeek : Basic
+    public class DayOfWeek : Basic
     {
         protected override ParsingHandler Chain => base.Chain
             .AddDayOfWeek()
