@@ -4,9 +4,14 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <IsPackable>false</IsPackable>
     <RootNamespace>Curds.Infrastructure</RootNamespace>
+    <Configurations>Debug;Release;TestPublish</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestPublish|AnyCPU'">
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 

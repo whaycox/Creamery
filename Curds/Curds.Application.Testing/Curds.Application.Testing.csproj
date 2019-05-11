@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <IsPackable>false</IsPackable>
     <RootNamespace>Curds.Application</RootNamespace>
+    <Configurations>Debug;Release;TestPublish</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
