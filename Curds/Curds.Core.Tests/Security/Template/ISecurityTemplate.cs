@@ -2,8 +2,6 @@
 using System;
 using System.Security.Authentication;
 using System.Threading.Tasks;
-using Whey;
-using Whey.Template;
 
 namespace Curds.Security.Template
 {

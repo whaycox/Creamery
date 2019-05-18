@@ -12,7 +12,7 @@ namespace Curds.Cron.Parser.Handler.Implementation
             : base(successor)
         { }
 
-        public override Range.Domain.Basic HandleParse(string range)
+        protected override Range.Domain.Basic HandleParseInternal(string range)
         {
             Match nthMatch = NthDayOfWeekMatcher.Match(range);
             if (nthMatch.Success)
@@ -24,7 +24,7 @@ namespace Curds.Cron.Parser.Handler.Implementation
         private Range.Implementation.NthDayOfWeek ParseNthDayOfWeek(Match nthMatch)
         {
             int dayOfWeek = Translate(nthMatch.Groups[1].Value);
-            int nthValue = Translate(nthMatch.Groups[2].Value);
+            int nthValue = ParseRangeComponent(nthMatch.Groups[2].Value);
             return new Range.Implementation.NthDayOfWeek(dayOfWeek, nthValue);
         }
     }

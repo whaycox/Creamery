@@ -1,21 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Curds.Cron.Range.Domain;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace Curds.Cron.Range.Tests
 {
-    [TestClass]
-    public class Basic : Test<Domain.Basic>
-    {
-        private const int LowValue = 1;
-        private const int HighValue = 2;
+    using Enumeration;
 
-        private Mock.Basic MockRange = new Mock.Basic();
-        private Token.Mock.Basic MockToken => new Token.Mock.Basic(MockRange);
+    [TestClass]
+    public class Basic : Template.Basic<Domain.Basic>
+    {
+        private const int LowValue = 3;
+        private const int HighValue = 8;
 
         protected override Domain.Basic TestObject { get; } = new Domain.Basic(LowValue, HighValue);
+
+        protected override ExpressionPart TestingPart => ExpressionPart.Minute;
+
+        private DateTime TestTime(int minute) => new DateTime(2019, 05, 13, 10, minute, 5);
 
         [TestMethod]
         public void ThrowsOnInvertedRanges()
@@ -24,19 +24,37 @@ namespace Curds.Cron.Range.Tests
         }
 
         [TestMethod]
+        public void IsInvalidWithMinInsideRange()
+        {
+            Assert.IsFalse(TestObject.IsValid(LowValue + 1, HighValue));
+        }
+
+        [TestMethod]
+        public void IsInvalidWithMaxInsideRange()
+        {
+            Assert.IsFalse(TestObject.IsValid(LowValue, HighValue - 1));
+        }
+
+        [TestMethod]
+        public void IsValidAtRangeOrOutside()
+        {
+            Assert.IsTrue(TestObject.IsValid(LowValue, HighValue));
+            Assert.IsTrue(TestObject.IsValid(LowValue - 1, HighValue));
+            Assert.IsTrue(TestObject.IsValid(LowValue, HighValue + 1));
+        }
+
+        [TestMethod]
         public void IsTrueOnInclusive()
         {
-            Assert.IsTrue(TestObject.Test(MockToken, DateTime.MinValue, LowValue));
-            Assert.IsTrue(TestObject.Test(MockToken, DateTime.MinValue, HighValue));
+            Assert.IsTrue(TestObject.Test(MockToken, TestTime(LowValue)));
+            Assert.IsTrue(TestObject.Test(MockToken, TestTime(HighValue)));
         }
 
         [TestMethod]
         public void IsFalseOutside()
         {
-            Assert.IsFalse(TestObject.Test(MockToken, DateTime.MinValue, LowValue - 1));
-            Assert.IsFalse(TestObject.Test(MockToken, DateTime.MinValue, HighValue + 1));
+            Assert.IsFalse(TestObject.Test(MockToken, TestTime(LowValue - 1)));
+            Assert.IsFalse(TestObject.Test(MockToken, TestTime(HighValue + 1)));
         }
-
-
     }
 }

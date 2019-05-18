@@ -4,6 +4,6 @@
 
     public class CronProvider : ICron
     {
-        public Domain.CronExpression Build(string cronExpression) => new CronExpression(cronExpression);
+        public ICronExpression Build(string cronExpression) => new CronExpression(cronExpression);
     }
 }

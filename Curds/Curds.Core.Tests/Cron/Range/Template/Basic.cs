@@ -1,46 +1,44 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Curds.Cron.Range.Template
 {
-    public abstract class Basic<T> : Test where T : Domain.Basic
+    using Enumeration;
+
+    public abstract class Basic<T> : Test<T> where T : Domain.Basic
     {
-        private const int LowValue = 2;
-        private const int HighValue = 7;
+        protected Mock.Basic MockRange = new Mock.Basic(true);
+        protected Token.Mock.Basic MockToken = null;
 
-        protected abstract T Build(int min, int max);
+        protected abstract ExpressionPart TestingPart { get; }
 
-        [TestMethod]
-        public void InvertedRangeThrows()
+        protected Token.Domain.Basic TestToken => BuildTestToken(TestingPart, TestObject);
+        protected Token.Domain.Basic BuildTestToken(ExpressionPart part, Domain.Basic range)
         {
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => Build(HighValue, LowValue));
+            IEnumerable<Domain.Basic> ranges = new Domain.Basic[] { range };
+            switch (part)
+            {
+                case ExpressionPart.Minute:
+                    return new Token.Domain.Minute(ranges);
+                case ExpressionPart.Hour:
+                    return new Token.Domain.Hour(ranges);
+                case ExpressionPart.DayOfMonth:
+                    return new Token.Domain.DayOfMonth(ranges);
+                case ExpressionPart.Month:
+                    return new Token.Domain.Month(ranges);
+                case ExpressionPart.DayOfWeek:
+                    return new Token.Domain.DayOfWeek(ranges);
+                default:
+                    throw new NotImplementedException();
+            }
         }
 
-        [TestMethod]
-        public void InvalidOnAbsoluteMin()
+        [TestInitialize]
+        public void SetTokenType()
         {
-            T range = Build(LowValue, HighValue);
-            Assert.IsFalse(range.ValidateBounds(LowValue - 1, HighValue));
+            MockToken = new Token.Mock.Basic(MockRange);
+            MockToken.SetExpressionPart(TestingPart);
         }
-
-        [TestMethod]
-        public void InvalidOnAbsoluteMax()
-        {
-            T range = Build(LowValue, HighValue);
-            Assert.IsFalse(range.ValidateBounds(LowValue, HighValue + 1));
-        }
-
-        [TestMethod]
-        public void ValidatesOnAbsolutes()
-        {
-            T range = Build(LowValue, HighValue);
-            Assert.IsTrue(range.ValidateBounds(LowValue, HighValue));
-        }
-
-        [TestMethod]
-        public void 
-
     }
 }

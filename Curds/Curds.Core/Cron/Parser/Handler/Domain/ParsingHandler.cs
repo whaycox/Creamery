@@ -22,9 +22,21 @@ namespace Curds.Cron.Parser.Handler.Domain
             if (lookups != null && lookups.ContainsKey(rangeComponent))
                 rangeComponent = lookups[rangeComponent].ToString();
 
-            return int.Parse(rangeComponent);
+            return ParseRangeComponent(rangeComponent);
         }
+        protected int ParseRangeComponent(string translatedRangeComponent) => int.Parse(translatedRangeComponent);
 
-        public abstract Range.Domain.Basic HandleParse(string range);
+        public Range.Domain.Basic HandleParse(string range)
+        {
+            try
+            {
+                return HandleParseInternal(range);
+            }
+            catch (Exception ex)
+            {
+                throw new FormatException($"Failed to parse {range}", ex);
+            }
+        }
+        protected abstract Range.Domain.Basic HandleParseInternal(string range);
     }
 }

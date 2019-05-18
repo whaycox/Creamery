@@ -1,32 +1,16 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using Curds.Domain;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Curds.Infrastructure.Cron.Token.Tests
+namespace Curds.Cron.Token.Tests
 {
-    using Cases.Hour;
-
     [TestClass]
-    public class Hour : CronTemplate<Token.Hour>
+    public class Hour : Template.Basic<Domain.Hour>
     {
-        protected override IEnumerable<AcceptanceCase> AcceptanceCases => new List<AcceptanceCase>
-        {
-            { new SuccessCase(() => new Token.Hour("*,*/2,5-20")) },
-            { new FailureCase<FormatException>(() => new Token.Hour("*-2")) },
-            { new FailureCase<FormatException>(() => new Token.Hour("5-24")) },
-            { new SuccessCase(() => new Token.Hour("0,1,2,3,4,23")) },
-            { new FailureCase<FormatException>(() => new Token.Hour("0,1,2,3,4,25")) },
-            { new FailureCase<FormatException>(() => new Token.Hour("24")) },
-            { new FailureCase<FormatException>(() => new Token.Hour("-10-12")) },
-            { new FailureCase<FormatException>(() => new Token.Hour("12-30")) },
-        };
+        protected override int AbsoluteMin => Domain.Hour.MinHour;
+        protected override int AbsoluteMax => Domain.Hour.MaxHour;
 
-        protected override IEnumerable<CronCase<Token.Hour>> TestCases => new List<CronCase<Token.Hour>>
-        {
-            { new BusinessHours() },
-            { new EverySixHours() },
-        };
+        protected override Domain.Hour Build(IEnumerable<Range.Domain.Basic> ranges) => new Domain.Hour(ranges);
+        protected override int ExpectedDatePart(DateTime testTime) => testTime.Hour;
     }
 }

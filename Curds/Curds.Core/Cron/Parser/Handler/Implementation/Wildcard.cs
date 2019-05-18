@@ -14,7 +14,7 @@ namespace Curds.Cron.Parser.Handler.Implementation
             : base(successor)
         { }
 
-        public override Basic HandleParse(string range)
+        protected override Basic HandleParseInternal(string range)
         {
             Match wildcardMatch = WildcardFormat.Match(range);
             if (wildcardMatch.Success)

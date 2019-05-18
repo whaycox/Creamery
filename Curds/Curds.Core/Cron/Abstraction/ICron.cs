@@ -1,9 +1,7 @@
 ﻿namespace Curds.Cron.Abstraction
 {
-    using Domain;
-
     public interface ICron
     {
-        CronExpression Build(string cronExpression);
+        ICronExpression Build(string cronExpression);
     }
 }

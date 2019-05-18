@@ -1,6 +1,4 @@
-﻿using Whey;
-
-namespace Curds.Security.Credentials.Mock
+﻿namespace Curds.Security.Credentials.Mock
 {
     public class Password : Domain.Password
     {

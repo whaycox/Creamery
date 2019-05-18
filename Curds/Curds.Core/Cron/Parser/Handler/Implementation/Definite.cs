@@ -6,13 +6,13 @@ namespace Curds.Cron.Parser.Handler.Implementation
 
     public class Definite : ParsingHandler
     {
-        private static readonly Regex DefiniteFormat = new Regex($"^({AcceptableCharacterClass}+)(?:-({AcceptableCharacterClass}+))?$", RegexOptions.Compiled);
+        private static readonly Regex DefiniteFormat = new Regex($"^({AcceptableCharacterClass}{{1,3}})(?:-({AcceptableCharacterClass}{{1,3}}))?$", RegexOptions.Compiled);
 
         public Definite(ParsingHandler successor)
             : base(successor)
         { }
 
-        public override Range.Domain.Basic HandleParse(string range)
+        protected override Range.Domain.Basic HandleParseInternal(string range)
         {
             Match definiteMatch = DefiniteFormat.Match(range);
             if (!definiteMatch.Success)

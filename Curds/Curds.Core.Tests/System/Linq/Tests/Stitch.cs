@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Whey.Template;
+using Curds;
 
 namespace System.Linq.Tests
 {

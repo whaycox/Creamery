@@ -4,8 +4,8 @@ namespace Curds.Cron.Range.Domain
 {
     public class Basic
     {
-        private int Min { get; }
-        private int Max { get; }
+        public int Min { get; }
+        public int Max { get; }
 
         public Basic(int min, int max)
         {
@@ -16,6 +16,26 @@ namespace Curds.Cron.Range.Domain
             Max = max;
         }
 
-        public virtual bool Test(Token.Domain.Basic token, DateTime testTime, int testValue) => Min <= testValue && Max >= testValue;
+        public virtual bool IsValid(int absoluteMin, int absoluteMax)
+        {
+            if (Min < absoluteMin)
+                return false;
+            if (Max > absoluteMax)
+                return false;
+            return true;
+        }
+        public virtual bool Test(Token.Domain.Basic token, DateTime testTime)
+        {
+            int datePart = token.DatePart(testTime);
+            return Min <= datePart && datePart <= Max;
+        }
+
+        public override string ToString()
+        {
+            if (Min == Max)
+                return Min.ToString();
+            else
+                return $"{Min}-{Max}";
+        }
     }
 }

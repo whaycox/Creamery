@@ -1,35 +1,16 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using Curds.Domain;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Curds.Infrastructure.Cron.Token.Tests
+namespace Curds.Cron.Token.Tests
 {
-    using Cases.Month;
-
     [TestClass]
-    public class Month : CronTemplate<Token.Month>
+    public class Month : Template.Basic<Domain.Month>
     {
-        protected override IEnumerable<AcceptanceCase> AcceptanceCases => new List<AcceptanceCase>
-        {
-            { new SuccessCase(() => new Token.Month("*,*/5,12")) },
-            { new SuccessCase(() => new Token.Month("JAN-MAR")) },
-            { new FailureCase<InvalidOperationException>(() => new Token.Month("MAR-JAN")) },
-            { new SuccessCase(() => new Token.Month("FEB,MaR,Apr,mAY,jUn")) },
-            { new SuccessCase(() => new Token.Month("1-OCT")) },
-            { new FailureCase<InvalidOperationException>(() => new Token.Month("12-OCT")) },
-            { new FailureCase<InvalidOperationException>(() => new Token.Month("DEC-NOV")) },
-            { new FailureCase<FormatException>(() => new Token.Month("13")) },
-            { new FailureCase<FormatException>(() => new Token.Month("Jun-15")) },
-            { new FailureCase<FormatException>(() => new Token.Month("0-May")) },
-        };
+        protected override int AbsoluteMin => Domain.Month.MinMonth;
+        protected override int AbsoluteMax => Domain.Month.MaxMonth;
 
-        protected override IEnumerable<CronCase<Token.Month>> TestCases => new List<CronCase<Token.Month>>
-        {
-            { new Spring() },
-            { new Summer() },
-            { new Winter() },
-        };
+        protected override Domain.Month Build(IEnumerable<Range.Domain.Basic> ranges) => new Domain.Month(ranges);
+        protected override int ExpectedDatePart(DateTime testTime) => testTime.Month;
     }
 }

@@ -4,7 +4,7 @@ namespace Curds.Cron.Parser.Handler.Implementation
 {
     using Domain;
 
-    internal class WeekdayNearest : ParsingHandler
+    public class WeekdayNearest : ParsingHandler
     {
         private static readonly Regex NearestWeekdayMatcher = new Regex(@"^(\d+)W$", RegexOptions.Compiled);
 
@@ -12,7 +12,7 @@ namespace Curds.Cron.Parser.Handler.Implementation
             : base(successor)
         { }
 
-        public override Range.Domain.Basic HandleParse(string range)
+        protected override Range.Domain.Basic HandleParseInternal(string range)
         {
             Match nearestWeekdayMatch = NearestWeekdayMatcher.Match(range);
             if (nearestWeekdayMatch.Success)
@@ -24,7 +24,7 @@ namespace Curds.Cron.Parser.Handler.Implementation
         private Range.Implementation.WeekdayNearest ParseNearestWeekday(Match nearestWeekdayMatch)
         {
             string weekdayNearestTo = nearestWeekdayMatch.Groups[1].Value;
-            return new Range.Implementation.WeekdayNearest(int.Parse(weekdayNearestTo));
+            return new Range.Implementation.WeekdayNearest(ParseRangeComponent(weekdayNearestTo));
         }
     }
 }

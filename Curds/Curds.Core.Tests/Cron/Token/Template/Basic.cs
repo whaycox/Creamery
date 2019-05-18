@@ -5,6 +5,7 @@ using System.Collections.Generic;
 namespace Curds.Cron.Token.Template
 {
     using Domain;
+    using System.Linq;
 
     public abstract class Basic<T> : Test where T : Basic
     {
@@ -13,7 +14,10 @@ namespace Curds.Cron.Token.Template
 
         protected abstract T Build(IEnumerable<Range.Domain.Basic> ranges);
 
-        protected IEnumerable<Range.Mock.Basic> MinMaxRange(int min, int max) => new Range.Mock.Basic[] { new Range.Mock.Basic(min, max, true) };
+        protected abstract int ExpectedDatePart(DateTime testTime);
+
+        protected IEnumerable<Range.Mock.Basic> MinMaxRange(int min, int max) => new Range.Mock.Basic[] { new Range.Mock.Basic(min, max) };
+        protected IEnumerable<Range.Mock.Basic> BoolRange(params bool[] children) => children.Select(c => new Range.Mock.Basic(c));
 
         [TestMethod]
         public void NullRangesThrows()
@@ -34,11 +38,17 @@ namespace Curds.Cron.Token.Template
         }
 
         [TestMethod]
-        public void TestPassesCases()
+        public void TrueIfAnyChildrenAre()
         {
-            foreach (TestCase test in TestCases)
-                Assert.AreEqual(test.Expected, Build(test.RangeGenerator()).Test(test.Time));
+            T token = Build(BoolRange(false, true, false));
+            Assert.IsTrue(token.Test(DateTime.MinValue));
         }
-        protected abstract IEnumerable<TestCase> TestCases { get; }
+
+        [TestMethod]
+        public void FalseWhenAllChildrenAre()
+        {
+            T token = Build(BoolRange(false, false, false));
+            Assert.IsFalse(token.Test(DateTime.MinValue));
+        }
     }
 }

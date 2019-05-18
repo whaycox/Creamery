@@ -12,7 +12,7 @@ namespace Curds.Cron.Parser.Handler.Implementation
             : base(successor)
         { }
 
-        public override Range.Domain.Basic HandleParse(string range)
+        protected override Range.Domain.Basic HandleParseInternal(string range)
         {
             Match lastMatch = LastDayOfMonthMatcher.Match(range);
             if (lastMatch.Success)
