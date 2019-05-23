@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Curds.Domain.EventArgs
+﻿namespace Curds.Persistence.EventArg
 {
-    using Persistence;
+    using Domain;
 
     public class EntityModifiedArgs<T> : System.EventArgs where T : BaseEntity
     {

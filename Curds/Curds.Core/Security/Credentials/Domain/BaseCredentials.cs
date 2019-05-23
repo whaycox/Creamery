@@ -1,4 +1,4 @@
-﻿namespace Curds.Security.Credentials.Abstraction
+﻿namespace Curds.Security.Credentials.Domain
 {
     public abstract class BaseCredentials
     {

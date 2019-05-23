@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curds.Domain", "Curds.Domain\Curds.Domain.csproj", "{4886265C-1C1E-4D51-9964-F143C6A061FE}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curds.Application", "Curds.Application\Curds.Application.csproj", "{D47ACCEA-D66F-4FED-8A10-FADF494C5AD0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curds.Infrastructure", "Curds.Infrastructure\Curds.Infrastructure.csproj", "{2C4CDA0C-E5F2-4C1E-ADBF-95935D2C919D}"
@@ -34,12 +32,6 @@ Global
 		TestPublish|Any CPU = TestPublish|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4886265C-1C1E-4D51-9964-F143C6A061FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4886265C-1C1E-4D51-9964-F143C6A061FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4886265C-1C1E-4D51-9964-F143C6A061FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4886265C-1C1E-4D51-9964-F143C6A061FE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4886265C-1C1E-4D51-9964-F143C6A061FE}.TestPublish|Any CPU.ActiveCfg = TestPublish|Any CPU
-		{4886265C-1C1E-4D51-9964-F143C6A061FE}.TestPublish|Any CPU.Build.0 = TestPublish|Any CPU
 		{D47ACCEA-D66F-4FED-8A10-FADF494C5AD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D47ACCEA-D66F-4FED-8A10-FADF494C5AD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D47ACCEA-D66F-4FED-8A10-FADF494C5AD0}.Release|Any CPU.ActiveCfg = Release|Any CPU

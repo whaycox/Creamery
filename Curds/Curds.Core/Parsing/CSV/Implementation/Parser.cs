@@ -9,28 +9,27 @@ namespace Curds.Parsing.CSV.Implementation
     using Abstraction;
     using Domain;
 
-    public class TextParser : ICSVParser
+    public class Parser : ICSVParser
     {
-        private ReadingOptions Options { get; }
+        ICSVOptions ParsingOptions { get; }
 
-        public TextParser()
-            : this(new ReadingOptions())
+        public Parser()
+            : this(new CSVOptions())
         { }
 
-        public TextParser(ReadingOptions options)
+        public Parser(ICSVOptions parsingOptions)
         {
-            Options = options;
+            ParsingOptions = parsingOptions;
         }
 
-        public IEnumerable<Row> Parse(Stream stream) => ParseInternal(new CSVInterpreter(stream, Options));
-
-        private IEnumerable<Row> ParseInternal(CSVInterpreter interpreter)
+        public IEnumerable<Row> Parse(Stream stream) => ParseInternal(new Interpreter(stream, ParsingOptions));
+        private IEnumerable<Row> ParseInternal(Interpreter interpreter)
         {
             while (!interpreter.IsEmpty)
                 yield return ParseRow(interpreter);
         }
 
-        private Row ParseRow(CSVInterpreter interpreter)
+        private Row ParseRow(Interpreter interpreter)
         {
             List<Cell> cells = new List<Cell>();
             while (!interpreter.IsEmpty && !interpreter.IsAtNewLine)
@@ -42,8 +41,7 @@ namespace Curds.Parsing.CSV.Implementation
 
             return new Row(cells);
         }
-
-        private void FinishPreviousCell(CSVInterpreter interpreter, List<Cell> cells)
+        private void FinishPreviousCell(Interpreter interpreter, List<Cell> cells)
         {
             if (cells.Any())
             {
@@ -53,8 +51,8 @@ namespace Curds.Parsing.CSV.Implementation
                 ThrowAwayOne(interpreter);
             }
         }
-        private void ThrowAwayOne(CSVInterpreter interpreter) => interpreter.Read();
-        private void FinishRow(CSVInterpreter interpreter)
+        private void ThrowAwayOne(Interpreter interpreter) => interpreter.Read();
+        private void FinishRow(Interpreter interpreter)
         {
             if (!interpreter.IsEmpty)
             {
@@ -65,15 +63,14 @@ namespace Curds.Parsing.CSV.Implementation
             }
         }
 
-        private Cell ParseCell(CSVInterpreter interpreter)
+        private Cell ParseCell(Interpreter interpreter)
         {
             if (interpreter.IsAtQualifier)
                 return new Cell(ReadQualifiedCell(interpreter));
             else
                 return new Cell(ReadUnqualifiedCell(interpreter));
         }
-
-        private string ReadQualifiedCell(CSVInterpreter interpreter)
+        private string ReadQualifiedCell(Interpreter interpreter)
         {
             if (!interpreter.IsAtQualifier)
                 throw new InvalidOperationException($"A qualified cell must begin with the qualifier {interpreter.Qualifier}");
@@ -91,8 +88,7 @@ namespace Curds.Parsing.CSV.Implementation
                 ThrowAwayOne(interpreter); //We don't need the qualifiers themselves
             return cellBuilder.ToString();
         }
-
-        private string ReadUnqualifiedCell(CSVInterpreter interpreter)
+        private string ReadUnqualifiedCell(Interpreter interpreter)
         {
             StringBuilder cellBuilder = new StringBuilder();
             while (!interpreter.IsEmpty && !interpreter.IsAtNewLine && !interpreter.IsAtSeparator)

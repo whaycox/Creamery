@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Curds.Parsing.CSV.Implementation
+namespace Curds.Parsing.Reader.Domain
 {
     public abstract class NewLineHandler
     {
