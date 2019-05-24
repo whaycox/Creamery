@@ -21,6 +21,11 @@
   <ItemGroup Condition="'$(Configuration)'!='TestPublish'">
     <PackageReference Include="MSTest.TestAdapter" Version="1.3.2" />    
   </ItemGroup>
+  <ItemGroup>
+    <None Update="Parsing\CSV\Files\Large.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   
   <PropertyGroup Condition="'$(Configuration)'=='TestPublish'">
     <TargetFrameworks>netstandard2.0</TargetFrameworks>

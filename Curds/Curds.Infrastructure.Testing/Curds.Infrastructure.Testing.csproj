@@ -31,22 +31,4 @@
     <ProjectReference Include="..\Curds.Domain.Testing\Curds.Domain.Testing.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Parsing\CSV\TestFiles\LargeCSV.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Parsing\CSV\TestFiles\UCS2BE.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Parsing\CSV\TestFiles\UCS2LE.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Parsing\CSV\TestFiles\UTF8.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Parsing\CSV\TestFiles\WindowsANSI.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>
