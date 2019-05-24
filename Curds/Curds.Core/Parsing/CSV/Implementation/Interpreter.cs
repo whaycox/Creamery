@@ -3,9 +3,8 @@ using System.IO;
 
 namespace Curds.Parsing.CSV.Implementation
 {
-    using Reader.Domain;
-    using Reader.Implementation;
     using Abstraction;
+    using Reader.Implementation;
 
     public class Interpreter
     {
