@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Curds.Application\Curds.Application.csproj" />
-    <ProjectReference Include="..\Curds.Domain.Testing\Curds.Domain.Testing.csproj" />
   </ItemGroup>
 
 </Project>

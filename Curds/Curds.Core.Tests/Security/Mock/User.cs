@@ -2,6 +2,10 @@
 {
     public class User : Domain.User
     {
+        public static Domain.User One => new User(1);
+        public static Domain.User Two => new User(2);
+        public static Domain.User Three => new User(3);
+
         public User(int userID)
         {
             ID = userID;

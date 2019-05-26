@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Text.RegularExpressions;
 
-namespace Curds.Domain.Security
+namespace Curds.Security.Template
 {
-    public abstract class SecureObjectTemplate : TestTemplate
+    public abstract class SecureObject : Test
     {
         protected const string Base64RegexPattern = "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$";
 
