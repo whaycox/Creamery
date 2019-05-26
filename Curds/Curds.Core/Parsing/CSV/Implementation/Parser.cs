@@ -22,11 +22,11 @@ namespace Curds.Parsing.CSV.Implementation
             ParsingOptions = parsingOptions;
         }
 
-        public IEnumerable<Row> Parse(Stream stream) => ParseInternal(new Interpreter(stream, ParsingOptions));
-        private IEnumerable<Row> ParseInternal(Interpreter interpreter)
+        public IEnumerable<Row> Parse(Stream stream)
         {
-            while (!interpreter.IsEmpty)
-                yield return ParseRow(interpreter);
+            using (Interpreter interpreter = new Interpreter(stream, ParsingOptions))
+                while (!interpreter.IsEmpty)
+                    yield return ParseRow(interpreter);
         }
 
         private Row ParseRow(Interpreter interpreter)

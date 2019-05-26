@@ -40,7 +40,6 @@
 
   <ItemGroup Condition="'$(Configuration)' == 'Debug'">
     <ProjectReference Include="..\Curds.Application\Curds.Application.csproj" />
-    <ProjectReference Include="..\Curds.Infrastructure\Curds.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

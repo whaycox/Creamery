@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Curds.Infrastructure.Collections
+namespace Curds.Collections.Implementation
 {
     public class ChronoList<T>
     {
         protected object Locker = new object();
 
-        private ChronoNode First = null;
-        private ChronoNode Last = null;
+        private ChronoNode<T> First = null;
+        private ChronoNode<T> Last = null;
 
-        public ChronoNode AddNow(T item) => Add(DateTimeOffset.MinValue, item);
-        public virtual ChronoNode Add(DateTimeOffset time, T item)
+        public ChronoNode<T> AddNow(T item) => Add(DateTimeOffset.MinValue, item);
+        public virtual ChronoNode<T> Add(DateTimeOffset time, T item)
         {
             lock (Locker)
             {
-                ChronoNode nearestNeighbor = NearestLaterNodeFromEnd(time);
-                ChronoNode newNode = new ChronoNode(time, item);
+                ChronoNode<T> nearestNeighbor = NearestLaterNodeFromEnd(time);
+                ChronoNode<T> newNode = new ChronoNode<T>(time, item);
                 if (nearestNeighbor == null)
                     AddLast(newNode);
                 else
@@ -31,35 +31,35 @@ namespace Curds.Infrastructure.Collections
                 return SeverAt(LastNodeInRangeFromStart(time));
         }
 
-        private ChronoNode NearestLaterNodeFromEnd(DateTimeOffset seekTime)
+        private ChronoNode<T> NearestLaterNodeFromEnd(DateTimeOffset seekTime)
         {
-            ChronoNode currentNode = Last;
+            ChronoNode<T> currentNode = Last;
             if (currentNode == null || !NodeIsInRangeFromEnd(currentNode, seekTime))
                 return null;
             while (currentNode.Previous != null && PreviousIsInRangeFromEnd(currentNode, seekTime))
                 currentNode = currentNode.Previous;
             return currentNode;
         }
-        private bool PreviousIsInRangeFromEnd(ChronoNode node, DateTimeOffset seekTime) => node.Previous == null ? false : NodeIsInRangeFromEnd(node.Previous, seekTime);
-        private bool NodeIsInRangeFromEnd(ChronoNode node, DateTimeOffset seekTime) => node.ScheduledTime >= seekTime;
+        private bool PreviousIsInRangeFromEnd(ChronoNode<T> node, DateTimeOffset seekTime) => node.Previous == null ? false : NodeIsInRangeFromEnd(node.Previous, seekTime);
+        private bool NodeIsInRangeFromEnd(ChronoNode<T> node, DateTimeOffset seekTime) => node.ScheduledTime >= seekTime;
 
-        private ChronoNode LastNodeInRangeFromStart(DateTimeOffset seekTime)
+        private ChronoNode<T> LastNodeInRangeFromStart(DateTimeOffset seekTime)
         {
-            ChronoNode currentNode = First;
+            ChronoNode<T> currentNode = First;
             if (currentNode == null || !NodeIsInRangeFromStart(currentNode, seekTime))
                 return null;
             while (currentNode.Next != null && NextIsInRangeFromStart(currentNode, seekTime))
                 currentNode = currentNode.Next;
             return currentNode;
         }
-        private bool NextIsInRangeFromStart(ChronoNode node, DateTimeOffset seekTime) => node.Next == null ? false : NodeIsInRangeFromStart(node.Next, seekTime);
-        private bool NodeIsInRangeFromStart(ChronoNode node, DateTimeOffset seekTime) => node.ScheduledTime <= seekTime;
+        private bool NextIsInRangeFromStart(ChronoNode<T> node, DateTimeOffset seekTime) => node.Next == null ? false : NodeIsInRangeFromStart(node.Next, seekTime);
+        private bool NodeIsInRangeFromStart(ChronoNode<T> node, DateTimeOffset seekTime) => node.ScheduledTime <= seekTime;
 
-        private void AddFirst(ChronoNode newNode)
+        private void AddFirst(ChronoNode<T> newNode)
         {
             lock (Locker)
             {
-                ChronoNode currentFirst = First;
+                ChronoNode<T> currentFirst = First;
                 if (currentFirst == null)
                 {
                     First = newNode;
@@ -73,12 +73,12 @@ namespace Curds.Infrastructure.Collections
                 }
             }
         }
-        private void AddLast(ChronoNode newNode)
+        private void AddLast(ChronoNode<T> newNode)
         {
 
             lock (Locker)
             {
-                ChronoNode currentLast = Last;
+                ChronoNode<T> currentLast = Last;
                 if (currentLast == null)
                 {
                     First = newNode;
@@ -92,11 +92,11 @@ namespace Curds.Infrastructure.Collections
                 }
             }
         }
-        private void AddBefore(ChronoNode targetNode, ChronoNode newNode)
+        private void AddBefore(ChronoNode<T> targetNode, ChronoNode<T> newNode)
         {
             lock (Locker)
             {
-                ChronoNode ultimate = targetNode.Previous;
+                ChronoNode<T> ultimate = targetNode.Previous;
                 newNode.Previous = ultimate;
                 newNode.Next = targetNode;
                 targetNode.Previous = newNode;
@@ -105,11 +105,11 @@ namespace Curds.Infrastructure.Collections
                     First = newNode;
             }
         }
-        private void AddAfter(ChronoNode targetNode, ChronoNode newNode)
+        private void AddAfter(ChronoNode<T> targetNode, ChronoNode<T> newNode)
         {
             lock (Locker)
             {
-                ChronoNode ultimate = targetNode.Next;
+                ChronoNode<T> ultimate = targetNode.Next;
                 targetNode.Next = newNode;
                 newNode.Previous = targetNode;
                 newNode.Next = ultimate;
@@ -118,14 +118,14 @@ namespace Curds.Infrastructure.Collections
                     Last = newNode;
             }
         }
-        private IEnumerable<T> SeverAt(ChronoNode node)
+        private IEnumerable<T> SeverAt(ChronoNode<T> node)
         {
             lock (Locker)
             {
                 if (node == null)
                     return new List<T>();
 
-                ChronoNode newFirst = node.Next;
+                ChronoNode<T> newFirst = node.Next;
                 First = newFirst;
                 if (newFirst == null)
                     Last = null;
@@ -135,10 +135,10 @@ namespace Curds.Infrastructure.Collections
                 return RollUpByPrevious(node);
             }
         }
-        private IEnumerable<T> RollUpByPrevious(ChronoNode lastNode)
+        private IEnumerable<T> RollUpByPrevious(ChronoNode<T> lastNode)
         {
             List<T> toReturn = new List<T>();
-            ChronoNode currentNode = lastNode;
+            ChronoNode<T> currentNode = lastNode;
             while (currentNode.Previous != null)
             {
                 toReturn.Add(currentNode.Value);
@@ -149,12 +149,12 @@ namespace Curds.Infrastructure.Collections
             return toReturn;
         }
 
-        protected void Remove(ChronoNode node)
+        protected void Remove(ChronoNode<T> node)
         {
             lock (Locker)
             {
-                ChronoNode prev = node.Previous;
-                ChronoNode next = node.Next;
+                ChronoNode<T> prev = node.Previous;
+                ChronoNode<T> next = node.Next;
 
                 if (node == Last)
                     Last = prev;
@@ -166,23 +166,6 @@ namespace Curds.Infrastructure.Collections
                 if (next != null)
                     next.Previous = prev;
             }
-        }
-
-        public class ChronoNode
-        {
-            public ChronoNode Previous { get; set; }
-            public ChronoNode Next { get; set; }
-
-            public DateTimeOffset ScheduledTime { get; }
-            public T Value { get; }
-
-            public ChronoNode(DateTimeOffset scheduledTime, T value)
-            {
-                ScheduledTime = scheduledTime;
-                Value = value;
-            }
-
-            public override string ToString() => $"{ScheduledTime}:{Value}";
         }
     }
 }

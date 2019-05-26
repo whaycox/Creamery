@@ -1,16 +1,17 @@
-﻿using Curds.Application.Text;
-using System;
+﻿using System;
 using System.Text;
 
-namespace Curds.Infrastructure.Text
+namespace Curds.Text.Implementation
 {
+    using Abstraction;
+
     public class IndentedWriter : IIndentedWriter
     {
         private const string DefaultIndentation = "\t";
 
         private StringBuilder Builder = new StringBuilder();
 
-        private int _indents = default;
+        private int _indents = default(int);
         public int Indents
         {
             get
@@ -92,7 +93,6 @@ namespace Curds.Infrastructure.Text
                 Dispose(true);
             }
             #endregion
-
         }
     }
 }

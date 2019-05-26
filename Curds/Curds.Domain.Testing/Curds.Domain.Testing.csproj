@@ -28,7 +28,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Curds.Application\Curds.Application.csproj" />
-    <ProjectReference Include="..\Curds.Infrastructure\Curds.Infrastructure.csproj" />
     <ProjectReference Include="..\Curds.Persistence\Curds.Persistence.csproj" />
     <ProjectReference Include="..\Curds.CLI\Curds.CLI.csproj" />
   </ItemGroup>

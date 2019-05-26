@@ -1,27 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Curds.Infrastructure.Collections
+namespace Curds.Collections.Implementation
 {
     public class IndexedChronoList : ChronoList<int>
     {
-        private Dictionary<int, ChronoNode> Index = new Dictionary<int, ChronoNode>();
+        private Dictionary<int, ChronoNode<int>> Index = new Dictionary<int, ChronoNode<int>>();
 
-        public ChronoNode this[int index]
+        public ChronoNode<int> this[int index]
         {
             get
             {
-                if (!Index.TryGetValue(index, out ChronoNode node))
+                if (!Index.TryGetValue(index, out ChronoNode<int> node))
                     return null;
                 return node;
             }
         }
 
-        public override ChronoNode Add(DateTimeOffset time, int item)
+        public override ChronoNode<int> Add(DateTimeOffset time, int item)
         {
             lock (Locker)
             {
-                ChronoNode added = base.Add(time, item);
+                ChronoNode<int> added = base.Add(time, item);
                 Index.Add(item, added);
                 return added;
             }

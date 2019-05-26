@@ -3,13 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Curds.Infrastructure.Collections.Tests
+namespace Curds.Collections.Tests
 {
     [TestClass]
-    public class IndexedChronoList : ChronoListTemplate<Collections.IndexedChronoList>
+    public class IndexedChronoList : Template.ChronoList<Implementation.IndexedChronoList>
     {
-        private Collections.IndexedChronoList _obj = new Collections.IndexedChronoList();
-        protected override Collections.IndexedChronoList TestObject => _obj;
+        private Implementation.IndexedChronoList _obj = new Implementation.IndexedChronoList();
+        protected override Implementation.IndexedChronoList TestObject => _obj;
 
         [TestMethod]
         public void MissingIndexReturnsNull()

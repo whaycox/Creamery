@@ -6,8 +6,10 @@ namespace Curds.Parsing.CSV.Implementation
     using Abstraction;
     using Reader.Implementation;
 
-    public class Interpreter
+    public class Interpreter : IDisposable
     {
+        public const int MinimumLookahead = Reader.Domain.ReaderOptions.DefaultCharLookahead;
+
         private CharBuffer Buffer { get; }
         private ICSVOptions Options { get; }
 
@@ -37,7 +39,7 @@ namespace Curds.Parsing.CSV.Implementation
 
         public Interpreter(Stream inputStream, ICSVOptions options)
         {
-            if (options.CharLookahead < 3)
+            if (options.CharLookahead < MinimumLookahead)
                 throw new ArgumentOutOfRangeException(nameof(options.CharLookahead));
 
             Options = options;
@@ -58,5 +60,28 @@ namespace Curds.Parsing.CSV.Implementation
             for (int i = 0; i < numberToConsume; i++)
                 Buffer.Advance();
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    Buffer.Dispose();
+                }
+                disposedValue = true;
+            }
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+        }
+        #endregion
     }
 }

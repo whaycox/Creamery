@@ -1,13 +1,11 @@
-﻿using Curds.Domain;
-using Curds.Domain.DateTimes;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Curds.Infrastructure.Collections
+namespace Curds.Collections.Template
 {
-    public abstract class ChronoListTemplate<T> : TestTemplate<T> where T : ChronoList<int> 
+    public abstract class ChronoList<T> : Test<T> where T : Implementation.ChronoList<int> 
     {
         [TestMethod]
         public void AddReturnsNewNode()
@@ -31,15 +29,17 @@ namespace Curds.Infrastructure.Collections
         [TestMethod]
         public void RetrieveOnlyReturnsEarlier()
         {
-            Time.SetIncrement(TimeSpan.FromMinutes(1));
             for (int i = 0; i < 10; i++)
+            {
+                Time.SetPointInTime(Time.Fetch.AddMinutes(1));
                 TestObject.Add(Time.Fetch, i);
+            }
 
             Time.Reset();
-            Time.SetIncrement(TimeSpan.FromMinutes(1.5));
             int currentExpected = 0;
             for (int i = 0; i < 7; i++)
             {
+                Time.SetPointInTime(Time.Fetch.AddMinutes(1.5));
                 var retrieved = TestObject.Retrieve(Time.Fetch).ToList();
                 if (i % 2 == 0)
                     Assert.AreEqual(1, retrieved.Count);
@@ -55,16 +55,18 @@ namespace Curds.Infrastructure.Collections
         [TestMethod]
         public void CanAddInMiddle()
         {
-            Time.SetIncrement(TimeSpan.FromMinutes(1));
             for (int i = 0; i < 10; i++)
+            {
+                Time.SetPointInTime(Time.Fetch.AddMinutes(1));
                 TestObject.Add(Time.Fetch, i);
+            }
 
             Time.Reset();
-            Time.SetIncrement(TimeSpan.FromMinutes(5.5));
+            Time.SetPointInTime(Time.Fetch.AddMinutes(5.5));
             TestObject.Add(Time.Fetch, 99);
 
             Time.Reset();
-            Time.SetIncrement(TimeSpan.FromMinutes(6));
+            Time.SetPointInTime(Time.Fetch.AddMinutes(6));
             var retrieved = TestObject.Retrieve(Time.Fetch).ToList();
             Assert.AreEqual(7, retrieved.Count);
             for (int i = 0; i < 7; i++)
