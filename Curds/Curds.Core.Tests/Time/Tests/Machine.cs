@@ -4,7 +4,7 @@ using System;
 namespace Curds.Time.Tests
 {
     [TestClass]
-    public class Machine : Test<Implementation.Machine>
+    public class Machine : Template.ITime<Implementation.Machine>
     {
         private const int AcceptableDeltaInMs = 1;
 

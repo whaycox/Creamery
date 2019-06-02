@@ -17,7 +17,7 @@ namespace Curds.Security.Tests
         [TestInitialize]
         public void BuildProvider()
         {
-            _obj = new Implementation.SecurityProvider(Time, MockPersistence);
+            _obj = new Implementation.SecurityProvider(MockTime, MockPersistence);
         }
     }
 }

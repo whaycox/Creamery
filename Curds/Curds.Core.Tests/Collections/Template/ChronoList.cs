@@ -11,7 +11,7 @@ namespace Curds.Collections.Template
         public void AddReturnsNewNode()
         {
             var node = TestObject.AddNow(5);
-            Assert.AreEqual(Time.Fetch, node.ScheduledTime);
+            Assert.AreEqual(MockTime.Fetch, node.ScheduledTime);
             Assert.AreEqual(5, node.Value);
         }
 
@@ -31,16 +31,16 @@ namespace Curds.Collections.Template
         {
             for (int i = 0; i < 10; i++)
             {
-                Time.SetPointInTime(Time.Fetch.AddMinutes(1));
-                TestObject.Add(Time.Fetch, i);
+                MockTime.SetPointInTime(MockTime.Fetch.AddMinutes(1));
+                TestObject.Add(MockTime.Fetch, i);
             }
 
-            Time.Reset();
+            MockTime.Reset();
             int currentExpected = 0;
             for (int i = 0; i < 7; i++)
             {
-                Time.SetPointInTime(Time.Fetch.AddMinutes(1.5));
-                var retrieved = TestObject.Retrieve(Time.Fetch).ToList();
+                MockTime.SetPointInTime(MockTime.Fetch.AddMinutes(1.5));
+                var retrieved = TestObject.Retrieve(MockTime.Fetch).ToList();
                 if (i % 2 == 0)
                     Assert.AreEqual(1, retrieved.Count);
                 else
@@ -57,17 +57,17 @@ namespace Curds.Collections.Template
         {
             for (int i = 0; i < 10; i++)
             {
-                Time.SetPointInTime(Time.Fetch.AddMinutes(1));
-                TestObject.Add(Time.Fetch, i);
+                MockTime.SetPointInTime(MockTime.Fetch.AddMinutes(1));
+                TestObject.Add(MockTime.Fetch, i);
             }
 
-            Time.Reset();
-            Time.SetPointInTime(Time.Fetch.AddMinutes(5.5));
-            TestObject.Add(Time.Fetch, 99);
+            MockTime.Reset();
+            MockTime.SetPointInTime(MockTime.Fetch.AddMinutes(5.5));
+            TestObject.Add(MockTime.Fetch, 99);
 
-            Time.Reset();
-            Time.SetPointInTime(Time.Fetch.AddMinutes(6));
-            var retrieved = TestObject.Retrieve(Time.Fetch).ToList();
+            MockTime.Reset();
+            MockTime.SetPointInTime(MockTime.Fetch.AddMinutes(6));
+            var retrieved = TestObject.Retrieve(MockTime.Fetch).ToList();
             Assert.AreEqual(7, retrieved.Count);
             for (int i = 0; i < 7; i++)
             {

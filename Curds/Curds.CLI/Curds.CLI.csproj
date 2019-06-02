@@ -42,4 +42,8 @@
     <ProjectReference Include="..\Curds.Application\Curds.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Curds.Core\Curds.Core.csproj" />
+  </ItemGroup>
+
 </Project>

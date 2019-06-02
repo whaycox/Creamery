@@ -22,8 +22,8 @@ namespace Curds.Security.Tests
         public void CanIncrementExpiration()
         {
             Domain.Session sample = Mock.Session.One;
-            DateTimeOffset expected = Time.Fetch.Add(Domain.Session.ExpirationDuration);
-            sample.ExtendExpiration(Time.Fetch);
+            DateTimeOffset expected = MockTime.Fetch.Add(Domain.Session.ExpirationDuration);
+            sample.ExtendExpiration(MockTime.Fetch);
             Assert.AreEqual(expected, sample.Expiration);
         }
     }

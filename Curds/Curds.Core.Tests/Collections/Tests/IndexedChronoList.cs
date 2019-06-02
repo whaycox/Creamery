@@ -22,9 +22,9 @@ namespace Curds.Collections.Tests
         {
             TestObject.AddNow(5);
             Assert.AreEqual(5, TestObject[5].Value);
-            Assert.AreEqual(Time.Fetch, TestObject[5].ScheduledTime);
+            Assert.AreEqual(MockTime.Fetch, TestObject[5].ScheduledTime);
 
-            DateTimeOffset testTime = Time.Fetch.AddDays(1);
+            DateTimeOffset testTime = MockTime.Fetch.AddDays(1);
             TestObject.Add(testTime, 10);
             Assert.AreEqual(10, TestObject[10].Value);
             Assert.AreEqual(testTime, TestObject[10].ScheduledTime);
@@ -36,7 +36,7 @@ namespace Curds.Collections.Tests
             TestObject.AddNow(5);
             Assert.IsNotNull(TestObject[5]);
 
-            List<int> retrieved = TestObject.Retrieve(Time.Fetch).ToList();
+            List<int> retrieved = TestObject.Retrieve(MockTime.Fetch).ToList();
             Assert.AreEqual(1, retrieved.Count);
             Assert.AreEqual(5, retrieved[0]);
             Assert.IsNull(TestObject[5]);

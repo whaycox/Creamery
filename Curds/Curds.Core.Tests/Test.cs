@@ -9,7 +9,7 @@ namespace Curds
     {
         public TestContext TestContext { get; set; }
 
-        protected ITime Time = new ITime();
+        protected ITime MockTime = new ITime();
 
         private string TestName => $"{TestContext.FullyQualifiedTestClassName}.{TestContext.TestName}";
 

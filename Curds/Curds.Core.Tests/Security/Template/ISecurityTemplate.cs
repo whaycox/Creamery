@@ -60,7 +60,7 @@ namespace Curds.Security.Template
         [TestMethod]
         public async Task DoesntValidateIfOnOrAfterExpiration()
         {
-            Time.SetPointInTime(MockSession.Expiration);
+            MockTime.SetPointInTime(MockSession.Expiration);
             Assert.IsFalse(await TestObject.Validate(nameof(Session.Identifier)));
         }
 
@@ -70,7 +70,7 @@ namespace Curds.Security.Template
             DateTimeOffset justBeforeExpiration = MockSession.Expiration.AddTicks(-5);
             MockSession.ExtendExpiration(MockSession.Expiration);
             DateTimeOffset expected = MockSession.Expiration.AddTicks(-5);
-            Time.SetPointInTime(justBeforeExpiration);
+            MockTime.SetPointInTime(justBeforeExpiration);
             Assert.IsTrue(await TestObject.Validate(nameof(Session.Identifier)));
             Assert.AreEqual(1, MockPersistence.MockSessions.UpdatedSessions.Count);
             Assert.AreEqual(expected, MockPersistence.MockSessions.UpdatedSessions[0].expiration);
