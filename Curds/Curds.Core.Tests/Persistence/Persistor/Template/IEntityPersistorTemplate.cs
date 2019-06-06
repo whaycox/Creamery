@@ -7,7 +7,7 @@ namespace Curds.Persistence.Persistor.Template
     using Abstraction;
     using Domain;
 
-    public abstract class IEntityPersistorTemplate<T, U> : IPersistorTemplate<T, U> where T : IEntityPersistor<U> where U : Entity
+    public abstract class IEntityPersistorTemplate<T, U> : IPersistorTemplate<T, U> where T : IEntity<U> where U : Entity
     {
         private const int ConcurrentIterations = 10;
 

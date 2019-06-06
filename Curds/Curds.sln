@@ -15,6 +15,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curds.Core", "Curds.Core\Cu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curds.Core.Tests", "Curds.Core.Tests\Curds.Core.Tests.csproj", "{C1F5DE95-2776-4F66-8B05-B95B6736ED82}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Curds.Persistence.EFCore", "Persistence\EFCore\Curds.Persistence.EFCore\Curds.Persistence.EFCore.csproj", "{669AB1BD-BA5F-45C6-8439-CC0759CB8636}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Curds.Persistence.EFCore.Tests", "Persistence\EFCore\Curds.Persistence.EFCore.Tests\Curds.Persistence.EFCore.Tests.csproj", "{0377C793-AF88-4FB1-B608-CCCA90E3BF0B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,6 +62,18 @@ Global
 		{C1F5DE95-2776-4F66-8B05-B95B6736ED82}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C1F5DE95-2776-4F66-8B05-B95B6736ED82}.TestPublish|Any CPU.ActiveCfg = TestPublish|Any CPU
 		{C1F5DE95-2776-4F66-8B05-B95B6736ED82}.TestPublish|Any CPU.Build.0 = TestPublish|Any CPU
+		{669AB1BD-BA5F-45C6-8439-CC0759CB8636}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{669AB1BD-BA5F-45C6-8439-CC0759CB8636}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{669AB1BD-BA5F-45C6-8439-CC0759CB8636}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{669AB1BD-BA5F-45C6-8439-CC0759CB8636}.Release|Any CPU.Build.0 = Release|Any CPU
+		{669AB1BD-BA5F-45C6-8439-CC0759CB8636}.TestPublish|Any CPU.ActiveCfg = Debug|Any CPU
+		{669AB1BD-BA5F-45C6-8439-CC0759CB8636}.TestPublish|Any CPU.Build.0 = Debug|Any CPU
+		{0377C793-AF88-4FB1-B608-CCCA90E3BF0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0377C793-AF88-4FB1-B608-CCCA90E3BF0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0377C793-AF88-4FB1-B608-CCCA90E3BF0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0377C793-AF88-4FB1-B608-CCCA90E3BF0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0377C793-AF88-4FB1-B608-CCCA90E3BF0B}.TestPublish|Any CPU.ActiveCfg = Debug|Any CPU
+		{0377C793-AF88-4FB1-B608-CCCA90E3BF0B}.TestPublish|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

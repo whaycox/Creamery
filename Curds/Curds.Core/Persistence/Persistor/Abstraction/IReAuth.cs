@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Curds.Persistence.Persistor.Abstraction
 {
     using Security.Domain;
 
-    public interface IReAuthPersistor<T> : IPersistor<T> where T : ReAuth
+    public interface IReAuth<T> : IBaseEntity<T> where T : ReAuth
     {
         Task<T> Lookup(string series);
         Task<List<T>> Lookup(int userID);

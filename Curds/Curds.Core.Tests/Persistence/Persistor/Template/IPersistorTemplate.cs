@@ -7,7 +7,7 @@ namespace Curds.Persistence.Persistor.Template
     using Abstraction;
     using Domain;
 
-    public abstract class IPersistorTemplate<T, U> : Test<T> where T : IPersistor<U> where U : BaseEntity
+    public abstract class IPersistorTemplate<T, U> : Test<T> where T : IBaseEntity<U> where U : BaseEntity
     {
         private const int ConcurrentIterations = 10;
 
@@ -23,9 +23,9 @@ namespace Curds.Persistence.Persistor.Template
         [TestMethod]
         public void CanInsertNewItem()
         {
-            Assert.AreEqual(0, TestObject.Count.AwaitResult());
+            Assert.AreEqual(0, TestObject.Count().AwaitResult());
             TestObject.Insert(Sample).AwaitResult();
-            Assert.AreEqual(1, TestObject.Count.AwaitResult());
+            Assert.AreEqual(1, TestObject.Count().AwaitResult());
         }
 
         [TestMethod]

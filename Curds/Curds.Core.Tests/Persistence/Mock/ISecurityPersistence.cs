@@ -5,13 +5,13 @@
 
     public class ISecurityPersistence : Abstraction.ISecurityPersistence
     {
-        public Persistor.Mock.IUserPersistor MockUsers = new Persistor.Mock.IUserPersistor();
-        public IUserPersistor<User> Users => MockUsers;
+        public Persistor.Mock.IUser MockUsers = new Persistor.Mock.IUser();
+        public IUser<User> Users => MockUsers;
 
-        public Persistor.Mock.ISessionPersistor MockSessions = new Persistor.Mock.ISessionPersistor();
-        public ISessionPersistor<Session> Sessions => MockSessions;
+        public Persistor.Mock.ISession MockSessions = new Persistor.Mock.ISession();
+        public ISession<Session> Sessions => MockSessions;
 
-        public Persistor.Mock.IReAuthPersistor MockReAuths = new Persistor.Mock.IReAuthPersistor();
-        public IReAuthPersistor<ReAuth> ReAuthentications => MockReAuths;
+        public Persistor.Mock.IReAuth MockReAuths = new Persistor.Mock.IReAuth();
+        public IReAuth<ReAuth> ReAuthentications => MockReAuths;
     }
 }

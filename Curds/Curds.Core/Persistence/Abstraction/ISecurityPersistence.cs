@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Curds.Persistence.Abstraction
+﻿namespace Curds.Persistence.Abstraction
 {
-    using Security.Domain;
     using Persistor.Abstraction;
+    using Security.Domain;
 
     public interface ISecurityPersistence
     {
-        IUserPersistor<User> Users { get; }
-        ISessionPersistor<Session> Sessions { get; }
-        IReAuthPersistor<ReAuth> ReAuthentications { get; }
+        IUser<User> Users { get; }
+        ISession<Session> Sessions { get; }
+        IReAuth<ReAuth> ReAuthentications { get; }
     }
 }

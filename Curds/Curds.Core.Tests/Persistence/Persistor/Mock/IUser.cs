@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 
 namespace Curds.Persistence.Persistor.Mock
 {
-    using System.Threading.Tasks;
     using Security.Domain;
+    using System.Threading.Tasks;
 
-    public class IUserPersistor : ProtoMock<User>, Abstraction.IUserPersistor<User>
+    public class IUser : ProtoMock<User>, Abstraction.IUser<User>
     {
         protected override List<User> Samples => new List<User>
         {
@@ -17,7 +16,7 @@ namespace Curds.Persistence.Persistor.Mock
             new Security.Mock.User(3),
         };
 
-        public Task<int> Count => Task.Run(() => Samples.Count);
+        public Task<int> Count() => Task.Run(() => Samples.Count);
 
         public List<int> DeletedEntities = new List<int>();
         public Task Delete(int id) => Task.Run(() => DeletedEntities.Add(id));

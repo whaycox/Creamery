@@ -6,14 +6,14 @@ namespace Curds.Persistence.Persistor.Mock
 {
     using Security.Domain;
 
-    public class IReAuthPersistor : ProtoMock<ReAuth>, Abstraction.IReAuthPersistor<ReAuth>
+    public class IReAuth : ProtoMock<ReAuth>, Abstraction.IReAuth<ReAuth>
     {
         protected override List<ReAuth> Samples => new List<ReAuth>
         {
             new Security.Mock.ReAuth(1),
         };
 
-        public Task<int> Count => Task.Run(() => Samples.Count);
+        public Task<int> Count() => Task.Run(() => Samples.Count);
 
         public List<string> DeletedSeries = new List<string>();
         public Task Delete(string series) => Task.Run(() => DeletedSeries.Add(series));

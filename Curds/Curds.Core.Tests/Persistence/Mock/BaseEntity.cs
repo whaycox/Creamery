@@ -2,11 +2,20 @@
 {
     public class BaseEntity : Domain.BaseEntity
     {
-        public int MyValue { get; }
+        public static BaseEntity One => new BaseEntity() { MyValue = 1 };
+        public static BaseEntity Two => new BaseEntity() { MyValue = 2 };
+        public static BaseEntity Three => new BaseEntity() { MyValue = 3 };
 
-        public BaseEntity(int value)
+        public static BaseEntity[] Samples => new BaseEntity[]
         {
-            MyValue = value;
-        }
+            One,
+            Two,
+            Three,
+        };
+
+        public int MyValue { get; set; }
+
+        public BaseEntity()
+        { }
     }
 }

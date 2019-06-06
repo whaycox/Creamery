@@ -7,14 +7,14 @@ namespace Curds.Persistence.Persistor.Mock
 {
     using Security.Domain;
 
-    public class ISessionPersistor : ProtoMock<Session>, Abstraction.ISessionPersistor<Session>
+    public class ISession : ProtoMock<Session>, Abstraction.ISession<Session>
     {
         protected override List<Session> Samples => new List<Session>
         {
             new Security.Mock.Session(1),
         };
 
-        public Task<int> Count => Task.Run(() => Samples.Count);
+        public Task<int> Count() => Task.Run(() => Samples.Count);
 
         public List<string> DeletedSeries = new List<string>();
         public Task Delete(string series) => Task.Run(() => DeletedSeries.Add(series));

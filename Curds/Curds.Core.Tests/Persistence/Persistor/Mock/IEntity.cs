@@ -7,7 +7,7 @@ namespace Curds.Persistence.Persistor.Mock
 {
     using Domain;
 
-    public class IEntityPersistor : ProtoMock<Entity>, Abstraction.IEntityPersistor<Entity>
+    public class IEntity : ProtoMock<Entity>, Abstraction.IEntity<Entity>
     {
         protected override List<Entity> Samples => new List<Entity>
         {
@@ -16,7 +16,7 @@ namespace Curds.Persistence.Persistor.Mock
             new Persistence.Mock.Entity(3),
         };
 
-        public Task<int> Count => Task.Run(() => Samples.Count);
+        public Task<int> Count() => Task.Run(() => Samples.Count);
 
         public List<int> DeletedIDs = new List<int>();
         public Task Delete(int id) => Task.Run(() => DeletedIDs.Add(id));

@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Curds.Persistence.Persistor.Abstraction
 {
     using Domain;
 
-    public interface IPersistor<T> where T : BaseEntity
+    public interface IBaseEntity<T> where T : BaseEntity
     {
-        Task<int> Count { get; }
+        Task<int> Count();
         Task<List<T>> FetchAll();
         Task<T> Insert(T newEntity);
     }

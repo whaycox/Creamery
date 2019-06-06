@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Curds.Persistence.Persistor.Abstraction
 {
     using Domain;
 
-    public interface IEntityPersistor<T> : IPersistor<T> where T : Entity
+    public interface IEntity<T> : IBaseEntity<T> where T : Entity
     {
         Task<List<T>> LookupMany(IEnumerable<int> ids);
         Task<T> Lookup(int id);
