@@ -11,6 +11,6 @@
 
         protected override Context ContextInternal => new Context();
 
-        protected override DbSet<Persistence.Mock.BaseEntity> Set(Context context) => context.Entities;
+        protected override DbSet<Persistence.Mock.BaseEntity> Set(Context context) => context.BaseEntities;
     }
 }

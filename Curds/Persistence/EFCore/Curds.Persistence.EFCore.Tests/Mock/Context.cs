@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Curds.Persistence.EFCore.Mock
 {
@@ -9,7 +6,10 @@ namespace Curds.Persistence.EFCore.Mock
 
     public class Context : DbContext
     {
-        public DbSet<BaseEntity> Entities { get; set; }
+        public DbSet<BaseEntity> BaseEntities { get; set; }
+        public DbSet<Entity> Entities { get; set; }
+        public DbSet<NamedEntity> NamedEntities { get; set; }
+        public DbSet<NameValueEntity> NameValueEntities { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -22,6 +22,9 @@ namespace Curds.Persistence.EFCore.Mock
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<BaseEntity>().HasKey(nameof(BaseEntity.MyValue));
             modelBuilder.Entity<BaseEntity>().HasData(BaseEntity.Samples);
+            modelBuilder.Entity<Entity>().HasData(Entity.Samples);
+            modelBuilder.Entity<NamedEntity>().HasData(NamedEntity.Samples);
+            modelBuilder.Entity<NameValueEntity>().HasData(NameValueEntity.Samples);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Curds.Persistence.EFCore.Persistor.Implementation
         public async override Task<U> Insert(T context, U newEntity)
         {
             if (newEntity.ID != default(int))
-                throw new InvalidOperationException("Cannot supply an entity with an existing ID");
+                throw new ArgumentException("Cannot supply an entity with an existing ID");
             return await base.Insert(context, newEntity);
         }
 
@@ -57,7 +57,7 @@ namespace Curds.Persistence.EFCore.Persistor.Implementation
         {
             U entity = await Set(context).FindAsync(id);
             if (entity == null)
-                throw new KeyNotFoundException($"No {typeof(T).Name} was found with id {id}");
+                throw new KeyNotFoundException($"No {typeof(U).Name} was found with id {id}");
             return entity;
         }
 

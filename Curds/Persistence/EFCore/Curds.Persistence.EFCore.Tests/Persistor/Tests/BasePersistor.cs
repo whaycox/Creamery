@@ -11,7 +11,7 @@ namespace Curds.Persistence.EFCore.Persistor.Tests
     using Persistence.Mock;
 
     [TestClass]
-    public class BasePersistor : Template.MockContextTemplate<Mock.BasePersistor>
+    public class BasePersistor : EFCore.Template.MockContextTemplate<Mock.BasePersistor>
     {
         protected override Mock.BasePersistor TestObject { get; } = new Mock.BasePersistor();
 
@@ -19,7 +19,7 @@ namespace Curds.Persistence.EFCore.Persistor.Tests
         public async Task CanUseContextImmediately()
         {
             using (Context context = TestObject.ExposedContext)
-                Assert.AreEqual(Persistence.Mock.BaseEntity.Samples.Length, await context.Entities.CountAsync());
+                Assert.AreEqual(Persistence.Mock.BaseEntity.Samples.Length, await context.BaseEntities.CountAsync());
         }
 
         [TestMethod]

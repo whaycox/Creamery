@@ -19,7 +19,7 @@ namespace Curds.Persistence.EFCore.Persistor.Mock
             EntityAdded += AddEntity;
         }
 
-        protected override DbSet<Persistence.Mock.BaseEntity> Set(Context context) => context.Entities;
+        protected override DbSet<Persistence.Mock.BaseEntity> Set(Context context) => context.BaseEntities;
 
         public List<EntityModified<Persistence.Mock.BaseEntity>> EntitiesAdded = new List<EntityModified<Persistence.Mock.BaseEntity>>();
         private void AddEntity(object sender, EntityModified<Persistence.Mock.BaseEntity> eventArgs) => EntitiesAdded.Add(eventArgs);
