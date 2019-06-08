@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Configurations>Debug;Release;TestPublish</Configurations>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -19,20 +20,8 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <LangVersion>7.3</LangVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <LangVersion>7.3</LangVersion>
-  </PropertyGroup>
-
-  <ItemGroup Condition="'$(Configuration)' == 'Release'">
-    <PackageReference Include="Curds.Domain" Version="0.1.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-    <ProjectReference Include="..\Curds.Domain\Curds.Domain.csproj" />
+  <ItemGroup>
+    <ProjectReference Include="..\Curds.Core\Curds.Core.csproj" />
   </ItemGroup>
 
 </Project>
