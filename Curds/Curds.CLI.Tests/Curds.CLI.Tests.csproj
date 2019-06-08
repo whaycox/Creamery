@@ -1,23 +1,50 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
+  </ItemGroup>
+  
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-    <IsPackable>false</IsPackable>
     <RootNamespace>Curds.CLI</RootNamespace>
     <Configurations>Debug;Release;TestPublish</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
+    <PackageReference Include="Curds.Core" Version="0.1.0" />
+    <PackageReference Include="Curds.Core.Tests" Version="0.1.0" />
+    <PackageReference Include="Curds.Application" Version="0.2.0" />
+    <PackageReference Include="Curds.Application.Tests" Version="0.2.0" />
+  </ItemGroup>
+
+  <!-- Non-Publish Configuration -->
+  <PropertyGroup Condition="'$(Configuration)'!='TestPublish'">
+    <TargetFrameworks>netcoreapp2.1</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(Configuration)'!='TestPublish'">
     <PackageReference Include="MSTest.TestAdapter" Version="1.4.0" />
-    <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Curds.Application.Tests\Curds.Application.Tests.csproj" />
-    <ProjectReference Include="..\Curds.Application\Curds.Application.csproj" />
     <ProjectReference Include="..\Curds.CLI\Curds.CLI.csproj" />
-    <ProjectReference Include="..\Curds.Core.Tests\Curds.Core.Tests.csproj" />
   </ItemGroup>
 
+  <!-- Publish Configuration -->
+  <PropertyGroup Condition="'$(Configuration)'=='TestPublish'">
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <IsPackable>true</IsPackable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+    <Authors>Willie Haycox</Authors>
+    <Product>Curds</Product>
+    <Version>0.2.0</Version>
+    <Description>A Testing library for Curds.CLI.</Description>
+    <PackageProjectUrl>https://github.com/whaycox/Creamery</PackageProjectUrl>
+    <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(Configuration)'=='TestPublish'">
+    <PackageReference Include="Curds.CLI" Version="[0.2.0]" />
+  </ItemGroup> 
+  
 </Project>
