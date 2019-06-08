@@ -14,7 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Curds\Curds.Application\Curds.Application.csproj" />
     <ProjectReference Include="..\..\Curds\Curds.Domain.Testing\Curds.Domain.Testing.csproj" />
     <ProjectReference Include="..\..\Curds\Curds.Domain\Curds.Domain.csproj" />
     <ProjectReference Include="..\..\Curds\Curds.Infrastructure\Curds.Infrastructure.csproj" />

@@ -28,7 +28,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Curds\Curds.Application\Curds.Application.csproj" />
     <ProjectReference Include="..\..\Curds\Curds.Domain\Curds.Domain.csproj" />
     <ProjectReference Include="..\Gouda.Application\Gouda.Application.csproj" />
     <ProjectReference Include="..\Gouda.Domain\Gouda.Domain.csproj" />

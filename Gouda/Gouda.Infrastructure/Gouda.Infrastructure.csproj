@@ -41,7 +41,6 @@
 
   <ItemGroup Condition="'$(Configuration)' == 'Debug'">
     <ProjectReference Include="..\..\Curds\Curds.Domain\Curds.Domain.csproj" />
-    <ProjectReference Include="..\..\Curds\Curds.Application\Curds.Application.csproj" />
     <ProjectReference Include="..\..\Curds\Curds.Infrastructure\Curds.Infrastructure.csproj" />
     <ProjectReference Include="..\Gouda.Domain\Gouda.Domain.csproj" />
     <ProjectReference Include="..\Gouda.Application\Gouda.Application.csproj" />

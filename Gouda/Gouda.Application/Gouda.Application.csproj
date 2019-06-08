@@ -33,7 +33,6 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-    <ProjectReference Include="..\..\Curds\Curds.Application\Curds.Application.csproj" />
     <ProjectReference Include="..\Gouda.Domain\Gouda.Domain.csproj" />
   </ItemGroup>
 
