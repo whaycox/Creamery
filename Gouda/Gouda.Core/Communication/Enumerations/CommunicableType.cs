@@ -4,6 +4,9 @@
     {
         Acknowledgement,
         Error,
+        Request,
+        DataSeries,
+        DataSet,
 
         Mock = int.MaxValue,
     };

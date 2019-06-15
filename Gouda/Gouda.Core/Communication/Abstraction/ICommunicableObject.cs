@@ -1,4 +1,4 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
 
 namespace Gouda.Communication.Abstraction
 {
@@ -8,6 +8,6 @@ namespace Gouda.Communication.Abstraction
     {
         CommunicableType Type { get; }
 
-        Stream ObjectStream();
+        List<byte> Content();
     }
 }

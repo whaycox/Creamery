@@ -1,5 +1,5 @@
 ﻿using System;
-using System.IO;
+using System.Collections.Generic;
 
 namespace Gouda.Communication.Domain
 {
@@ -17,14 +17,20 @@ namespace Gouda.Communication.Domain
             Time = time;
         }
 
-        public Acknowledgement(Parser parser)
+        public Acknowledgement(BufferReader reader)
         {
-            Time = parser.ParseDateTime();
+            Time = reader.ParseDateTime();
         }
 
-        public Stream ObjectStream() => this
+        public List<byte> Content() => this
             .BuildBuffer()
-            .Append(Time)
-            .ConvertToStream();
+            .Append(Time);
+    }
+
+    public sealed class AcknowledgementParser : IParser
+    {
+        public CommunicableType ParsedType => CommunicableType.Acknowledgement;
+
+        public ICommunicableObject Parse(BufferReader reader) => new Acknowledgement(reader);
     }
 }

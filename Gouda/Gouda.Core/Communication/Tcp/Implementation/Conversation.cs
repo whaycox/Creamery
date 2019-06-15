@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Gouda.Communication.Tcp.Implementation
 {
@@ -20,11 +21,11 @@ namespace Gouda.Communication.Tcp.Implementation
             Stream = Client.GetStream();
         }
 
-        protected virtual Parser BuildParser(byte[] buffer) => new Parser(buffer);
+        protected virtual BufferReader BuildReader(byte[] buffer) => new BufferReader(buffer);
 
         public async Task Send(ICommunicableObject communicableObject)
         {
-            using (var objectStream = communicableObject.ObjectStream())
+            using (MemoryStream objectStream = new MemoryStream(communicableObject.Content().ToArray()))
                 await objectStream.CopyToAsync(Stream);
         }
 
@@ -34,9 +35,8 @@ namespace Gouda.Communication.Tcp.Implementation
             if (received.Length == 0)
                 throw new FormatException("Received a 0 length packet");
 
-            Parser parser = BuildParser(received);
-            CommunicableType type = parser.ParseType();
-            return parser.ParseObject(type);
+            BufferReader parser = BuildReader(received);
+            return parser.ParseObject();
         }
         private async Task<byte[]> ReadPacket(NetworkStream stream, int bufferSize)
         {

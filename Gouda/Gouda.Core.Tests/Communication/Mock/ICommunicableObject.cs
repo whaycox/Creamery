@@ -1,9 +1,11 @@
 ﻿using System.IO;
+using System.Collections.Generic;
 
 namespace Gouda.Communication.Mock
 {
     using Domain;
     using Enumerations;
+    using Abstraction;
 
     public class ICommunicableObject : Abstraction.ICommunicableObject
     {
@@ -20,14 +22,20 @@ namespace Gouda.Communication.Mock
             Name = name;
         }
 
-        public ICommunicableObject(Parser parser)
+        public ICommunicableObject(Domain.BufferReader reader)
         {
-            Name = parser.ParseString();
+            Name = reader.ParseString();
         }
 
-        public Stream ObjectStream() => this
+        public List<byte> Content() => this
             .BuildBuffer()
-            .Append(Name)
-            .ConvertToStream();
+            .Append(Name);
+    }
+
+    public class ICommunicableObjectParser : IParser
+    {
+        public CommunicableType ParsedType => CommunicableType.Mock;
+
+        public Abstraction.ICommunicableObject Parse(Domain.BufferReader reader) => new ICommunicableObject(reader);
     }
 }

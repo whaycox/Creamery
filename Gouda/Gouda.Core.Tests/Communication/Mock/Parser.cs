@@ -1,18 +1,23 @@
-﻿namespace Gouda.Communication.Mock
+﻿using System.Collections.Generic;
+
+namespace Gouda.Communication.Mock
 {
-    using Enumerations;
+    using Abstraction;
 
-    public class Parser : Domain.Parser
+    public class BufferReader : Domain.BufferReader
     {
-        public Parser(byte[] buffer)
-            : base(buffer)
-        { }
-
-        public override Abstraction.ICommunicableObject ParseObject(CommunicableType type)
+        private static List<IParser> MockParsers
         {
-            if (type == CommunicableType.Mock)
-                return new ICommunicableObject(this);
-            return base.ParseObject(type);
+            get
+            {
+                var toReturn = Parsers.DefaultParsers;
+                toReturn.Add(new ICommunicableObjectParser());
+                return toReturn;
+            }
         }
+
+        public BufferReader(byte[] buffer)
+            : base(MockParsers, buffer)
+        { }
     }
 }

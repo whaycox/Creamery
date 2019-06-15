@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.IO;
 
 namespace Gouda.Communication.Domain
 {
@@ -19,14 +17,20 @@ namespace Gouda.Communication.Domain
             ExceptionText = exception.ToString();
         }
 
-        public Error(Parser parser)
+        public Error(BufferReader reader)
         {
-            ExceptionText = parser.ParseString();
+            ExceptionText = reader.ParseString();
         }
 
-        public Stream ObjectStream() => this
+        public List<byte> Content() => this
             .BuildBuffer()
-            .Append(ExceptionText)
-            .ConvertToStream();
+            .Append(ExceptionText);
+    }
+
+    public class ErrorParser : IParser
+    {
+        public CommunicableType ParsedType => CommunicableType.Error;
+
+        public ICommunicableObject Parse(BufferReader reader) => new Error(reader);
     }
 }

@@ -10,6 +10,6 @@ namespace Gouda.Communication.Tcp.Mock
             : base(client)
         { }
 
-        protected override Parser BuildParser(byte[] buffer) => new Communication.Mock.Parser(buffer);
+        protected override BufferReader BuildReader(byte[] buffer) => new Communication.Mock.BufferReader(buffer);
     }
 }
