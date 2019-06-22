@@ -8,6 +8,9 @@ namespace Curds.Collections.Tests
     [TestClass]
     public class IndexedChronoList : Template.ChronoList<Implementation.IndexedChronoList>
     {
+        private const int TestValue = 17;
+        private const int OtherValue = 3;
+
         private Implementation.IndexedChronoList _obj = new Implementation.IndexedChronoList();
         protected override Implementation.IndexedChronoList TestObject => _obj;
 
@@ -20,14 +23,29 @@ namespace Curds.Collections.Tests
         [TestMethod]
         public void AddedNodesAreAccessibleByIndex()
         {
-            TestObject.AddNow(5);
-            Assert.AreEqual(5, TestObject[5].Value);
-            Assert.AreEqual(MockTime.Fetch, TestObject[5].ScheduledTime);
+            TestObject.AddNow(TestValue);
+            Assert.AreEqual(TestValue, TestObject[TestValue].Value);
+            Assert.AreEqual(MockTime.Fetch, TestObject[TestValue].ScheduledTime);
 
             DateTimeOffset testTime = MockTime.Fetch.AddDays(1);
-            TestObject.Add(testTime, 10);
-            Assert.AreEqual(10, TestObject[10].Value);
-            Assert.AreEqual(testTime, TestObject[10].ScheduledTime);
+            TestObject.Add(testTime, OtherValue);
+            Assert.AreEqual(OtherValue, TestObject[OtherValue].Value);
+            Assert.AreEqual(testTime, TestObject[OtherValue].ScheduledTime);
+        }
+
+        [TestMethod]
+        public void CannotAddDuplicateIndex()
+        {
+            TestObject.AddNow(TestValue);
+            Assert.ThrowsException<InvalidOperationException>(() => TestObject.AddNow(TestValue));
+        }
+
+        [TestMethod]
+        public void CanTellIfIndexIsAdded()
+        {
+            Assert.IsFalse(TestObject.ContainsIndex(TestValue));
+            TestObject.AddNow(TestValue);
+            Assert.IsTrue(TestObject.ContainsIndex(TestValue));
         }
 
         [TestMethod]
