@@ -6,6 +6,13 @@
         public static Domain.ReAuth Two => new ReAuth(Mock.User.Two.ID);
         public static Domain.ReAuth Three => new ReAuth(Mock.User.Three.ID);
 
+        public static Domain.ReAuth[] Samples => new Domain.ReAuth[]
+        {
+            One,
+            Two,
+            Three,
+        };
+
         public ReAuth(int userID)
         {
             DeviceIdentifier = nameof(DeviceIdentifier);

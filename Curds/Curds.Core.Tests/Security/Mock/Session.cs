@@ -10,6 +10,13 @@ namespace Curds.Security.Mock
         public static Domain.Session Two => new Session(User.Two.ID);
         public static Domain.Session Three => new Session(User.Three.ID);
 
+        public static Domain.Session[] Samples => new Domain.Session[]
+        {
+            One,
+            Two,
+            Three,
+        };
+
         public Session(int userID)
         {
             Identifier = nameof(Identifier);

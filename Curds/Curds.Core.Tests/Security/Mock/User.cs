@@ -6,6 +6,13 @@
         public static Domain.User Two => new User(2);
         public static Domain.User Three => new User(3);
 
+        public static Domain.User[] Samples => new Domain.User[]
+        {
+            One,
+            Two,
+            Three,
+        };
+
         public User(int userID)
         {
             ID = userID;

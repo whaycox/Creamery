@@ -17,8 +17,13 @@ namespace Curds.Collections.Implementation
             }
         }
 
+        public bool ContainsIndex(int index) => Index.ContainsKey(index);
+
         public override ChronoNode<int> Add(DateTimeOffset time, int item)
         {
+            if (Index.ContainsKey(item))
+                throw new InvalidOperationException("Cannot add a duplicate item");
+
             lock (Locker)
             {
                 ChronoNode<int> added = base.Add(time, item);
@@ -29,7 +34,7 @@ namespace Curds.Collections.Implementation
 
         public override IEnumerable<int> Retrieve(DateTimeOffset time)
         {
-            lock(Locker)
+            lock (Locker)
             {
                 IEnumerable<int> retrieved = base.Retrieve(time);
                 foreach (int key in retrieved)
