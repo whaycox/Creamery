@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Curds.Domain;
-using System.Threading.Tasks;
-using System.Linq;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Curds.Persistence.Template
 {
