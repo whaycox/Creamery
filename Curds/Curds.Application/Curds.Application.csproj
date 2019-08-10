@@ -9,7 +9,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Willie Haycox</Authors>
     <Product>Curds</Product>
-    <Version>0.1.0</Version>
+    <Version>0.3.0</Version>
     <Description>A generic Application library.</Description>
     <PackageProjectUrl>https://github.com/whaycox/Creamery</PackageProjectUrl>
     <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
@@ -21,7 +21,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Curds.Core\Curds.Core.csproj" />
+    <PackageReference Include="Curds.Core" Version="0.3.0" />
   </ItemGroup>
 
 </Project>

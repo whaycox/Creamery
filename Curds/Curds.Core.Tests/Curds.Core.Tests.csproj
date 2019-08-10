@@ -38,13 +38,13 @@
 
     <Authors>Willie Haycox</Authors>
     <Product>Curds</Product>
-    <Version>0.2.0</Version>
+    <Version>0.3.0</Version>
     <Description>A Testing library for Curds.Core.</Description>
     <PackageProjectUrl>https://github.com/whaycox/Creamery</PackageProjectUrl>
     <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
   </PropertyGroup>
   <ItemGroup Condition="'$(Configuration)'=='TestPublish'">
-    <PackageReference Include="Curds.Core" Version="[0.2.0]" />
+    <PackageReference Include="Curds.Core" Version="[0.3.0]" />
   </ItemGroup>
 
 </Project>
