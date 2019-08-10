@@ -1,23 +1,49 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.3.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.2.4" />
+  </ItemGroup>
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-
-    <IsPackable>false</IsPackable>
-
     <RootNamespace>Curds.Persistence.EFCore</RootNamespace>
+    <Configurations>Debug;Release;TestPublish</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.2.4" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="1.3.2" />
-    <PackageReference Include="MSTest.TestFramework" Version="1.3.2" />
+    <PackageReference Include="Curds.Core" Version="0.3.0" />
+    <PackageReference Include="Curds.Core.Tests" Version="0.3.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Curds.Core.Tests\Curds.Core.Tests.csproj" />
+  <!-- Non-Publish Configuration -->
+  <PropertyGroup Condition="'$(Configuration)'!='TestPublish'">
+    <TargetFrameworks>netcoreapp2.1</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(Configuration)'!='TestPublish'">
+    <PackageReference Include="MSTest.TestAdapter" Version="1.3.2" />
+
     <ProjectReference Include="..\Curds.Persistence.EFCore\Curds.Persistence.EFCore.csproj" />
+  </ItemGroup>
+
+  <!-- Publish Configuration -->
+  <PropertyGroup Condition="'$(Configuration)'=='TestPublish'">
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <IsPackable>true</IsPackable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+    <Authors>Willie Haycox</Authors>
+    <Product>Curds</Product>
+    <Version>0.2.0</Version>
+    <Description>A Testing library for Curds.Persistence.EFCore.</Description>
+    <PackageProjectUrl>https://github.com/whaycox/Creamery</PackageProjectUrl>
+    <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(Configuration)'=='TestPublish'">
+    <PackageReference Include="Curds.Persistence.EFCore" Version="[0.2.0]" />
   </ItemGroup>
 
 </Project>
