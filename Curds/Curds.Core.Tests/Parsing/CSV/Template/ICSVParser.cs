@@ -16,7 +16,7 @@ namespace Curds.Parsing.CSV.Template
         private const char WeirdSeparator = 'þ';
         private const char WeirdQualifier = 'ÿ';
 
-        private static Encoding DefaultEncoding => ReaderOptions.DefaultEncoding;
+        private static Encoding DefaultEncoding => CharReaderOptions.DefaultEncoding;
         private static Stream TextStream(string text, Encoding textEncoding) => new MemoryStream(textEncoding.GetBytes(text));
 
         private ICSVOptions BuildOptions(char? separator, char? qualifier)

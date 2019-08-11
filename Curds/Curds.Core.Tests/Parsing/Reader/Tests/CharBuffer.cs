@@ -16,7 +16,7 @@ namespace Curds.Parsing.Reader.Tests
         private static readonly Encoding TestEncoding = Encoding.UTF8;
 
         private Stream TestingStream => new MemoryStream(Encoding.UTF8.GetBytes(TestingString));
-        private Domain.ReaderOptions TestingOptions => new Domain.ReaderOptions() { BufferSize = TestBufferSize, TextEncoding = TestEncoding, CharLookahead = TestLookaheads };
+        private Domain.CharReaderOptions TestingOptions => new Domain.CharReaderOptions() { BufferSize = TestBufferSize, TextEncoding = TestEncoding, Lookaheads = TestLookaheads };
 
         private Implementation.CharBuffer _obj = null;
         protected override Implementation.CharBuffer TestObject => _obj;
@@ -62,7 +62,7 @@ namespace Curds.Parsing.Reader.Tests
         public void CanReadStringWithNoLookahead()
         {
             var options = TestingOptions;
-            options.CharLookahead = 0;
+            options.Lookaheads = 0;
             using (Implementation.CharBuffer testBuffer = new Implementation.CharBuffer(TestingStream, options))
                 ReadTestingString(testBuffer);
         }
@@ -123,7 +123,7 @@ namespace Curds.Parsing.Reader.Tests
             {
                 for (int j = i + 1; j < 25; j++)
                 {
-                    options.CharLookahead = i;
+                    options.Lookaheads = i;
                     options.BufferSize = j;
                     using (Stream stream = TestingStream)
                         ReadTestingStringWithLookaheads(new Implementation.CharBuffer(stream, options), i);

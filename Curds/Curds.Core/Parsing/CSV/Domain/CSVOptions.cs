@@ -11,9 +11,9 @@ namespace Curds.Parsing.CSV.Domain
         private const char DefaultSeparator = ',';
         private const char DefaultQualifier = '"';
 
-        public int BufferSize { get; set; } = ReaderOptions.DefaultBufferSize;
-        public int CharLookahead { get; set; } = ReaderOptions.DefaultCharLookahead;
-        public Encoding TextEncoding { get; set; } = ReaderOptions.DefaultEncoding;
+        public int BufferSize { get; set; } = CharReaderOptions.DefaultBufferSize;
+        public int Lookaheads { get; set; } = CharReaderOptions.DefaultCharLookahead;
+        public Encoding TextEncoding { get; set; } = CharReaderOptions.DefaultEncoding;
         public NewLineHandler NewLine { get; set; } = NewLineHandler.CurrentEnvironment;
 
         public char Separator { get; set; } = DefaultSeparator;

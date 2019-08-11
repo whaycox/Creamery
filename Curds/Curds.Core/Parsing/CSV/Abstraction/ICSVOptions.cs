@@ -7,7 +7,7 @@ namespace Curds.Parsing.CSV.Abstraction
     using Reader.Domain;
     using Reader.Abstraction;
 
-    public interface ICSVOptions : IReaderOptions
+    public interface ICSVOptions : ICharReaderOptions
     {
         char Separator { get; set; }
         char Qualifier { get; set; }
