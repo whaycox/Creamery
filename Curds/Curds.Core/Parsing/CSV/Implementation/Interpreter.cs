@@ -8,7 +8,7 @@ namespace Curds.Parsing.CSV.Implementation
 
     public class Interpreter : IDisposable
     {
-        public const int MinimumLookahead = Reader.Domain.ReaderOptions.DefaultCharLookahead;
+        public const int MinimumLookahead = Reader.Domain.CharReaderOptions.DefaultCharLookahead;
 
         private CharBuffer Buffer { get; }
         private ICSVOptions Options { get; }
@@ -39,8 +39,8 @@ namespace Curds.Parsing.CSV.Implementation
 
         public Interpreter(Stream inputStream, ICSVOptions options)
         {
-            if (options.CharLookahead < MinimumLookahead)
-                throw new ArgumentOutOfRangeException(nameof(options.CharLookahead));
+            if (options.Lookaheads < MinimumLookahead)
+                throw new ArgumentOutOfRangeException(nameof(options.Lookaheads));
 
             Options = options;
             Buffer = new CharBuffer(inputStream, Options);

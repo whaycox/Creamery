@@ -5,17 +5,17 @@ namespace Curds.Parsing.Reader.Implementation
     using Abstraction;
     using Domain;
 
-    public class CharBuffer : BufferedReader<char>
+    public class BufferedReader : BufferedReader<byte>
     {
-        private StreamReader Reader { get; }
+        private Stream Stream { get; }
 
-        public CharBuffer(Stream inputStream, ICharReaderOptions options)
+        public BufferedReader(Stream stream, IReaderOptions options)
             : base(options)
         {
-            Reader = new StreamReader(inputStream, options.TextEncoding);
+            Stream = stream;
         }
 
-        protected override int PopulateBuffer(char[] buffer) => Reader.Read(buffer, 0, buffer.Length);
+        protected override int PopulateBuffer(byte[] buffer) => Stream.Read(buffer, 0, buffer.Length);
 
         private bool IsDisposed = false;
         protected override void Dispose(bool disposing)
@@ -25,7 +25,7 @@ namespace Curds.Parsing.Reader.Implementation
                 base.Dispose(disposing);
                 if (disposing)
                 {
-                    Reader.Dispose();
+                    Stream.Dispose();
                     IsDisposed = true;
                 }
             }
