@@ -44,7 +44,7 @@
     <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
   </PropertyGroup>
   <ItemGroup Condition="'$(Configuration)'=='TestPublish'">
-    <PackageReference Include="Curds.Core" Version="[0.3.0]" />
+    <PackageReference Include="Curds.Core" Version="[0.4.0]" />
   </ItemGroup>
 
 </Project>
