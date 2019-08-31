@@ -1,12 +1,12 @@
 ﻿namespace Feta.OpenType.Tables.Abstraction
 {
-    using Domain;
-    using OpenType.Domain;
     using OpenType.Abstraction;
+    using OpenType.Domain;
 
-    public interface ITablePersistor<T> where T : BaseTable
+    public interface ITablePersistor<T>
+        where T : BaseTable
     {
-        IParsedTables Read(FontReader reader, IParsedTables parsedTables);
-        void Write(FontWriter writer, T table);
+        void Read(IFontReader reader);
+        void Write(IFontWriter writer, T table);
     }
 }

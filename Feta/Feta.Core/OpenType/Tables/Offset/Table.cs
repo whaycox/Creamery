@@ -7,7 +7,7 @@ namespace Feta.OpenType.Tables.Offset
 
     public class Table : BaseTable
     {
-        public SfntVersion SfntVersion { get; set; }
+        public uint SfntVersion { get; set; }
         public ushort NumberOfTables { get; set; }
         public ushort SearchRange { get; set; }
         public ushort EntrySelector { get; set; }
@@ -15,6 +15,6 @@ namespace Feta.OpenType.Tables.Offset
 
         public List<TableRecord> Records { get; } = new List<TableRecord>();
 
-        public override string ToString() => $"{SfntVersion}, {NumberOfTables}, {SearchRange}, {EntrySelector}, {RangeShift}";
+        public override string ToString() => $"{SfntVersion}: {NumberOfTables} tables";
     }
 }

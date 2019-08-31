@@ -5,6 +5,7 @@ namespace Feta.OpenType.Tables.Mock
 {
     using OpenType.Abstraction;
     using OpenType.Domain;
+    using OpenType.Implementation;
 
     public class IPersistorCollection : Abstraction.IPersistorCollection
     {
@@ -16,10 +17,9 @@ namespace Feta.OpenType.Tables.Mock
         }
 
         public int TablesParsed = 0;
-        private IParsedTables MockParse(FontReader reader, IParsedTables parsedTables)
+        public void MockParse(IFontReader reader)
         {
             TablesParsed++;
-            return parsedTables;
         }
     }
 }

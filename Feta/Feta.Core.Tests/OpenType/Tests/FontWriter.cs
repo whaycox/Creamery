@@ -6,73 +6,50 @@ using System.Text;
 
 namespace Feta.OpenType.Tests
 {
-    using Enumerations;
+    using Abstraction;
 
     [TestClass]
-    public class FontWriter : Test<Domain.FontWriter>
+    public class FontWriter : Test<Implementation.FontWriter>
     {
-        private Stream TestStream = new MemoryStream();
+        private const ushort TestUInt16 = 37489;
+        private static byte[] ExpectedUInt16 => new byte[] { 0x92, 0x71 };
+        private const uint TestUInt32 = 2183211076;
+        private static byte[] ExpectedUInt32 => new byte[] { 0x82, 0x21, 0x28, 0x44 };
+        private const string Test = nameof(Test);
 
-        private Domain.FontWriter _obj = null;
-        protected override Domain.FontWriter TestObject => _obj;
+        private Mock.ITableCollection MockTableCollection = new Mock.ITableCollection();
+        private Mock.IOffsetRegistry MockOffsetRegistry = new Mock.IOffsetRegistry();
 
-        private byte[] Results
-        {
-            get
-            {
-                TestStream.Seek(0, SeekOrigin.Begin);
-                byte[] toReturn = new byte[TestStream.Length];
-                TestStream.Read(toReturn, 0, toReturn.Length);
-                return toReturn;
-            }
-        }
+        private Implementation.FontWriter _obj = null;
+        protected override Implementation.FontWriter TestObject => _obj;
 
         private void VerifyResults(byte[] expected)
         {
-            byte[] actual = Results;
+            byte[] actual = TestObject.GetBytes();
             Assert.AreEqual(expected.Length, actual.Length);
             for (int i = 0; i < expected.Length; i++)
                 Assert.AreEqual(expected[i], actual[i]);
         }
 
         [TestInitialize]
-        public void BuildObj()
+        public void BuildWriter()
         {
-            _obj = new Domain.FontWriter(TestStream);
-        }
-
-        [TestCleanup]
-        public void Dispose()
-        {
-            _obj.Dispose();
-            TestStream.Dispose();
+            _obj = new Implementation.FontWriter(MockTableCollection, MockOffsetRegistry);
         }
 
         [TestMethod]
-        public void WritesSfntVersion()
+        public void WritesUInt32()
         {
-            TestObject.WriteSfntVersion(SfntVersion.CffDataOneAndTwo);
-            VerifyResults(ExpectedCffDataOneAndTwo);
+            TestObject.WriteUInt32(TestUInt32);
+            VerifyResults(ExpectedUInt32);
         }
-        private byte[] ExpectedCffDataOneAndTwo => new byte[] { 0x4F, 0x54, 0x54, 0x4F };
 
         [TestMethod]
-        public void WritesUInt()
+        public void WritesUInt16()
         {
-            TestObject.WriteUInt32(TestUInt);
-            VerifyResults(ExpectedUInt);
+            TestObject.WriteUInt16(TestUInt16);
+            VerifyResults(ExpectedUInt16);
         }
-        private uint TestUInt = 2183211076;
-        private byte[] ExpectedUInt => new byte[] { 0x82, 0x21, 0x28, 0x44 };
-
-        [TestMethod]
-        public void WritesUShort()
-        {
-            TestObject.WriteUInt16(TestUShort);
-            VerifyResults(ExpectedUShort);
-        }
-        private ushort TestUShort = 37489;
-        private byte[] ExpectedUShort => new byte[] { 0x92, 0x71 };
 
         [DataTestMethod]
         [DataRow(null)]
@@ -95,6 +72,21 @@ namespace Feta.OpenType.Tests
             byte[] expected = Encoding.ASCII.GetBytes(Test);
             VerifyResults(expected);
         }
-        private const string Test = nameof(Test);
+
+        [TestMethod]
+        public void CanDeferWriteUInt16()
+        {
+            TestObject.DeferWriteUInt16(TestUInt16Deferrer);
+            VerifyResults(ExpectedUInt16);
+        }
+        private ushort TestUInt16Deferrer(ITableCollection tableCollection, IOffsetRegistry offsetRegistry) => TestUInt16;
+
+        [TestMethod]
+        public void CanDeferWriteUInt32()
+        {
+            TestObject.DeferWriteUInt32(TestUInt32Deferrer);
+            VerifyResults(ExpectedUInt32);
+        }
+        private uint TestUInt32Deferrer(ITableCollection tableCollection, IOffsetRegistry offsetRegistry) => TestUInt32;
     }
 }

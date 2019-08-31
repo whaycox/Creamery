@@ -14,8 +14,8 @@ namespace Feta.OpenType.Tests
         public void CurrentOffsetIncrements()
         {
             byte[] testBytes = new byte[12];
-            using (Domain.FontReader reader = new Domain.FontReader(BuildTestStream(testBytes)))
-                for (int i = 0; i < 3; i++)
+            using (Implementation.FontReader reader = new Implementation.FontReader(BuildTestStream(testBytes)))
+                for (uint i = 0; i < 3; i++)
                 {
                     reader.ReadUInt32();
                     Assert.AreEqual((i + 1) * 4, reader.CurrentOffset);
@@ -26,7 +26,7 @@ namespace Feta.OpenType.Tests
         public void IsConsumedTracksStream()
         {
             byte[] testBytes = new byte[12];
-            using (Domain.FontReader reader = new Domain.FontReader(BuildTestStream(testBytes)))
+            using (Implementation.FontReader reader = new Implementation.FontReader(BuildTestStream(testBytes)))
             {
                 for (int i = 0; i < 3; i++)
                 {
@@ -38,20 +38,9 @@ namespace Feta.OpenType.Tests
         }
 
         [TestMethod]
-        public void SfntVersionConsumesFourBytes()
-        {
-            byte[] testBytes = new byte[12];
-            using (Domain.FontReader reader = new Domain.FontReader(BuildTestStream(testBytes)))
-            {
-                reader.ReadSfntVersion();
-                Assert.AreEqual(4, reader.CurrentOffset);
-            }
-        }
-
-        [TestMethod]
         public void ReadsUInt()
         {
-            using (Domain.FontReader reader = new Domain.FontReader(BuildTestStream(TestUInt)))
+            using (Implementation.FontReader reader = new Implementation.FontReader(BuildTestStream(TestUInt)))
                 Assert.AreEqual(ExpectedUInt, reader.ReadUInt32());
         }
         private byte[] TestUInt => new byte[] { 0x96, 0x29, 0xA6, 0xAA };
@@ -60,7 +49,7 @@ namespace Feta.OpenType.Tests
         [TestMethod]
         public void ReadsUShort()
         {
-            using (Domain.FontReader reader = new Domain.FontReader(BuildTestStream(TestUShort)))
+            using (Implementation.FontReader reader = new Implementation.FontReader(BuildTestStream(TestUShort)))
                 Assert.AreEqual(ExpectedUShort, reader.ReadUInt16());
         }
         private byte[] TestUShort => new byte[] { 0x84, 0x85 };
@@ -70,7 +59,7 @@ namespace Feta.OpenType.Tests
         public void ReadsTag()
         {
             byte[] testBytes = Encoding.ASCII.GetBytes(Test);
-            using (Domain.FontReader reader = new Domain.FontReader(BuildTestStream(testBytes)))
+            using (Implementation.FontReader reader = new Implementation.FontReader(BuildTestStream(testBytes)))
                 Assert.AreEqual(Test, reader.ReadTag());
         }
         private const string Test = nameof(Test);
@@ -79,7 +68,7 @@ namespace Feta.OpenType.Tests
         public void TagIsFourChars()
         {
             byte[] testBytes = Encoding.ASCII.GetBytes(nameof(TagIsFourChars));
-            using (Domain.FontReader reader = new Domain.FontReader(BuildTestStream(testBytes)))
+            using (Implementation.FontReader reader = new Implementation.FontReader(BuildTestStream(testBytes)))
             {
                 Assert.AreEqual("TagI", reader.ReadTag());
                 Assert.AreEqual("sFou", reader.ReadTag());
