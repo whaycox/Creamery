@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
-
-namespace Feta.OpenType.Abstraction
+﻿namespace Feta.OpenType.Abstraction
 {
     public delegate T DeferredValueSelector<T>(ITableCollection tableCollection, IOffsetRegistry offsetRegistry);
 

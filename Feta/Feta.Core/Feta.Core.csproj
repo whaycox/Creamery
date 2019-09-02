@@ -9,4 +9,8 @@
     <PackageReference Include="Curds.Core" Version="0.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="OpenType\Tables\Domain\" />
+  </ItemGroup>
+
 </Project>

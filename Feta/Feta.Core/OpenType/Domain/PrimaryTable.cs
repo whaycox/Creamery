@@ -5,7 +5,11 @@
         public const int RoundBytes = 4;
 
         public uint PaddedBytes { get; set; }
+        public string Tag { get; }
 
-        public abstract string Tag { get; }
+        public PrimaryTable(string tag)
+        {
+            Tag = tag;
+        }
     }
 }

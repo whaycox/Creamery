@@ -4,62 +4,109 @@ using System.Collections.Generic;
 namespace Feta.OpenType.Tables.Offset.Tests
 {
     using Exceptions;
-    using Tables.Mock;
+    using Mock;
+    using Implementation;
+    using Domain;
+    using Template;
+    using OpenType.Mock;
 
     [TestClass]
-    public class Persistor : Template.ITablePersistor<Offset.Persistor, Table>
+    public class PersistorTest : ITablePersistorTemplate<OffsetPersistor, OffsetTable>
     {
-        private static IEnumerable<object[]> SampleData => Mock.Table.DynamicData;
+        private static IEnumerable<object[]> SampleData => Mock.MockTable.DynamicData;
 
-        private IPersistorCollection MockPersistorCollection = new IPersistorCollection();
+        private OffsetPersistor _obj = null;
+        protected override OffsetPersistor TestObject => _obj;
 
-        private Offset.Persistor _obj = null;
-        protected override Offset.Persistor TestObject => _obj;
-
-        protected override void PrimeTableToRead(OpenType.Mock.IFontReader mockReader, Table table)
+        protected override void PrimeTableToRead(MockFontReader mockReader, OffsetTable table)
         {
-            throw new System.NotImplementedException();
+            mockReader.PreparedUInt32s.Enqueue(table.SfntVersion);
+            mockReader.PreparedUInt16s.Enqueue(table.NumberOfTables);
+            mockReader.PreparedUInt16s.Enqueue(table.SearchRange);
+            mockReader.PreparedUInt16s.Enqueue(table.EntrySelector);
+            mockReader.PreparedUInt16s.Enqueue(table.RangeShift);
 
+            foreach (TableRecord record in table.Records)
+                PrimeTableRecord(mockReader, record);
         }
-        protected override void VerifyTablesAreEqual(Table expected, Table actual)
+        private void PrimeTableRecord(MockFontReader mockReader, TableRecord record)
         {
-            throw new System.NotImplementedException();
+            mockReader.PreparedTags.Enqueue(record.Tag);
+            mockReader.PreparedUInt32s.Enqueue(record.Checksum);
+            mockReader.PreparedUInt32s.Enqueue(record.Offset);
+            mockReader.PreparedUInt32s.Enqueue(record.Length);
         }
 
-        protected override void VerifyTableWasWritten(OpenType.Mock.IFontWriter mockWriter, Table table)
+        protected override void VerifyTablesAreEqual(OffsetTable expected, OffsetTable actual)
         {
-            throw new System.NotImplementedException();
+            Assert.AreEqual(expected.SfntVersion, actual.SfntVersion);
+            Assert.AreEqual(expected.NumberOfTables, actual.NumberOfTables);
+            Assert.AreEqual(expected.RangeShift, actual.RangeShift);
+            Assert.AreEqual(expected.SearchRange, actual.SearchRange);
+            Assert.AreEqual(expected.EntrySelector, actual.EntrySelector);
+
+            Assert.AreEqual(expected.Records.Count, actual.Records.Count);
+            int currentIndex = 0;
+            foreach (TableRecord expectedRecord in expected.Records)
+            {
+                TableRecord actualRecord = actual.Records[currentIndex++];
+
+                Assert.AreEqual(expectedRecord.Tag, actualRecord.Tag);
+                Assert.AreEqual(expectedRecord.Checksum, actualRecord.Checksum);
+                Assert.AreEqual(expectedRecord.Length, actualRecord.Length);
+                Assert.AreEqual(expectedRecord.Offset, actualRecord.Offset);
+            }
+        }
+
+        protected override void VerifyTableWasWritten(MockFontWriter mockWriter, OffsetTable expected)
+        {
+            Assert.AreEqual(expected.SfntVersion, mockWriter.WrittenObjects[0]);
+            Assert.AreEqual(expected.NumberOfTables, mockWriter.WrittenObjects[1]);
+            Assert.AreEqual(expected.SearchRange, mockWriter.WrittenObjects[2]);
+            Assert.AreEqual(expected.EntrySelector, mockWriter.WrittenObjects[3]);
+            Assert.AreEqual(expected.RangeShift, mockWriter.WrittenObjects[4]);
+
+            int currentIndex = 5;
+            for (int i = 0; i < expected.NumberOfTables; i++)
+                currentIndex = VerifyTableRecordWasWritten(mockWriter, currentIndex, expected.Records[i]);
+            Assert.AreEqual(currentIndex, mockWriter.WrittenObjects.Count);
+        }
+        private static int VerifyTableRecordWasWritten(MockFontWriter mockWriter, int startIndex, TableRecord record)
+        {
+            Assert.AreEqual(record.Tag, mockWriter.WrittenObjects[startIndex]);
+            Assert.AreEqual(record.Checksum, mockWriter.WrittenObjects[startIndex + 1]);
+            return startIndex + 2;
         }
 
         [TestInitialize]
         public void BuildObj()
         {
-            _obj = new Offset.Persistor(MockPersistorCollection);
+            _obj = new OffsetPersistor(MockPersistorCollection);
         }
 
         [DataTestMethod]
         [DynamicData(nameof(SampleData), DynamicDataSourceType.Property)]
-        public void ReadAddsTable(Table sample)
+        public void ReadAddsTable(OffsetTable sample)
         {
-            Mock.Table.PrimeTableToRead(MockReader, sample);
+            PrimeTableToRead(MockReader, sample);
             TestObject.Read(MockReader);
             Assert.AreEqual(1, MockTableCollection.TablesAdded.Count);
         }
 
         [DataTestMethod]
         [DynamicData(nameof(SampleData), DynamicDataSourceType.Property)]
-        public void AddedTableIsExpected(Table sample)
+        public void AddedTableIsExpected(OffsetTable sample)
         {
-            Mock.Table.PrimeTableToRead(MockReader, sample);
+            PrimeTableToRead(MockReader, sample);
             TestObject.Read(MockReader);
-            Mock.Table.VerifyTablesAreEqual(sample, MockTableCollection.TablesAdded[0] as Table);
+            VerifyTablesAreEqual(sample, MockTableCollection.TablesAdded[0] as OffsetTable);
         }
 
         [DataTestMethod]
         [DynamicData(nameof(SampleData), DynamicDataSourceType.Property)]
-        public void ReadAddsOffsetsToRegistry(Table sample)
+        public void ReadAddsOffsetsToRegistry(OffsetTable sample)
         {
-            Mock.Table.PrimeTableToRead(MockReader, sample);
+            PrimeTableToRead(MockReader, sample);
             TestObject.Read(MockReader);
             Assert.AreEqual(sample.Records.Count, MockOffsetRegistry.RegisteredParsers.Count);
 
@@ -69,9 +116,9 @@ namespace Feta.OpenType.Tables.Offset.Tests
 
         [DataTestMethod]
         [DynamicData(nameof(SampleData), DynamicDataSourceType.Property)]
-        public void ReadRequestsRecordByTag(Table sample)
+        public void ReadRequestsRecordByTag(OffsetTable sample)
         {
-            Mock.Table.PrimeTableToRead(MockReader, sample);
+            PrimeTableToRead(MockReader, sample);
             TestObject.Read(MockReader);
             Assert.AreEqual(sample.Records.Count, MockPersistorCollection.TagsRetrieved.Count);
 
@@ -83,21 +130,21 @@ namespace Feta.OpenType.Tables.Offset.Tests
         [ExpectedException(typeof(MisorderedTagsException))]
         public void ReadThrowsIfTagsAreMisordered()
         {
-            Mock.Table.PrimeTableToRead(MockReader, Mock.Table.Misordered);
+            PrimeTableToRead(MockReader, Mock.MockTable.Misordered);
             TestObject.Read(MockReader);
         }
 
         [DataTestMethod]
         [DynamicData(nameof(SampleData), DynamicDataSourceType.Property)]
-        public void WritesCorrectData(Table sample)
+        public void WritesCorrectData(OffsetTable sample)
         {
             TestObject.Write(MockWriter, sample);
-            Mock.Table.VerifyTableWasWritten(MockWriter, sample);
+            VerifyTableWasWritten(MockWriter, sample);
         }
 
         [DataTestMethod]
         [DynamicData(nameof(SampleData), DynamicDataSourceType.Property)]
-        public void WriteDefersOffsetAndLength(Table sample)
+        public void WriteDefersOffsetAndLength(OffsetTable sample)
         {
             TestObject.Write(MockWriter, sample);
             Assert.AreEqual(sample.Records.Count * 2, MockWriter.DeferredUInt32s.Count);
@@ -108,7 +155,7 @@ namespace Feta.OpenType.Tables.Offset.Tests
 
         [DataTestMethod]
         [DynamicData(nameof(SampleData), DynamicDataSourceType.Property)]
-        public void FirstDeferredWriteRetrievesTableByTag(Table sample)
+        public void FirstDeferredWriteRetrievesTableByTag(OffsetTable sample)
         {
             TestObject.Write(MockWriter, sample);
             for (int i = 0; i < sample.Records.Count; i++)
@@ -122,7 +169,7 @@ namespace Feta.OpenType.Tables.Offset.Tests
 
         [DataTestMethod]
         [DynamicData(nameof(SampleData), DynamicDataSourceType.Property)]
-        public void FirstDeferredWriteRetrievesOffsetWithPrimaryTableKey(Table sample)
+        public void FirstDeferredWriteRetrievesOffsetWithPrimaryTableKey(OffsetTable sample)
         {
             TestObject.Write(MockWriter, sample);
             for (int i = 0; i < sample.Records.Count; i++)
@@ -136,7 +183,7 @@ namespace Feta.OpenType.Tables.Offset.Tests
 
         [DataTestMethod]
         [DynamicData(nameof(SampleData), DynamicDataSourceType.Property)]
-        public void FirstDeferredWriteReturnsOffsetFromKey(Table sample)
+        public void FirstDeferredWriteReturnsOffsetFromKey(OffsetTable sample)
         {
             TestObject.Write(MockWriter, sample);
             for (int i = 0; i < sample.Records.Count; i++)
@@ -149,7 +196,7 @@ namespace Feta.OpenType.Tables.Offset.Tests
 
         [DataTestMethod]
         [DynamicData(nameof(SampleData), DynamicDataSourceType.Property)]
-        public void SecondDeferredWriteRetrievesTableByTag(Table sample)
+        public void SecondDeferredWriteRetrievesTableByTag(OffsetTable sample)
         {
             TestObject.Write(MockWriter, sample);
             for (int i = 0; i < sample.Records.Count; i++)
@@ -163,7 +210,7 @@ namespace Feta.OpenType.Tables.Offset.Tests
 
         [DataTestMethod]
         [DynamicData(nameof(SampleData), DynamicDataSourceType.Property)]
-        public void SecondDeferredWriteRetrievesLengthWithPrimaryTableKey(Table sample)
+        public void SecondDeferredWriteRetrievesLengthWithPrimaryTableKey(OffsetTable sample)
         {
             TestObject.Write(MockWriter, sample);
             for (int i = 0; i < sample.Records.Count; i++)
@@ -177,7 +224,7 @@ namespace Feta.OpenType.Tables.Offset.Tests
 
         [DataTestMethod]
         [DynamicData(nameof(SampleData), DynamicDataSourceType.Property)]
-        public void SecondDeferredWriteReturnsLengthFromKey(Table sample)
+        public void SecondDeferredWriteReturnsLengthFromKey(OffsetTable sample)
         {
             TestObject.Write(MockWriter, sample);
             for (int i = 0; i < sample.Records.Count; i++)

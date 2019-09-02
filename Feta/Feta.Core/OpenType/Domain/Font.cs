@@ -3,7 +3,6 @@ using System.IO;
 
 namespace Feta.OpenType.Domain
 {
-    using Tables.Domain;
     using Implementation;
 
     public class Font

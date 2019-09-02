@@ -7,7 +7,6 @@ using System.Text;
 namespace Feta.OpenType.Implementation
 {
     using Abstraction;
-    using Domain;
 
     public class FontReader : IFontReader, IDisposable
     {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Feta.OpenType.Abstraction
+﻿namespace Feta.OpenType.Abstraction
 {
     public interface IFontReader
     {
