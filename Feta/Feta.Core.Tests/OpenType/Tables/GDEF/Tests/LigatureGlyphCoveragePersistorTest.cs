@@ -15,7 +15,7 @@ namespace Feta.OpenType.Tables.GDEF.Tests
     using Implementation;
 
     [TestClass]
-    public class LigatureGlyphCoveragePersistorTest : PersistorTemplate<GdefTable>
+    public class LigatureGlyphCoveragePersistorTest : CoveragePersistorTemplate<GdefTable>
     {
         protected override CoveragePersistor<GdefTable> TestObject { get; } = new LigatureGlyphCoveragePersistor();
 

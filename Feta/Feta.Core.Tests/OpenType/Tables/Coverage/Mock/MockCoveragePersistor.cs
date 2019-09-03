@@ -4,7 +4,7 @@
     using Implementation;
     using Domain;
 
-    public class MockPersistor : CoveragePersistor<MockPrimaryTable>
+    public class MockCoveragePersistor : CoveragePersistor<MockPrimaryTable>
     {
         protected override void AttachSubtable(MockPrimaryTable parentTable, CoverageTable subTable) => parentTable.Table = subTable;
     }

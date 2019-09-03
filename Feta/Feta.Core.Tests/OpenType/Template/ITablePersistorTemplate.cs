@@ -3,12 +3,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 using System.Collections.Generic;
 
-namespace Feta.OpenType.Tables.Template
+namespace Feta.OpenType.Template
 {
     using Abstraction;
-    using OpenType.Domain;
-    using OpenType.Template;
-    using OpenType.Mock;
+    using Domain;
+    using Mock;
 
     [TestClass]
     public abstract class ITablePersistorTemplate<T, U> : TableTemplate<T>

@@ -29,16 +29,31 @@ namespace Feta.OpenType.Tables.Coverage.Implementation
         {
             coverage.GlyphCount = reader.ReadUInt16();
             coverage.GlyphArray = new ushort[coverage.GlyphCount];
+
+            ushort lastValue = 0;
             for (int i = 0; i < coverage.GlyphCount; i++)
-                coverage.GlyphArray[i] = reader.ReadUInt16();
+            {
+                ushort read = reader.ReadUInt16();
+                if (i != 0 && read <= lastValue)
+                    throw new FormatException($"{nameof(coverage.GlyphArray)} must be in numerical order.");
+
+                coverage.GlyphArray[i] = read;
+                lastValue = read;
+            }
             return coverage;
         }
         private CoverageTable ReadFormatTwo(IFontReader reader, CoverageTable coverage)
         {
             coverage.RangeCount = reader.ReadUInt16();
+
             coverage.RangeRecords = new RangeRecord[coverage.RangeCount];
+            RangeRecordValidator validator = new RangeRecordValidator();
             for (int i = 0; i < coverage.RangeCount; i++)
-                coverage.RangeRecords[i] = ReadRangeRecord(reader);
+            {
+                RangeRecord read = ReadRangeRecord(reader);
+                validator.Add(read);
+                coverage.RangeRecords[i] = read;
+            }
 
             return coverage;
         }
@@ -69,15 +84,32 @@ namespace Feta.OpenType.Tables.Coverage.Implementation
         }
         private void WriteFormatOne(IFontWriter writer, CoverageTable table)
         {
+            if (table.GlyphCount != table.GlyphArray.Length)
+                throw new FormatException($"{nameof(table.GlyphCount)} must match the length of {nameof(table.GlyphArray)}");
+
             writer.WriteUInt16(table.GlyphCount);
+            ushort lastValue = 0;
             for (int i = 0; i < table.GlyphCount; i++)
+            {
+                if (i != 0 && table.GlyphArray[i] <= lastValue)
+                    throw new FormatException($"{nameof(table.GlyphArray)} must be in numerical order.");
+
                 writer.WriteUInt16(table.GlyphArray[i]);
+                lastValue = table.GlyphArray[i];
+            }
         }
         private void WriteFormatTwo(IFontWriter writer, CoverageTable table)
         {
+            if (table.RangeCount != table.RangeRecords.Length)
+                throw new FormatException($"{nameof(table.RangeCount)} must match the length of {nameof(table.RangeRecords)}");
+
             writer.WriteUInt16(table.RangeCount);
+            RangeRecordValidator validator = new RangeRecordValidator();
             for (int i = 0; i < table.RangeCount; i++)
+            {
+                validator.Add(table.RangeRecords[i]);
                 WriteRangeRecord(writer, table.RangeRecords[i]);
+            }
         }
         private void WriteRangeRecord(IFontWriter writer, RangeRecord rangeRecord)
         {

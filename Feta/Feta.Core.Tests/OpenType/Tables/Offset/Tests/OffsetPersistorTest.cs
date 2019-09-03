@@ -1,19 +1,20 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 
 namespace Feta.OpenType.Tables.Offset.Tests
 {
-    using Exceptions;
-    using Mock;
-    using Implementation;
     using Domain;
-    using Template;
+    using Exceptions;
+    using Implementation;
+    using Mock;
     using OpenType.Mock;
+    using Template;
 
     [TestClass]
-    public class PersistorTest : ITablePersistorTemplate<OffsetPersistor, OffsetTable>
+    public class OffsetPersistorTest : ITablePersistorTemplate<OffsetPersistor, OffsetTable>
     {
-        private static IEnumerable<object[]> SampleData => Mock.MockTable.DynamicData;
+        private static IEnumerable<object[]> SampleData => MockOffsetTable.DynamicData;
 
         private OffsetPersistor _obj = null;
         protected override OffsetPersistor TestObject => _obj;
@@ -130,7 +131,7 @@ namespace Feta.OpenType.Tables.Offset.Tests
         [ExpectedException(typeof(MisorderedTagsException))]
         public void ReadThrowsIfTagsAreMisordered()
         {
-            PrimeTableToRead(MockReader, Mock.MockTable.Misordered);
+            PrimeTableToRead(MockReader, Mock.MockOffsetTable.Misordered);
             TestObject.Read(MockReader);
         }
 
@@ -233,6 +234,15 @@ namespace Feta.OpenType.Tables.Offset.Tests
                 MockOffsetRegistry.LengthToRetrieve = expected;
                 Assert.AreEqual(expected, ExecuteSecondDeferredWrite(i));
             }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(FormatException))]
+        public void WrongNumberOfTablesThrowsOnWrite()
+        {
+            OffsetTable sample = MockOffsetTable.Four;
+            sample.NumberOfTables = (ushort)(sample.NumberOfTables * 2);
+            TestObject.Write(MockWriter, sample);
         }
     }
 }

@@ -71,6 +71,9 @@ namespace Feta.OpenType.Tables.Offset.Implementation
 
         protected override void Write(IFontWriter writer, OffsetTable table)
         {
+            if (table.NumberOfTables != table.Records.Count)
+                throw new FormatException($"{nameof(table.NumberOfTables)} must match the number of {nameof(TableRecord)}s");
+
             writer.WriteUInt32(table.SfntVersion);
             writer.WriteUInt16(table.NumberOfTables);
             writer.WriteUInt16(table.SearchRange);

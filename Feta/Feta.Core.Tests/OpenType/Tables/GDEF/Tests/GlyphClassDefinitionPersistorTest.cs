@@ -13,7 +13,7 @@ namespace Feta.OpenType.Tables.GDEF.Tests
     using Domain;
 
     [TestClass]
-    public class GlyphClassDefinitionPersistorTest : PersistorTemplate<GdefTable>
+    public class GlyphClassDefinitionPersistorTest : ClassDefinitionPersistorTemplate<GdefTable>
     {
         protected override ClassDefinitionPersistor<GdefTable> TestObject => throw new NotImplementedException();
 

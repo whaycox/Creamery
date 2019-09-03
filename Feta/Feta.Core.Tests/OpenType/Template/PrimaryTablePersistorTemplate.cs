@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Feta.OpenType.Tables.Template
+namespace Feta.OpenType.Template
 {
-    using OpenType.Domain;
     using Domain;
     using Implementation;
 
