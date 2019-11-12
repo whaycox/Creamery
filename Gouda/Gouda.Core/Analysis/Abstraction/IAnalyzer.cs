@@ -6,13 +6,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Gouda.Scheduling.Abstraction
+namespace Gouda.Analysis.Abstraction
 {
     using Gouda.Domain;
 
-    public interface IScheduler
+    public interface IAnalyzer
     {
-        Task<List<Check>> ChecksBeforeScheduledTime(DateTimeOffset scheduledTime);
-        void RescheduleCheck(Check check);
+        Task AnalyzeResult(Check check, List<DiagnosticData> result);
     }
 }

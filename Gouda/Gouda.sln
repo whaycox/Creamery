@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gouda.Application.Testing",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gouda.Core", "Gouda.Core\Gouda.Core.csproj", "{23EE2723-A31E-4C98-B2A1-CD6D6E3A810A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gouda.WebApp", "Gouda.WebApp\Gouda.WebApp.csproj", "{52468EA6-EE25-4E62-8623-56389CA20E0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gouda.WebApp", "Gouda.WebApp\Gouda.WebApp.csproj", "{52468EA6-EE25-4E62-8623-56389CA20E0F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gouda.Core.Testing", "Gouda.Core.Testing\Gouda.Core.Testing.csproj", "{46F0CEFD-E463-4B5B-8B81-F672F8EE034F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{52468EA6-EE25-4E62-8623-56389CA20E0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52468EA6-EE25-4E62-8623-56389CA20E0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52468EA6-EE25-4E62-8623-56389CA20E0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46F0CEFD-E463-4B5B-8B81-F672F8EE034F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46F0CEFD-E463-4B5B-8B81-F672F8EE034F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46F0CEFD-E463-4B5B-8B81-F672F8EE034F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46F0CEFD-E463-4B5B-8B81-F672F8EE034F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

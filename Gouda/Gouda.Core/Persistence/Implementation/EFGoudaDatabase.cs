@@ -10,6 +10,8 @@ namespace Gouda.Persistence.Implementation
     public class EFGoudaDatabase : IGoudaDatabase
     {
         public IRepository<Satellite> Satellite => throw new NotImplementedException();
+        public IRepository<Check> Check => throw new NotImplementedException();
         public IRepository<DiagnosticData> DiagnosticData => throw new NotImplementedException();
+
     }
 }

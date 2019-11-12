@@ -11,6 +11,11 @@ namespace Gouda.Persistence.Implementation
     public class EFRepository<TEntity> : IRepository<TEntity>
         where TEntity : BaseEntity
     {
+        public Task<List<TEntity>> FetchMany(List<int> ids)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task Insert(List<TEntity> entities)
         {
             throw new NotImplementedException();

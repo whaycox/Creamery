@@ -5,35 +5,35 @@
     using System.Threading.Tasks;
     using Abstraction;
     using Gouda.Domain;
+    using Persistence.Abstraction;
+    using Time.Abstraction;
 
     public class Scheduler : IScheduler
     {
+        private ITime Time { get; }
+        private ISchedule Schedule { get; }
+        private IGoudaDatabase GoudaDatabase { get; }
+
+        public Scheduler(
+            ITime time,
+            IScheduleFactory scheduleFactory,
+            IGoudaDatabase goudaDatabase)
+        {
+            Time = time;
+            Schedule = scheduleFactory.BuildSchedule();
+            GoudaDatabase = goudaDatabase;
+        }
+
         public Task<List<Check>> ChecksBeforeScheduledTime(DateTimeOffset scheduledTime)
         {
-            throw new NotImplementedException();
+            List<int> checkIDs = Schedule.Trim(scheduledTime);
+            return GoudaDatabase.Check.FetchMany(checkIDs);
         }
 
-        #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
-
-        protected virtual void Dispose(bool disposing)
+        public void RescheduleCheck(Check check)
         {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    // TODO: dispose managed state (managed objects).
-                }
-                disposedValue = true;
-            }
+            DateTimeOffset rescheduleTime = Time.Current.AddSeconds(check.RescheduleSecondInterval);
+            Schedule.Add(check.ID, rescheduleTime);
         }
-
-        // This code added to correctly implement the disposable pattern.
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(true);
-        }
-        #endregion
     }
 }

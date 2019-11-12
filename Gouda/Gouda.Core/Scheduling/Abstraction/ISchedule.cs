@@ -8,11 +8,9 @@ using System.Threading.Tasks;
 
 namespace Gouda.Scheduling.Abstraction
 {
-    using Gouda.Domain;
-
-    public interface IScheduler
+    public interface ISchedule
     {
-        Task<List<Check>> ChecksBeforeScheduledTime(DateTimeOffset scheduledTime);
-        void RescheduleCheck(Check check);
+        void Add(int checkID, DateTimeOffset scheduledTime);
+        List<int> Trim(DateTimeOffset maxTime);
     }
 }

@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Gouda.Communication.Implementation
+namespace Gouda.Analysis.Implementation
 {
     using Abstraction;
     using Gouda.Domain;
 
-    public class Communicator : ICommunicator
+    public class Analyzer : IAnalyzer
     {
-        public Task<List<DiagnosticData>> SendCheck(Check check)
+        public Task AnalyzeResult(Check check, List<DiagnosticData> result)
         {
             throw new NotImplementedException();
         }
