@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Gouda.Persistence.Abstraction
 {
@@ -11,5 +15,7 @@ namespace Gouda.Persistence.Abstraction
         IRepository<Satellite> Satellite { get; }
         IRepository<Check> Check { get; }
         IRepository<DiagnosticData> DiagnosticData { get; }
+
+        Task SaveChanges();
     }
 }

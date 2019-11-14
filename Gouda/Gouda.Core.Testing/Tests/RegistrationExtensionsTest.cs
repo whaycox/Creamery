@@ -17,35 +17,28 @@ namespace Gouda.Tests
     using Scheduling.Implementation;
     using Time.Abstraction;
     using Time.Implementation;
+    using Persistence.Domain;
 
     [TestClass]
     public class RegistrationExtensionsTest
     {
-        private Mock<IServiceCollection> MockServiceCollection = new Mock<IServiceCollection>();
+        private IServiceCollection TestServiceCollection = new ServiceCollection();
 
-        private List<ServiceDescriptor> RegisteredDescriptors = new List<ServiceDescriptor>();
+        private void TestAddGoudaCore() => TestServiceCollection.AddGoudaCore();
 
         private void VerifyServiceWasRegistered(Type expectedInterface, Type expectedImplementation, ServiceLifetime expectedLifetime)
         {
-            Assert.IsTrue(RegisteredDescriptors.Any(service =>
+            Assert.IsTrue(TestServiceCollection.Any(service =>
                 service.ServiceType == expectedInterface &&
                 service.ImplementationType == expectedImplementation &&
                 service.Lifetime == expectedLifetime
             ));
         }
 
-        [TestInitialize]
-        public void Init()
-        {
-            MockServiceCollection
-                .Setup(services => services.Add(It.IsAny<ServiceDescriptor>()))
-                .Callback<ServiceDescriptor>(service => RegisteredDescriptors.Add(service));
-        }
-
         [TestMethod]
         public void GoudaCoreAddsTimeTransient()
         {
-            MockServiceCollection.Object.AddGoudaCore();
+            TestAddGoudaCore();
 
             VerifyServiceWasRegistered(typeof(ITime), typeof(MachineTime), ServiceLifetime.Transient);
         }
@@ -53,7 +46,7 @@ namespace Gouda.Tests
         [TestMethod]
         public void GoudaCoreAddsScheduleFactorySingleton()
         {
-            MockServiceCollection.Object.AddGoudaCore();
+            TestAddGoudaCore();
 
             VerifyServiceWasRegistered(typeof(IScheduleFactory), typeof(ScheduleFactory), ServiceLifetime.Singleton);
         }
@@ -61,7 +54,7 @@ namespace Gouda.Tests
         [TestMethod]
         public void GoudaCoreAddsSchedulerSingleton()
         {
-            MockServiceCollection.Object.AddGoudaCore();
+            TestAddGoudaCore();
 
             VerifyServiceWasRegistered(typeof(IScheduler), typeof(Scheduler), ServiceLifetime.Singleton);
         }
@@ -69,7 +62,7 @@ namespace Gouda.Tests
         [TestMethod]
         public void GoudaCoreAddsCommunicatorTransient()
         {
-            MockServiceCollection.Object.AddGoudaCore();
+            TestAddGoudaCore();
 
             VerifyServiceWasRegistered(typeof(ICommunicator), typeof(Communicator), ServiceLifetime.Transient);
         }
@@ -77,17 +70,41 @@ namespace Gouda.Tests
         [TestMethod]
         public void GoudaCoreAddsAnalyzerTransient()
         {
-            MockServiceCollection.Object.AddGoudaCore();
+            TestAddGoudaCore();
 
             VerifyServiceWasRegistered(typeof(IAnalyzer), typeof(Analyzer), ServiceLifetime.Transient);
         }
 
         [TestMethod]
+        public void GoudaCoreAddsGoudaContextScoped()
+        {
+            TestAddGoudaCore();
+
+            VerifyServiceWasRegistered(typeof(GoudaContext), typeof(GoudaContext), ServiceLifetime.Scoped);
+        }
+
+        [TestMethod]
+        public void GoudaCoreAddsAllRepositories()
+        {
+            TestAddGoudaCore();
+
+            VerifyServiceWasRegistered(typeof(IRepository<>), typeof(EFRepository<>), ServiceLifetime.Transient);
+        }
+
+        [TestMethod]
         public void GoudaCoreAddsGoudaDatabaseTransient()
         {
-            MockServiceCollection.Object.AddGoudaCore();
+            TestAddGoudaCore();
 
             VerifyServiceWasRegistered(typeof(IGoudaDatabase), typeof(EFGoudaDatabase), ServiceLifetime.Transient);
+        }
+
+        [TestMethod]
+        public void GoudaCoreAddsCheckInheritorSingleton()
+        {
+            TestAddGoudaCore();
+
+            VerifyServiceWasRegistered(typeof(ICheckInheritor), typeof(CheckInheritor), ServiceLifetime.Singleton);
         }
     }
 }

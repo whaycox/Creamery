@@ -6,12 +6,29 @@ namespace Gouda.Persistence.Implementation
 {
     using Abstraction;
     using Gouda.Domain;
+    using Domain;
+    using System.Threading.Tasks;
 
     public class EFGoudaDatabase : IGoudaDatabase
     {
-        public IRepository<Satellite> Satellite => throw new NotImplementedException();
-        public IRepository<Check> Check => throw new NotImplementedException();
-        public IRepository<DiagnosticData> DiagnosticData => throw new NotImplementedException();
+        private GoudaContext GoudaContext { get; }
 
+        public IRepository<Satellite> Satellite { get; }
+        public IRepository<Check> Check { get; }
+        public IRepository<DiagnosticData> DiagnosticData { get; }
+
+        public EFGoudaDatabase(
+            GoudaContext goudaContext,
+            IRepository<Satellite> satellites,
+            IRepository<Check> checks,
+            IRepository<DiagnosticData> data)
+        {
+            GoudaContext = goudaContext;
+            Satellite = satellites;
+            Check = checks;
+            DiagnosticData = data;
+        }
+
+        public Task SaveChanges() => GoudaContext.SaveChangesAsync();
     }
 }

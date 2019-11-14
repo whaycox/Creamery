@@ -25,7 +25,7 @@ namespace Gouda.Scheduling.Tests
         private Mock<ITime> MockTime = new Mock<ITime>();
         private Mock<IScheduleFactory> MockScheduleFactory = new Mock<IScheduleFactory>();
         private Mock<ISchedule> MockSchedule = new Mock<ISchedule>();
-        private Mock<IGoudaDatabase> MockGoudaDatabase = new Mock<IGoudaDatabase>();
+        private Mock<ICheckInheritor> MockCheckInheritor = new Mock<ICheckInheritor>();
 
         private Scheduler TestObject = null;
 
@@ -44,14 +44,14 @@ namespace Gouda.Scheduling.Tests
             MockSchedule
                 .Setup(schedule => schedule.Trim(It.IsAny<DateTimeOffset>()))
                 .Returns(TestCheckIDs);
-            MockGoudaDatabase
-                .Setup(db => db.Check.FetchMany(It.IsAny<List<int>>()))
+            MockCheckInheritor
+                .Setup(check => check.Build(It.IsAny<List<int>>()))
                 .ReturnsAsync(TestChecks);
 
             TestObject = new Scheduler(
                 MockTime.Object,
                 MockScheduleFactory.Object,
-                MockGoudaDatabase.Object);
+                MockCheckInheritor.Object);
         }
 
         [TestMethod]
@@ -63,11 +63,11 @@ namespace Gouda.Scheduling.Tests
         }
 
         [TestMethod]
-        public async Task ChecksBeforeTimeFetchesWithOptions()
+        public async Task ChecksBeforeTimeFetchesInheritedChecks()
         {
             await TestObject.ChecksBeforeScheduledTime(TestTime);
 
-            MockGoudaDatabase.Verify(db => db.Check.FetchMany(TestCheckIDs), Times.Once);
+            MockCheckInheritor.Verify(check => check.Build(TestCheckIDs), Times.Once);
         }
 
         [TestMethod]
