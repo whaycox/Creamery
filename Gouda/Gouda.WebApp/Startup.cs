@@ -13,6 +13,8 @@ namespace Gouda.WebApp
 {
     using Application;
     using Implementation;
+    using Navigation.Implementation;
+    using Navigation.Abstraction;
 
     public class Startup
     {
@@ -33,7 +35,13 @@ namespace Gouda.WebApp
                 .AddGoudaApplication();
 
             services
-                .AddSingleton<IHostedService, CheckExecutionService>();
+                .AddSingleton<IHostedService, CheckExecutionService>()
+                .AddScoped<INavigationTreeBuilder, NavigationTreeBuilder>();
+
+            services.AddMvc(options =>
+            {
+                options.Filters.Add<NavigationFilter>();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

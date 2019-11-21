@@ -1,0 +1,15 @@
+[
+  {
+    "outputFileName": "wwwroot\\css\\layout.min.css",
+    "inputFiles": [
+      "wwwroot\\css\\site.css",
+      "wwwroot\\css\\navigation.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot\\js\\layout.min.js",
+    "inputFiles": [
+      "wwwroot\\js\\navigation.js"
+    ]
+  }
+]

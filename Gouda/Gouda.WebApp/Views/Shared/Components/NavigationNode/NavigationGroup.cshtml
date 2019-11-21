@@ -1,0 +1,16 @@
+﻿@model NavigationGroup
+<div class="nav-group" aria-expanded="false">
+    <div class="nav-group-header nav-row">
+        <div class="nav-glyph">@await Component.InvokeAsync(GlyphViewComponent.Name, Model.Glyph)</div>
+        <div class="nav-glyph-title nav-row">
+            <div class="nav-group-name">@Model.Name</div>
+            <div class="nav-group-expand"><i class="material-icons"></i></div>
+        </div>
+    </div>
+    <ul class="nav-group-leaves">
+        @foreach (NavigationLeaf leaf in Model.Leaves)
+        {
+            <li>@await Component.InvokeAsync(NavigationNodeViewComponent.Name, leaf)</li>
+        }
+    </ul>
+</div>

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Gouda.Scheduling.Implementation
 {
@@ -36,8 +38,10 @@ namespace Gouda.Scheduling.Implementation
             newNode.Next = olderNeighbor;
             newNode.Previous = previousNode;
 
-            if (newNode.Previous == null)
+            if (previousNode == null)
                 First = newNode;
+            else
+                previousNode.Next = newNode;
             Count++;
         }
 

@@ -1,0 +1,10 @@
+﻿@model NavigationSection
+    <div class="nav-section">
+        <div class="nav-section-title nav-row">@Model.Name</div>
+        <ul class="nav-section-nodes">
+            @foreach (NavigationNode node in Model.Nodes)
+            {
+                <li>@await Component.InvokeAsync(NavigationNodeViewComponent.Name, node)</li>
+            }
+        </ul>
+    </div>

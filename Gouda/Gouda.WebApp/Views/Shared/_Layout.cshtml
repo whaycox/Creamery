@@ -1,19 +1,57 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.Extensions.Hosting
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment hostEnv
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Gouda.WebApp</title>
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    @RenderSection(LayoutSections.GlobalStyles, required: false)
+    @if (hostEnv.IsDevelopment())
+    {
+        <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="~/css/navigation.css" />
+        @RenderSection(LayoutSections.DevelopmentStyles, required: false)
+    }
+    else
+    {
+        <link rel="stylesheet" href="~/css/layout.min.css" />
+        @RenderSection(LayoutSections.ProductionStyles, required: false)
+    }
+    <style>
+        :root {
+            --main-color: hsl(0, 0%, 25%);
+            --accent-color: hsl(265, 79%, 36%);
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <main role="main" class="pb-3">
+    <div class="site-container">
+        <header>
+            <div id="nav-toggle">Gu</div>
+        </header>
+        @await Component.InvokeAsync(NavigationViewComponent.Name)
+        <main role="main">
             @RenderBody()
         </main>
+        <footer>
+            Gouda
+        </footer>
     </div>
 
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @RenderSection("Scripts", required: false)
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    @RenderSection(LayoutSections.GlobalScripts, required: false)
+    @if (hostEnv.IsDevelopment())
+    {
+        <script src="~/js/site.js"></script>
+        <script src="~/js/navigation.js"></script>
+        @RenderSection(LayoutSections.DevelopmentScripts, required: false)
+    }
+    else
+    {
+        <script src="~/js/layout.min.js"></script>
+        @RenderSection(LayoutSections.ProductionScripts, required: false)
+    }
 </body>
 </html>

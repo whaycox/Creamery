@@ -6,6 +6,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Threading.Tasks;
+using System.Text;
 
 namespace Gouda.Scheduling.Tests
 {
@@ -112,6 +113,5 @@ namespace Gouda.Scheduling.Tests
             for (int i = 0; i < ids.Count; i++)
                 Assert.AreEqual(i, ids[i]);
         }
-
     }
 }

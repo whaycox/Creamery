@@ -1,0 +1,8 @@
+﻿@model NavigationTree
+<nav class="nav-tree" aria-expanded="false">
+    @foreach (NavigationSection section in Model.Sections)
+    {
+        @await Component.InvokeAsync(NavigationNodeViewComponent.Name, section)
+    }
+</nav>
+

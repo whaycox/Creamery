@@ -5,19 +5,21 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using MediatR;
+using Microsoft.Extensions.Options;
 
 namespace Gouda.WebApp.Implementation
 {
     using Application.Commands.CheckSchedule.Domain;
+    using Domain;
 
     public class CheckExecutionService : BackgroundService
     {
-        private const int SleepTimeInMs = 500;
-
+        private CheckExecutionServiceOptions Options { get; }
         private IMediator Mediator { get; }
 
-        public CheckExecutionService(IMediator mediator)
+        public CheckExecutionService(IOptions<CheckExecutionServiceOptions> options, IMediator mediator)
         {
+            Options = options.Value;
             Mediator = mediator;
         }
 
@@ -26,7 +28,7 @@ namespace Gouda.WebApp.Implementation
             while (!stoppingToken.IsCancellationRequested)
             {
                 await Mediator.Send(new CheckScheduleCommand(), stoppingToken);
-                await Task.Delay(SleepTimeInMs);
+                await Task.Delay(Options.SleepTimeInMs);
             }
         }
     }

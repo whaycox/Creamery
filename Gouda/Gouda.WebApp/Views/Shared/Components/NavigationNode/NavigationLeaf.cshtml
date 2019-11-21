@@ -1,0 +1,14 @@
+﻿@model NavigationLeaf
+@if (Model.Glyph != null)
+{
+    <a class="nav-leaf nav-row root-leaf" href="@Model.Destination">
+        <div class="nav-glyph">@await Component.InvokeAsync(GlyphViewComponent.Name, Model.Glyph)</div>
+        <div class="nav-glyph-title nav-row">@Model.Name</div>
+    </a>
+}
+else
+{
+    <a class="nav-leaf nav-row" href="@Model.Destination">
+        <div class="nav-glyph-title">@Model.Name</div>
+    </a>
+}
