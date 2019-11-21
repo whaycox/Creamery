@@ -5,7 +5,7 @@ namespace Gouda.WebApp.Navigation.Implementation
 {
     using Abstraction;
     using Domain;
-    using WebApp.Abstraction;
+    using Glyphs.Abstraction;
 
     public class NavigationTreeBuilder : INavigationTreeBuilder
     {

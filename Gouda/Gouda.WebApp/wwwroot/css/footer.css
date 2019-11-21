@@ -1,0 +1,15 @@
+﻿footer.site-footer {
+    grid-area: footer;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: var(--main-color);
+}
+
+footer.site-footer .empty-space {
+    flex-grow: 1;
+}
+
+footer.site-footer .site-name {
+    padding-right: 10px;
+}

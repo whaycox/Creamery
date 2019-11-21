@@ -3,12 +3,15 @@
     "outputFileName": "wwwroot\\css\\layout.min.css",
     "inputFiles": [
       "wwwroot\\css\\site.css",
-      "wwwroot\\css\\navigation.css"
+      "wwwroot\\css\\navigation.css",
+      "wwwroot\\css\\header.css",
+      "wwwroot\\css\\footer.css"
     ]
   },
   {
     "outputFileName": "wwwroot\\js\\layout.min.js",
     "inputFiles": [
+      "wwwroot\\js\\site.js",
       "wwwroot\\js\\navigation.js"
     ]
   }

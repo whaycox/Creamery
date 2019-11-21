@@ -1,6 +1,6 @@
 ﻿namespace Gouda.WebApp.Navigation.Domain
 {
-    using WebApp.Abstraction;
+    using Glyphs.Abstraction;
 
     public abstract class NavigationGlyphNode : NavigationNode
     {

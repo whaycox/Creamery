@@ -17,16 +17,6 @@ namespace Gouda.WebApp.ViewComponents.Implementation
     {
         public const string Name = nameof(Navigation);
 
-        private INavigationTreeBuilder NavigationTreeBuilder { get; }
-
-        public NavigationViewComponent(INavigationTreeBuilder navigationTreeBuilder)
-        {
-            NavigationTreeBuilder = navigationTreeBuilder;
-        }
-
-        public IViewComponentResult Invoke()
-        {
-            return View(NavigationTreeBuilder.Build());
-        }
+        public IViewComponentResult Invoke(INavigationObject navigationObject) => View(navigationObject.ViewName, navigationObject);
     }
 }

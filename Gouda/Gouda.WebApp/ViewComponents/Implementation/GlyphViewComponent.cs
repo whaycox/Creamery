@@ -6,22 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Gouda.WebApp.ViewComponents.Implementation
 {
-    using Abstraction;
-    using WebApp.Implementation;
+    using Glyphs.Abstraction;
 
     public class GlyphViewComponent : ViewComponent
     {
         public const string Name = "Glyph";
 
-        public IViewComponentResult Invoke(IGlyph glyph)
-        {
-            switch (glyph)
-            {
-                case MaterialIconGlyph materialIconGlyph:
-                    return View(nameof(MaterialIconGlyph), materialIconGlyph);
-                default:
-                    throw new InvalidOperationException($"Unsupported glyph type {glyph.GetType()}");
-            }
-        }
+        public IViewComponentResult Invoke(IGlyph glyph) => View(glyph.ViewName, glyph);
     }
 }

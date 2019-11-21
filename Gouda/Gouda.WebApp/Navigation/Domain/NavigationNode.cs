@@ -5,8 +5,12 @@ using System.Threading.Tasks;
 
 namespace Gouda.WebApp.Navigation.Domain
 {
-    public abstract class NavigationNode
+    using Abstraction;
+
+    public abstract class NavigationNode : INavigationObject
     {
         public string Name { get; set; }
+
+        public abstract string ViewName { get; }
     }
 }

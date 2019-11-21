@@ -13,28 +13,17 @@ div.site-container {
         'header header' 
         'nav main'
         'nav footer';
-    background-color: green;
-}
-
-div.site-container header {
-    grid-area: header;
-    background-color: yellow;
 }
 
 div.site-container main {
     grid-area: main;
-
+    background-color: green;
 }
 
-div.site-container footer {
-    grid-area: footer;
-    background-color: cyan;
-}
-
-@media (max-width: 600px) {
+@media (max-width: 400px) {
     div.site-container {
         grid-template-columns: 1fr;
-        grid-template-rows: 50px 1fr 35px;
+        grid-template-rows: 40px 1fr 25px;
         grid-template-areas: 
             'header' 
             'main' 

@@ -8,13 +8,16 @@
     }
   },
   "profiles": {
-    "IIS Express": {
+    "IIS Express (Development)": {
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "nativeDebugging": false
+    },
+    "IIS Express (Production)": {
+      "commandName": "IISExpress",
+      "launchBrowser": true
     },
     "Gouda.WebApp": {
       "commandName": "Project",

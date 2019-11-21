@@ -9,6 +9,8 @@ namespace Gouda.WebApp.Navigation.Domain
 
     public class NavigationGroup : NavigationGlyphNode
     {
+        public override string ViewName => nameof(NavigationGroup);
+
         public List<NavigationLeaf> Leaves { get; set; } = new List<NavigationLeaf>();
     }
 }

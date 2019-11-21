@@ -1,0 +1,26 @@
+﻿header.site-header {
+    grid-area: header;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: var(--main-color);
+}
+
+header.site-header #nav-toggle {
+    display: grid;
+    place-items: center;
+    width: 50px;
+    cursor: pointer;
+}
+
+header.site-header .site-logo {
+    width: 40px;
+    height: 35px;
+    box-sizing: border-box;
+    padding: 2px 3px 3px 3px;
+    font-size: 1.4em;
+    color: var(--accent-color);
+    background-color: white;
+    border: solid 2px black;
+    border-radius: 5px;
+}

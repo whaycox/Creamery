@@ -1,5 +1,6 @@
 ﻿@using Microsoft.Extensions.Hosting
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment hostEnv
+@inject Gouda.WebApp.Navigation.Abstraction.INavigationTreeBuilder navigationTree
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,6 +13,8 @@
     {
         <link rel="stylesheet" href="~/css/site.css" />
         <link rel="stylesheet" href="~/css/navigation.css" />
+        <link rel="stylesheet" href="~/css/header.css" />
+        <link rel="stylesheet" href="~/css/footer.css" />
         @RenderSection(LayoutSections.DevelopmentStyles, required: false)
     }
     else
@@ -28,16 +31,12 @@
 </head>
 <body>
     <div class="site-container">
-        <header>
-            <div id="nav-toggle">Gu</div>
-        </header>
-        @await Component.InvokeAsync(NavigationViewComponent.Name)
+        @await Component.InvokeAsync(HeaderViewComponent.Name)
+        @await Component.InvokeAsync(NavigationViewComponent.Name, navigationTree.Build())
         <main role="main">
             @RenderBody()
         </main>
-        <footer>
-            Gouda
-        </footer>
+        @await Component.InvokeAsync(FooterViewComponent.Name)
     </div>
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>

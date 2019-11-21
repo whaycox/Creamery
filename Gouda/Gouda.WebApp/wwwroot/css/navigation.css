@@ -137,7 +137,7 @@ nav.nav-tree[aria-expanded="false"] .nav-group[aria-expanded="true"] .nav-group-
     display: flex;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 400px) {
     nav.nav-tree .nav-glyph-title {
         width: 100%;
     }

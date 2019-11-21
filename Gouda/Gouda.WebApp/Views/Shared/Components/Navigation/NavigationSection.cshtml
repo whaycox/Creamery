@@ -4,7 +4,7 @@
         <ul class="nav-section-nodes">
             @foreach (NavigationNode node in Model.Nodes)
             {
-                <li>@await Component.InvokeAsync(NavigationNodeViewComponent.Name, node)</li>
+                <li>@await Component.InvokeAsync(NavigationViewComponent.Name, node)</li>
             }
         </ul>
     </div>

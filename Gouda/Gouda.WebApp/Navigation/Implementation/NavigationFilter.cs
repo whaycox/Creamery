@@ -9,7 +9,7 @@ namespace Gouda.WebApp.Navigation.Implementation
 {
     using Abstraction;
     using ViewComponents;
-    using WebApp.Implementation;
+    using Glyphs.Implementation;
 
     public class NavigationFilter : IActionFilter
     {

@@ -2,7 +2,7 @@
 <nav class="nav-tree" aria-expanded="false">
     @foreach (NavigationSection section in Model.Sections)
     {
-        @await Component.InvokeAsync(NavigationNodeViewComponent.Name, section)
+        @await Component.InvokeAsync(NavigationViewComponent.Name, section)
     }
 </nav>
 
