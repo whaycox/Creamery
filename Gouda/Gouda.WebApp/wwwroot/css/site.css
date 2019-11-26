@@ -2,7 +2,6 @@
     margin: 0px;
     font-family: Verdana;
     color: var(--main-text-color);
-    background-image: linear-gradient(hsla(0, 0%, 100%) 30%, hsla(0, 0%, 60%));
 }
 
 div.site-container {
@@ -31,11 +30,5 @@ div.site-container main {
             'header' 
             'main' 
             'footer';
-    }
-}
-
-@media (max-width: 500px) {
-    body {
-        background-image: none;
     }
 }

@@ -1,8 +1,8 @@
 ﻿.gouda-form {
     margin: 5px;
     padding: 10px;
-    background-color: var(--main-color);
-    background-image: linear-gradient(hsla(0, 0%, 100%, 0.7), hsla(0, 0%, 100%, 0.7));
+    background-color: var(--main-text-color);
+    background-image: linear-gradient(hsla(0, 0%, 100%, 0.9), hsla(0, 0%, 100%, 0.9));
     border-radius: 5px;
 }
 
@@ -12,7 +12,8 @@
     padding: 5px;
     font-weight: bold;
     color: var(--main-text-color);
-    background-image: linear-gradient(hsla(0, 0%, 0%, 0.2), hsla(0, 0%, 0%, 0.1));
+    background-color: var(--accent-color);
+    background-image: linear-gradient(hsla(0, 0%, 100%, 0.6), hsla(0, 0%, 100%, 0.5));
     border: solid 1px var(--main-text-color);
     border-radius: 5px;
     box-shadow: black 0 0 2px;
@@ -40,7 +41,6 @@
         flex-shrink: 1;
         flex-grow: 1;
         padding: 7px 5px;
-        background-color: var(--accent-color);
         background-image: linear-gradient(hsla(0, 0%, 100%, 0.7), hsla(0, 0%, 100%, 0.8));
         border: solid 1px var(--main-text-color);
         border-radius: 5px;
@@ -53,7 +53,26 @@
         outline: var(--accent-color) auto 1px;
     }
     .gouda-input input:invalid {
-        background-color: var(--attention-color);
+        background-color: var(--invalid-color);
+    }
+    .gouda-input input:valid {
+        background-color: var(--valid-color);
+    }
+
+.gouda-input .valid-glyph {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 30px;
+}
+
+.gouda-input .valid-glyph .material-icons::after {
+    color: var(--invalid-color);
+    content: "cancel";
+}
+    .gouda-input input:valid + .valid-glyph .material-icons::after {
+        color: var(--valid-color);
+        content: "check_circle";
     }
 
 .gouda-button {

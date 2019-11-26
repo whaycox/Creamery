@@ -7,12 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Mvc.Routing;
 
-namespace Gouda.WebApp.Navigation.Implementation
+namespace Gouda.WebApp.Filters.Implementation
 {
-    using Abstraction;
     using ViewComponents;
     using Application.ViewModels.Glyphs.Implementation;
     using Controllers.Implementation;
+    using Application.ViewModels.Navigation.Abstraction;
 
     public class NavigationFilter : IActionFilter
     {

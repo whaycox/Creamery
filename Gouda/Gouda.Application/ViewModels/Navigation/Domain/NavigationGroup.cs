@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Gouda.WebApp.Navigation.Domain
+namespace Gouda.Application.ViewModels.Navigation.Domain
 {
     public class NavigationGroup : NavigationGlyphNode
     {

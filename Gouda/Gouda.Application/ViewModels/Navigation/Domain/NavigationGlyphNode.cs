@@ -1,4 +1,4 @@
-﻿namespace Gouda.WebApp.Navigation.Domain
+﻿namespace Gouda.Application.ViewModels.Navigation.Domain
 {
     using Application.ViewModels.Glyphs.Abstraction;
 

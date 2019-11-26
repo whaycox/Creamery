@@ -9,8 +9,6 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 namespace Gouda.WebApp
 {
     using Implementation;
-    using Navigation.Implementation;
-    using Navigation.Abstraction;
     using Adapters.Abstraction;
     using Adapters.Implementation;
 
@@ -19,7 +17,6 @@ namespace Gouda.WebApp
         public static IServiceCollection AddGoudaWebApp(this IServiceCollection services) => services
             .AddSingleton<IActionContextAccessor, ActionContextAccessor>()
             .AddSingleton<IHostedService, CheckExecutionService>()
-            .AddScoped<INavigationTreeBuilder, NavigationTreeBuilder>()
             .AddSingleton<IDestinationCollection, DestinationCollection>()
             .AddScoped<IDestinationAdapter, DestinationAdapter>();
     }

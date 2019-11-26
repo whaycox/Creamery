@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Gouda.WebApp.Navigation.Implementation
+namespace Gouda.Application.ViewModels.Navigation.Implementation
 {
     using Abstraction;
     using Domain;

@@ -1,9 +1,9 @@
 ﻿namespace Gouda.WebApp.ViewComponents.Implementation
 {
-    using Navigation.Abstraction;
+    using Application.ViewModels.Navigation.Abstraction;
 
     public class NavigationViewComponent : BaseViewModelViewComponent<INavigationObject>
     {
-        public const string Name = nameof(Navigation);
+        public const string Name = nameof(Application.ViewModels.Navigation);
     }
 }

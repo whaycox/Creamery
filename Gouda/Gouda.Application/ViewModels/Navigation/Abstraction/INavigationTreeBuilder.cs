@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Gouda.WebApp.Navigation.Abstraction
+namespace Gouda.Application.ViewModels.Navigation.Abstraction
 {
     using Domain;
     using Application.ViewModels.Glyphs.Abstraction;

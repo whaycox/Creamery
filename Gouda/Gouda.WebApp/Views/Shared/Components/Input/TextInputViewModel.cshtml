@@ -2,4 +2,5 @@
 <div class="gouda-input">
     <label>@Model.Label</label>
     <input class="@Model.TypeName" name="@Model.Name" @(Model.Required ? "required" : string.Empty) type="text" @(Model.ValuePattern != null ? $"pattern={Model.ValuePattern}" : string.Empty) value="@Model.Value" />
+    <div class="valid-glyph">@await Component.InvokeAsync(GlyphViewComponent.Name, MaterialIconGlyph.Nothing)</div>
 </div>

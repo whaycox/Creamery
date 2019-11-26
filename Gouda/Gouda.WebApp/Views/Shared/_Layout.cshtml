@@ -1,6 +1,6 @@
 ﻿@using Microsoft.Extensions.Hosting
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment hostEnv
-@inject Gouda.WebApp.Navigation.Abstraction.INavigationTreeBuilder navigationTree
+@inject Gouda.Application.ViewModels.Navigation.Abstraction.INavigationTreeBuilder navigationTree
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,7 +29,9 @@
             --main-text-color: black;
             --accent-color: hsl(95, 100%, 35%);
             --accent-text-color: white;
-            --attention-color: red;
+
+            --valid-color: hsl(113, 100%, 40%);
+            --invalid-color: hsl(0, 91%, 42%);
         }
     </style>
 </head>

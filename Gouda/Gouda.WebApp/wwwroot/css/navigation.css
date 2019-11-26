@@ -25,6 +25,9 @@ nav.nav-tree .nav-section {
 nav.nav-tree .nav-section-title {
     display: grid;
     place-items: center;
+    font-size: 1.3em;
+    font-weight: bold;
+    color: var(--main-color);
     background-color: var(--accent-color);
     border-bottom: solid 1px var(--accent-text-color);
     border-radius: 0px 0px 5px 5px;

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Moq;
 
-namespace Gouda.WebApp.Navigation.Tests
+namespace Gouda.Application.ViewModels.Navigation.Tests
 {
     using Domain;
     using Implementation;
