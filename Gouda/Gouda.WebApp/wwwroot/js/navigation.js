@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    $(".nav-group-header").click(toggleNavGroup);
+    $("gouda-nav-group .header").click(toggleNavGroup);
 });
 
 function toggleNavGroup(args) {

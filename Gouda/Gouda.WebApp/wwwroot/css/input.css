@@ -19,24 +19,24 @@
     box-shadow: black 0 0 2px;
 } 
 
-.gouda-input-stack {
+gouda-input-stack {
     display: flex;
     flex-direction: column;
     align-items: stretch;
 }
 
-.gouda-input {
+gouda-input {
     display: flex;
     flex-direction: row;
     align-items: center;
     margin: 5px;
 }
-    .gouda-input label {
+    gouda-input label {
         flex-shrink: 0;
         font-weight: bold;
         padding-right: 7px;
     }
-    .gouda-input input {
+    gouda-input input {
         width: 100%;
         flex-shrink: 1;
         flex-grow: 1;
@@ -45,32 +45,30 @@
         border: solid 1px var(--main-text-color);
         border-radius: 5px;
     }
-    .gouda-input input:hover,
-    .gouda-input input:focus {
+    gouda-input input:hover,
+    gouda-input input:focus {
         background-image: linear-gradient(hsla(0, 0%, 100%, 0.5), hsla(0, 0%, 100%, 0.7));
     }
-    .gouda-input input:focus {
+    gouda-input input:focus {
         outline: var(--accent-color) auto 1px;
     }
-    .gouda-input input:invalid {
+    gouda-input input:invalid {
         background-color: var(--invalid-color);
     }
-    .gouda-input input:valid {
+    gouda-input input:valid {
         background-color: var(--valid-color);
     }
 
-.gouda-input .valid-glyph {
+gouda-input gouda-glyph {
     flex-shrink: 0;
-    display: grid;
-    place-items: center;
     width: 30px;
 }
 
-.gouda-input .valid-glyph .material-icons::after {
+gouda-input gouda-glyph .material-icons::after {
     color: var(--invalid-color);
     content: "cancel";
 }
-    .gouda-input input:valid + .valid-glyph .material-icons::after {
+    gouda-input input:valid + gouda-glyph .material-icons::after {
         color: var(--valid-color);
         content: "check_circle";
     }

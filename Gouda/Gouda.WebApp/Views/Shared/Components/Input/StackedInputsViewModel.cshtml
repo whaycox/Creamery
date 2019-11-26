@@ -1,5 +1,5 @@
 ﻿@model StackedInputsViewModel
-<div class="gouda-input-stack">
+<gouda-input-stack>
     @foreach(var input in Model.Inputs)
         @await Component.InvokeAsync(InputViewComponent.Name, input)
-</div>
+</gouda-input-stack>

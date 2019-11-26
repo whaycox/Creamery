@@ -3,12 +3,16 @@
 });
 
 function toggleNav() {
-    var nav = $("nav.nav-tree");
-    if (nav.attr("aria-expanded") === "true") {
-        nav.find(".nav-group").attr("aria-expanded", "false");
-        nav.attr("aria-expanded", "false");
+    toggleExpanded($("nav.gouda-nav-tree"));
+    $("gouda-nav-group[aria-expanded='true']").attr("aria-expanded", "false");
+}
+
+function toggleExpanded(ele) {
+    var element = $(ele);
+    if (element.attr("aria-expanded") === "true") {
+        element.attr("aria-expanded", "false");
     }
     else {
-        nav.attr("aria-expanded", "true");
+        element.attr("aria-expanded", "true");
     }
 }

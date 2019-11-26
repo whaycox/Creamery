@@ -1,4 +1,8 @@
-﻿body {
+﻿* {
+    box-sizing: border-box;
+}
+
+body {
     margin: 0px;
     font-family: Verdana;
     color: var(--main-text-color);
