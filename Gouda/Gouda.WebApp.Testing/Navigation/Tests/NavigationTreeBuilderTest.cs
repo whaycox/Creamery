@@ -8,7 +8,7 @@ namespace Gouda.WebApp.Navigation.Tests
 {
     using Domain;
     using Implementation;
-    using WebApp.Abstraction;
+    using Application.ViewModels.Glyphs.Abstraction;
 
     [TestClass]
     public class NavigationTreeBuilderTest

@@ -1,0 +1,26 @@
+﻿@model Gouda.Application.Queries.ListSatellites.Domain.ListSatellitesResult
+<div class="list-satellites">
+    @await Component.InvokeAsync(SatelliteViewComponent.Name, new AddSatelliteViewModel())
+    <hr />
+    @await Component.InvokeAsync(SatelliteViewComponent.Name, Model.Satellites)
+</div>
+
+@section GlobalStyles
+{
+    <link rel="stylesheet" href="~/css/satellite.css" />
+    <style>
+        .list-satellites {
+            margin: 10px;
+        }
+    </style>
+}
+
+@section GlobalScripts
+{
+    <script src="~/js/satellite.js"></script>
+    <script type="text/javascript">
+        function submitSuccess(data) {
+            $(".summary-table tbody").append(data);
+        }
+    </script>
+}

@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using System;
 
 namespace Gouda
 {
@@ -17,15 +19,23 @@ namespace Gouda
 
     public static class RegistrationExtensions
     {
-        public static IServiceCollection AddGoudaCore(this IServiceCollection services) => services
+        public static IServiceCollection AddGoudaCore(this IServiceCollection services, IConfiguration configuration) => services
             .AddTransient<ITime, MachineTime>()
             .AddSingleton<IScheduleFactory, ScheduleFactory>()
             .AddSingleton<IScheduler, Scheduler>()
             .AddTransient<ICommunicator, Communicator>()
             .AddTransient<IAnalyzer, Analyzer>()
-            .AddDbContext<GoudaContext>(options => options.UseInMemoryDatabase(nameof(Gouda)))
+            .AddDbContext<GoudaContext>(options => options.UseSqlServer(ConnectionString(configuration)))
             .AddTransient(typeof(IRepository<>), typeof(EFRepository<>))
             .AddTransient<IGoudaDatabase, EFGoudaDatabase>()
             .AddSingleton<ICheckInheritor, CheckInheritor>();
+
+        private static string ConnectionString(IConfiguration configuration)
+        {
+            IConfigurationSection section = configuration.GetSection(PersistenceOptions.Key);
+            PersistenceOptions options = section.Get<PersistenceOptions>();
+            return $"Server={options.Server};Database={options.Database};Trusted_Connection=True;";
+        }
+
     }
 }

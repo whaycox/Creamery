@@ -1,0 +1,8 @@
+﻿@model AddSatelliteViewModel
+<div class="satellite-add" aria-expanded="false">
+    <div class="add-expander">
+        @await Component.InvokeAsync(GlyphViewComponent.Name, MaterialIconGlyph.Nothing)
+        <div class="collapsed-title">@Model.AddForm.Title</div>
+    </div>
+    @await Component.InvokeAsync(InputViewComponent.Name, Model.AddForm)
+</div>

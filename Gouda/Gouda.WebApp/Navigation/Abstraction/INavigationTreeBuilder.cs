@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Gouda.WebApp.Navigation.Abstraction
 {
     using Domain;
-    using Glyphs.Abstraction;
+    using Application.ViewModels.Glyphs.Abstraction;
 
     public interface INavigationTreeBuilder
     {

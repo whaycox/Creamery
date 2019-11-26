@@ -24,6 +24,8 @@ namespace Gouda.Persistence.Implementation
             IRepository<DiagnosticData> data)
         {
             GoudaContext = goudaContext;
+            GoudaContext.Database.EnsureCreated();
+
             Satellite = satellites;
             Check = checks;
             DiagnosticData = data;

@@ -1,0 +1,78 @@
+﻿.satellite-add {
+    display: inline-block;
+    border: solid 3px var(--main-text-color);
+    border-radius: 5px;
+}
+    .satellite-add[aria-expanded="true"] {
+        width: 500px;
+    }
+
+.satellite-add .add-expander {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 50px;
+    cursor: pointer;
+}
+    
+    .satellite-add .add-expander .material-icons {
+        font-size: 2.5em;
+    }
+    .satellite-add .add-expander .material-icons::after {
+        content: "add_circle";
+    }
+    .satellite-add[aria-expanded="true"] .add-expander .material-icons::after {
+        content: "remove_circle";
+    }
+    .satellite-add .collapsed-title {
+        margin: 5px;
+        font-weight: bold;
+    }
+    .satellite-add[aria-expanded="true"] .collapsed-title {
+        display: none;
+    }
+
+.satellite-add[aria-expanded="false"] .gouda-form {
+    display: none;
+}
+
+.summary-table {
+    width: 100%;
+    border: solid 2px black;
+    border-spacing: 0px;
+    border-collapse: collapse;
+}
+
+.summary-table thead tr {
+    background-color: var(--accent-color);
+    background-image: linear-gradient(hsla(0, 0%, 100%, 0.5), hsla(0, 0%, 100%, 0.5));
+}
+
+.summary-table thead th {
+    padding: 10px;
+    border: solid 1px black;
+}
+    .summary-table thead th:hover {
+        background-image: linear-gradient(hsla(0, 0%, 0%, 0) 80%, hsla(0, 0%, 0%, 0.3));
+    }
+
+.summary-table td {
+    padding: 10px;
+    border: solid 1px black;
+}
+
+.summary-table tbody tr:hover {
+    color: var(--accent-text-color);
+    background-color: var(--main-color);
+    background-image: linear-gradient(hsla(0, 0%, 100%, 0.3), hsla(0, 0%, 100%, 0.3));
+}
+
+.summary-table tbody td:hover {
+    background-image: linear-gradient(hsla(0, 0%, 0%, 0) 80%, hsla(0, 0%, 0%, 0.3));
+}
+
+@media (max-width: 550px) {
+    .satellite-add[aria-expanded="true"] {
+        width: unset;
+    }
+}

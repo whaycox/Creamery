@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 
 namespace Gouda.WebApp.Navigation.Domain
 {
-    using WebApp.Abstraction;
-
     public class NavigationGroup : NavigationGlyphNode
     {
         public override string ViewName => nameof(NavigationGroup);

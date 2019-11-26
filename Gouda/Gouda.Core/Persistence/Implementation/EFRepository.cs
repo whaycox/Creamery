@@ -21,13 +21,21 @@ namespace Gouda.Persistence.Implementation
             GoudaContext = goudaContext;
         }
 
+        public Task Insert(TEntity entity) => Task.FromResult(GoudaContext
+            .Set<TEntity>()
+            .Add(entity));
+
+        public Task Insert(List<TEntity> entities) => Task.Run(() => GoudaContext
+            .Set<TEntity>()
+            .AddRange(entities));
+
+        public Task<List<TEntity>> FetchAll() => GoudaContext
+            .Set<TEntity>()
+            .ToListAsync();
+
         public Task<List<TEntity>> FetchMany(List<int> ids) => GoudaContext
             .Set<TEntity>()
             .Where(entity => ids.Contains(entity.ID))
             .ToListAsync();
-
-        public Task Insert(List<TEntity> entities) => GoudaContext
-            .Set<TEntity>()
-            .AddRangeAsync(entities);
     }
 }

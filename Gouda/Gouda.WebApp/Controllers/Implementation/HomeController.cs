@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace Gouda.WebApp.Controllers
+namespace Gouda.WebApp.Controllers.Implementation
 {
     public class HomeController : Controller
     {

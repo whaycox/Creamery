@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace Gouda.WebApp.Navigation.Abstraction
 {
-    using WebApp.Abstraction;
+    using Application.Abstraction;
 
-    public interface INavigationObject : IViewObject
+    public interface INavigationObject : IViewModel
     {
     }
 }

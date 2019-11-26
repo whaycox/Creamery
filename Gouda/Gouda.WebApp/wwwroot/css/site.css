@@ -1,11 +1,14 @@
 ﻿body {
     margin: 0px;
     font-family: Verdana;
+    color: var(--main-text-color);
+    background-image: linear-gradient(hsla(0, 0%, 100%) 30%, hsla(0, 0%, 60%));
 }
 
 div.site-container {
     width: 100vw;
     height: 100vh;
+    overflow: hidden;
     display: grid;
     grid-template-columns: auto 1fr;
     grid-template-rows: 50px 1fr 35px;
@@ -17,10 +20,10 @@ div.site-container {
 
 div.site-container main {
     grid-area: main;
-    background-color: green;
+    overflow: auto;
 }
 
-@media (max-width: 400px) {
+@media (max-width: 900px) {
     div.site-container {
         grid-template-columns: 1fr;
         grid-template-rows: 40px 1fr 25px;
@@ -29,14 +32,10 @@ div.site-container main {
             'main' 
             'footer';
     }
+}
 
-    div.site-container nav[aria-expanded="true"] {
-        display: flex;
-        grid-area: main;
-        z-index: 500;
-    }
-
-    div.site-container nav {
-        display: none;
+@media (max-width: 500px) {
+    body {
+        background-image: none;
     }
 }

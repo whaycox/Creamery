@@ -4,6 +4,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 
 namespace Gouda.Tests
 {
@@ -24,7 +25,9 @@ namespace Gouda.Tests
     {
         private IServiceCollection TestServiceCollection = new ServiceCollection();
 
-        private void TestAddGoudaCore() => TestServiceCollection.AddGoudaCore();
+        private Mock<IConfiguration> MockConfiguration = new Mock<IConfiguration>();
+
+        private void TestAddGoudaCore() => TestServiceCollection.AddGoudaCore(MockConfiguration.Object);
 
         private void VerifyServiceWasRegistered(Type expectedInterface, Type expectedImplementation, ServiceLifetime expectedLifetime)
         {

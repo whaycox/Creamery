@@ -1,0 +1,14 @@
+﻿@model SummaryCollectionViewModel
+<table class="summary-table">
+    <thead>
+        <tr>
+            <th>@Model.NameHeaderLabel</th>
+            <th>@Model.IPHeaderLabel</th>
+            <th>@Model.StatusHeaderLabel</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var satellite in Model.Satellites)
+            @await Component.InvokeAsync(SatelliteViewComponent.Name, satellite)
+    </tbody>
+</table>

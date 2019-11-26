@@ -8,13 +8,12 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Http;
 
 namespace Gouda.WebApp
 {
     using Application;
-    using Implementation;
     using Navigation.Implementation;
-    using Navigation.Abstraction;
 
     public class Startup
     {
@@ -28,17 +27,12 @@ namespace Gouda.WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
-
             services
-                .AddGoudaCore()
-                .AddGoudaApplication();
+                .AddGoudaCore(Configuration)
+                .AddGoudaApplication()
+                .AddGoudaWebApp();
 
-            services
-                .AddSingleton<IHostedService, CheckExecutionService>()
-                .AddScoped<INavigationTreeBuilder, NavigationTreeBuilder>();
-
-            services.AddMvc(options =>
+            services.AddControllersWithViews(options =>
             {
                 options.Filters.Add<NavigationFilter>();
             });

@@ -5,14 +5,17 @@
       "wwwroot\\css\\site.css",
       "wwwroot\\css\\navigation.css",
       "wwwroot\\css\\header.css",
-      "wwwroot\\css\\footer.css"
+      "wwwroot\\css\\footer.css",
+      "wwwroot\\css\\satellite.css",
+      "wwwroot\\css\\input.css"
     ]
   },
   {
     "outputFileName": "wwwroot\\js\\layout.min.js",
     "inputFiles": [
       "wwwroot\\js\\site.js",
-      "wwwroot\\js\\navigation.js"
+      "wwwroot\\js\\navigation.js",
+      "wwwroot\\js\\input.js"
     ]
   }
 ]

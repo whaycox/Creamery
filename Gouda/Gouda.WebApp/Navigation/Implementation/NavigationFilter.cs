@@ -4,30 +4,35 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace Gouda.WebApp.Navigation.Implementation
 {
     using Abstraction;
     using ViewComponents;
-    using Glyphs.Implementation;
+    using Application.ViewModels.Glyphs.Implementation;
+    using Controllers.Implementation;
 
     public class NavigationFilter : IActionFilter
     {
         private INavigationTreeBuilder NavigationTreeBuilder { get; }
+        private IUrlHelperFactory UrlHelperFactory { get; }
 
-        public NavigationFilter(INavigationTreeBuilder navigationTreeBuilder)
+        public NavigationFilter(INavigationTreeBuilder navigationTreeBuilder, IUrlHelperFactory urlHelperFactory)
         {
             NavigationTreeBuilder = navigationTreeBuilder;
+            UrlHelperFactory = urlHelperFactory;
         }
 
         public void OnActionExecuted(ActionExecutedContext context) { }
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            NavigationTreeBuilder.AddSection("TestSection");
-            NavigationTreeBuilder.AddLeaf("TestSection", MaterialIconGlyph.Glyph("warning"), "TestLeaf", "TestLeafDestination");
-            NavigationTreeBuilder.AddGroup("TestSection", MaterialIconGlyph.Glyph("done"), "TestGroup");
-            NavigationTreeBuilder.AddLeaf("TestSection", "TestGroup", "TestLeaf", "TestLeafDestination");
+            IUrlHelper urlHelper = UrlHelperFactory.GetUrlHelper(context);
+
+            NavigationTreeBuilder.AddSection(SatelliteController.Name);
+            NavigationTreeBuilder.AddLeaf(SatelliteController.Name, MaterialIconGlyph.cloud, "Satellites", urlHelper.Action(nameof(SatelliteController.Index), SatelliteController.Name));
         }
     }
 }

@@ -13,7 +13,9 @@ namespace Gouda.Persistence.Abstraction
     public interface IRepository<TEntity>
         where TEntity : BaseEntity
     {
+        Task Insert(TEntity entity);
         Task Insert(List<TEntity> entities);
+        Task<List<TEntity>> FetchAll();
         Task<List<TEntity>> FetchMany(List<int> ids);
     }
 }
