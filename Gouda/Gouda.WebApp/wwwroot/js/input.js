@@ -3,7 +3,7 @@
 });
 
 function wireInputs() {
-    $(".gouda-input .ipAddress").on("input", function (event) {
+    $("gouda-input .ipAddress").on("input", function (event) {
         if (this.validity.patternMismatch) {
             this.setCustomValidity("Please supply an IP Address.");
         }

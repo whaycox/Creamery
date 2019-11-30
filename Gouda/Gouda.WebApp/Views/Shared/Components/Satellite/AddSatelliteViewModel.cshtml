@@ -1,8 +1,11 @@
 ﻿@model AddSatelliteViewModel
+@{ 
+    var nothingGlyph = MaterialIconGlyphViewModel.Nothing;
+}
 <div class="satellite-add" aria-expanded="false">
     <div class="add-expander">
-        @await Component.InvokeAsync(GlyphViewComponent.Name, MaterialIconGlyph.Nothing)
-        <div class="collapsed-title">@Model.AddForm.Title</div>
+        <gouda-viewModel view-model="nothingGlyph" />
+        <div class="collapsed-title"><gouda-label key="@Model.AddForm.Label" /></div>
     </div>
-    @await Component.InvokeAsync(InputViewComponent.Name, Model.AddForm)
+    <gouda-viewModel view-model="Model.AddForm" />
 </div>

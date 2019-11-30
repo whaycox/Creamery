@@ -10,12 +10,14 @@ namespace Gouda.Application.ViewModels.Satellite.Implementation
 
     public class SatelliteSummaryMapper : ISatelliteSummaryMapper
     {
-        public SatelliteSummaryViewModel Map(Satellite entity) => new SatelliteSummaryViewModel
+        public SatelliteSummaryViewModel Map(Satellite entity)
         {
-            ID = entity.ID,
-            Name = entity.Name,
-            IPAddress = entity.IPAddress.ToString(),
-            Status = entity.Status,
-        };
+            SatelliteSummaryViewModel viewModel = new SatelliteSummaryViewModel { ID = entity.ID };
+            viewModel.Name = entity.Name;
+            viewModel.IPAddress = entity.IPAddress.ToString();
+            viewModel.StatusViewModel.Status = entity.Status;
+
+            return viewModel;
+        }
     }
 }

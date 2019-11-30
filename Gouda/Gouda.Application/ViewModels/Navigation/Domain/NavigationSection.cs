@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 
 namespace Gouda.Application.ViewModels.Navigation.Domain
 {
-    public class NavigationSection : NavigationNode
+    using Abstraction;
+
+    public class NavigationSection : BaseNavigationViewModel
     {
         public override string ViewName => nameof(NavigationSection);
 
-        public List<NavigationNode> Nodes { get; set; } = new List<NavigationNode>();
+        public List<INavigationViewModel> ViewModels { get; set; } = new List<INavigationViewModel>();
     }
 }

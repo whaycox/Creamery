@@ -1,12 +1,15 @@
 ﻿@using Microsoft.Extensions.Hosting
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment hostEnv
-@inject Gouda.Application.ViewModels.Navigation.Abstraction.INavigationTreeBuilder navigationTree
+@inject Gouda.Application.ViewModels.Navigation.Abstraction.INavigationTreeBuilder navigationTreeBuilder
+@{ 
+    var navigationTree = navigationTreeBuilder.Build();
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Gouda.WebApp</title>
+    <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     @RenderSection(LayoutSections.GlobalStyles, required: false)
     @if (hostEnv.IsDevelopment())
@@ -39,7 +42,7 @@
 <body>
     <div class="site-container">
         @await Component.InvokeAsync(HeaderViewComponent.Name)
-        @await Component.InvokeAsync(NavigationViewComponent.Name, navigationTree.Build())
+        @await Component.InvokeAsync(navigationTree.ViewConcept, navigationTree)
         <main role="main">
             @RenderBody()
         </main>

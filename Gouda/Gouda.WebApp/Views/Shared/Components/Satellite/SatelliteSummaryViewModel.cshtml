@@ -1,6 +1,6 @@
 ﻿@model SatelliteSummaryViewModel
-<tr class="summary-row" data-id="@Model.ID">
-    <td>@Model.Name</td>
-    <td>@Model.IPAddress</td>
-    <td>@Model.Status</td>
-</tr>
+    <tr class="summary-row">
+        <td><a href="@Url.Action(nameof(SatelliteController.Display), SatelliteController.Name, new { id = Model.ID })">@Model.Name</a></td>
+        <td>@Model.IPAddress</td>
+        <td><gouda-viewModel view-model="Model.StatusViewModel"></gouda-viewModel></td>
+    </tr>

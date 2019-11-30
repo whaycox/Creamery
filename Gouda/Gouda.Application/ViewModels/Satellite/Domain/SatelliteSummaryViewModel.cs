@@ -6,14 +6,16 @@ namespace Gouda.Application.ViewModels.Satellite.Domain
 {
     using Abstraction;
     using Enumerations;
+    using Common.Domain;
+    using DeferredValues.Domain;
 
-    public class SatelliteSummaryViewModel : ISatelliteViewModel
+    public class SatelliteSummaryViewModel : BaseSatelliteViewModel
     {
-        public string ViewName => nameof(SatelliteSummaryViewModel);
+        public override string ViewName => nameof(SatelliteSummaryViewModel);
 
         public int ID { get; set; }
         public string Name { get; set; }
         public string IPAddress { get; set; }
-        public SatelliteStatus Status { get; set; }
+        public SatelliteStatusViewModel StatusViewModel { get; set; } = new SatelliteStatusViewModel();
     }
 }

@@ -2,7 +2,7 @@
 <nav class="gouda-nav-tree" aria-expanded="false">
     @foreach (NavigationSection section in Model.Sections)
     {
-        @await Component.InvokeAsync(NavigationViewComponent.Name, section)
+        <gouda-viewModel view-model="section" />
     }
 </nav>
 

@@ -15,26 +15,12 @@ namespace Gouda.Application.ViewModels.Satellite.Tests
     using Gouda.Domain;
     using Domain;
     using Enumerations;
+    using Template;
 
     [TestClass]
-    public class SatelliteSummaryMapperTest
+    public class SatelliteSummaryMapperTest : SatelliteMapperTemplate
     {
-        private Satellite TestSatellite = new Satellite();
-        private int TestSatelliteID = 3;
-        private string TestSatelliteName = nameof(TestSatelliteName);
-        private IPAddress TestSatelliteIP = IPAddress.Parse("7.6.5.4");
-        private SatelliteStatus TestSatelliteStatus = SatelliteStatus.Good;
-
         private SatelliteSummaryMapper TestObject = new SatelliteSummaryMapper();
-
-        [TestInitialize]
-        public void Init()
-        {
-            TestSatellite.ID = TestSatelliteID;
-            TestSatellite.Name = TestSatelliteName;
-            TestSatellite.IPAddress = TestSatelliteIP;
-            TestSatellite.Status = TestSatelliteStatus;
-        }
 
         [TestMethod]
         public void MapsID()
@@ -65,7 +51,7 @@ namespace Gouda.Application.ViewModels.Satellite.Tests
         {
             SatelliteSummaryViewModel viewModel = TestObject.Map(TestSatellite);
 
-            Assert.AreEqual(TestSatelliteStatus, viewModel.Status);
+            Assert.AreEqual(TestSatelliteStatus, viewModel.StatusViewModel.Status);
         }
     }
 }

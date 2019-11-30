@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 namespace Gouda.Application.ViewModels.Navigation.Abstraction
 {
     using Domain;
-    using Application.ViewModels.Glyphs.Abstraction;
+    using Application.ViewModels.Glyph.Abstraction;
+    using DeferredValues.Domain;
 
     public interface INavigationTreeBuilder
     {
-        void AddSection(string sectionName);
-        void AddGroup(string sectionName, IGlyph groupGlyph, string groupName);
-        void AddLeaf(string sectionName, IGlyph leafGlyph, string leafName, string leafDestination);
-        void AddLeaf(string sectionName, string groupName, string leafName, string leafDestination);
+        void AddSection(LabelDeferredKey sectionLabel);
+        void AddGroup(LabelDeferredKey sectionLabel, IGlyphViewModel groupGlyph, LabelDeferredKey groupLabel);
+        void AddLeaf(LabelDeferredKey sectionLabel, IGlyphViewModel leafGlyph, LabelDeferredKey leafLabel, DestinationDeferredKey leafDestination);
+        void AddLeaf(LabelDeferredKey sectionLabel, LabelDeferredKey groupLabel, LabelDeferredKey leafLabel, DestinationDeferredKey leafDestination);
 
         NavigationTree Build();
     }

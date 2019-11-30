@@ -5,92 +5,81 @@ namespace Gouda.Application.ViewModels.Navigation.Implementation
 {
     using Abstraction;
     using Domain;
-    using Application.ViewModels.Glyphs.Abstraction;
+    using Application.ViewModels.Glyph.Abstraction;
+    using DeferredValues.Domain;
 
     public class NavigationTreeBuilder : INavigationTreeBuilder
     {
-        private Dictionary<string, NavigationSection> Sections { get; } = new Dictionary<string, NavigationSection>();
-        private Dictionary<NavigationSection, Dictionary<string, NavigationNode>> SectionNodes { get; } = new Dictionary<NavigationSection, Dictionary<string, NavigationNode>>();
-        private Dictionary<NavigationGroup, Dictionary<string, NavigationLeaf>> GroupLeaves { get; } = new Dictionary<NavigationGroup, Dictionary<string, NavigationLeaf>>();
+        private Dictionary<LabelDeferredKey, NavigationSection> Sections { get; } = new Dictionary<LabelDeferredKey, NavigationSection>();
+        private Dictionary<NavigationSection, Dictionary<LabelDeferredKey, INavigationViewModel>> SectionViewModels { get; } = new Dictionary<NavigationSection, Dictionary<LabelDeferredKey, INavigationViewModel>>();
+        private Dictionary<NavigationGroup, Dictionary<LabelDeferredKey, NavigationLeaf>> GroupLeaves { get; } = new Dictionary<NavigationGroup, Dictionary<LabelDeferredKey, NavigationLeaf>>();
 
-        private NavigationSection FindSection(string sectionName)
+        private NavigationSection FindSection(LabelDeferredKey sectionLabel)
         {
-            if (!Sections.TryGetValue(sectionName, out NavigationSection section))
-                throw new KeyNotFoundException(nameof(sectionName));
+            if (!Sections.TryGetValue(sectionLabel, out NavigationSection section))
+                throw new KeyNotFoundException(nameof(sectionLabel));
 
-            if (!SectionNodes.ContainsKey(section))
-                SectionNodes.Add(section, new Dictionary<string, NavigationNode>());
+            if (!SectionViewModels.ContainsKey(section))
+                SectionViewModels.Add(section, new Dictionary<LabelDeferredKey, INavigationViewModel>());
             return section;
         }
 
-        private NavigationGroup FindGroup(NavigationSection section, string groupName)
+        private NavigationGroup FindGroup(NavigationSection section, LabelDeferredKey groupLabel)
         {
-            if (!SectionNodes[section].TryGetValue(groupName, out NavigationNode node))
-                throw new KeyNotFoundException(nameof(groupName));
+            if (!SectionViewModels[section].TryGetValue(groupLabel, out INavigationViewModel viewModel))
+                throw new KeyNotFoundException(nameof(groupLabel));
 
-            NavigationGroup group = (NavigationGroup)node;
+            NavigationGroup group = (NavigationGroup)viewModel;
             if (!GroupLeaves.ContainsKey(group))
-                GroupLeaves.Add(group, new Dictionary<string, NavigationLeaf>());
+                GroupLeaves.Add(group, new Dictionary<LabelDeferredKey, NavigationLeaf>());
             return group;
         }
 
-        public void AddSection(string sectionName)
+        public void AddSection(LabelDeferredKey sectionLabel)
         {
-            if (string.IsNullOrWhiteSpace(sectionName))
-                throw new ArgumentNullException(nameof(sectionName));
-
             NavigationSection section = new NavigationSection
             {
-                Name = sectionName,
+                Label = sectionLabel,
             };
-            Sections.Add(sectionName, section);
+            Sections.Add(sectionLabel, section);
         }
 
-        public void AddGroup(string sectionName, IGlyph groupGlyph, string groupName)
+        public void AddGroup(LabelDeferredKey sectionLabel, IGlyphViewModel groupGlyph, LabelDeferredKey groupLabel)
         {
-            if (string.IsNullOrWhiteSpace(groupName))
-                throw new ArgumentNullException(nameof(groupName));
-
-            NavigationSection section = FindSection(sectionName);
+            NavigationSection section = FindSection(sectionLabel);
             NavigationGroup group = new NavigationGroup
             {
                 Glyph = groupGlyph,
-                Name = groupName,
+                Label = groupLabel,
             };
-            section.Nodes.Add(group);
-            SectionNodes[section].Add(groupName, group);
+            section.ViewModels.Add(group);
+            SectionViewModels[section].Add(groupLabel, group);
         }
 
-        public void AddLeaf(string sectionName, IGlyph leafGlyph, string leafName, string leafDestination)
+        public void AddLeaf(LabelDeferredKey sectionLabel, IGlyphViewModel leafGlyph, LabelDeferredKey leafLabel, DestinationDeferredKey leafDestination)
         {
-            if (string.IsNullOrWhiteSpace(leafName))
-                throw new ArgumentNullException(nameof(leafName));
-
-            NavigationSection section = FindSection(sectionName);
+            NavigationSection section = FindSection(sectionLabel);
             NavigationLeaf leaf = new NavigationLeaf
             {
                 Glyph = leafGlyph,
-                Name = leafName,
+                Label = leafLabel,
                 Destination = leafDestination,
             };
-            section.Nodes.Add(leaf);
-            SectionNodes[section].Add(leafName, leaf);
+            section.ViewModels.Add(leaf);
+            SectionViewModels[section].Add(leafLabel, leaf);
         }
 
-        public void AddLeaf(string sectionName, string groupName, string leafName, string leafDestination)
+        public void AddLeaf(LabelDeferredKey sectionLabel, LabelDeferredKey groupLabel, LabelDeferredKey leafLabel, DestinationDeferredKey leafDestination)
         {
-            if (string.IsNullOrWhiteSpace(leafName))
-                throw new ArgumentNullException(nameof(leafName));
-
-            NavigationSection section = FindSection(sectionName);
-            NavigationGroup group = FindGroup(section, groupName);
+            NavigationSection section = FindSection(sectionLabel);
+            NavigationGroup group = FindGroup(section, groupLabel);
             NavigationLeaf leaf = new NavigationLeaf
             {
-                Name = leafName,
+                Label = leafLabel,
                 Destination = leafDestination,
             };
             group.Leaves.Add(leaf);
-            GroupLeaves[group].Add(leaf.Name, leaf);
+            GroupLeaves[group].Add(leaf.Label, leaf);
         }
 
         public NavigationTree Build()

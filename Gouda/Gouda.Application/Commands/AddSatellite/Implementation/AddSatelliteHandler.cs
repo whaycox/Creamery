@@ -12,14 +12,17 @@ namespace Gouda.Application.Commands.AddSatellite.Implementation
     using Persistence.Abstraction;
     using Gouda.Domain;
     using ViewModels.Satellite.Domain;
+    using ViewModels.Satellite.Abstraction;
 
     public class AddSatelliteHandler : IRequestHandler<AddSatelliteCommand, AddSatelliteResult>
     {
         private IGoudaDatabase GoudaDatabase { get; }
+        private ISatelliteSummaryMapper SummaryMapper { get; }
 
-        public AddSatelliteHandler(IGoudaDatabase goudaDatabase)
+        public AddSatelliteHandler(IGoudaDatabase goudaDatabase, ISatelliteSummaryMapper summaryMapper)
         {
             GoudaDatabase = goudaDatabase;
+            SummaryMapper = summaryMapper;
         }
 
         public async Task<AddSatelliteResult> Handle(AddSatelliteCommand request, CancellationToken cancellationToken)
@@ -27,19 +30,12 @@ namespace Gouda.Application.Commands.AddSatellite.Implementation
             Satellite newSatellite = BuildNewSatellite(request);
             await GoudaDatabase.Satellite.Insert(newSatellite);
             await GoudaDatabase.SaveChanges();
-            return new AddSatelliteResult { NewSatellite = BuildViewModel(newSatellite) };
+            return new AddSatelliteResult { NewSatellite = SummaryMapper.Map(newSatellite) };
         }
         private Satellite BuildNewSatellite(AddSatelliteCommand command) => new Satellite
         {
             Name = command.SatelliteName,
             IPAddress = IPAddress.Parse(command.SatelliteIP),
-        };
-        private SatelliteSummaryViewModel BuildViewModel(Satellite newSatellite) => new SatelliteSummaryViewModel
-        {
-            ID = newSatellite.ID,
-            Name = newSatellite.Name,
-            IPAddress = newSatellite.IPAddress.ToString(),
-            Status = newSatellite.Status,
         };
     }
 }

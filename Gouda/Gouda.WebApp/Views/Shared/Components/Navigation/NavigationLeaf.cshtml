@@ -1,14 +1,16 @@
-﻿@model NavigationLeaf
+﻿@inject ILabelDeferredValue label
+@inject IDestinationAdapter destinationAdapter
+@model NavigationLeaf
 @if (Model.Glyph != null)
 {
-    <a class="gouda-nav-leaf root-leaf" href="@Model.Destination">
-        @await Component.InvokeAsync(GlyphViewComponent.Name, Model.Glyph)
-        <div class="title">@Model.Name</div>
+    <a class="gouda-nav-leaf root-leaf" href="@destinationAdapter.Adapt(Model.Destination)">
+        <gouda-viewModel view-model="Model.Glyph" />
+        <div class="title"><gouda-label key="@Model.Label" /></div>
     </a>
 }
 else
 {
-    <a class="gouda-nav-leaf group-leaf" href="@Model.Destination">
-        <div class="title">@Model.Name</div>
+    <a class="gouda-nav-leaf group-leaf" href="@destinationAdapter.Adapt(Model.Destination)">
+        <div class="title"><gouda-label key="@Model.Label" /></div>
     </a>
 }

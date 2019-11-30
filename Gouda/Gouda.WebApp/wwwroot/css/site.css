@@ -8,6 +8,13 @@ body {
     color: var(--main-text-color);
 }
 
+a {
+    color: var(--main-color);
+}
+    a:hover {
+        color: var(--accent-color);
+    }
+
 div.site-container {
     width: 100vw;
     height: 100vh;

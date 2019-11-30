@@ -5,18 +5,15 @@ using System.Text;
 namespace Gouda.Application.ViewModels.Satellite.Domain
 {
     using Abstraction;
+    using DeferredValues.Domain;
 
-    public class SummaryCollectionViewModel : ISatelliteViewModel
+    public class SummaryCollectionViewModel : BaseSatelliteViewModel
     {
-        private const string NameLabel = "Name";
-        private const string IPLabel = "IP Address";
-        private const string StatusLabel = "Status";
+        public override string ViewName => nameof(SummaryCollectionViewModel);
 
-        public string ViewName => nameof(SummaryCollectionViewModel);
-
-        public string NameHeaderLabel { get; set; } = NameLabel;
-        public string IPHeaderLabel { get; set; } = IPLabel;
-        public string StatusHeaderLabel { get; set; } = StatusLabel;
+        public LabelDeferredKey NameHeaderLabel { get; set; } = LabelDeferredKey.SatelliteName;
+        public LabelDeferredKey IPHeaderLabel { get; set; } = LabelDeferredKey.SatelliteIP;
+        public LabelDeferredKey StatusHeaderLabel { get; set; } = LabelDeferredKey.SatelliteStatus;
         public List<SatelliteSummaryViewModel> Satellites { get; set; } = new List<SatelliteSummaryViewModel>();
     }
 }

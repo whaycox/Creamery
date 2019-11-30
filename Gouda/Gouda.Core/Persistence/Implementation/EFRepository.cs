@@ -29,6 +29,10 @@ namespace Gouda.Persistence.Implementation
             .Set<TEntity>()
             .AddRange(entities));
 
+        public async Task<TEntity> Fetch(int id) => await GoudaContext
+            .Set<TEntity>()
+            .FindAsync(id);
+
         public Task<List<TEntity>> FetchAll() => GoudaContext
             .Set<TEntity>()
             .ToListAsync();

@@ -1,34 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace Gouda.WebApp.Adapters.Implementation
 {
     using Abstraction;
-    using Application.ViewModels.Destinations.Abstraction;
-    using Domain;
+    using Application.DeferredValues.Domain;
+    using DeferredValues.Abstraction;
+    using DeferredValues.Domain;
 
     public class DestinationAdapter : IDestinationAdapter
     {
         private IUrlHelper UrlHelper { get; }
-        private IDestinationCollection DestinationCollection { get; }
+        private IDestinationDeferredValue DestinationDeferredValue { get; }
 
         public DestinationAdapter(
             IUrlHelperFactory urlHelperFactory,
             IActionContextAccessor actionContextAccessor,
-            IDestinationCollection destinationCollection)
+            IDestinationDeferredValue destinationDeferredValue)
         {
             UrlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
-            DestinationCollection = destinationCollection;
+            DestinationDeferredValue = destinationDeferredValue;
         }
 
-        public string Adapt(IDestinationViewModel destination)
+        public string Adapt(DestinationDeferredKey destination)
         {
-            DestinationItem item = DestinationCollection[destination.Name];
+            DestinationItem item = DestinationDeferredValue[destination];
             return UrlHelper.Action(item.Action, item.Controller);
         }
     }

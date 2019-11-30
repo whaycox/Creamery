@@ -71,6 +71,10 @@
     background-image: linear-gradient(hsla(0, 0%, 0%, 0) 80%, hsla(0, 0%, 0%, 0.3));
 }
 
+.summary-row a {
+    display: block;
+}
+
 @media (max-width: 550px) {
     .satellite-add[aria-expanded="true"] {
         width: unset;

@@ -5,10 +5,14 @@ using System.Threading.Tasks;
 
 namespace Gouda.Application.ViewModels.Navigation.Domain
 {
-    public class NavigationLeaf : NavigationGlyphNode
+    using DeferredValues.Domain;
+    using Glyph.Abstraction;
+
+    public class NavigationLeaf : BaseNavigationViewModel
     {
         public override string ViewName => nameof(NavigationLeaf);
 
-        public string Destination { get; set; }
+        public IGlyphViewModel Glyph { get; set; }
+        public DestinationDeferredKey Destination { get; set; }
     }
 }

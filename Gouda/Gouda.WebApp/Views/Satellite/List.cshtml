@@ -1,8 +1,11 @@
 ﻿@model Gouda.Application.Queries.ListSatellites.Domain.ListSatellitesResult
+@{
+    AddSatelliteViewModel addViewModel = new AddSatelliteViewModel();
+}
 <div class="list-satellites">
-    @await Component.InvokeAsync(SatelliteViewComponent.Name, new AddSatelliteViewModel())
+    @await Component.InvokeAsync(addViewModel.ViewConcept, addViewModel)
     <hr />
-    @await Component.InvokeAsync(SatelliteViewComponent.Name, Model.Satellites)
+    @await Component.InvokeAsync(Model.Satellites.ViewConcept, Model.Satellites)
 </div>
 
 @section GlobalStyles

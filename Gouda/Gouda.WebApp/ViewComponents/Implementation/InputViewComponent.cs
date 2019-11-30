@@ -1,9 +1,7 @@
 ﻿namespace Gouda.WebApp.ViewComponents.Implementation
 {
-    using Application.ViewModels.Inputs.Abstraction;
+    using Application.ViewModels.Input.Abstraction;
 
     public class InputViewComponent : BaseViewModelViewComponent<IInputViewModel>
-    {
-        public const string Name = "Input";
-    }
+    {    }
 }

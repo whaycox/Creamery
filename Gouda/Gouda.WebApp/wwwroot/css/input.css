@@ -1,4 +1,6 @@
 ﻿.gouda-form {
+    display: flex;
+    flex-direction: column;
     margin: 5px;
     padding: 10px;
     background-color: var(--main-text-color);
@@ -17,12 +19,6 @@
     border: solid 1px var(--main-text-color);
     border-radius: 5px;
     box-shadow: black 0 0 2px;
-} 
-
-gouda-input-stack {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
 }
 
 gouda-input {

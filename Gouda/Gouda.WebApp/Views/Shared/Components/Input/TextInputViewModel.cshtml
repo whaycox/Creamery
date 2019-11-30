@@ -1,6 +1,9 @@
 ﻿@model TextInputViewModel
+@{ 
+    var nothingGlyph = MaterialIconGlyphViewModel.Nothing;
+}
 <gouda-input>
-    <label>@Model.Label</label>
+    <label><gouda-label key="@Model.Label" /></label>
     <input class="@Model.TypeName" name="@Model.Name" @(Model.Required ? "required" : string.Empty) type="text" @(Model.ValuePattern != null ? $"pattern={Model.ValuePattern}" : string.Empty) value="@Model.Value" />
-    @await Component.InvokeAsync(GlyphViewComponent.Name, MaterialIconGlyph.Nothing)
+    <gouda-viewModel view-model="nothingGlyph" />
 </gouda-input>

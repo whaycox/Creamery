@@ -1,9 +1,7 @@
 ﻿namespace Gouda.WebApp.ViewComponents.Implementation
 {
-    using Application.ViewModels.Glyphs.Abstraction;
+    using Application.ViewModels.Glyph.Abstraction;
 
-    public class GlyphViewComponent : BaseViewModelViewComponent<IGlyph>
-    {
-        public const string Name = "Glyph";
-    }
+    public class GlyphViewComponent : BaseViewModelViewComponent<IGlyphViewModel>
+    { }
 }

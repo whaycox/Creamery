@@ -15,6 +15,7 @@ namespace Gouda.Persistence.Abstraction
     {
         Task Insert(TEntity entity);
         Task Insert(List<TEntity> entities);
+        Task<TEntity> Fetch(int id);
         Task<List<TEntity>> FetchAll();
         Task<List<TEntity>> FetchMany(List<int> ids);
     }

@@ -1,16 +1,20 @@
 ﻿@model NavigationGroup
+@{ 
+    var nothingGlyph = MaterialIconGlyphViewModel.Nothing;
+}
+
 <gouda-nav-group aria-expanded="false">
     <div class="header">
-        @await Component.InvokeAsync(GlyphViewComponent.Name, Model.Glyph)
+        <gouda-viewModel view-model="Model.Glyph" />
         <div class="title">
-            <div class="name">@Model.Name</div>
-            @await Component.InvokeAsync(GlyphViewComponent.Name, MaterialIconGlyph.Nothing)
+            <div class="name"><gouda-label key="@Model.Label" /></div>
+            <gouda-viewModel view-model="nothingGlyph" />
         </div>
     </div>
     <ul class="leaf-list">
         @foreach (NavigationLeaf leaf in Model.Leaves)
         {
-            <li>@await Component.InvokeAsync(NavigationViewComponent.Name, leaf)</li>
+            <li><gouda-viewModel view-model="leaf" /></li>
         }
     </ul>
 </gouda-nav-group>

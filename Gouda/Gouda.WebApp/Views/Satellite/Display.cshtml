@@ -1,0 +1,7 @@
+﻿@model Gouda.Application.Queries.DisplaySatellite.Domain.DisplaySatelliteResult
+@{ 
+    ViewData["Title"] = $"Satellite Display";
+}
+<div style="padding: 10px">
+    @await Component.InvokeAsync(Model.Satellite.ViewConcept, Model.Satellite)
+</div>

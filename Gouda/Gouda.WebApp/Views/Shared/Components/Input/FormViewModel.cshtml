@@ -1,10 +1,12 @@
 ﻿@inject IDestinationAdapter destinationAdapter
 @model FormViewModel
 <form class="gouda-form" data-destination="@destinationAdapter.Adapt(Model.Destination)" data-success="submitSuccess">
-    @if(Model.Title != null)
+    @if(Model.Label != LabelDeferredKey.None)
     {
-        <div class="form-title">@Model.Title</div>
+        <div class="form-title"><gouda-label key="@Model.Label" /></div>
     }
     @foreach (var input in Model.Inputs)
-        @await Component.InvokeAsync(InputViewComponent.Name, input)
+    {
+        <gouda-viewModel view-model="input" />
+    }
 </form>

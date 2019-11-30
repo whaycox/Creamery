@@ -8,17 +8,19 @@ namespace Gouda.Application.ViewModels.Navigation.Tests
 {
     using Domain;
     using Implementation;
-    using Application.ViewModels.Glyphs.Abstraction;
+    using Application.ViewModels.Glyph.Abstraction;
+    using DeferredValues.Domain;
+    using Abstraction;
 
     [TestClass]
     public class NavigationTreeBuilderTest
     {
-        private string TestSectionName = nameof(TestSectionName);
-        private string TestGroupName = nameof(TestGroupName);
-        private string TestLeafName = nameof(TestLeafName);
-        private string TestLeafDestination = nameof(TestLeafDestination);
+        private LabelDeferredKey TestSectionLabel = LabelDeferredKey.SatelliteName;
+        private LabelDeferredKey TestGroupLabel = LabelDeferredKey.SatelliteIP;
+        private LabelDeferredKey TestLeafLabel = LabelDeferredKey.AddSatelliteForm;
+        private DestinationDeferredKey TestLeafDestination = DestinationDeferredKey.ListSatellites;
 
-        private Mock<IGlyph> MockGlyph = new Mock<IGlyph>();
+        private Mock<IGlyphViewModel> MockGlyph = new Mock<IGlyphViewModel>();
 
         private NavigationTreeBuilder TestObject = new NavigationTreeBuilder();
 
@@ -26,17 +28,17 @@ namespace Gouda.Application.ViewModels.Navigation.Tests
         {
             Assert.AreEqual(1, builtTree.Sections.Count);
             NavigationSection builtSection = builtTree.Sections.First();
-            Assert.AreEqual(TestSectionName, builtSection.Name);
+            Assert.AreEqual(TestSectionLabel, builtSection.Label);
             return builtSection;
         }
 
         private T VerifyTestNodeWasBuilt<T>(NavigationSection builtSection)
-            where T : NavigationNode
+            where T : INavigationViewModel
         {
-            Assert.AreEqual(1, builtSection.Nodes.Count);
-            NavigationNode builtNode = builtSection.Nodes.First();
-            Assert.IsInstanceOfType(builtNode, typeof(T));
-            T builtT = (T)builtNode;
+            Assert.AreEqual(1, builtSection.ViewModels.Count);
+            INavigationViewModel builtViewModel = builtSection.ViewModels.First();
+            Assert.IsInstanceOfType(builtViewModel, typeof(T));
+            T builtT = (T)builtViewModel;
             return builtT;
         }
 
@@ -47,133 +49,99 @@ namespace Gouda.Application.ViewModels.Navigation.Tests
             else
                 Assert.IsNull(builtLeaf.Glyph);
 
-            Assert.AreEqual(TestLeafName, builtLeaf.Name);
+            Assert.AreEqual(TestLeafLabel, builtLeaf.Label);
             Assert.AreEqual(TestLeafDestination, builtLeaf.Destination);
         }
 
         [TestMethod]
         public void CanAddSection()
         {
-            TestObject.AddSection(TestSectionName);
-        }
-
-        [DataTestMethod]
-        [DataRow(null)]
-        [DataRow("")]
-        [DataRow("  ")]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void InvalidSectionNameThrows(string sectionName)
-        {
-            TestObject.AddSection(sectionName);
+            TestObject.AddSection(TestSectionLabel);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void DuplicateSectionThrows()
         {
-            TestObject.AddSection(TestSectionName);
+            TestObject.AddSection(TestSectionLabel);
 
-            TestObject.AddSection(TestSectionName);
+            TestObject.AddSection(TestSectionLabel);
         }
 
         [TestMethod]
         public void BuildsAddedSection()
         {
-            TestObject.AddSection(TestSectionName);
+            TestObject.AddSection(TestSectionLabel);
 
             NavigationTree built = TestObject.Build();
 
             NavigationSection builtSection = VerifyTestSectionWasBuilt(built);
-            Assert.AreEqual(0, builtSection.Nodes.Count);
+            Assert.AreEqual(0, builtSection.ViewModels.Count);
         }
 
         [TestMethod]
         public void CanAddGroupToSection()
         {
-            TestObject.AddSection(TestSectionName);
+            TestObject.AddSection(TestSectionLabel);
 
-            TestObject.AddGroup(TestSectionName, MockGlyph.Object, TestGroupName);
-        }
-
-        [DataTestMethod]
-        [DataRow(null)]
-        [DataRow("")]
-        [DataRow("  ")]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void InvalidGroupNameThrows(string groupName)
-        {
-            TestObject.AddSection(TestSectionName);
-
-            TestObject.AddGroup(TestSectionName, MockGlyph.Object, groupName);
+            TestObject.AddGroup(TestSectionLabel, MockGlyph.Object, TestGroupLabel);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void DuplicateGroupThrows()
         {
-            TestObject.AddSection(TestSectionName);
-            TestObject.AddGroup(TestSectionName, MockGlyph.Object, TestGroupName);
+            TestObject.AddSection(TestSectionLabel);
+            TestObject.AddGroup(TestSectionLabel, MockGlyph.Object, TestGroupLabel);
 
-            TestObject.AddGroup(TestSectionName, MockGlyph.Object, TestGroupName);
+            TestObject.AddGroup(TestSectionLabel, MockGlyph.Object, TestGroupLabel);
         }
 
         [TestMethod]
         [ExpectedException(typeof(KeyNotFoundException))]
         public void AddGroupWithMissingSectionThrows()
         {
-            TestObject.AddGroup(TestSectionName, MockGlyph.Object, TestGroupName);
+            TestObject.AddGroup(TestSectionLabel, MockGlyph.Object, TestGroupLabel);
         }
 
         [TestMethod]
         public void BuildsAddedGroup()
         {
-            TestObject.AddSection(TestSectionName);
-            TestObject.AddGroup(TestSectionName, MockGlyph.Object, TestGroupName);
+            TestObject.AddSection(TestSectionLabel);
+            TestObject.AddGroup(TestSectionLabel, MockGlyph.Object, TestGroupLabel);
 
             NavigationTree built = TestObject.Build();
 
             NavigationSection builtSection = VerifyTestSectionWasBuilt(built);
             NavigationGroup builtGroup = VerifyTestNodeWasBuilt<NavigationGroup>(builtSection);
             Assert.AreSame(MockGlyph.Object, builtGroup.Glyph);
-            Assert.AreEqual(TestGroupName, builtGroup.Name);
+            Assert.AreEqual(TestGroupLabel, builtGroup.Label);
             Assert.AreEqual(0, builtGroup.Leaves.Count);
         }
 
         [TestMethod]
         public void CanAddLeafToSection()
         {
-            TestObject.AddSection(TestSectionName);
+            TestObject.AddSection(TestSectionLabel);
 
-            TestObject.AddLeaf(TestSectionName, MockGlyph.Object, TestLeafName, TestLeafDestination);
-        }
-
-        [DataTestMethod]
-        [DataRow(null)]
-        [DataRow("")]
-        [DataRow("  ")]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void InvalidLeafNameThrowsAddingToSection(string leafName)
-        {
-            TestObject.AddSection(TestSectionName);
-
-            TestObject.AddLeaf(TestSectionName, MockGlyph.Object, leafName, TestLeafDestination);
+            TestObject.AddLeaf(TestSectionLabel, MockGlyph.Object, TestLeafLabel, TestLeafDestination);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void DuplicateLeafNameThrowsAddingToSection()
         {
-            TestObject.AddSection(TestSectionName);
-            TestObject.AddLeaf(TestSectionName, MockGlyph.Object, TestLeafName, TestLeafDestination);
+            TestObject.AddSection(TestSectionLabel);
+            TestObject.AddLeaf(TestSectionLabel, MockGlyph.Object, TestLeafLabel, TestLeafDestination);
 
-            TestObject.AddLeaf(TestSectionName, MockGlyph.Object, TestLeafName, TestLeafDestination);
+            TestObject.AddLeaf(TestSectionLabel, MockGlyph.Object, TestLeafLabel, TestLeafDestination);
         }
 
         [TestMethod]
         public void BuildsLeafAddedToSection()
         {
-            TestObject.AddSection(TestSectionName);
-            TestObject.AddLeaf(TestSectionName, MockGlyph.Object, TestLeafName, TestLeafDestination);
+            TestObject.AddSection(TestSectionLabel);
+            TestObject.AddLeaf(TestSectionLabel, MockGlyph.Object, TestLeafLabel, TestLeafDestination);
 
             NavigationTree built = TestObject.Build();
 
@@ -185,42 +153,29 @@ namespace Gouda.Application.ViewModels.Navigation.Tests
         [TestMethod]
         public void CanAddLeafToGroup()
         {
-            TestObject.AddSection(TestSectionName);
-            TestObject.AddGroup(TestSectionName, MockGlyph.Object, TestGroupName);
+            TestObject.AddSection(TestSectionLabel);
+            TestObject.AddGroup(TestSectionLabel, MockGlyph.Object, TestGroupLabel);
 
-            TestObject.AddLeaf(TestSectionName, TestGroupName, TestLeafName, TestLeafDestination);
-        }
-
-        [DataTestMethod]
-        [DataRow(null)]
-        [DataRow("")]
-        [DataRow("  ")]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void InvalidLeafNameThrowsAddingToGroup(string leafName)
-        {
-            TestObject.AddSection(TestSectionName);
-            TestObject.AddGroup(TestSectionName, MockGlyph.Object, TestGroupName);
-
-            TestObject.AddLeaf(TestSectionName, TestGroupName, leafName, TestLeafDestination);
+            TestObject.AddLeaf(TestSectionLabel, TestGroupLabel, TestLeafLabel, TestLeafDestination);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void DuplicateLeafNameThrowsAddingToGroup()
         {
-            TestObject.AddSection(TestSectionName);
-            TestObject.AddGroup(TestSectionName, MockGlyph.Object, TestGroupName);
-            TestObject.AddLeaf(TestSectionName, TestGroupName, TestLeafName, TestLeafDestination);
+            TestObject.AddSection(TestSectionLabel);
+            TestObject.AddGroup(TestSectionLabel, MockGlyph.Object, TestGroupLabel);
+            TestObject.AddLeaf(TestSectionLabel, TestGroupLabel, TestLeafLabel, TestLeafDestination);
 
-            TestObject.AddLeaf(TestSectionName, TestGroupName, TestLeafName, TestLeafDestination);
+            TestObject.AddLeaf(TestSectionLabel, TestGroupLabel, TestLeafLabel, TestLeafDestination);
         }
 
         [TestMethod]
         public void BuildsLeafAddedToGroup()
         {
-            TestObject.AddSection(TestSectionName);
-            TestObject.AddGroup(TestSectionName, MockGlyph.Object, TestGroupName);
-            TestObject.AddLeaf(TestSectionName, TestGroupName, TestLeafName, TestLeafDestination);
+            TestObject.AddSection(TestSectionLabel);
+            TestObject.AddGroup(TestSectionLabel, MockGlyph.Object, TestGroupLabel);
+            TestObject.AddLeaf(TestSectionLabel, TestGroupLabel, TestLeafLabel, TestLeafDestination);
 
             NavigationTree built = TestObject.Build();
 
@@ -235,20 +190,20 @@ namespace Gouda.Application.ViewModels.Navigation.Tests
         [ExpectedException(typeof(ArgumentException))]
         public void CannotAddLeafWithSameNameAsGroupToSection()
         {
-            TestObject.AddSection(TestSectionName);
-            TestObject.AddGroup(TestSectionName, MockGlyph.Object, TestGroupName);
+            TestObject.AddSection(TestSectionLabel);
+            TestObject.AddGroup(TestSectionLabel, MockGlyph.Object, TestGroupLabel);
 
-            TestObject.AddLeaf(TestSectionName, MockGlyph.Object, TestGroupName, TestLeafDestination);
+            TestObject.AddLeaf(TestSectionLabel, MockGlyph.Object, TestGroupLabel, TestLeafDestination);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void CannotAddGroupWithSameNameAsLeaf()
         {
-            TestObject.AddSection(TestSectionName);
-            TestObject.AddLeaf(TestSectionName, MockGlyph.Object, TestLeafName, TestLeafDestination);
+            TestObject.AddSection(TestSectionLabel);
+            TestObject.AddLeaf(TestSectionLabel, MockGlyph.Object, TestLeafLabel, TestLeafDestination);
 
-            TestObject.AddGroup(TestSectionName, MockGlyph.Object, TestLeafName);
+            TestObject.AddGroup(TestSectionLabel, MockGlyph.Object, TestLeafLabel);
         }
     }
 }

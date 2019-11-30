@@ -11,6 +11,7 @@ namespace Gouda.WebApp.Controllers.Tests
     using Application.ViewModels.Satellite.Domain;
     using Implementation;
     using ViewComponents.Implementation;
+    using Application.Queries.DisplaySatellite.Domain;
 
     [TestClass]
     public class SatelliteControllerTest
@@ -19,6 +20,7 @@ namespace Gouda.WebApp.Controllers.Tests
         private AddSatelliteCommand TestAddSatelliteCommand = new AddSatelliteCommand();
         private AddSatelliteResult TestAddSatelliteResult = new AddSatelliteResult();
         private SatelliteSummaryViewModel TestSummaryViewModel = new SatelliteSummaryViewModel();
+        private DisplaySatelliteResult TestDisplaySatelliteResult = new DisplaySatelliteResult();
 
         private Mock<IMediator> MockMediator = new Mock<IMediator>();
 
@@ -32,6 +34,9 @@ namespace Gouda.WebApp.Controllers.Tests
             MockMediator
                 .Setup(mediator => mediator.Send(It.IsAny<AddSatelliteCommand>(), default))
                 .ReturnsAsync(TestAddSatelliteResult);
+            MockMediator
+                .Setup(mediator => mediator.Send(It.IsAny<DisplaySatelliteQuery>(), default))
+                .ReturnsAsync(TestDisplaySatelliteResult);
 
             TestObject = new SatelliteController(MockMediator.Object);
         }
@@ -68,6 +73,27 @@ namespace Gouda.WebApp.Controllers.Tests
             Assert.AreSame(TestListSatellitesResult, view.Model);
         }
 
+        [DataTestMethod]
+        [DataRow(-1)]
+        [DataRow(0)]
+        [DataRow(100)]
+        public async Task DisplaySendsQueryWithID(int testID)
+        {
+            await TestObject.Display(testID);
+
+            MockMediator.Verify(mediator => mediator.Send(It.Is<DisplaySatelliteQuery>(query => query.SatelliteID == testID), default), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task DisplayReturnsResultInView()
+        {
+            IActionResult result = await TestObject.Display(1);
+
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            ViewResult view = (ViewResult)result;
+            Assert.AreSame(TestDisplaySatelliteResult, view.Model);
+        }
+
         [TestMethod]
         public async Task AddSendsCommand()
         {
@@ -83,7 +109,7 @@ namespace Gouda.WebApp.Controllers.Tests
 
             Assert.IsInstanceOfType(result, typeof(ViewComponentResult));
             ViewComponentResult view = (ViewComponentResult)result;
-            Assert.AreEqual(SatelliteViewComponent.Name, view.ViewComponentName);
+            Assert.AreEqual(TestSummaryViewModel.ViewConcept, view.ViewComponentName);
             Assert.AreSame(TestSummaryViewModel, view.Arguments);
         }
     }

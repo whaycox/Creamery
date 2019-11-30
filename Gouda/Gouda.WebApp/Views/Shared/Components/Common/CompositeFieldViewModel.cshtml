@@ -1,0 +1,6 @@
+﻿@inject ILabelDeferredValue labelDeferredValue
+@model CompositeFieldViewModel
+<gouda-field>
+    <label>@labelDeferredValue[Model.Label]</label>
+    <gouda-viewModel view-model="Model.ViewModel" />
+</gouda-field>

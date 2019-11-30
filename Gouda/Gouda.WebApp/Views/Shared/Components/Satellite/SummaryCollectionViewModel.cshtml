@@ -2,13 +2,15 @@
 <table class="summary-table">
     <thead>
         <tr>
-            <th>@Model.NameHeaderLabel</th>
-            <th>@Model.IPHeaderLabel</th>
-            <th>@Model.StatusHeaderLabel</th>
+            <th><gouda-label key="@Model.NameHeaderLabel" /></th>
+            <th><gouda-label key="@Model.IPHeaderLabel" /></th>
+            <th><gouda-label key="@Model.StatusHeaderLabel" /></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var satellite in Model.Satellites)
-            @await Component.InvokeAsync(SatelliteViewComponent.Name, satellite)
+        {
+            <gouda-viewModel view-model="satellite" />
+        }
     </tbody>
 </table>

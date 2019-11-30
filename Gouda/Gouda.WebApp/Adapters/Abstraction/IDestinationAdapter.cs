@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Gouda.WebApp.Adapters.Abstraction
+﻿namespace Gouda.WebApp.Adapters.Abstraction
 {
-    using Application.ViewModels.Destinations.Abstraction;
+    using Application.DeferredValues.Domain;
 
     public interface IDestinationAdapter
     {
-        string Adapt(IDestinationViewModel destination);
+        string Adapt(DestinationDeferredKey destination);
     }
 }

@@ -1,10 +1,10 @@
 ﻿@model NavigationSection
 <gouda-nav-section>
-    <div class="title">@Model.Name</div>
+    <div class="title"><gouda-label key="@Model.Label" /></div>
     <ul class="node-list">
-        @foreach (NavigationNode node in Model.Nodes)
+        @foreach (var viewModel in Model.ViewModels)
         {
-            <li>@await Component.InvokeAsync(NavigationViewComponent.Name, node)</li>
+            <li><gouda-viewModel view-model="viewModel" /></li>
         }
     </ul>
 </gouda-nav-section>

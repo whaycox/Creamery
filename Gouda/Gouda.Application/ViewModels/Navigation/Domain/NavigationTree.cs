@@ -7,9 +7,9 @@ namespace Gouda.Application.ViewModels.Navigation.Domain
 {
     using Abstraction;
 
-    public class NavigationTree : INavigationObject
+    public class NavigationTree : BaseNavigationViewModel
     {
-        public string ViewName => nameof(NavigationTree);
+        public override string ViewName => nameof(NavigationTree);
 
         public List<NavigationSection> Sections { get; set; } = new List<NavigationSection>();
     }
