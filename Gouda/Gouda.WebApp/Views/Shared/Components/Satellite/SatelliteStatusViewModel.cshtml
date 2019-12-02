@@ -1,27 +1,28 @@
-﻿@model SatelliteStatusViewModel
+﻿@model WebAppViewModel
 @{ 
+    var status = Model.Unwrap<SatelliteStatusViewModel>();
     string statusClass = null;
-    switch(Model.Status)
+    switch(status.Status)
     {
         case SatelliteStatus.Good:
             statusClass = "good";
             break;
         case SatelliteStatus.Warning:
-            statusClass = "good";
+            statusClass = "warn";
             break;
         case SatelliteStatus.Failing:
-            statusClass = "good";
+            statusClass = "fail";
             break;
         case SatelliteStatus.Worried:
-            statusClass = "good";
+            statusClass = "worried";
             break;
         case SatelliteStatus.Unknown:
             statusClass = "unknown";
             break;
         default:
-            throw new InvalidOperationException($"Unsupported status: {Model.Status}");
+            throw new InvalidOperationException($"Unsupported status: {status.Status}");
     }
 }
 <gouda-status class="@statusClass">
-    @Model.Status
+    @status.Status
 </gouda-status>

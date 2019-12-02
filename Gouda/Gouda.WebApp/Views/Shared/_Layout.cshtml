@@ -18,8 +18,10 @@
         <link rel="stylesheet" href="~/css/navigation.css" />
         <link rel="stylesheet" href="~/css/header.css" />
         <link rel="stylesheet" href="~/css/footer.css" />
+        <link rel="stylesheet" href="~/css/satellite.css" />
         <link rel="stylesheet" href="~/css/input.css" />
         <link rel="stylesheet" href="~/css/glyph.css" />
+        <link rel="stylesheet" href="~/css/common.css" />
 
         @RenderSection(LayoutSections.DevelopmentStyles, required: false)
     }
@@ -34,6 +36,7 @@
             --main-text-color: black;
             --accent-color: hsl(95, 100%, 35%);
             --accent-text-color: white;
+            --nothing-color: hsl(0, 0%, 37%);
             --valid-color: hsl(113, 100%, 40%);
             --invalid-color: hsl(0, 91%, 42%);
         }
@@ -42,7 +45,7 @@
 <body>
     <div class="site-container">
         @await Component.InvokeAsync(HeaderViewComponent.Name)
-        @await Component.InvokeAsync(navigationTree.ViewConcept, navigationTree)
+        <gouda-viewModel view-model="navigationTree" />
         <main role="main">
             @RenderBody()
         </main>

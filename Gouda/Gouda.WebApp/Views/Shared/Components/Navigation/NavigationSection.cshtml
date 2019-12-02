@@ -1,8 +1,11 @@
-﻿@model NavigationSection
+﻿@model WebAppViewModel
+@{ 
+    var navigationSection = Model.Unwrap<NavigationSection>();
+}
 <gouda-nav-section>
-    <div class="title"><gouda-label key="@Model.Label" /></div>
+    <div class="title"><gouda-label key="@navigationSection.Label" /></div>
     <ul class="node-list">
-        @foreach (var viewModel in Model.ViewModels)
+        @foreach (var viewModel in navigationSection.ViewModels)
         {
             <li><gouda-viewModel view-model="viewModel" /></li>
         }

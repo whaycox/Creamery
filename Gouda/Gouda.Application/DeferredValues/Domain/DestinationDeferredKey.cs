@@ -9,5 +9,8 @@ namespace Gouda.Application.DeferredValues.Domain
         None = default,
         ListSatellites,
         AddSatellite,
+        GetAddCheck,
+        AddCheck,
+        DeleteCheck,
     }
 }

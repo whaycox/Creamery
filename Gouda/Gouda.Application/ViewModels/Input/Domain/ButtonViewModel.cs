@@ -10,5 +10,7 @@ namespace Gouda.Application.ViewModels.Input.Domain
     public class ButtonViewModel : BaseInputViewModel
     {
         public override string ViewName => nameof(ButtonViewModel);
+
+        public DestinationDeferredKey Destination { get; set; }
     }
 }

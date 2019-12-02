@@ -1,11 +1,26 @@
 ﻿@model Gouda.Application.Queries.ListSatellites.Domain.ListSatellitesResult
 @{
+    ViewData["Title"] = "Satellites";
     AddSatelliteViewModel addViewModel = new AddSatelliteViewModel();
 }
 <div class="list-satellites">
-    @await Component.InvokeAsync(addViewModel.ViewConcept, addViewModel)
+    <gouda-viewModel view-model="addViewModel" />
     <hr />
-    @await Component.InvokeAsync(Model.Satellites.ViewConcept, Model.Satellites)
+    <table class="summary-table">
+        <thead>
+            <tr>
+                <th><gouda-label key="@Model.NameHeaderLabel" /></th>
+                <th><gouda-label key="@Model.IPHeaderLabel" /></th>
+                <th><gouda-label key="@Model.StatusHeaderLabel" /></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var satellite in Model.Satellites)
+            {
+                <gouda-viewModel view-model="satellite" />
+            }
+        </tbody>
+    </table>
 </div>
 
 @section GlobalStyles
@@ -20,8 +35,15 @@
 
 @section GlobalScripts
 {
-    <script src="~/js/satellite.js"></script>
     <script type="text/javascript">
+        $(document).ready(function () {
+            $("gouda-add-satellite .add-expander").click(toggleAddSatellite);
+        });
+
+        function toggleAddSatellite() {
+            toggleExpanded($("gouda-add-satellite"));
+        }
+
         function submitSuccess(data) {
             $(".summary-table tbody").append(data);
         }

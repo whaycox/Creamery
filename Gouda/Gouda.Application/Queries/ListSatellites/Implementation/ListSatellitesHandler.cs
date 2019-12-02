@@ -33,7 +33,7 @@ namespace Gouda.Application.Queries.ListSatellites.Implementation
                 .ToList();
             ListSatellitesResult result = new ListSatellitesResult
             {
-                Satellites = new SummaryCollectionViewModel { Satellites = summaries },
+                Satellites = summaries,
             };
 
             return result;

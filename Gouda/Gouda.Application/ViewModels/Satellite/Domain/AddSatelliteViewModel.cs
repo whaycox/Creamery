@@ -14,32 +14,24 @@ namespace Gouda.Application.ViewModels.Satellite.Domain
     {
         public override string ViewName => nameof(AddSatelliteViewModel);
 
-        public FormViewModel AddForm { get; set; } = new AddFormViewModel();
-
-        private class AddFormViewModel : FormViewModel
+        public LabelDeferredKey Label { get; } = LabelDeferredKey.AddSatellite;
+        public TextInputViewModel SatelliteNameInput { get; } = new TextInputViewModel
         {
-            public AddFormViewModel()
-            {
-                Label = LabelDeferredKey.AddSatelliteForm;
-                Destination = DestinationDeferredKey.AddSatellite;
-
-                Inputs.Add(new TextInputViewModel
-                {
-                    Label = LabelDeferredKey.SatelliteName,
-                    Required = true,
-                    Name = nameof(AddSatelliteCommand.SatelliteName)
-                });
-                Inputs.Add(new IPAddressTextInputViewModel
-                {
-                    Label = LabelDeferredKey.SatelliteIP,
-                    Required = true,
-                    Name = nameof(AddSatelliteCommand.SatelliteIP)
-                });
-                Inputs.Add(new ButtonViewModel
-                {
-                    Label = LabelDeferredKey.AddButton,
-                });
-            }
-        }
+            Label = LabelDeferredKey.SatelliteName,
+            Required = true,
+            Name = nameof(AddSatelliteCommand.SatelliteName)
+        };
+        public IPAddressTextInputViewModel SatelliteIPInput { get; } = new IPAddressTextInputViewModel
+        {
+            Label = LabelDeferredKey.SatelliteIP,
+            Required = true,
+            Name = nameof(AddSatelliteCommand.SatelliteIP)
+        };
+        public ButtonViewModel AddSatelliteButton { get; } = new ButtonViewModel
+        {
+            Label = LabelDeferredKey.AddButton,
+            Editable = true,
+            Destination = DestinationDeferredKey.AddSatellite,
+        };
     }
 }

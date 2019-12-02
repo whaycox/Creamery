@@ -1,6 +1,10 @@
-﻿@inject ILabelDeferredValue labelDeferredValue
-@model CompositeFieldViewModel
+﻿@model WebAppViewModel
+@{ 
+    var composite = Model.Unwrap<CompositeFieldViewModel>();
+}
 <gouda-field>
-    <label>@labelDeferredValue[Model.Label]</label>
-    <gouda-viewModel view-model="Model.ViewModel" />
+    <label><gouda-label key="@composite.Label" /></label>
+    <div class="field-value">
+        <gouda-viewModel view-model="composite.ViewModel" />
+    </div>
 </gouda-field>

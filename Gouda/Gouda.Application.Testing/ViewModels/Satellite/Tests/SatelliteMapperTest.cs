@@ -24,7 +24,7 @@ namespace Gouda.Application.ViewModels.Satellite.Tests
         {
             SatelliteViewModel viewModel = TestObject.Map(TestSatellite);
 
-            Assert.AreEqual(TestSatelliteName, viewModel.NameField.Value);
+            Assert.AreEqual(TestSatelliteName, viewModel.Name);
         }
 
         [TestMethod]

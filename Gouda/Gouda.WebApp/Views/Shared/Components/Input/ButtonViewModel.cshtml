@@ -1,2 +1,16 @@
-﻿@model ButtonViewModel
-<button class="gouda-button"><gouda-label key="@Model.Label" /></button>
+﻿@inject IDestinationDeferredValue destinationDeferredValue
+@model WebAppViewModel
+@{
+    var button = Model.Unwrap<ButtonViewModel>();
+    string editableString = button.Editable ? string.Empty : "disabled";
+
+    var destinationItem = destinationDeferredValue[button.Destination];
+    string destination = string.Empty;
+    string method = string.Empty;
+    if (destinationItem != null)
+    {
+        destination = $"data-destination={Url.Action(destinationItem.Action, destinationItem.Controller)}";
+        method = $"data-method={destinationItem.Method.Method}";
+    }
+}
+<button class="gouda-button" @editableString @destination @method><gouda-label key="@button.Label" /></button>

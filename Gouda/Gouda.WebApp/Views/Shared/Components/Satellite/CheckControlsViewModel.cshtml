@@ -1,0 +1,9 @@
+﻿@model WebAppViewModel
+@{ 
+    var controls = Model.Unwrap<CheckControlsViewModel>();
+}
+<gouda-check-controls>
+    <div class="empty-space"></div>
+    <gouda-viewModel view-model="controls.AddCheckButton" />
+    <gouda-viewModel view-model="controls.DeleteCheckButton" />
+</gouda-check-controls>

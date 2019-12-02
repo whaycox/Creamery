@@ -2,6 +2,10 @@
     wireInputs();
 });
 
+function getFunctionPointer(functionName) {
+    return window[functionName];
+}
+
 function wireInputs() {
     $("gouda-input .ipAddress").on("input", function (event) {
         if (this.validity.patternMismatch) {
@@ -11,7 +15,7 @@ function wireInputs() {
             this.setCustomValidity("");
         }
     });
-    $(".gouda-form").on("submit", function (event) {
+    $(".gouda-button").on("submit", function (event) {
         event.preventDefault();
         if (event.currentTarget.checkValidity()) {
             var destination = $(event.currentTarget).data("destination");

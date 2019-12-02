@@ -8,12 +8,14 @@ namespace Gouda.Application.DeferredValues.Domain
     {
         None = default,
         AddButton,
+        DeleteButton,
         Satellite,
         Satellites,
         SatelliteName,
         SatelliteIP,
         SatelliteStatus,
-        AddSatelliteForm,
-
+        AddSatellite,
+        Check,
+        Checks,
     }
 }

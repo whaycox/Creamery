@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using System;
 
 namespace Gouda.WebApp.Controllers.Implementation
 {
@@ -45,10 +46,28 @@ namespace Gouda.WebApp.Controllers.Implementation
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(AddSatelliteCommand command)
+        public async Task<IActionResult> AddSatellite(AddSatelliteCommand command)
         {
             AddSatelliteResult result = await Mediator.Send(command);
             return ViewComponent(result.NewSatellite.ViewConcept, result.NewSatellite);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAddCheck()
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddCheck()
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteCheck()
+        {
+            throw new NotImplementedException();
         }
 
     }

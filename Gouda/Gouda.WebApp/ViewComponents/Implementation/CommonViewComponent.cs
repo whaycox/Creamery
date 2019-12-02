@@ -2,6 +2,6 @@
 {
     using Application.ViewModels.Common.Abstraction;
 
-    public class CommonViewComponent : BaseViewModelViewComponent<ICommonViewModel>
+    public class CommonViewComponent : BaseViewModelViewComponent
     { }
 }

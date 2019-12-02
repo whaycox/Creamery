@@ -2,6 +2,6 @@
 {
     using Application.ViewModels.Navigation.Abstraction;
 
-    public class NavigationViewComponent : BaseViewModelViewComponent<INavigationViewModel>
+    public class NavigationViewComponent : BaseViewModelViewComponent
     {    }
 }

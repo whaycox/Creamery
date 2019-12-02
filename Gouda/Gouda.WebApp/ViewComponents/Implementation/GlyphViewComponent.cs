@@ -2,6 +2,6 @@
 {
     using Application.ViewModels.Glyph.Abstraction;
 
-    public class GlyphViewComponent : BaseViewModelViewComponent<IGlyphViewModel>
+    public class GlyphViewComponent : BaseViewModelViewComponent
     { }
 }

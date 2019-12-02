@@ -1,6 +1,8 @@
-﻿@inject ILabelDeferredValue labelDeferredValue
-@model TextFieldViewModel
+﻿@model WebAppViewModel
+@{ 
+    var textField = Model.Unwrap<TextFieldViewModel>();
+}
 <gouda-field>
-    <label>@labelDeferredValue[Model.Label]</label>
-    <span>@Model.Value</span>
+    <label><gouda-label key="@textField.Label" /></label>
+    <span class="field-value">@textField.Value</span>
 </gouda-field>

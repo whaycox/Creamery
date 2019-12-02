@@ -15,15 +15,16 @@ namespace Gouda.Application.ViewModels.Satellite.Domain
         public override string ViewName => nameof(SatelliteViewModel);
 
         public int ID { get; set; }
-        public TextFieldViewModel NameField { get; set; }
-        public TextFieldViewModel IPField { get; set; }
-        public CompositeFieldViewModel<SatelliteStatusViewModel> StatusField { get; set; }
-
-        public SatelliteViewModel()
+        public string Name { get; set; }
+        public TextFieldViewModel IPField { get; set; } = new TextFieldViewModel
         {
-            NameField = new TextFieldViewModel { Label = LabelDeferredKey.SatelliteName, };
-            IPField = new TextFieldViewModel { Label = LabelDeferredKey.SatelliteIP, };
-            StatusField = new CompositeFieldViewModel<SatelliteStatusViewModel> { Label = LabelDeferredKey.SatelliteStatus };
-        }
+            Label = LabelDeferredKey.SatelliteIP,
+        };
+        public CompositeFieldViewModel<SatelliteStatusViewModel> StatusField { get; set; } = new CompositeFieldViewModel<SatelliteStatusViewModel>
+        {
+            Label = LabelDeferredKey.SatelliteStatus
+        };
+        public LabelDeferredKey CheckLabel { get; set; } = LabelDeferredKey.Checks;
+        public CheckControlsViewModel CheckControls { get; set; } = new CheckControlsViewModel();
     }
 }

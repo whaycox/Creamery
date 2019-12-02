@@ -1,38 +1,74 @@
-﻿.satellite-add {
+﻿gouda-status {
+    display: block;
+    margin: 3px;
+    padding: 5px;
+    border-radius: 5px;
+    border: solid 1px var(--main-text-color);
+    text-align: center;
+    background-image: linear-gradient(hsla(0, 0%, 0%, 0.1), hsla(0, 0%, 100%, 0.3));
+}
+    gouda-status.unknown {
+        color: var(--accent-text-color);
+        background-color: hsl(292, 93%, 17%);
+    }
+    gouda-status.fail {
+        color: var(--accent-text-color);
+        background-color: hsl(350, 90%, 43%);
+    }
+    gouda-status.warn {
+        color: var(--main-text-color);
+        background-color: hsl(53, 98%, 47%);
+    }
+    gouda-status.worried {
+        color: var(--accent-text-color);
+        background-color: hsl(213, 100%, 50%);
+    }
+    gouda-status.good {
+        color: var(--main-text-color);
+        background-color: hsl(104, 88%, 47%);
+    }
+
+gouda-add-satellite {
     display: inline-block;
     border: solid 3px var(--main-text-color);
     border-radius: 5px;
 }
-    .satellite-add[aria-expanded="true"] {
+    gouda-add-satellite[aria-expanded="true"] {
         width: 500px;
     }
 
-.satellite-add .add-expander {
+gouda-add-satellite form {
+    display: flex;
+    flex-direction: column;
+    margin: 5px;
+    padding: 10px;
+    background-color: var(--main-text-color);
+    background-image: linear-gradient(hsla(0, 0%, 100%, 0.9), hsla(0, 0%, 100%, 0.9));
+    border-radius: 5px;
+}
+
+gouda-add-satellite .add-expander {
     display: flex;
     flex-direction: row;
     align-items: center;
     height: 50px;
     cursor: pointer;
 }
-    
-    .satellite-add .add-expander .material-icons {
+    gouda-add-satellite .add-expander .material-icons {
         font-size: 2.5em;
     }
-    .satellite-add .add-expander .material-icons::after {
+    gouda-add-satellite .add-expander .material-icons::after {
         content: "add_circle";
     }
-    .satellite-add[aria-expanded="true"] .add-expander .material-icons::after {
+    gouda-add-satellite[aria-expanded="true"] .add-expander .material-icons::after {
         content: "remove_circle";
     }
-    .satellite-add .collapsed-title {
+    gouda-add-satellite .collapsed-title {
         margin: 5px;
         font-weight: bold;
     }
-    .satellite-add[aria-expanded="true"] .collapsed-title {
-        display: none;
-    }
 
-.satellite-add[aria-expanded="false"] .gouda-form {
+gouda-add-satellite[aria-expanded="false"] form {
     display: none;
 }
 
@@ -75,8 +111,68 @@
     display: block;
 }
 
+gouda-satellite {
+    display: grid;
+    place-items: center;
+    grid-template-rows: 40px 1fr 1fr;
+    grid-template-areas:
+        'name'
+        'details'
+        'checks';
+}
+
+gouda-satellite .satellite-name {
+    grid-area: name;
+    display: grid;
+    place-items: center;
+    font-weight: bold;
+    font-size: 1.3em;
+    padding: 5px;
+    border: solid 1px var(--main-text-color);
+    border-radius: 5px;
+    background-color: var(--accent-color);
+    background-image: linear-gradient(hsla(0, 0%, 100%, 0.1), hsla(0, 0%, 100%, 0.5));
+    max-width: 500px;
+    width: 100%;
+}
+
+gouda-satellite .satellite-details {
+    margin: 5px;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: var(--main-color);
+    background-image: linear-gradient(hsla(0, 0%, 100%, 0.6), hsla(0, 0%, 100%, 0.6));
+    max-width: 500px;
+    width: 100%;
+}
+
+gouda-satellite .satellite-checks {
+    width: 100%;
+}
+
+gouda-satellite .satellite-checks .title {
+    padding: 10px;
+    font-weight: bold;
+    border: solid 1px var(--main-text-color);
+    border-radius: 5px 5px 0px 0px;
+    background-color: var(--accent-color);
+    background-image: linear-gradient(hsla(0, 0%, 100%, 0.1), hsla(0, 0%, 100%, 0.5));
+}
+
+gouda-check-controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: solid 1px var(--main-text-color);
+    border-top: none;
+}
+
+gouda-check-controls .empty-space {
+    flex-grow: 1;
+}
+
 @media (max-width: 550px) {
-    .satellite-add[aria-expanded="true"] {
+    gouda-add-satellite[aria-expanded="true"] {
         width: unset;
     }
 }

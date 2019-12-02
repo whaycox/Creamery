@@ -97,7 +97,7 @@ namespace Gouda.WebApp.Controllers.Tests
         [TestMethod]
         public async Task AddSendsCommand()
         {
-            await TestObject.Add(TestAddSatelliteCommand);
+            await TestObject.AddSatellite(TestAddSatelliteCommand);
 
             MockMediator.Verify(mediator => mediator.Send(TestAddSatelliteCommand, default), Times.Once);
         }
@@ -105,7 +105,7 @@ namespace Gouda.WebApp.Controllers.Tests
         [TestMethod]
         public async Task AddReturnsViewComponentWithSummary()
         {
-            IActionResult result = await TestObject.Add(TestAddSatelliteCommand);
+            IActionResult result = await TestObject.AddSatellite(TestAddSatelliteCommand);
 
             Assert.IsInstanceOfType(result, typeof(ViewComponentResult));
             ViewComponentResult view = (ViewComponentResult)result;

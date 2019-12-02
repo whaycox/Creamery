@@ -13,7 +13,6 @@ namespace Gouda.WebApp.Filters.Implementation
     using Application.ViewModels.Glyph.Domain;
     using Controllers.Implementation;
     using Application.ViewModels.Navigation.Abstraction;
-    using Adapters.Abstraction;
     using Application.DeferredValues.Domain;
 
     public class NavigationFilter : IActionFilter

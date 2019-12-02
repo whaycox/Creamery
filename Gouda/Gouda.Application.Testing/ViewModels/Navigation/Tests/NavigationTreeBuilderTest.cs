@@ -17,7 +17,7 @@ namespace Gouda.Application.ViewModels.Navigation.Tests
     {
         private LabelDeferredKey TestSectionLabel = LabelDeferredKey.SatelliteName;
         private LabelDeferredKey TestGroupLabel = LabelDeferredKey.SatelliteIP;
-        private LabelDeferredKey TestLeafLabel = LabelDeferredKey.AddSatelliteForm;
+        private LabelDeferredKey TestLeafLabel = LabelDeferredKey.AddSatellite;
         private DestinationDeferredKey TestLeafDestination = DestinationDeferredKey.ListSatellites;
 
         private Mock<IGlyphViewModel> MockGlyph = new Mock<IGlyphViewModel>();

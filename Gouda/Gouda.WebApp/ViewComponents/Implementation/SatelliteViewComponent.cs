@@ -3,6 +3,6 @@
     using Gouda.Domain;
     using Application.ViewModels.Satellite.Abstraction;
 
-    public class SatelliteViewComponent : BaseViewModelViewComponent<ISatelliteViewModel>
+    public class SatelliteViewComponent : BaseViewModelViewComponent
     { }
 }

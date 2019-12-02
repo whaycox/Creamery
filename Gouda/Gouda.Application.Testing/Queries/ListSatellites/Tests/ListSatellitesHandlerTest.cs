@@ -77,10 +77,9 @@ namespace Gouda.Application.Queries.ListSatellites.Tests
 
             ListSatellitesResult result = await TestObject.Handle(TestQuery, default);
 
-            SummaryCollectionViewModel summaryCollection = result.Satellites;
-            Assert.AreEqual(satellites, summaryCollection.Satellites.Count);
+            Assert.AreEqual(satellites, result.Satellites.Count);
             for (int i = 0; i < satellites; i++)
-                Assert.AreSame(TestSummaryViewModel, summaryCollection.Satellites[i]);
+                Assert.AreSame(TestSummaryViewModel, result.Satellites[i]);
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿@model MaterialIconGlyphViewModel
+﻿@model WebAppViewModel
+@{ 
+    var glyph = Model.Unwrap<MaterialIconGlyphViewModel>();
+}
 <gouda-glyph>
-    <i class="material-icons">@Model.Name</i>
+    <i class="material-icons">@glyph.Name</i>
 </gouda-glyph>

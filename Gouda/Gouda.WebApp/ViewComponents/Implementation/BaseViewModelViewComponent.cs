@@ -3,10 +3,10 @@
 namespace Gouda.WebApp.ViewComponents.Implementation
 {
     using Application.Abstraction;
+    using WebApp.Domain;
 
-    public abstract class BaseViewModelViewComponent<T> : ViewComponent
-        where T : IViewModel
+    public abstract class BaseViewModelViewComponent : ViewComponent
     {
-        public IViewComponentResult Invoke(T viewModel) => View(viewModel.ViewName, viewModel);
+        public IViewComponentResult Invoke(WebAppViewModel viewModel) => View(viewModel.ViewName, viewModel);
     }
 }

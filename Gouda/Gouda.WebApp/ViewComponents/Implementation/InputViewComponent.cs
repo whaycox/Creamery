@@ -2,6 +2,6 @@
 {
     using Application.ViewModels.Input.Abstraction;
 
-    public class InputViewComponent : BaseViewModelViewComponent<IInputViewModel>
+    public class InputViewComponent : BaseViewModelViewComponent
     {    }
 }

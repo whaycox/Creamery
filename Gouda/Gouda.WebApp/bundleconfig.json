@@ -8,7 +8,8 @@
       "wwwroot\\css\\footer.css",
       "wwwroot\\css\\satellite.css",
       "wwwroot\\css\\glyph.css",
-      "wwwroot\\css\\input.css"
+      "wwwroot\\css\\input.css",
+      "wwwroot\\css\\common.css"
     ]
   },
   {

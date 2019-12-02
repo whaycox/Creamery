@@ -1,7 +1,13 @@
-﻿@model Gouda.Application.Queries.DisplaySatellite.Domain.DisplaySatelliteResult
-@{ 
-    ViewData["Title"] = $"Satellite Display";
+﻿@inject ILabelDeferredValue labelDeferredValue
+@model Gouda.Application.Queries.DisplaySatellite.Domain.DisplaySatelliteResult
+@{
+    ViewData["Title"] = Model.Satellite.Name;
 }
 <div style="padding: 10px">
-    @await Component.InvokeAsync(Model.Satellite.ViewConcept, Model.Satellite)
+    <gouda-viewModel view-model="Model.Satellite" />
 </div>
+
+@section GlobalStyles
+{
+    <link rel="stylesheet" href="~/css/satellite.css" />
+}
