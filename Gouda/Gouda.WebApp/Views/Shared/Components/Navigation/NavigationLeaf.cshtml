@@ -1,8 +1,8 @@
 ﻿@inject ILabelDeferredValue labelDeferredValue
 @inject IDestinationDeferredValue destinationDeferredValue
-@model WebAppViewModel
+@model WebAppViewModel<NavigationLeaf>
 @{ 
-    var navigationLeaf = Model.Unwrap<NavigationLeaf>();
+    NavigationLeaf navigationLeaf = Model.Wrapped;
     var destinationItem = destinationDeferredValue[navigationLeaf.Destination];
 }
 @if (navigationLeaf.Glyph != null)

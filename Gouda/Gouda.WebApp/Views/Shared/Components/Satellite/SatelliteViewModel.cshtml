@@ -1,6 +1,6 @@
-﻿@model WebAppViewModel
+﻿@model WebAppViewModel<SatelliteViewModel>
 @{ 
-    var satellite = Model.Unwrap<SatelliteViewModel>();
+    var satellite = Model.Wrapped;
 }
 <gouda-satellite>
     <div class="satellite-name">@satellite.Name</div>

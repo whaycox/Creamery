@@ -1,8 +1,8 @@
-﻿@model WebAppViewModel
-@{ 
-    var status = Model.Unwrap<SatelliteStatusViewModel>();
+﻿@model WebAppViewModel<SatelliteStatusViewModel>
+@{
+    SatelliteStatusViewModel satelliteStatus = Model.Wrapped;
     string statusClass = null;
-    switch(status.Status)
+    switch(satelliteStatus.Status)
     {
         case SatelliteStatus.Good:
             statusClass = "good";
@@ -20,9 +20,9 @@
             statusClass = "unknown";
             break;
         default:
-            throw new InvalidOperationException($"Unsupported status: {status.Status}");
+            throw new InvalidOperationException($"Unsupported status: {satelliteStatus.Status}");
     }
 }
 <gouda-status class="@statusClass">
-    @status.Status
+    @satelliteStatus.Status
 </gouda-status>

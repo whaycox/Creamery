@@ -1,10 +1,7 @@
-﻿@model WebAppViewModel
-@{ 
-    var composite = Model.Unwrap<CompositeFieldViewModel>();
-}
+﻿@model WebAppViewModel<CompositeFieldViewModel>
 <gouda-field>
-    <label><gouda-label key="@composite.Label" /></label>
+    <label><gouda-label key="@Model.Wrapped.Label" /></label>
     <div class="field-value">
-        <gouda-viewModel view-model="composite.ViewModel" />
+        <gouda-viewModel view-model="Model.Wrapped.ViewModel" />
     </div>
 </gouda-field>

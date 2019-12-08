@@ -1,6 +1,6 @@
-﻿@model WebAppViewModel
+﻿@model WebAppViewModel<AddSatelliteViewModel>
 @{ 
-    var addSatellite = Model.Unwrap<AddSatelliteViewModel>();
+    AddSatelliteViewModel addSatellite = Model.Wrapped;
     var nothingGlyph = MaterialIconGlyphViewModel.Nothing;
 }
 <gouda-add-satellite aria-expanded="false">
@@ -9,8 +9,8 @@
         <div class="collapsed-title"><gouda-label key="@addSatellite.Label" /></div>
     </div>
     <form>
-        <gouda-viewModel view-model="addSatellite.SatelliteNameInput" />
-        <gouda-viewModel view-model="addSatellite.SatelliteIPInput" />
+        <gouda-viewModel id="satellite-name" view-model="addSatellite.SatelliteNameInput" />
+        <gouda-viewModel id="satellite-ip" view-model="addSatellite.SatelliteIPInput" />
         <gouda-viewModel view-model="addSatellite.AddSatelliteButton" />
     </form>
 </gouda-add-satellite>

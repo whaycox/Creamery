@@ -1,9 +1,9 @@
-﻿@model WebAppViewModel
+﻿@model WebAppViewModel<SatelliteSummaryViewModel>
 @{ 
-    var summary = Model.Unwrap<SatelliteSummaryViewModel>();
+    SatelliteSummaryViewModel summary = Model.Wrapped;
 }
-    <tr class="summary-row">
-        <td><a href="@Url.Action(nameof(SatelliteController.Display), SatelliteController.Name, new { id = summary.ID })">@summary.Name</a></td>
-        <td>@summary.IPAddress</td>
-        <td><gouda-viewModel view-model="summary.StatusViewModel"></gouda-viewModel></td>
-    </tr>
+<tr class="summary-row">
+    <td><a href="@Url.Action(nameof(SatelliteController.Display), SatelliteController.Name, new { id = summary.ID })">@summary.Name</a></td>
+    <td>@summary.IPAddress</td>
+    <td><gouda-viewModel view-model="summary.StatusViewModel"></gouda-viewModel></td>
+</tr>

@@ -20,7 +20,7 @@ namespace Gouda.Application.ViewModels.Satellite.Domain
         {
             Label = LabelDeferredKey.SatelliteIP,
         };
-        public CompositeFieldViewModel<SatelliteStatusViewModel> StatusField { get; set; } = new CompositeFieldViewModel<SatelliteStatusViewModel>
+        public CompositeFieldViewModel StatusField { get; set; } = new CompositeFieldViewModel
         {
             Label = LabelDeferredKey.SatelliteStatus
         };

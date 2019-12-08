@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Gouda.WebApp.Domain
+namespace Gouda.WebApp.ViewModels.Domain
 {
     using Application.Abstraction;
 
@@ -13,6 +13,7 @@ namespace Gouda.WebApp.Domain
         public string ViewName => ViewModel.ViewName;
 
         protected IViewModel ViewModel { get; }
+
         public string ID { get; set; }
         public string Class { get; set; }
 
@@ -20,7 +21,15 @@ namespace Gouda.WebApp.Domain
         {
             ViewModel = viewModel;
         }
+    }
 
-        public T Unwrap<T>() where T : class, IViewModel => ViewModel as T;
+    public class WebAppViewModel<TViewModel> : WebAppViewModel 
+        where TViewModel : class, IViewModel
+    {
+        public TViewModel Wrapped => ViewModel as TViewModel;
+
+        public WebAppViewModel(TViewModel viewModel)
+            : base(viewModel)
+        { }
     }
 }

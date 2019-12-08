@@ -1,8 +1,5 @@
-﻿@model WebAppViewModel
-@{ 
-    var textField = Model.Unwrap<TextFieldViewModel>();
-}
+﻿@model WebAppViewModel<TextFieldViewModel>
 <gouda-field>
-    <label><gouda-label key="@textField.Label" /></label>
-    <span class="field-value">@textField.Value</span>
+    <label><gouda-label key="@Model.Wrapped.Label" /></label>
+    <span class="field-value">@Model.Wrapped.Value</span>
 </gouda-field>

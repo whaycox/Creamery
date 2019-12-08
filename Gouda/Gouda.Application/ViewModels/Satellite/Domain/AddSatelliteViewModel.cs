@@ -21,17 +21,26 @@ namespace Gouda.Application.ViewModels.Satellite.Domain
             Required = true,
             Name = nameof(AddSatelliteCommand.SatelliteName)
         };
-        public IPAddressTextInputViewModel SatelliteIPInput { get; } = new IPAddressTextInputViewModel
-        {
-            Label = LabelDeferredKey.SatelliteIP,
-            Required = true,
-            Name = nameof(AddSatelliteCommand.SatelliteIP)
-        };
+        public TextInputViewModel SatelliteIPInput { get; }
         public ButtonViewModel AddSatelliteButton { get; } = new ButtonViewModel
         {
             Label = LabelDeferredKey.AddButton,
             Editable = true,
             Destination = DestinationDeferredKey.AddSatellite,
         };
+
+        public AddSatelliteViewModel()
+        {
+            SatelliteIPInput = BuildIPInput();
+        }
+        private TextInputViewModel BuildIPInput()
+        {
+            TextInputViewModel ipInput = TextInputViewModel.IPAddress;
+            ipInput.Label = LabelDeferredKey.SatelliteIP;
+            ipInput.Required = true;
+            ipInput.Name = nameof(AddSatelliteCommand.SatelliteIP);
+
+            return ipInput;
+        }
     }
 }

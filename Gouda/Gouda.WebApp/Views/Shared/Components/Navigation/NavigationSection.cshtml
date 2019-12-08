@@ -1,6 +1,6 @@
-﻿@model WebAppViewModel
+﻿@model WebAppViewModel<NavigationSection>
 @{ 
-    var navigationSection = Model.Unwrap<NavigationSection>();
+    var navigationSection = Model.Wrapped;
 }
 <gouda-nav-section>
     <div class="title"><gouda-label key="@navigationSection.Label" /></div>

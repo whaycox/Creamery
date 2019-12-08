@@ -1,7 +1,7 @@
 ﻿@inject IDestinationDeferredValue destinationDeferredValue
-@model WebAppViewModel
+@model WebAppViewModel<ButtonViewModel>
 @{
-    var button = Model.Unwrap<ButtonViewModel>();
+    ButtonViewModel button = Model.Wrapped;
     string editableString = button.Editable ? string.Empty : "disabled";
 
     var destinationItem = destinationDeferredValue[button.Destination];

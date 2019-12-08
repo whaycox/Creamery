@@ -11,7 +11,7 @@
             SatelliteViewModel viewModel = new SatelliteViewModel { ID = entity.ID };
             viewModel.Name = entity.Name;
             viewModel.IPField.Value = entity.IPAddress.ToString();
-            viewModel.StatusField.Value = new SatelliteStatusViewModel { Status = entity.Status };
+            viewModel.StatusField.ViewModel = new SatelliteStatusViewModel { Status = entity.Status };
 
             return viewModel;
         }

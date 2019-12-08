@@ -11,11 +11,14 @@ namespace Gouda.WebApp
     using Implementation;
     using DeferredValues.Implementation;
     using DeferredValues.Abstraction;
+    using ViewModels.Abstraction;
+    using ViewModels.Implementation;
 
     public static class RegistrationExtensions
     {
         public static IServiceCollection AddGoudaWebApp(this IServiceCollection services) => services
             .AddSingleton<IActionContextAccessor, ActionContextAccessor>()
+            .AddSingleton<IWebAppViewModelWrapper, WebAppViewModelWrapper>()
             .AddSingleton<IHostedService, CheckExecutionService>()
             .AddSingleton<IDestinationDeferredValue, DestinationDeferredValue>();
     }

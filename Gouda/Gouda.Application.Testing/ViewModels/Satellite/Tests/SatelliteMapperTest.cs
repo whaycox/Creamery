@@ -40,7 +40,9 @@ namespace Gouda.Application.ViewModels.Satellite.Tests
         {
             SatelliteViewModel viewModel = TestObject.Map(TestSatellite);
 
-            Assert.AreEqual(TestSatelliteStatus, viewModel.StatusField.Value.Status);
+            Assert.IsInstanceOfType(viewModel.StatusField.ViewModel, typeof(SatelliteStatusViewModel));
+            SatelliteStatusViewModel statusModel = (SatelliteStatusViewModel)viewModel.StatusField.ViewModel;
+            Assert.AreEqual(TestSatelliteStatus, statusModel.Status);
         }
     }
 }

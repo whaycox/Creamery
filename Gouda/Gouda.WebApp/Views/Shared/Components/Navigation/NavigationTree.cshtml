@@ -1,9 +1,6 @@
-﻿@model WebAppViewModel
-@{ 
-    var navigationTree = Model.Unwrap<NavigationTree>();
-}
+﻿@model WebAppViewModel<NavigationTree>
 <nav class="gouda-nav-tree" aria-expanded="false">
-    @foreach (NavigationSection section in navigationTree.Sections)
+    @foreach (NavigationSection section in Model.Wrapped.Sections)
     {
         <gouda-viewModel view-model="section" />
     }

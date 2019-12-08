@@ -4,6 +4,7 @@ namespace Gouda.WebApp.ViewComponents.Implementation
 {
     using Application.Abstraction;
     using WebApp.Domain;
+    using ViewModels.Domain;
 
     public abstract class BaseViewModelViewComponent : ViewComponent
     {

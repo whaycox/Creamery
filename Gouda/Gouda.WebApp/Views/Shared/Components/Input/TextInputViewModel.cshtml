@@ -1,10 +1,10 @@
-﻿@model WebAppViewModel
+﻿@model WebAppViewModel<TextInputViewModel>
 @{ 
-    var textInput = Model.Unwrap<TextInputViewModel>();
+    TextInputViewModel textInput = Model.Wrapped;
     var nothingGlyph = MaterialIconGlyphViewModel.Nothing;
 }
 <gouda-input>
-    <label><gouda-label key="@textInput.Label" /></label>
-    <input class="@textInput.TypeName" name="@textInput.Name" @(textInput.Required ? "required" : string.Empty) type="text" @(textInput.ValuePattern != null ? $"pattern={textInput.ValuePattern}" : string.Empty) value="@textInput.Value" />
+    <label for="@Model.ID"><gouda-label key="@textInput.Label" /></label>
+    <input id="@Model.ID" class="@textInput.TypeName" name="@textInput.Name" @(textInput.Required ? "required" : string.Empty) type="text" @(textInput.ValuePattern != null ? $"pattern={textInput.ValuePattern}" : string.Empty) value="@textInput.Value" />
     <gouda-viewModel view-model="nothingGlyph" />
 </gouda-input>
