@@ -88,33 +88,21 @@ gouda-add-satellite[aria-expanded="false"] form {
     padding: 10px;
     border: solid 1px black;
 }
-    .summary-table thead th:hover {
-        background-image: linear-gradient(hsla(0, 0%, 0%, 0) 80%, hsla(0, 0%, 0%, 0.3));
-    }
 
 .summary-table td {
-    padding: 10px;
+    padding: 5px;
     border: solid 1px black;
-}
-
-.summary-table tbody tr:hover {
-    color: var(--accent-text-color);
-    background-color: var(--main-color);
-    background-image: linear-gradient(hsla(0, 0%, 100%, 0.3), hsla(0, 0%, 100%, 0.3));
-}
-
-.summary-table tbody td:hover {
-    background-image: linear-gradient(hsla(0, 0%, 0%, 0) 80%, hsla(0, 0%, 0%, 0.3));
 }
 
 .summary-row a {
     display: block;
+    padding: 10px 3px;
 }
 
 gouda-satellite {
     display: grid;
     place-items: center;
-    grid-template-rows: 40px 1fr 1fr;
+    grid-template-rows: 40px 125px 1fr;
     grid-template-areas:
         'name'
         'details'
@@ -159,16 +147,15 @@ gouda-satellite .satellite-checks .title {
     background-image: linear-gradient(hsla(0, 0%, 100%, 0.1), hsla(0, 0%, 100%, 0.5));
 }
 
-gouda-check-controls {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+gouda-satellite .check-row {
+    width: 100%;
+    min-height: 50px;
     border: solid 1px var(--main-text-color);
     border-top: none;
 }
 
-gouda-check-controls .empty-space {
-    flex-grow: 1;
+gouda-satellite .check-container .check-row:last-child {
+    border-radius: 0px 0px 5px 5px;
 }
 
 @media (max-width: 550px) {

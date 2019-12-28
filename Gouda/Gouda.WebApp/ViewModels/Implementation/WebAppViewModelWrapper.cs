@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -13,12 +11,12 @@ namespace Gouda.WebApp.ViewModels.Implementation
 
     public class WebAppViewModelWrapper : IWebAppViewModelWrapper
     {
-        private delegate WebAppViewModel WrapperDelegate(IViewModel viewModel);
+        private delegate IWebAppViewModel WrapperDelegate(IViewModel viewModel);
 
         private object Locker { get; } = new object();
         private Dictionary<Type, WrapperDelegate> Wrappers { get; } = new Dictionary<Type, WrapperDelegate>();
 
-        public WebAppViewModel Wrap(IViewModel viewModel)
+        public IWebAppViewModel Wrap(IViewModel viewModel)
         {
             WrapperDelegate wrapper = FetchDelegate(viewModel.GetType());
             return wrapper(viewModel);

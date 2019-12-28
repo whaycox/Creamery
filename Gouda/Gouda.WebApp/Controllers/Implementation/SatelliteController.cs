@@ -10,16 +10,24 @@ namespace Gouda.WebApp.Controllers.Implementation
     using Application.Queries.ListSatellites.Domain;
     using Gouda.Domain;
     using ViewComponents.Implementation;
+    using ViewModels.Domain;
+    using Application.ViewModels.Satellite.Domain;
+    using ViewModels.Abstraction;
+    using Application.Queries.GetAddCheck.Domain;
+    using Application.Commands.AddCheck.Domain;
+    using ViewModels;
 
     public class SatelliteController : Controller
     {
         public const string Name = nameof(Satellite);
 
         private IMediator Mediator { get; }
+        private IWebAppViewModelWrapper ViewModelWrapper { get; }
 
-        public SatelliteController(IMediator mediator)
+        public SatelliteController(IMediator mediator, IWebAppViewModelWrapper viewModelWrapper)
         {
             Mediator = mediator;
+            ViewModelWrapper = viewModelWrapper;
         }
 
         [HttpGet]
@@ -40,28 +48,30 @@ namespace Gouda.WebApp.Controllers.Implementation
         public async Task<IActionResult> Display(int id)
         {
             DisplaySatelliteQuery query = new DisplaySatelliteQuery { SatelliteID = id };
-            DisplaySatelliteResult result = await Mediator.Send(query, default);
+            SatelliteViewModel viewModel = await Mediator.Send(query, default);
 
-            return View(result);
+            return View(viewModel);
         }
 
         [HttpPost]
         public async Task<IActionResult> AddSatellite(AddSatelliteCommand command)
         {
-            AddSatelliteResult result = await Mediator.Send(command);
-            return ViewComponent(result.NewSatellite.ViewConcept, result.NewSatellite);
+            SatelliteSummaryViewModel viewModel = await Mediator.Send(command);
+            return this.ReturnViewComponent(ViewModelWrapper, viewModel);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAddCheck()
         {
-            throw new NotImplementedException();
+            NewCheckViewModel viewModel = await Mediator.Send(new GetAddCheckQuery());
+            return this.ReturnViewComponent(ViewModelWrapper, viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddCheck()
+        public async Task<IActionResult> AddCheck(AddCheckCommand command)
         {
-            throw new NotImplementedException();
+            CheckViewModel viewModel = await Mediator.Send(command);
+            return this.ReturnViewComponent(ViewModelWrapper, viewModel);
         }
 
         [HttpDelete]

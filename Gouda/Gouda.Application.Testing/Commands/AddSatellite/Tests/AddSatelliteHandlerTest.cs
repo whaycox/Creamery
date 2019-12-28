@@ -1,25 +1,20 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace Gouda.Application.Commands.AddSatellite.Tests
 {
-    using Domain;
     using Gouda.Domain;
     using Implementation;
-    using Enumerations;
     using Persistence.Abstraction;
+    using Template;
     using ViewModels.Satellite.Abstraction;
     using ViewModels.Satellite.Domain;
 
     [TestClass]
-    public class AddSatelliteHandlerTest
+    public class AddSatelliteHandlerTest : AddSatelliteTemplate
     {
         private int TestSatelliteID = 14;
-        private string TestSatelliteName = nameof(TestSatelliteName);
-        private IPAddress TestSatelliteIP = IPAddress.Parse("10.10.10.10");
-        private AddSatelliteCommand TestCommand = new AddSatelliteCommand();
         private SatelliteSummaryViewModel TestSummaryViewModel = new SatelliteSummaryViewModel();
 
         private Satellite InsertedSatellite = null;
@@ -32,9 +27,6 @@ namespace Gouda.Application.Commands.AddSatellite.Tests
         [TestInitialize]
         public void Init()
         {
-            TestCommand.SatelliteName = TestSatelliteName;
-            TestCommand.SatelliteIP = TestSatelliteIP.ToString();
-
             MockDatabase
                 .Setup(db => db.Satellite.Insert(It.IsAny<Satellite>()))
                 .Callback<Satellite>(satellite => { satellite.ID = TestSatelliteID; InsertedSatellite = satellite; });
@@ -74,9 +66,9 @@ namespace Gouda.Application.Commands.AddSatellite.Tests
         [TestMethod]
         public async Task ReturnsSummarizedViewModel()
         {
-            AddSatelliteResult result = await TestObject.Handle(TestCommand, default);
+            SatelliteSummaryViewModel result = await TestObject.Handle(TestCommand, default);
 
-            Assert.AreSame(TestSummaryViewModel, result.NewSatellite);
+            Assert.AreSame(TestSummaryViewModel, result);
         }
     }
 }

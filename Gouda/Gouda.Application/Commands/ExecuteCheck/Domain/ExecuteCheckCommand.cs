@@ -9,6 +9,6 @@ namespace Gouda.Application.Commands.ExecuteCheck.Domain
 
     public class ExecuteCheckCommand : IRequest
     {
-        public Check Check { get; set; }
+        public CheckDefinition Check { get; set; }
     }
 }

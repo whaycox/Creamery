@@ -7,9 +7,9 @@ namespace Gouda.Persistence.Abstraction
 
     public interface ICheckInheritor
     {
-        Task<Check> Build(int checkID);
-        Task<List<Check>> Build(List<int> checkIDs);
+        Task<CheckDefinition> Build(int checkID);
+        Task<List<CheckDefinition>> Build(List<int> checkIDs);
 
-        Task Seed(List<Check> seedChecks);
+        Task Seed(List<CheckDefinition> seedChecks);
     }
 }

@@ -17,10 +17,10 @@ namespace Gouda.Scheduling.Tests
     {
         private DateTimeOffset TestTime = new DateTimeOffset(2003, 3, 16, 2, 4, 34, TimeSpan.FromMinutes(30));
         private List<int> TestCheckIDs = new List<int>();
-        private Check TestCheck = new Check();
+        private CheckDefinition TestCheck = new CheckDefinition();
         private int TestCheckID = 13;
         private int TestRescheduleInterval = 30;
-        private List<Check> TestChecks = new List<Check>();
+        private List<CheckDefinition> TestChecks = new List<CheckDefinition>();
 
         private Mock<ITime> MockTime = new Mock<ITime>();
         private Mock<IScheduleFactory> MockScheduleFactory = new Mock<IScheduleFactory>();

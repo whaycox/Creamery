@@ -8,6 +8,7 @@ namespace Gouda.Application.DeferredValues.Domain
     {
         None = default,
         AddButton,
+        CancelButton,
         DeleteButton,
         Satellite,
         Satellites,
@@ -17,5 +18,7 @@ namespace Gouda.Application.DeferredValues.Domain
         AddSatellite,
         Check,
         Checks,
+        CheckName,
+        RescheduleInterval,
     }
 }

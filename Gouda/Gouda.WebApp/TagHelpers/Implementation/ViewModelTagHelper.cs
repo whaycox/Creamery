@@ -39,7 +39,7 @@ namespace Gouda.WebApp.TagHelpers.Implementation
         public async override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             ViewContextAware.Contextualize(ViewContext);
-            WebAppViewModel viewModel = WebAppViewModelWrapper.Wrap(ViewModel);
+            IWebAppViewModel viewModel = WebAppViewModelWrapper.Wrap(ViewModel);
             viewModel.ID = ID;
             viewModel.Class = Class;
 

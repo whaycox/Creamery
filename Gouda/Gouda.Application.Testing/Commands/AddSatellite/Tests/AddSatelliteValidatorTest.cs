@@ -1,35 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using FluentValidation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using System.Threading.Tasks;
-using FluentValidation;
 
 namespace Gouda.Application.Commands.AddSatellite.Tests
 {
     using Implementation;
-    using Domain;
+    using Template;
 
     [TestClass]
-    public class AddSatelliteValidatorTest
+    public class AddSatelliteValidatorTest : AddSatelliteTemplate
     {
-        private string TestSatelliteName = nameof(TestSatelliteName);
-        private string TestSatelliteIP = "0.0.0.0";
-        private AddSatelliteCommand TestCommand = new AddSatelliteCommand();
-
         private AddSatelliteValidator TestObject = new AddSatelliteValidator();
-
-        [TestInitialize]
-        public void Init()
-        {
-            TestCommand.SatelliteName = TestSatelliteName;
-            TestCommand.SatelliteIP = TestSatelliteIP;
-        }
 
         [TestMethod]
         public async Task ValidatesCommand()

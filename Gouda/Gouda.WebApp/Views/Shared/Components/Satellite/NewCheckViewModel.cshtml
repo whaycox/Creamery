@@ -1,0 +1,14 @@
+﻿@model WebAppViewModel<NewCheckViewModel>
+@{ 
+    var newCheck = Model.Wrapped;
+}
+<gouda-check-new>
+    <div class="flex-row wrap-row">
+        <gouda-viewModel class="basics" view-model="@newCheck.BasicDetails" />
+        <div class="flex-row check-row">
+            <div class="empty-space"/>
+            <gouda-viewModel id="cancelAddCheck" view-model="@newCheck.CancelButton" />
+            <gouda-viewModel id="addCheck" view-model="@newCheck.AddButton" />
+        </div>
+    </div>
+</gouda-check-new>

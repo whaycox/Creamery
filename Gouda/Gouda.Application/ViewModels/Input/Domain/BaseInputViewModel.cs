@@ -13,6 +13,5 @@ namespace Gouda.Application.ViewModels.Input.Domain
         public abstract string ViewName { get; }
 
         public LabelDeferredKey Label { get; set; }
-        public bool Editable { get; set; }
     }
 }

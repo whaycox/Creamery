@@ -32,14 +32,14 @@ namespace Gouda.Application.Commands.CheckSchedule.Implementation
 
         protected async override Task Handle(CheckScheduleCommand request, CancellationToken cancellationToken)
         {
-            List<Check> scheduledChecks = await Scheduler.ChecksBeforeScheduledTime(Time.Current);
+            List<CheckDefinition> scheduledChecks = await Scheduler.ChecksBeforeScheduledTime(Time.Current);
 
             IEnumerable<Task> checkTasks = scheduledChecks
                 .Select(check => ExecuteScheduledCheck(check, cancellationToken));
 
             await Task.WhenAll(checkTasks);
         }
-        private Task ExecuteScheduledCheck(Check scheduledCheck, CancellationToken cancellationToken)
+        private Task ExecuteScheduledCheck(CheckDefinition scheduledCheck, CancellationToken cancellationToken)
         {
             ExecuteCheckCommand command = new ExecuteCheckCommand { Check = scheduledCheck };
             return Mediator.Send(command, cancellationToken);

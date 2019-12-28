@@ -10,7 +10,7 @@ namespace Gouda.Analysis.Implementation
 
     public class Analyzer : IAnalyzer
     {
-        public Task AnalyzeResult(Check check, List<DiagnosticData> result)
+        public Task AnalyzeResult(CheckDefinition check, List<DiagnosticData> result)
         {
             throw new NotImplementedException();
         }

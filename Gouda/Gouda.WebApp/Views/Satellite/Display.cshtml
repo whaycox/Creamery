@@ -1,13 +1,94 @@
 ﻿@inject ILabelDeferredValue labelDeferredValue
-@model Gouda.Application.Queries.DisplaySatellite.Domain.DisplaySatelliteResult
+@model SatelliteViewModel
 @{
-    ViewData["Title"] = Model.Satellite.Name;
+    ViewData["Title"] = Model.Name;
 }
 <div style="padding: 10px">
-    <gouda-viewModel view-model="Model.Satellite" />
+    <gouda-viewModel view-model="Model" />
 </div>
 
 @section GlobalStyles
 {
     <link rel="stylesheet" href="~/css/satellite.css" />
+}
+
+@section GlobalScripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#getAddCheck").click(getAddCheck);
+        });
+
+        function getAddCheck(args) {
+            var button = $(args.currentTarget);
+            button.prop("disabled", "disabled");
+            var request = extractDestination(button);
+            request.button = button;
+            request.success = appendAddCheck;
+            request.error = failGetAddCheck;
+            $.ajax(request);
+        }
+        function appendAddCheck(data) {
+            var addCheckRow = $(data);
+            $("gouda-satellite .check-container").prepend(addCheckRow);
+            wireFormSubmissionSuppression();
+            $("#cancelAddCheck").click(cancelAddCheck);
+            $("#addCheck").click(addCheck);
+        }
+        function failGetAddCheck() {
+            $(this.button).prop("disabled", "");
+            alert("Failed to get Add Check");
+        }
+        function cancelAddCheck() {
+            $("gouda-check-new").remove();
+            $("#getAddCheck").prop("disabled", "");
+        }
+        function addCheck(args) {
+            var button = $(args.currentTarget);
+            var form = $("check-details.basics > form");
+            
+            if (form[0].checkValidity()) {
+                button.prop("disabled", "disabled");
+                $("#cancelAddCheck").prop("disabled", "disabled");
+                var request = extractDestination(button);
+                request.data = extractForm(form);
+                request.data.SatelliteID = button.parents("gouda-satellite").data("satellite-id");
+                request.success = addCheckSuccess;
+                request.error = failAddCheck;
+                $.ajax(request);
+            }
+            else {
+                form[0].reportValidity();
+            }
+        }
+        function addCheckSuccess(args) {
+            debugger;
+        }
+        function failAddCheck() {
+            alert("Failed to add check");
+            $("#cancelAddCheck").prop("disabled", "");
+            $("#addCheck").prop("disabled", "");
+        }
+
+        function addSatellite(args) {
+            var button = $(args.currentTarget);
+            var form = button.parent()[0];
+            args.preventDefault();
+            if (form.checkValidity()) {
+                var request = extractDestination(button);
+                request.data = $(form).serialize();
+                request.success = submitSuccess;
+                request.error = function () { debugger; alert("Failed to add satellite."); };
+                form.reset();
+                $.ajax(request);
+            }
+            else {
+                form.reportValidity();
+            }
+        }
+
+        function submitSuccess(data) {
+            $(".summary-table tbody").append(data);
+        }
+    </script>
 }

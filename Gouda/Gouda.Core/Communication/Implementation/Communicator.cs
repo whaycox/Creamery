@@ -10,7 +10,7 @@ namespace Gouda.Communication.Implementation
 
     public class Communicator : ICommunicator
     {
-        public Task<List<DiagnosticData>> SendCheck(Check check)
+        public Task<List<DiagnosticData>> SendCheck(CheckDefinition check)
         {
             throw new NotImplementedException();
         }

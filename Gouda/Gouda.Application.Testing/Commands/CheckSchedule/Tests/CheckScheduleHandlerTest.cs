@@ -14,17 +14,16 @@ namespace Gouda.Application.Commands.CheckSchedule.Tests
 {
     using Implementation;
     using Domain;
-    using Application.Template;
     using Time.Abstraction;
     using Scheduling.Abstraction;
     using Gouda.Domain;
     using ExecuteCheck.Domain;
 
     [TestClass]
-    public class CheckScheduleHandlerTest : MediatrTemplate
+    public class CheckScheduleHandlerTest
     {
         private DateTimeOffset TestTime = new DateTimeOffset(2001, 10, 1, 13, 43, 24, TimeSpan.Zero);
-        private Check TestCheck = new Check();
+        private CheckDefinition TestCheck = new CheckDefinition();
         private CheckScheduleCommand TestCommand = new CheckScheduleCommand();
 
         private Mock<ITime> MockTime = new Mock<ITime>();
@@ -46,13 +45,13 @@ namespace Gouda.Application.Commands.CheckSchedule.Tests
                 .Returns(TestTime);
             MockScheduler
                 .Setup(scheduler => scheduler.ChecksBeforeScheduledTime(It.IsAny<DateTimeOffset>()))
-                .ReturnsAsync(new List<Check> { TestCheck });
+                .ReturnsAsync(new List<CheckDefinition> { TestCheck });
         }
 
         [TestMethod]
         public async Task RequestsCurrentTime()
         {
-            await TestObject.Handle(TestCommand, TestCancellationToken);
+            await TestObject.Handle(TestCommand, default);
 
             MockTime.Verify(time => time.Current, Times.Once);
         }
@@ -60,7 +59,7 @@ namespace Gouda.Application.Commands.CheckSchedule.Tests
         [TestMethod]
         public async Task FetchesScheduledChecks()
         {
-            await TestObject.Handle(TestCommand, TestCancellationToken);
+            await TestObject.Handle(TestCommand, default);
 
             MockScheduler.Verify(scheduler => scheduler.ChecksBeforeScheduledTime(TestTime), Times.Once);
         }
@@ -68,9 +67,9 @@ namespace Gouda.Application.Commands.CheckSchedule.Tests
         [TestMethod]
         public async Task ExecutesScheduledChecks()
         {
-            await TestObject.Handle(TestCommand, TestCancellationToken);
+            await TestObject.Handle(TestCommand, default);
 
-            MockMediator.Verify(mediator => mediator.Send(It.Is<ExecuteCheckCommand>(command => ReferenceEquals(TestCheck, command.Check)), TestCancellationToken), Times.Once);
+            MockMediator.Verify(mediator => mediator.Send(It.Is<ExecuteCheckCommand>(command => ReferenceEquals(TestCheck, command.Check)), default), Times.Once);
         }
     }
 }

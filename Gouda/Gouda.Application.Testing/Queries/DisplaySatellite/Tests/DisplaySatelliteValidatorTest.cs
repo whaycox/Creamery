@@ -1,32 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using FluentValidation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using FluentValidation;
 using System.Threading.Tasks;
 
 namespace Gouda.Application.Queries.DisplaySatellite.Tests
 {
     using Implementation;
-    using Domain;
+    using Template;
 
     [TestClass]
-    public class DisplaySatelliteValidatorTest
+    public class DisplaySatelliteValidatorTest : DisplaySatelliteTemplate
     {
-        private DisplaySatelliteQuery TestQuery = new DisplaySatelliteQuery();
-        private int TestSatelliteID = 7;
-
         private DisplaySatelliteValidator TestObject = new DisplaySatelliteValidator();
-
-        [TestInitialize]
-        public void Init()
-        {
-            TestQuery.SatelliteID = TestSatelliteID;
-        }
 
         [TestMethod]
         public async Task ValidatesTestQuery()
@@ -44,6 +28,5 @@ namespace Gouda.Application.Queries.DisplaySatellite.Tests
 
             await TestObject.Process(TestQuery, default);
         }
-
     }
 }

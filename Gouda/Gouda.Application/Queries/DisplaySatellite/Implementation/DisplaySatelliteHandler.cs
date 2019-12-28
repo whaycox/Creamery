@@ -13,7 +13,7 @@ namespace Gouda.Application.Queries.DisplaySatellite.Implementation
     using ViewModels.Satellite.Abstraction;
     using ViewModels.Satellite.Domain;
 
-    public class DisplaySatelliteHandler : IRequestHandler<DisplaySatelliteQuery, DisplaySatelliteResult>
+    public class DisplaySatelliteHandler : IRequestHandler<DisplaySatelliteQuery, SatelliteViewModel>
     {
         private IGoudaDatabase GoudaDatabase { get; }
         private ISatelliteMapper SatelliteMapper { get; }
@@ -24,15 +24,10 @@ namespace Gouda.Application.Queries.DisplaySatellite.Implementation
             SatelliteMapper = satelliteMapper;
         }
 
-        public async Task<DisplaySatelliteResult> Handle(DisplaySatelliteQuery request, CancellationToken cancellationToken)
+        public async Task<SatelliteViewModel> Handle(DisplaySatelliteQuery request, CancellationToken cancellationToken)
         {
             Satellite satellite = await GoudaDatabase.Satellite.Fetch(request.SatelliteID);
-            SatelliteViewModel viewModel = SatelliteMapper.Map(satellite);
-
-            return new DisplaySatelliteResult
-            {
-                Satellite = viewModel,
-            };
+            return SatelliteMapper.Map(satellite);
         }
     }
 }

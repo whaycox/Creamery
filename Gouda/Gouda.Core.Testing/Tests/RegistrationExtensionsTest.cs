@@ -39,7 +39,7 @@ namespace Gouda.Tests
         }
 
         [TestMethod]
-        public void GoudaCoreAddsTimeTransient()
+        public void GoudaCoreAddsTime()
         {
             TestAddGoudaCore();
 
@@ -47,7 +47,7 @@ namespace Gouda.Tests
         }
 
         [TestMethod]
-        public void GoudaCoreAddsScheduleFactorySingleton()
+        public void GoudaCoreAddsScheduleFactory()
         {
             TestAddGoudaCore();
 
@@ -55,7 +55,7 @@ namespace Gouda.Tests
         }
 
         [TestMethod]
-        public void GoudaCoreAddsSchedulerSingleton()
+        public void GoudaCoreAddsScheduler()
         {
             TestAddGoudaCore();
 
@@ -63,7 +63,7 @@ namespace Gouda.Tests
         }
 
         [TestMethod]
-        public void GoudaCoreAddsCommunicatorTransient()
+        public void GoudaCoreAddsCommunicator()
         {
             TestAddGoudaCore();
 
@@ -71,7 +71,7 @@ namespace Gouda.Tests
         }
 
         [TestMethod]
-        public void GoudaCoreAddsAnalyzerTransient()
+        public void GoudaCoreAddsAnalyzer()
         {
             TestAddGoudaCore();
 
@@ -79,7 +79,7 @@ namespace Gouda.Tests
         }
 
         [TestMethod]
-        public void GoudaCoreAddsGoudaContextScoped()
+        public void GoudaCoreAddsGoudaContext()
         {
             TestAddGoudaCore();
 
@@ -95,7 +95,7 @@ namespace Gouda.Tests
         }
 
         [TestMethod]
-        public void GoudaCoreAddsGoudaDatabaseTransient()
+        public void GoudaCoreAddsGoudaDatabase()
         {
             TestAddGoudaCore();
 
@@ -103,7 +103,7 @@ namespace Gouda.Tests
         }
 
         [TestMethod]
-        public void GoudaCoreAddsCheckInheritorSingleton()
+        public void GoudaCoreAddsCheckInheritor()
         {
             TestAddGoudaCore();
 

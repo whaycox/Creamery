@@ -2,7 +2,7 @@
 @{ 
     var satellite = Model.Wrapped;
 }
-<gouda-satellite>
+<gouda-satellite data-satellite-id="@satellite.ID">
     <div class="satellite-name">@satellite.Name</div>
     <div class="satellite-details">
         <gouda-viewModel view-model="@satellite.IPField" />
@@ -11,5 +11,8 @@
     <div class="satellite-checks">
         <div class="title"><gouda-label key="@satellite.CheckLabel" /></div>
         <gouda-viewModel view-model="@satellite.CheckControls" />
+        <div class="check-container">
+
+        </div>
     </div>
 </gouda-satellite>

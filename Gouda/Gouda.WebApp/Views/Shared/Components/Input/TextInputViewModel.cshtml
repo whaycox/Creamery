@@ -3,8 +3,8 @@
     TextInputViewModel textInput = Model.Wrapped;
     var nothingGlyph = MaterialIconGlyphViewModel.Nothing;
 }
-<gouda-input>
+<gouda-input class="flex-row">
     <label for="@Model.ID"><gouda-label key="@textInput.Label" /></label>
-    <input id="@Model.ID" class="@textInput.TypeName" name="@textInput.Name" @(textInput.Required ? "required" : string.Empty) type="text" @(textInput.ValuePattern != null ? $"pattern={textInput.ValuePattern}" : string.Empty) value="@textInput.Value" />
-    <gouda-viewModel view-model="nothingGlyph" />
+    <input id="@Model.ID" class="@textInput.TypeName gouda-focusable input" name="@textInput.Name" @(textInput.Required ? "required" : string.Empty) type="text" @(textInput.ValuePattern != null ? $"pattern={textInput.ValuePattern}" : string.Empty) value="@textInput.Value" />
+    <gouda-viewModel class="validation-glyph" view-model="nothingGlyph" />
 </gouda-input>

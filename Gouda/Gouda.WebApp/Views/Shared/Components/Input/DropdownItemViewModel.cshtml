@@ -1,0 +1,5 @@
+﻿@model WebAppViewModel<DropdownItemViewModel>
+@{ 
+    DropdownItemViewModel viewModel = Model.Wrapped;
+}
+<option value="@viewModel.Value">@viewModel.Description</option>

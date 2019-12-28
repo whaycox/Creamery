@@ -23,6 +23,7 @@ namespace Gouda.Application.DeferredValues.Implementation
         private void RegisterButtons()
         {
             Labels.Add(LabelDeferredKey.AddButton, "Add");
+            Labels.Add(LabelDeferredKey.CancelButton, "Cancel");
             Labels.Add(LabelDeferredKey.DeleteButton, "Delete");
         }
         private void RegisterSatellite()
@@ -35,6 +36,8 @@ namespace Gouda.Application.DeferredValues.Implementation
             Labels.Add(LabelDeferredKey.AddSatellite, "Add a Satellite");
             Labels.Add(LabelDeferredKey.Check, "Check");
             Labels.Add(LabelDeferredKey.Checks, "Checks");
+            Labels.Add(LabelDeferredKey.CheckName, "Check Name");
+            Labels.Add(LabelDeferredKey.RescheduleInterval, "Reschedule Interval (mins)");
         }
     }
 }

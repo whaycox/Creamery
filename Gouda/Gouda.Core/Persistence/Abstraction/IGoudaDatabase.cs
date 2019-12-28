@@ -13,7 +13,7 @@ namespace Gouda.Persistence.Abstraction
     public interface IGoudaDatabase
     {
         IRepository<Satellite> Satellite { get; }
-        IRepository<Check> Check { get; }
+        IRepository<CheckDefinition> CheckDefinition { get; }
         IRepository<DiagnosticData> DiagnosticData { get; }
 
         Task SaveChanges();

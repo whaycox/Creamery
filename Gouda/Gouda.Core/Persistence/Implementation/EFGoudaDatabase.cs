@@ -14,20 +14,20 @@ namespace Gouda.Persistence.Implementation
         private GoudaContext GoudaContext { get; }
 
         public IRepository<Satellite> Satellite { get; }
-        public IRepository<Check> Check { get; }
+        public IRepository<CheckDefinition> CheckDefinition { get; }
         public IRepository<DiagnosticData> DiagnosticData { get; }
 
         public EFGoudaDatabase(
             GoudaContext goudaContext,
             IRepository<Satellite> satellites,
-            IRepository<Check> checks,
+            IRepository<CheckDefinition> checks,
             IRepository<DiagnosticData> data)
         {
             GoudaContext = goudaContext;
             GoudaContext.Database.EnsureCreated();
 
             Satellite = satellites;
-            Check = checks;
+            CheckDefinition = checks;
             DiagnosticData = data;
         }
 

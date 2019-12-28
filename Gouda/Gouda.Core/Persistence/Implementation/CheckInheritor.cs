@@ -16,7 +16,7 @@ namespace Gouda.Persistence.Implementation
         private const int MaxConcurrentAttempts = 3;
         private const int ConcurrentRetryDelayInMs = 10;
 
-        private ConcurrentDictionary<int, Check> Checks = new ConcurrentDictionary<int, Check>();
+        private ConcurrentDictionary<int, CheckDefinition> Checks = new ConcurrentDictionary<int, CheckDefinition>();
         private bool SeedAllowed = true;
 
         private async Task ConcurrentOperation(Func<bool> concurrentDelegate)
@@ -28,48 +28,50 @@ namespace Gouda.Persistence.Implementation
                 throw new ConcurrentOperationException($"Failed to operate on {nameof(CheckInheritor)}'s {nameof(Checks)}");
         }
 
-        public async Task<List<Check>> Build(List<int> checkIDs)
+        public async Task<List<CheckDefinition>> Build(List<int> checkIDs)
         {
-            IEnumerable<Task<Check>> checkTasks = checkIDs.Select(checkID => Build(checkID));
+            IEnumerable<Task<CheckDefinition>> checkTasks = checkIDs.Select(checkID => Build(checkID));
             return (await Task.WhenAll(checkTasks)).ToList();
         }
 
-        public async Task<Check> Build(int checkID)
+        public async Task<CheckDefinition> Build(int checkID)
         {
-            Check currentLevel = await RetrieveCheck(checkID);
-            if (currentLevel.ParentCheckID == null)
-                return currentLevel;
-            else
-                return InheritChecks(currentLevel, await Build(currentLevel.ParentCheckID.Value));
+            throw new NotImplementedException();
+            //CheckDefinition currentLevel = await RetrieveCheck(checkID);
+            //if (currentLevel.ParentDefinitionID == null)
+            //    return currentLevel;
+            //else
+            //    return InheritChecks(currentLevel, await Build(currentLevel.ParentDefinitionID.Value));
         }
-        private Check InheritChecks(Check current, Check ancestor) => new Check
+        //private CheckDefinition InheritChecks(CheckDefinition current, CheckDefinition ancestor) => new CheckDefinition
+        //{
+        //    ID = current.ID,
+        //    ParentDefinitionID = current.ParentDefinitionID,
+        //    RescheduleSecondInterval = current.RescheduleSecondInterval ?? ancestor.RescheduleSecondInterval,
+        //};
+        private async Task<CheckDefinition> RetrieveCheck(int checkID)
         {
-            ID = current.ID,
-            ParentCheckID = current.ParentCheckID,
-            RescheduleSecondInterval = current.RescheduleSecondInterval ?? ancestor.RescheduleSecondInterval,
-        };
-        private async Task<Check> RetrieveCheck(int checkID)
-        {
-            Check retrieved = null;
+            CheckDefinition retrieved = null;
             await ConcurrentOperation(() => Checks.TryGetValue(checkID, out retrieved));
             return retrieved;
         }
 
-        public async Task Seed(List<Check> seedChecks)
+        public async Task Seed(List<CheckDefinition> seedChecks)
         {
-            if (!SeedAllowed)
-                throw new InvalidOperationException($"Seeding {nameof(CheckInheritor)} is no longer allowed");
+            throw new NotImplementedException();
+            //if (!SeedAllowed)
+            //    throw new InvalidOperationException($"Seeding {nameof(CheckInheritor)} is no longer allowed");
 
-            foreach (Check check in seedChecks)
-                await AddCheck(check);
-            SeedAllowed = false;
+            //foreach (CheckDefinition check in seedChecks)
+            //    await AddCheck(check);
+            //SeedAllowed = false;
         }
-        private Task AddCheck(Check check) => ConcurrentOperation(() => Checks.TryAdd(check.ID, CloneCheck(check)));
-        private Check CloneCheck(Check inputCheck) => new Check
-        {
-            ID = inputCheck.ID,
-            ParentCheckID = inputCheck.ParentCheckID,
-            RescheduleSecondInterval = inputCheck.RescheduleSecondInterval,
-        };
+        //private Task AddCheck(CheckDefinition check) => ConcurrentOperation(() => Checks.TryAdd(check.ID, CloneCheck(check)));
+        //private CheckDefinition CloneCheck(CheckDefinition inputCheck) => new CheckDefinition
+        //{
+        //    ID = inputCheck.ID,
+        //    ParentDefinitionID = inputCheck.ParentDefinitionID,
+        //    RescheduleSecondInterval = inputCheck.RescheduleSecondInterval,
+        //};
     }
 }

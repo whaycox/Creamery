@@ -12,7 +12,7 @@ namespace Gouda.Scheduling.Abstraction
 
     public interface IScheduler
     {
-        Task<List<Check>> ChecksBeforeScheduledTime(DateTimeOffset scheduledTime);
-        void RescheduleCheck(Check check);
+        Task<List<CheckDefinition>> ChecksBeforeScheduledTime(DateTimeOffset scheduledTime);
+        void RescheduleCheck(CheckDefinition check);
     }
 }

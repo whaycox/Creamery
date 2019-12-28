@@ -17,12 +17,13 @@ namespace Gouda.Application
     {
         public static IServiceCollection AddGoudaApplication(this IServiceCollection services) => services
             .AddMediatR(typeof(RegistrationExtensions))
-            .AddViewModelMappers()
             .AddSingleton<ILabelDeferredValue, LabelDeferredValue>()
-            .AddScoped<INavigationTreeBuilder, NavigationTreeBuilder>();
+            .AddScoped<INavigationTreeBuilder, NavigationTreeBuilder>()
+            .AddViewModelMappers();
 
         private static IServiceCollection AddViewModelMappers(this IServiceCollection services) => services
             .AddTransient<ISatelliteMapper, SatelliteMapper>()
-            .AddTransient<ISatelliteSummaryMapper, SatelliteSummaryMapper>();
+            .AddTransient<ISatelliteSummaryMapper, SatelliteSummaryMapper>()
+            .AddTransient<ICheckDefinitionMapper, CheckDefinitionMapper>();
     }
 }

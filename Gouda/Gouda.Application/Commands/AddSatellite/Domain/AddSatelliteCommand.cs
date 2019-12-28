@@ -5,7 +5,9 @@ using MediatR;
 
 namespace Gouda.Application.Commands.AddSatellite.Domain
 {
-    public class AddSatelliteCommand : IRequest<AddSatelliteResult>
+    using ViewModels.Satellite.Domain;
+
+    public class AddSatelliteCommand : IRequest<SatelliteSummaryViewModel>
     {
         public string SatelliteName { get; set; }
         public string SatelliteIP { get; set; }

@@ -1,6 +1,6 @@
 ﻿@model WebAppViewModel<CheckControlsViewModel>
-<gouda-check-controls>
+<gouda-check-controls class="flex-row check-row">
     <div class="empty-space"></div>
-    <gouda-viewModel view-model="Model.Wrapped.AddCheckButton" />
-    <gouda-viewModel view-model="Model.Wrapped.DeleteCheckButton" />
+    <gouda-viewModel id="getAddCheck" view-model="Model.Wrapped.GetAddCheckButton" />
+    <gouda-viewModel id="deleteCheck" view-model="Model.Wrapped.DeleteCheckButton" />
 </gouda-check-controls>

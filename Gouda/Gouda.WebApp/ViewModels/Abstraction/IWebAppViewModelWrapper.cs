@@ -7,9 +7,10 @@ namespace Gouda.WebApp.ViewModels.Abstraction
 {
     using Domain;
     using Application.Abstraction;
+    using Abstraction;
 
     public interface IWebAppViewModelWrapper
     {
-        WebAppViewModel Wrap(IViewModel viewModel);
+        IWebAppViewModel Wrap(IViewModel viewModel);
     }
 }

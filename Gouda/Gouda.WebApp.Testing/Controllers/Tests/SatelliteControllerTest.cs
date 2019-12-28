@@ -6,39 +6,48 @@ using System.Threading.Tasks;
 
 namespace Gouda.WebApp.Controllers.Tests
 {
+    using Application.Abstraction;
+    using Application.Commands.AddCheck.Domain;
     using Application.Commands.AddSatellite.Domain;
+    using Application.Queries.DisplaySatellite.Domain;
     using Application.Queries.ListSatellites.Domain;
     using Application.ViewModels.Satellite.Domain;
     using Implementation;
-    using ViewComponents.Implementation;
-    using Application.Queries.DisplaySatellite.Domain;
+    using ViewModels.Abstraction;
 
     [TestClass]
     public class SatelliteControllerTest
     {
         private ListSatellitesResult TestListSatellitesResult = new ListSatellitesResult();
         private AddSatelliteCommand TestAddSatelliteCommand = new AddSatelliteCommand();
-        private AddSatelliteResult TestAddSatelliteResult = new AddSatelliteResult();
         private SatelliteSummaryViewModel TestSummaryViewModel = new SatelliteSummaryViewModel();
-        private DisplaySatelliteResult TestDisplaySatelliteResult = new DisplaySatelliteResult();
+        private SatelliteViewModel TestSatelliteViewModel = new SatelliteViewModel();
+        private AddCheckCommand TestAddCheckCommand = new AddCheckCommand();
+        private CheckViewModel TestCheckViewModel = new CheckViewModel();
 
         private Mock<IMediator> MockMediator = new Mock<IMediator>();
+        private Mock<IWebAppViewModelWrapper> MockViewModelWrapper = new Mock<IWebAppViewModelWrapper>();
+        private Mock<IWebAppViewModel> MockWebAppViewModel = new Mock<IWebAppViewModel>();
 
         private SatelliteController TestObject = null;
 
         [TestInitialize]
         public void Init()
         {
-            TestAddSatelliteResult.NewSatellite = TestSummaryViewModel;
-
             MockMediator
                 .Setup(mediator => mediator.Send(It.IsAny<AddSatelliteCommand>(), default))
-                .ReturnsAsync(TestAddSatelliteResult);
+                .ReturnsAsync(TestSummaryViewModel);
             MockMediator
                 .Setup(mediator => mediator.Send(It.IsAny<DisplaySatelliteQuery>(), default))
-                .ReturnsAsync(TestDisplaySatelliteResult);
+                .ReturnsAsync(TestSatelliteViewModel);
+            MockMediator
+                .Setup(mediator => mediator.Send(It.IsAny<AddCheckCommand>(), default))
+                .ReturnsAsync(TestCheckViewModel);
+            MockViewModelWrapper
+                .Setup(wrapper => wrapper.Wrap(It.IsAny<IViewModel>()))
+                .Returns(MockWebAppViewModel.Object);
 
-            TestObject = new SatelliteController(MockMediator.Object);
+            TestObject = new SatelliteController(MockMediator.Object, MockViewModelWrapper.Object);
         }
 
         [TestMethod]
@@ -91,11 +100,11 @@ namespace Gouda.WebApp.Controllers.Tests
 
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             ViewResult view = (ViewResult)result;
-            Assert.AreSame(TestDisplaySatelliteResult, view.Model);
+            Assert.AreSame(TestSatelliteViewModel, view.Model);
         }
 
         [TestMethod]
-        public async Task AddSendsCommand()
+        public async Task AddSatelliteSendsCommand()
         {
             await TestObject.AddSatellite(TestAddSatelliteCommand);
 
@@ -103,14 +112,47 @@ namespace Gouda.WebApp.Controllers.Tests
         }
 
         [TestMethod]
-        public async Task AddReturnsViewComponentWithSummary()
+        public async Task AddSatelliteWrapsResult()
+        {
+            await TestObject.AddSatellite(TestAddSatelliteCommand);
+
+            MockViewModelWrapper.Verify(wrapper => wrapper.Wrap(TestSummaryViewModel), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task AddSatelliteReturnsWrappedViewComponent()
         {
             IActionResult result = await TestObject.AddSatellite(TestAddSatelliteCommand);
 
             Assert.IsInstanceOfType(result, typeof(ViewComponentResult));
             ViewComponentResult view = (ViewComponentResult)result;
-            Assert.AreEqual(TestSummaryViewModel.ViewConcept, view.ViewComponentName);
-            Assert.AreSame(TestSummaryViewModel, view.Arguments);
+            Assert.AreEqual(MockWebAppViewModel.Object, view.Arguments);
+        }
+
+        [TestMethod]
+        public async Task AddCheckSendsCommand()
+        {
+            await TestObject.AddCheck(TestAddCheckCommand);
+
+            MockMediator.Verify(mediator => mediator.Send(TestAddCheckCommand, default), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task AddCheckWrapsResult()
+        {
+            await TestObject.AddCheck(TestAddCheckCommand);
+
+            MockViewModelWrapper.Verify(wrapper => wrapper.Wrap(TestCheckViewModel), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task AddCheckReturnsWrappedViewComponent()
+        {
+            IActionResult result = await TestObject.AddCheck(TestAddCheckCommand);
+
+            Assert.IsInstanceOfType(result, typeof(ViewComponentResult));
+            ViewComponentResult view = (ViewComponentResult)result;
+            Assert.AreEqual(MockWebAppViewModel.Object, view.Arguments);
         }
     }
 }

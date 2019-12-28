@@ -5,7 +5,9 @@ using MediatR;
 
 namespace Gouda.Application.Queries.DisplaySatellite.Domain
 {
-    public class DisplaySatelliteQuery : IRequest<DisplaySatelliteResult>
+    using ViewModels.Satellite.Domain;
+
+    public class DisplaySatelliteQuery : IRequest<SatelliteViewModel>
     {
         public int SatelliteID { get; set; }
     }

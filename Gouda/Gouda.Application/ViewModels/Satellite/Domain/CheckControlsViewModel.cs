@@ -11,11 +11,11 @@ namespace Gouda.Application.ViewModels.Satellite.Domain
     {
         public override string ViewName => nameof(CheckControlsViewModel);
 
-        public ButtonViewModel AddCheckButton { get; set; } = new ButtonViewModel
+        public ButtonViewModel GetAddCheckButton { get; set; } = new ButtonViewModel
         { 
             Label = LabelDeferredKey.AddButton, 
             Editable = true,
-            Destination = DestinationDeferredKey.AddCheck,
+            Destination = DestinationDeferredKey.GetAddCheck,
         };
         public ButtonViewModel DeleteCheckButton { get; set; } = new ButtonViewModel
         { 

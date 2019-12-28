@@ -8,11 +8,16 @@ function toggleNav() {
 }
 
 function toggleExpanded(ele) {
-    var element = $(ele);
-    if (element.attr("aria-expanded") === "true") {
-        element.attr("aria-expanded", "false");
+    if ($(ele).attr("aria-expanded") === "true") {
+        collapseElement(ele);
     }
     else {
-        element.attr("aria-expanded", "true");
+        expandElement(ele);
     }
+}
+function expandElement(ele) {
+    $(ele).attr("aria-expanded", "true");
+}
+function collapseElement(ele) {
+    $(ele).attr("aria-expanded", "false");
 }

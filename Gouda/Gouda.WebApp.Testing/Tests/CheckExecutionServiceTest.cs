@@ -54,8 +54,9 @@ namespace Gouda.WebApp.Tests
         [TestMethod]
         public async Task IssuesCommandEachSleep()
         {
+            TestOptions.SleepTimeInMs = 100;
             int expectedCommands = 3;
-            int waitDuration = ((expectedCommands - 1) * TestSleepTimeInMs) + 10;
+            int waitDuration = ((expectedCommands - 1) * TestOptions.SleepTimeInMs) + 20;
 
             await TestObject.StartAsync(TestCancellationToken);
 

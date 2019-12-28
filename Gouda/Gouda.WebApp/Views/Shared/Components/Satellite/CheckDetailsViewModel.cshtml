@@ -1,0 +1,12 @@
+﻿@model WebAppViewModel<CheckDetailsViewModel>
+@{ 
+    CheckDetailsViewModel checkDetails = Model.Wrapped;
+}
+<check-details class="@Model.Class check-row">
+    <form class="flex-row wrap-row gouda-form">
+        @foreach (var option in checkDetails.Options)
+        {
+            <gouda-viewModel view-model="@option" />
+        }
+    </form>
+</check-details>

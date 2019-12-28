@@ -12,6 +12,6 @@ namespace Gouda.Analysis.Abstraction
 
     public interface IAnalyzer
     {
-        Task AnalyzeResult(Check check, List<DiagnosticData> result);
+        Task AnalyzeResult(CheckDefinition check, List<DiagnosticData> result);
     }
 }

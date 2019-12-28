@@ -1,0 +1,15 @@
+﻿@model WebAppViewModel<DropdownViewModel>
+@{
+    DropdownViewModel dropdown = Model.Wrapped;
+    var nothingGlyph = MaterialIconGlyphViewModel.Nothing;
+}
+<gouda-input class="flex-row">
+    <label for="@Model.ID"><gouda-label key="@dropdown.Label" /></label>
+    <select id="@Model.ID" class="dropdown input gouda-focusable" name="@dropdown.Name" @(dropdown.Required ? "required" : string.Empty)>
+        @foreach(DropdownItemViewModel item in dropdown.Items)
+        {
+            <gouda-viewModel view-model="@item" />
+        }
+    </select>
+    <gouda-viewModel class="validation-glyph" view-model="nothingGlyph" />
+</gouda-input>

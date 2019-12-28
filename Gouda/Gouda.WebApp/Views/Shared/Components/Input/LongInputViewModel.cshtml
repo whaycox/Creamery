@@ -1,0 +1,10 @@
+﻿@model WebAppViewModel<LongInputViewModel>
+@{
+    LongInputViewModel longInput = Model.Wrapped;
+    var nothingGlyph = MaterialIconGlyphViewModel.Nothing;
+}
+<gouda-input class="flex-row">
+    <label for="@Model.ID"><gouda-label key="@longInput.Label" /></label>
+    <input id="@Model.ID" class="gouda-focusable input" name="@longInput.Name" @(longInput.Required ? "required" : string.Empty) type="number" value="@longInput.Value" />
+    <gouda-viewModel class="validation-glyph" view-model="nothingGlyph" />
+</gouda-input>

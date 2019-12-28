@@ -24,13 +24,13 @@
             CheckInheritor = checkInheritor;
         }
 
-        public Task<List<Check>> ChecksBeforeScheduledTime(DateTimeOffset scheduledTime)
+        public Task<List<CheckDefinition>> ChecksBeforeScheduledTime(DateTimeOffset scheduledTime)
         {
             List<int> checkIDs = Schedule.Trim(scheduledTime);
             return CheckInheritor.Build(checkIDs);
         }
 
-        public void RescheduleCheck(Check check)
+        public void RescheduleCheck(CheckDefinition check)
         {
             DateTimeOffset rescheduleTime = Time.Current.AddSeconds(check.RescheduleSecondInterval.Value);
             Schedule.Add(check.ID, rescheduleTime);

@@ -14,7 +14,7 @@ namespace Gouda.Application.Commands.AddSatellite.Implementation
     using ViewModels.Satellite.Domain;
     using ViewModels.Satellite.Abstraction;
 
-    public class AddSatelliteHandler : IRequestHandler<AddSatelliteCommand, AddSatelliteResult>
+    public class AddSatelliteHandler : IRequestHandler<AddSatelliteCommand, SatelliteSummaryViewModel>
     {
         private IGoudaDatabase GoudaDatabase { get; }
         private ISatelliteSummaryMapper SummaryMapper { get; }
@@ -25,12 +25,12 @@ namespace Gouda.Application.Commands.AddSatellite.Implementation
             SummaryMapper = summaryMapper;
         }
 
-        public async Task<AddSatelliteResult> Handle(AddSatelliteCommand request, CancellationToken cancellationToken)
+        public async Task<SatelliteSummaryViewModel> Handle(AddSatelliteCommand request, CancellationToken cancellationToken)
         {
             Satellite newSatellite = BuildNewSatellite(request);
             await GoudaDatabase.Satellite.Insert(newSatellite);
             await GoudaDatabase.SaveChanges();
-            return new AddSatelliteResult { NewSatellite = SummaryMapper.Map(newSatellite) };
+            return SummaryMapper.Map(newSatellite);
         }
         private Satellite BuildNewSatellite(AddSatelliteCommand command) => new Satellite
         {

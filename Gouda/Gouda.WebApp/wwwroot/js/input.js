@@ -7,6 +7,10 @@ function getFunctionPointer(functionName) {
 }
 
 function wireInputs() {
+    wireIPAddressValidity();
+    wireFormSubmissionSuppression();
+}
+function wireIPAddressValidity() {
     $("gouda-input .IPAddress").on("input", function (event) {
         if (this.validity.patternMismatch) {
             this.setCustomValidity("Please supply an IP Address.");
@@ -15,18 +19,25 @@ function wireInputs() {
             this.setCustomValidity("");
         }
     });
-    $(".gouda-button").on("submit", function (event) {
-        event.preventDefault();
-        if (event.currentTarget.checkValidity()) {
-            var destination = $(event.currentTarget).data("destination");
-            var data = $(event.currentTarget).serialize();
-            var success = window[$(event.currentTarget).data("success")];
-            $.ajax({
-                url: destination,
-                method: "POST",
-                data: data,
-                success: success
-            });
-        }
-    });
+}
+function wireFormSubmissionSuppression() {
+    $("form.gouda-form").submit(function (args) { args.preventDefault(); });
+}
+
+function extractDestination(button) {
+    var destination = $(button).data("destination");
+    var method = $(button).data("method");
+    return {
+        url: destination,
+        method: method
+    };
+}
+
+function extractForm(form) {
+    var array = form.serializeArray();
+    var json = {};
+    for (i = 0; i < array.length; i++) {
+        json[array[i]["name"]] = array[i]["value"];
+    }
+    return json;
 }

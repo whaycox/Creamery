@@ -16,6 +16,8 @@ namespace Gouda
     using Time.Implementation;
     using Analysis.Abstraction;
     using Analysis.Implementation;
+    using Checks.Abstraction;
+    using Checks.Implementation;
 
     public static class RegistrationExtensions
     {
@@ -28,7 +30,8 @@ namespace Gouda
             .AddDbContext<GoudaContext>(options => options.UseSqlServer(ConnectionString(configuration)))
             .AddTransient(typeof(IRepository<>), typeof(EFRepository<>))
             .AddTransient<IGoudaDatabase, EFGoudaDatabase>()
-            .AddSingleton<ICheckInheritor, CheckInheritor>();
+            .AddSingleton<ICheckInheritor, CheckInheritor>()
+            .AddSingleton<ICheckLibrary, CheckLibrary>();
 
         private static string ConnectionString(IConfiguration configuration)
         {

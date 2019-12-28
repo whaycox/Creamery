@@ -12,6 +12,6 @@ namespace Gouda.Communication.Abstraction
 
     public interface ICommunicator
     {
-        Task<List<DiagnosticData>> SendCheck(Check check);
+        Task<List<DiagnosticData>> SendCheck(CheckDefinition check);
     }
 }

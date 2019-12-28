@@ -1,27 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Threading.Tasks;
 
 namespace Gouda.Application.Queries.DisplaySatellite.Tests
 {
-    using Implementation;
-    using Domain;
-    using Persistence.Abstraction;
     using Gouda.Domain;
+    using Implementation;
+    using Persistence.Abstraction;
+    using Template;
     using ViewModels.Satellite.Abstraction;
     using ViewModels.Satellite.Domain;
 
     [TestClass]
-    public class DisplaySatelliteHandlerTest
+    public class DisplaySatelliteHandlerTest : DisplaySatelliteTemplate
     {
-        private DisplaySatelliteQuery TestQuery = new DisplaySatelliteQuery();
-        private int TestSatelliteID = 5;
         private Satellite TestSatellite = new Satellite();
         private SatelliteViewModel TestViewModel = new SatelliteViewModel();
 
@@ -33,8 +25,6 @@ namespace Gouda.Application.Queries.DisplaySatellite.Tests
         [TestInitialize]
         public void Init()
         {
-            TestQuery.SatelliteID = TestSatelliteID;
-
             MockGoudaDatabase
                 .Setup(db => db.Satellite.Fetch(It.IsAny<int>()))
                 .ReturnsAsync(TestSatellite);
@@ -62,11 +52,11 @@ namespace Gouda.Application.Queries.DisplaySatellite.Tests
         }
 
         [TestMethod]
-        public async Task ReturnsMappedViewModelInResult()
+        public async Task ReturnsMappedViewModel()
         {
-            DisplaySatelliteResult result = await TestObject.Handle(TestQuery, default);
+            SatelliteViewModel viewModel = await TestObject.Handle(TestQuery, default);
 
-            Assert.AreSame(TestViewModel, result.Satellite);
+            Assert.AreSame(TestViewModel, viewModel);
         }
     }
 }

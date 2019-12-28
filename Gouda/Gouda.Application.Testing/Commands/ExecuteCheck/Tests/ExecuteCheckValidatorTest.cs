@@ -4,28 +4,15 @@ using System.Threading.Tasks;
 
 namespace Gouda.Application.Commands.ExecuteCheck.Tests
 {
-    using Application.Template;
-    using Domain;
-    using Gouda.Domain;
     using Implementation;
+    using Template;
 
     [TestClass]
-    public class ExecuteCheckValidatorTest : MediatrTemplate
+    public class ExecuteCheckValidatorTest : ExecuteCheckTemplate
     {
-        private ExecuteCheckCommand TestCommand = new ExecuteCheckCommand();
-        private Check TestCheck = new Check();
-        private Satellite TestSatellite = new Satellite();
-
         private ExecuteCheckValidator TestObject = new ExecuteCheckValidator();
 
-        private Task ProcessTestCommand() => TestObject.Process(TestCommand, TestCancellationToken);
-
-        [TestInitialize]
-        public void Init()
-        {
-            TestCheck.Satellite = TestSatellite;
-            TestCommand.Check = TestCheck;
-        }
+        private Task ProcessTestCommand() => TestObject.Process(TestCommand, default);
 
         [TestMethod]
         public async Task ValidatesTestObject()

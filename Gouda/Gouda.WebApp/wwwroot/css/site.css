@@ -11,8 +11,22 @@ body {
 a {
     color: var(--main-color);
 }
-    a:hover {
+    a:hover,
+    a:focus {
         color: var(--accent-color);
+    }
+
+.empty-space {
+    flex-grow: 1;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+    .flex-row.wrap-row {
+        flex-wrap: wrap;
     }
 
 div.site-container {
@@ -41,5 +55,12 @@ div.site-container main {
             'header' 
             'main' 
             'footer';
+    }
+}
+
+@media (max-width: 700px) {
+    .flex-row.wrap-row {
+        flex-direction: column;
+        align-items: stretch;
     }
 }

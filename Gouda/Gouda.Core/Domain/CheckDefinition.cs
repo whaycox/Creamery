@@ -4,9 +4,11 @@ using System.Text;
 
 namespace Gouda.Domain
 {
-    public class Check : BaseEntity
+    public class CheckDefinition : BaseEntity
     {
-        public int? ParentCheckID { get; set; }
+        public Guid CheckID { get; set; }
+        public int SatelliteID { get; set; }
+        public string Name { get; set; }
         public int? RescheduleSecondInterval { get; set; }
 
         public Satellite Satellite { get; set; }

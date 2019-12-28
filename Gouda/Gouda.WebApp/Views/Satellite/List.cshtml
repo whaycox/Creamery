@@ -38,10 +38,33 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $("gouda-add-satellite .add-expander").click(toggleAddSatellite);
+            $("gouda-add-satellite button").click(addSatellite);
         });
 
         function toggleAddSatellite() {
             toggleExpanded($("gouda-add-satellite"));
+        }
+
+        function addSatellite(args) {
+            var button = $(args.currentTarget);
+            var form = button.parent()[0];
+            args.preventDefault();
+            if (form.checkValidity()) {
+                var destination = $(args.currentTarget).data("destination");
+                var method = $(args.currentTarget).data("method");
+                var data = $(form).serialize();
+                form.reset();
+                $.ajax({
+                    url: destination,
+                    method: method,
+                    data: data,
+                    success: submitSuccess,
+                    failure: function () { alert("Failed to add satellite."); }
+                });
+            }
+            else {
+                form.reportValidity();
+            }
         }
 
         function submitSuccess(data) {

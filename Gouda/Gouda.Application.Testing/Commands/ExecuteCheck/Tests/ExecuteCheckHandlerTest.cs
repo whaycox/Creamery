@@ -1,31 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using MediatR;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using MediatR;
 
 namespace Gouda.Application.Commands.ExecuteCheck.Tests
 {
-    using Implementation;
+    using Analysis.Abstraction;
+    using Communication.Abstraction;
     using Domain;
     using Gouda.Domain;
-    using Communication.Abstraction;
-    using Application.Template;
+    using Implementation;
     using Persistence.Abstraction;
-    using Analysis.Abstraction;
     using Scheduling.Abstraction;
+    using Template;
 
     [TestClass]
-    public class ExecuteCheckHandlerTest : MediatrTemplate
+    public class ExecuteCheckHandlerTest : ExecuteCheckTemplate
     {
-        private ExecuteCheckCommand TestCommand = new ExecuteCheckCommand();
-        private Check TestCheck = new Check();
-        private Satellite TestSatellite = new Satellite();
         private List<DiagnosticData> TestResultData = new List<DiagnosticData>();
 
         private Mock<ICommunicator> MockCommunicator = new Mock<ICommunicator>();
@@ -35,25 +27,22 @@ namespace Gouda.Application.Commands.ExecuteCheck.Tests
 
         private IRequestHandler<ExecuteCheckCommand> TestObject = null;
 
-        private Task HandleTestCommand() => TestObject.Handle(TestCommand, TestCancellationToken);
+        private Task HandleTestCommand() => TestObject.Handle(TestCommand, default);
 
         [TestInitialize]
         public void Init()
         {
-            TestCheck.Satellite = TestSatellite;
-            TestCommand.Check = TestCheck;
+            MockCommunicator
+                .Setup(coms => coms.SendCheck(It.IsAny<CheckDefinition>()))
+                .ReturnsAsync(TestResultData);
+            MockGoudaDatabase
+                .Setup(db => db.DiagnosticData.Insert(It.IsAny<List<DiagnosticData>>()));
 
             TestObject = new ExecuteCheckHandler(
                 MockCommunicator.Object,
                 MockGoudaDatabase.Object,
                 MockAnalyzer.Object,
                 MockScheduler.Object);
-
-            MockCommunicator
-                .Setup(coms => coms.SendCheck(It.IsAny<Check>()))
-                .ReturnsAsync(TestResultData);
-            MockGoudaDatabase
-                .Setup(db => db.DiagnosticData.Insert(It.IsAny<List<DiagnosticData>>()));
         }
 
         [TestMethod]

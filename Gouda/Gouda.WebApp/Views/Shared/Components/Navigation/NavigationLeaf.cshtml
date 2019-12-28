@@ -7,14 +7,14 @@
 }
 @if (navigationLeaf.Glyph != null)
 {
-    <a class="gouda-nav-leaf root-leaf" href="@Url.Action(destinationItem.Action, destinationItem.Controller)">
+    <a class="gouda-nav-leaf root-leaf gouda-focusable" href="@Url.Action(destinationItem.Action, destinationItem.Controller)">
         <gouda-viewModel view-model="navigationLeaf.Glyph" />
         <div class="title"><gouda-label key="@navigationLeaf.Label" /></div>
     </a>
 }
 else
 {
-    <a class="gouda-nav-leaf group-leaf" href="@Url.Action(destinationItem.Action, destinationItem.Controller)">
+    <a class="gouda-nav-leaf group-leaf gouda-focusable" href="@Url.Action(destinationItem.Action, destinationItem.Controller)">
         <div class="title"><gouda-label key="@navigationLeaf.Label" /></div>
     </a>
 }
