@@ -25,7 +25,6 @@ namespace Curds.Cron.RangeLinks.Implementation
                 throw new FormatException($"Supplied value {value} is outside the accepted {FieldDefinition.AbsoluteMin}-{FieldDefinition.AbsoluteMax}");
             return new SingleValueRange<TFieldDefinition>(FieldDefinition, value);
         }
-        private bool IsValid(int parsedValue) => FieldDefinition.AbsoluteMin <= parsedValue && parsedValue <= FieldDefinition.AbsoluteMax;
 
     }
 }

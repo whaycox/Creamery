@@ -10,7 +10,7 @@ namespace Curds.Cron.RangeLinks.Implementation
 
     internal class WildcardRangeLink : ICronRangeLink
     {
-        private static readonly Regex WildcardMatcher = new Regex(@"\*", RegexOptions.Compiled);
+        private static readonly Regex WildcardMatcher = new Regex(@"^\*$", RegexOptions.Compiled);
 
         public ICronRangeLink Successor { get; }
 

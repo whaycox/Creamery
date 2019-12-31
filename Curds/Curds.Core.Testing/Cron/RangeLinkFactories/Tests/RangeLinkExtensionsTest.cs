@@ -26,5 +26,17 @@ namespace Curds.Cron.RangeLinkFactories.Tests
         {
             VerifyLinkIsExpected(TestObject.AddSingleValue(MockFieldDefinition.Object), typeof(SingleValueRangeLink<ICronFieldDefinition>));
         }
+
+        [TestMethod]
+        public void WildcardAddsWildcardLink()
+        {
+            VerifyLinkIsExpected(TestObject.AddWildcard(), typeof(WildcardRangeLink));
+        }
+
+        [TestMethod]
+        public void RangeValueAddsRangeValueLink()
+        {
+            VerifyLinkIsExpected(TestObject.AddRangeValue(MockFieldDefinition.Object), typeof(RangeValueRangeLink<ICronFieldDefinition>));
+        }
     }
 }

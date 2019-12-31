@@ -11,6 +11,7 @@
 
         public virtual ICronRangeLink StartOfChain => EmptyChain
             .AddWildcard()
+            .AddRangeValue(FieldDefinition)
             .AddSingleValue(FieldDefinition);
 
         public BaseRangeLinkFactory(TFieldDefinition fieldDefinition)

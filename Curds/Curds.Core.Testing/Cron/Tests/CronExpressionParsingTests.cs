@@ -89,5 +89,20 @@ namespace Curds.Cron.Tests
             Assert.IsTrue(expression.IsActive(DateTime.MinValue));
             Assert.IsTrue(expression.IsActive(DateTime.MaxValue));
         }
+
+        [TestMethod]
+        public void CanParseRangeExpressions()
+        {
+            ICronExpression expression = TestObject.Parse("1-2 1-2 1-2 1-2 1-2");
+
+            DateTime testTime = new DateTime(1, 1, 1, 1, 0, 0);
+            Assert.IsFalse(expression.IsActive(testTime));
+            testTime = testTime.AddMinutes(1);
+            Assert.IsTrue(expression.IsActive(testTime));
+            testTime = testTime.AddMinutes(1);
+            Assert.IsTrue(expression.IsActive(testTime));
+            testTime = testTime.AddMinutes(1);
+            Assert.IsFalse(expression.IsActive(testTime));
+        }
     }
 }
