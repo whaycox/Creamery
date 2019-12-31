@@ -16,5 +16,26 @@ namespace Curds.Cron.FieldDefinitions.Tests
         protected override int ExpectedMax => 6;
 
         protected override Func<DateTime, int> ExpectedDatePart => (time) => (int)time.DayOfWeek;
+
+        [DataTestMethod]
+        [DataRow("SUN", "0")]
+        [DataRow("MON", "1")]
+        [DataRow("TUE", "2")]
+        [DataRow("WED", "3")]
+        [DataRow("THU", "4")]
+        [DataRow("FRI", "5")]
+        [DataRow("SAT", "6")]
+        public void CanLookupDayOfWeekAliases(string aliasedValue, string expectedValue)
+        {
+            string actual = InterfaceTestObject.LookupAlias(aliasedValue);
+
+            Assert.AreEqual(expectedValue, actual);
+        }
+
+        [TestMethod]
+        public void LookupIsCaseInsensitive()
+        {
+            Assert.AreEqual("3", InterfaceTestObject.LookupAlias("WeD"));
+        }
     }
 }

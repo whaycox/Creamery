@@ -93,6 +93,19 @@ namespace Curds.Cron.Tests
         }
 
         [TestMethod]
+        public void CanParseSingleValueExpressionsWithDayOfWeekAliases()
+        {
+            ICronExpression expression = TestObject.Parse("* * * * TUE");
+
+            DateTime testTime = new DateTime(2019, 12, 23);
+            Assert.IsFalse(expression.IsActive(testTime));
+            testTime = testTime.AddDays(1);
+            Assert.IsTrue(expression.IsActive(testTime));
+            testTime = testTime.AddDays(1);
+            Assert.IsFalse(expression.IsActive(testTime));
+        }
+
+        [TestMethod]
         public void CanParseWildcardExpressions()
         {
             ICronExpression expression = TestObject.Parse("* * * * *");
@@ -122,6 +135,17 @@ namespace Curds.Cron.Tests
             ICronExpression expression = TestObject.Parse("* * * JAN-MAR *");
 
             DateTime testTime = new DateTime(1, 3, 31);
+            Assert.IsTrue(expression.IsActive(testTime));
+            testTime = testTime.AddDays(1);
+            Assert.IsFalse(expression.IsActive(testTime));
+        }
+
+        [TestMethod]
+        public void CanParseRangeExpressionsWithDayOfWeekAliases()
+        {
+            ICronExpression expression = TestObject.Parse("* * * * THU-SAT");
+
+            DateTime testTime = new DateTime(2019, 12, 28);
             Assert.IsTrue(expression.IsActive(testTime));
             testTime = testTime.AddDays(1);
             Assert.IsFalse(expression.IsActive(testTime));
