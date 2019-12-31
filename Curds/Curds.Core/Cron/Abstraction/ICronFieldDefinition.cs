@@ -7,6 +7,7 @@ namespace Curds.Cron.Abstraction
         int AbsoluteMin { get; }
         int AbsoluteMax { get; }
 
+        string LookupAlias(string value);
         int SelectDatePart(DateTime testTime);
     }
 }

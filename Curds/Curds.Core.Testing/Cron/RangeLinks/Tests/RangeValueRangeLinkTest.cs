@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Threading.Tasks;
 
 namespace Curds.Cron.RangeLinks.Tests
 {
     using Cron.Abstraction;
-    using Template;
     using Implementation;
     using Ranges.Implementation;
+    using Template;
 
     [TestClass]
     public class RangeValueRangeLinkTest : BaseRangeLinkTemplate
@@ -26,7 +20,20 @@ namespace Curds.Cron.RangeLinks.Tests
         [TestInitialize]
         public void Init()
         {
+            MockFieldDefinition
+                .Setup(field => field.LookupAlias(It.IsAny<string>()))
+                .Returns<string>(supplied => supplied);
+
             TestObject = new RangeValueRangeLink<ICronFieldDefinition>(MockFieldDefinition.Object, MockRangeLink.Object);
+        }
+
+        [TestMethod]
+        public void LooksupAliasedValues()
+        {
+            TestObject.HandleParse(TestRange(TestAbsoluteMin, TestAbsoluteMax));
+
+            MockFieldDefinition.Verify(field => field.LookupAlias(TestAbsoluteMin.ToString()), Times.Once);
+            MockFieldDefinition.Verify(field => field.LookupAlias(TestAbsoluteMax.ToString()), Times.Once);
         }
 
         [TestMethod]

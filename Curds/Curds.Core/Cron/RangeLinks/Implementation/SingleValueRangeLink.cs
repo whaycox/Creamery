@@ -19,6 +19,7 @@ namespace Curds.Cron.RangeLinks.Implementation
 
         public override ICronRange HandleParse(string range)
         {
+            range = FieldDefinition.LookupAlias(range);
             if (!int.TryParse(range, out int value))
                 return null;
             if (!IsValid(value))

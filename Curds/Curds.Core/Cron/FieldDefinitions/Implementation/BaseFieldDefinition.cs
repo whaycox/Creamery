@@ -9,6 +9,7 @@ namespace Curds.Cron.FieldDefinitions.Implementation
         public abstract int AbsoluteMin { get; }
         public abstract int AbsoluteMax { get; }
 
+        public virtual string LookupAlias(string value) => value;
         public abstract int SelectDatePart(DateTime testTime);
     }
 }

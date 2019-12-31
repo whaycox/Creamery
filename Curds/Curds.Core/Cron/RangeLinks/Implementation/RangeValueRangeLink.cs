@@ -9,7 +9,7 @@ namespace Curds.Cron.RangeLinks.Implementation
     internal class RangeValueRangeLink<TFieldDefinition> : BaseRangeLink<TFieldDefinition>
         where TFieldDefinition : ICronFieldDefinition
     {
-        private static readonly Regex RangeMatcher = new Regex(@"^(\d+)-(\d+)$", RegexOptions.Compiled);
+        private static readonly Regex RangeMatcher = new Regex(@"^([a-zA-Z0-9]{1,3})-([a-zA-Z0-9]{1,3})$", RegexOptions.Compiled);
 
         public RangeValueRangeLink(TFieldDefinition fieldDefinition, ICronRangeLink successor)
             : base(fieldDefinition, successor)
@@ -21,18 +21,20 @@ namespace Curds.Cron.RangeLinks.Implementation
             if (!match.Success)
                 return null;
 
-            int low = int.Parse(match.Groups[1].Value);
-            if (!IsValid(low))
-                throw new FormatException($"Supplied range {range} is lower than allowed minimum {FieldDefinition.AbsoluteMin}");
-
-            int high = int.Parse(match.Groups[2].Value);
-            if (!IsValid(high))
-                throw new FormatException($"Supplied range {range} is higher than allowed maximum {FieldDefinition.AbsoluteMax}");
-
+            int low = ParseCapturedValue(match.Groups[1].Value);
+            int high = ParseCapturedValue(match.Groups[2].Value);
             if (low > high)
                 throw new FormatException($"Cannot supply an inverted range {range}");
 
             return new RangeValueRange<TFieldDefinition>(FieldDefinition, low, high);
+        }
+        private int ParseCapturedValue(string captured)
+        {
+            captured = FieldDefinition.LookupAlias(captured);
+            int parsedValue = int.Parse(captured);
+            if (!IsValid(parsedValue))
+                throw new FormatException($"Supplied value {captured} is outside the allowed {FieldDefinition.AbsoluteMin}-{FieldDefinition.AbsoluteMax}");
+            return parsedValue;
         }
     }
 }

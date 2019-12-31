@@ -26,6 +26,14 @@ namespace Curds.Cron.FieldDefinitions.Template
         protected abstract int ExpectedMax { get; }
 
         [TestMethod]
+        public void UnrecognizedStringIsReturnedOnLookup()
+        {
+            string actual = InterfaceTestObject.LookupAlias(nameof(UnrecognizedStringIsReturnedOnLookup));
+
+            Assert.AreEqual(nameof(UnrecognizedStringIsReturnedOnLookup), actual);
+        }
+
+        [TestMethod]
         public void SelectsExpectedDatePart()
         {
             int actual = InterfaceTestObject.SelectDatePart(TestTime);

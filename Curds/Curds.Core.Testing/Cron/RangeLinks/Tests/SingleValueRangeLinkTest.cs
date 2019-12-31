@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using Moq;
 
 namespace Curds.Cron.RangeLinks.Tests
 {
@@ -11,19 +12,34 @@ namespace Curds.Cron.RangeLinks.Tests
     [TestClass]
     public class SingleValueRangeLinkTest : BaseRangeLinkTemplate
     {
+        private string TestMinRange => TestAbsoluteMin.ToString();
+        private string TestMaxRange => TestAbsoluteMax.ToString();
+
         private SingleValueRangeLink<ICronFieldDefinition> TestObject = null;
         protected override ICronRangeLink InterfaceTestObject => TestObject;
 
         [TestInitialize]
         public void Init()
         {
+            MockFieldDefinition
+                .Setup(field => field.LookupAlias(It.IsAny<string>()))
+                .Returns<string>(supplied => supplied);
+
             TestObject = new SingleValueRangeLink<ICronFieldDefinition>(MockFieldDefinition.Object, MockRangeLink.Object);
+        }
+
+        [TestMethod]
+        public void LooksupAliasedValue()
+        {
+            TestObject.HandleParse(TestMinRange);
+
+            MockFieldDefinition.Verify(field => field.LookupAlias(TestMinRange), Times.Once);
         }
 
         [TestMethod]
         public void ReturnsExpectedRange()
         {
-            ICronRange actual = TestObject.HandleParse(TestAbsoluteMin.ToString());
+            ICronRange actual = TestObject.HandleParse(TestMinRange);
 
             Assert.IsInstanceOfType(actual, typeof(SingleValueRange<ICronFieldDefinition>));
         }
@@ -31,7 +47,7 @@ namespace Curds.Cron.RangeLinks.Tests
         [TestMethod]
         public void ReturnedRangeHasExpectedValue()
         {
-            ICronRange actual = TestObject.HandleParse(TestAbsoluteMax.ToString());
+            ICronRange actual = TestObject.HandleParse(TestMaxRange);
 
             SingleValueRange<ICronFieldDefinition> range = (SingleValueRange<ICronFieldDefinition>)actual;
             Assert.AreEqual(TestAbsoluteMax, range.Value);
