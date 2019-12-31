@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Curds.Cron.RangeLinkFactories.Implementation
+﻿namespace Curds.Cron.RangeLinkFactories.Implementation
 {
     using Cron.Abstraction;
 
@@ -14,6 +10,7 @@ namespace Curds.Cron.RangeLinkFactories.Implementation
         protected TFieldDefinition FieldDefinition { get; }
 
         public virtual ICronRangeLink StartOfChain => EmptyChain
+            .AddWildcard()
             .AddSingleValue(FieldDefinition);
 
         public BaseRangeLinkFactory(TFieldDefinition fieldDefinition)

@@ -38,7 +38,6 @@ namespace Curds.Cron.RangeLinks.Tests
         }
 
         [DataTestMethod]
-        [DataRow(null)]
         [DataRow("")]
         [DataRow("  ")]
         [DataRow("test")]

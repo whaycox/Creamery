@@ -7,6 +7,7 @@ namespace Curds.Cron.Tests
     using Abstraction;
     using FieldFactories.Abstraction;
     using Implementation;
+    using FieldFactories.Implementation;
 
     [TestClass]
     public class CronExpressionFactoryTest

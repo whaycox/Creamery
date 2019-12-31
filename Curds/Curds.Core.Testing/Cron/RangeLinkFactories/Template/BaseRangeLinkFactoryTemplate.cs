@@ -27,6 +27,7 @@ namespace Curds.Cron.RangeLinkFactories.Template
             where TFieldDefinition : ICronFieldDefinition, new()
         {
             VerifyAndIncrementTestRangeLink(typeof(SingleValueRangeLink<TFieldDefinition>));
+            VerifyAndIncrementTestRangeLink(typeof(WildcardRangeLink));
         }
     }
 }
