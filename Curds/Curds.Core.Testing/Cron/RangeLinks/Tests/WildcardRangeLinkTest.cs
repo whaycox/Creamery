@@ -10,13 +10,13 @@ namespace Curds.Cron.RangeLinks.Tests
     [TestClass]
     public class WildcardRangeLinkTest : BaseRangeLinkTemplate
     {
-        private WildcardRangeLink TestObject = null;
+        private WildcardRangeLink<ICronFieldDefinition> TestObject = null;
         protected override ICronRangeLink InterfaceTestObject => TestObject;
 
         [TestInitialize]
         public void Init()
         {
-            TestObject = new WildcardRangeLink(MockRangeLink.Object);
+            TestObject = new WildcardRangeLink<ICronFieldDefinition>(MockFieldDefinition.Object, MockRangeLink.Object);
         }
 
         [TestMethod]
@@ -25,6 +25,18 @@ namespace Curds.Cron.RangeLinks.Tests
             ICronRange actual = TestObject.HandleParse("*");
 
             Assert.IsInstanceOfType(actual, typeof(WildcardRange));
+        }
+
+        [TestMethod]
+        public void ReturnsStepRange()
+        {
+            int expectedStep = 5;
+
+            ICronRange actual = TestObject.HandleParse($"*/{expectedStep}");
+
+            Assert.IsInstanceOfType(actual, typeof(StepRange<ICronFieldDefinition>));
+            StepRange<ICronFieldDefinition> range = (StepRange<ICronFieldDefinition>)actual;
+            Assert.AreEqual(expectedStep, range.StepValue);
         }
 
         [DataTestMethod]

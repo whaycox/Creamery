@@ -12,7 +12,8 @@ namespace Curds.Cron.RangeLinkFactories
         public static ICronRangeLink AddSingleValue<TFieldDefinition>(this ICronRangeLink rangeLink, TFieldDefinition fieldDefinition)
             where TFieldDefinition : ICronFieldDefinition => new SingleValueRangeLink<TFieldDefinition>(fieldDefinition, rangeLink);
 
-        public static ICronRangeLink AddWildcard(this ICronRangeLink rangeLink) => new WildcardRangeLink(rangeLink);
+        public static ICronRangeLink AddWildcard<TFieldDefinition>(this ICronRangeLink rangeLink, TFieldDefinition fieldDefinition)
+            where TFieldDefinition : ICronFieldDefinition => new WildcardRangeLink<TFieldDefinition>(fieldDefinition, rangeLink);
 
         public static ICronRangeLink AddRangeValue<TFieldDefinition>(this ICronRangeLink rangeLink, TFieldDefinition fieldDefinition)
             where TFieldDefinition : ICronFieldDefinition => new RangeValueRangeLink<TFieldDefinition>(fieldDefinition, rangeLink);

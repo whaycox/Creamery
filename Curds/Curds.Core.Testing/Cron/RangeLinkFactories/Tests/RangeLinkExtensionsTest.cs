@@ -30,7 +30,7 @@ namespace Curds.Cron.RangeLinkFactories.Tests
         [TestMethod]
         public void WildcardAddsWildcardLink()
         {
-            VerifyLinkIsExpected(TestObject.AddWildcard(), typeof(WildcardRangeLink));
+            VerifyLinkIsExpected(TestObject.AddWildcard(MockFieldDefinition.Object), typeof(WildcardRangeLink<ICronFieldDefinition>));
         }
 
         [TestMethod]

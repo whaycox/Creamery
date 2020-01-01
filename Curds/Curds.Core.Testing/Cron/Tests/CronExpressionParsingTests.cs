@@ -115,6 +115,21 @@ namespace Curds.Cron.Tests
         }
 
         [TestMethod]
+        public void CanParseWildcardsWithStepRanges()
+        {
+            ICronExpression expression = TestObject.Parse("*/3 * * * *");
+
+            DateTime testTime = DateTime.MinValue;
+            for (int i = 0; i < 10; i++, testTime = testTime.AddMinutes(1))
+            {
+                if (i % 3 == 0)
+                    Assert.IsTrue(expression.IsActive(testTime));
+                else
+                    Assert.IsFalse(expression.IsActive(testTime));
+            }
+        }
+
+        [TestMethod]
         public void CanParseRangeExpressions()
         {
             ICronExpression expression = TestObject.Parse("1-2 1-2 1-2 1-2 1-2");

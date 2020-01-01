@@ -10,7 +10,7 @@
         protected TFieldDefinition FieldDefinition { get; }
 
         public virtual ICronRangeLink StartOfChain => EmptyChain
-            .AddWildcard()
+            .AddWildcard(FieldDefinition)
             .AddRangeValue(FieldDefinition)
             .AddSingleValue(FieldDefinition);
 
