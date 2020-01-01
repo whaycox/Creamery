@@ -27,6 +27,7 @@ namespace Curds.Cron.RangeLinkFactories.Tests
         {
             SetTestRangeLinkToStartOfChain();
 
+            VerifyAndIncrementTestRangeLink(typeof(LastDayOfMonthRangeLink));
             VerifyAndIncrementTestRangeLink(typeof(NearestWeekdayRangeLink));
             VerifyDefaultChain<DayOfMonthFieldDefinition>();
         }

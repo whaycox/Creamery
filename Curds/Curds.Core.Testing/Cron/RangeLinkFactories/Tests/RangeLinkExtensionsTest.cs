@@ -63,5 +63,13 @@ namespace Curds.Cron.RangeLinkFactories.Tests
 
             VerifyLinkIsExpected(TestObject.AddNearestWeekday(fieldDefinition), typeof(NearestWeekdayRangeLink));
         }
+
+        [TestMethod]
+        public void LastDayOfMonthAddsLink()
+        {
+            DayOfMonthFieldDefinition fieldDefinition = new DayOfMonthFieldDefinition();
+
+            VerifyLinkIsExpected(TestObject.AddLastDayOfMonth(fieldDefinition), typeof(LastDayOfMonthRangeLink));
+        }
     }
 }

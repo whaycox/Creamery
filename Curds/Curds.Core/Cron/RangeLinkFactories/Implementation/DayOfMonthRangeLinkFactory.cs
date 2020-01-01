@@ -7,7 +7,8 @@
     internal class DayOfMonthRangeLinkFactory : BaseRangeLinkFactory<DayOfMonthFieldDefinition>, IDayOfMonthRangeLinkFactory
     {
         public override ICronRangeLink StartOfChain => base.StartOfChain
-            .AddNearestWeekday(FieldDefinition);
+            .AddNearestWeekday(FieldDefinition)
+            .AddLastDayOfMonth(FieldDefinition);
 
         public DayOfMonthRangeLinkFactory(DayOfMonthFieldDefinition fieldDefinition)
             : base(fieldDefinition)
