@@ -195,5 +195,18 @@ namespace Curds.Cron.Tests
             testTime = testTime.AddDays(7);
             Assert.IsTrue(expression.IsActive(testTime));
         }
+
+        [TestMethod]
+        public void CanParseExpressionsWithNearestWeekday()
+        {
+            ICronExpression expression = TestObject.Parse("* * 12W * *");
+
+            DateTime testTime = new DateTime(2020, 1, 12);
+            Assert.IsFalse(expression.IsActive(testTime));
+            testTime = testTime.AddDays(1);
+            Assert.IsTrue(expression.IsActive(testTime));
+            testTime = testTime.AddDays(1);
+            Assert.IsFalse(expression.IsActive(testTime));
+        }
     }
 }

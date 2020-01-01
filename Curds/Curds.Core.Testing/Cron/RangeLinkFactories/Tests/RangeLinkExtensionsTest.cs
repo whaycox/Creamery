@@ -23,19 +23,19 @@ namespace Curds.Cron.RangeLinkFactories.Tests
         }
 
         [TestMethod]
-        public void SingleValueAddsSingleValueLink()
+        public void SingleValueAddsLink()
         {
             VerifyLinkIsExpected(TestObject.AddSingleValue(MockFieldDefinition.Object), typeof(SingleValueRangeLink<ICronFieldDefinition>));
         }
 
         [TestMethod]
-        public void WildcardAddsWildcardLink()
+        public void WildcardAddsLink()
         {
             VerifyLinkIsExpected(TestObject.AddWildcard(MockFieldDefinition.Object), typeof(WildcardRangeLink<ICronFieldDefinition>));
         }
 
         [TestMethod]
-        public void RangeValueAddsRangeValueLink()
+        public void RangeValueAddsLink()
         {
             VerifyLinkIsExpected(TestObject.AddRangeValue(MockFieldDefinition.Object), typeof(RangeValueRangeLink<ICronFieldDefinition>));
         }
@@ -54,6 +54,14 @@ namespace Curds.Cron.RangeLinkFactories.Tests
             DayOfWeekFieldDefinition fieldDefinition = new DayOfWeekFieldDefinition();
 
             VerifyLinkIsExpected(TestObject.AddLastDayOfWeek(fieldDefinition), typeof(LastDayOfWeekRangeLink));
+        }
+
+        [TestMethod]
+        public void NearestWeekdayAddsLink()
+        {
+            DayOfMonthFieldDefinition fieldDefinition = new DayOfMonthFieldDefinition();
+
+            VerifyLinkIsExpected(TestObject.AddNearestWeekday(fieldDefinition), typeof(NearestWeekdayRangeLink));
         }
     }
 }
