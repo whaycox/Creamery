@@ -178,5 +178,22 @@ namespace Curds.Cron.Tests
             testTime = testTime.AddDays(1);
             Assert.IsFalse(expression.IsActive(testTime));
         }
+
+        [TestMethod]
+        public void CanParseExpressionsWithLastDayOfWeek()
+        {
+            ICronExpression expression = TestObject.Parse("* * * * 0L");
+
+            DateTime testTime = new DateTime(2019, 12, 1);
+            Assert.IsFalse(expression.IsActive(testTime));
+            testTime = testTime.AddDays(7);
+            Assert.IsFalse(expression.IsActive(testTime));
+            testTime = testTime.AddDays(7);
+            Assert.IsFalse(expression.IsActive(testTime));
+            testTime = testTime.AddDays(7);
+            Assert.IsFalse(expression.IsActive(testTime));
+            testTime = testTime.AddDays(7);
+            Assert.IsTrue(expression.IsActive(testTime));
+        }
     }
 }

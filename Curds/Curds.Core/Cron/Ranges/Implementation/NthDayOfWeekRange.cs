@@ -25,9 +25,7 @@ namespace Curds.Cron.Ranges.Implementation
         {
             if (FieldDefinition.SelectDatePart(testTime) != DayOfWeek)
                 return false;
-            if (!IsNthDayOfWeek(testTime))
-                return false;
-            return true;
+            return IsNthDayOfWeek(testTime);
         }
         private bool IsNthDayOfWeek(DateTime testTime) => DayOfWeekOccurrenceThisMonth(testTime) == NthValue;
         private int DayOfWeekOccurrenceThisMonth(DateTime testTime) => (testTime.Day / DaysInWeek) + 1;

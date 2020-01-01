@@ -21,5 +21,8 @@ namespace Curds.Cron.RangeLinkFactories
 
         public static ICronRangeLink AddNthDayOfWeek(this ICronRangeLink rangeLink, DayOfWeekFieldDefinition fieldDefinition) =>
             new NthDayOfWeekRangeLink(fieldDefinition, rangeLink);
+
+        public static ICronRangeLink AddLastDayOfWeek(this ICronRangeLink rangeLink, DayOfWeekFieldDefinition fieldDefinition) =>
+            new LastDayOfWeekRangeLink(fieldDefinition, rangeLink);
     }
 }

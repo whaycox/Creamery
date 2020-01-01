@@ -7,7 +7,8 @@
     internal class DayOfWeekRangeLinkFactory : BaseRangeLinkFactory<DayOfWeekFieldDefinition>, IDayOfWeekRangeLinkFactory
     {
         public override ICronRangeLink StartOfChain => base.StartOfChain
-            .AddNthDayOfWeek(FieldDefinition);
+            .AddNthDayOfWeek(FieldDefinition)
+            .AddLastDayOfWeek(FieldDefinition);
 
         public DayOfWeekRangeLinkFactory(DayOfWeekFieldDefinition fieldDefinition)
             : base(fieldDefinition)
