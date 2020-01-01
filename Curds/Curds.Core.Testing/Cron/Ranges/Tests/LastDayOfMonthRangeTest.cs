@@ -16,7 +16,16 @@ namespace Curds.Cron.Ranges.Tests
         [TestInitialize]
         public void Init()
         {
-            TestObject = new LastDayOfMonthRange(TestFieldDefinition);
+            TestObject = new LastDayOfMonthRange(TestFieldDefinition, default);
+        }
+
+        private void TestThreeConsecutiveDays(DateTime testTime)
+        {
+            Assert.IsFalse(TestObject.IsActive(testTime));
+            testTime = testTime.AddDays(1);
+            Assert.IsTrue(TestObject.IsActive(testTime));
+            testTime = testTime.AddDays(1);
+            Assert.IsFalse(TestObject.IsActive(testTime));
         }
 
         [TestMethod]
@@ -26,13 +35,28 @@ namespace Curds.Cron.Ranges.Tests
             TestThreeConsecutiveDays(new DateTime(2019, 2, 27));
             TestThreeConsecutiveDays(new DateTime(2019, 3, 30));
         }
-        private void TestThreeConsecutiveDays(DateTime testTime)
+
+        [DataTestMethod]
+        [DataRow(0)]
+        [DataRow(1)]
+        [DataRow(5)]
+        [DataRow(10)]
+        [DataRow(15)]
+        public void ObeysOffsetLastDayOfMonth(int testOffset)
         {
-            Assert.IsFalse(TestObject.IsActive(testTime));
-            testTime = testTime.AddDays(1);
-            Assert.IsTrue(TestObject.IsActive(testTime));
-            testTime = testTime.AddDays(1);
-            Assert.IsFalse(TestObject.IsActive(testTime));
+            TestObject = new LastDayOfMonthRange(TestFieldDefinition, testOffset);
+
+            TestThreeConsecutiveDays(new DateTime(2020, 2, 28).AddDays(-testOffset));
+            TestThreeConsecutiveDays(new DateTime(2019, 2, 27).AddDays(-testOffset));
+            TestThreeConsecutiveDays(new DateTime(2019, 3, 30).AddDays(-testOffset));
+        }
+
+        [TestMethod]
+        public void OffsetLargerThanMonthIsActiveOnFirst()
+        {
+            TestObject = new LastDayOfMonthRange(TestFieldDefinition, 30);
+
+            TestThreeConsecutiveDays(new DateTime(2020, 1, 31));
         }
     }
 }

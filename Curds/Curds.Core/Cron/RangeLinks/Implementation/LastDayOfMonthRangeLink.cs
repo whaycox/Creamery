@@ -11,7 +11,7 @@ namespace Curds.Cron.RangeLinks.Implementation
 
     internal class LastDayOfMonthRangeLink : BaseRangeLink<DayOfMonthFieldDefinition>
     {
-        private static readonly Regex LastDayOfMonthMatcher = new Regex("^[Ll]$", RegexOptions.Compiled);
+        private static readonly Regex LastDayOfMonthMatcher = new Regex(@"^[Ll](?:-(\d+))?$", RegexOptions.Compiled);
 
         public LastDayOfMonthRangeLink(DayOfMonthFieldDefinition fieldDefinition, ICronRangeLink successor)
             : base(fieldDefinition, successor)
@@ -23,7 +23,15 @@ namespace Curds.Cron.RangeLinks.Implementation
             if (!match.Success)
                 return null;
 
-            return new LastDayOfMonthRange(FieldDefinition);
+            int offset = default;
+            if (match.Groups[1].Success)
+                offset = int.Parse(match.Groups[1].Value);
+
+            if (!IsOffsetValid(offset))
+                throw new FormatException($"Must supply an Last Day of Month offset less than {FieldDefinition.AbsoluteMax}");
+
+            return new LastDayOfMonthRange(FieldDefinition, offset);
         }
+        private bool IsOffsetValid(int offset) => FieldDefinition.AbsoluteMax > offset;
     }
 }

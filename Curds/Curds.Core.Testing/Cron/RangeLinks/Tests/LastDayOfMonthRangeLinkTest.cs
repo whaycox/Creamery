@@ -33,17 +33,39 @@ namespace Curds.Cron.RangeLinks.Tests
         [TestMethod]
         public void ReturnsExpectedRange()
         {
-            ICronRange range = TestObject.HandleParse("L");
+            ICronRange actual = TestObject.HandleParse("L");
 
-            Assert.IsInstanceOfType(range, typeof(LastDayOfMonthRange));
+            Assert.IsInstanceOfType(actual, typeof(LastDayOfMonthRange));
         }
 
         [TestMethod]
         public void ParsesCaseInsensitive()
         {
-            ICronRange range = TestObject.HandleParse("l");
+            ICronRange actual = TestObject.HandleParse("l");
 
-            Assert.IsInstanceOfType(range, typeof(LastDayOfMonthRange));
+            Assert.IsInstanceOfType(actual, typeof(LastDayOfMonthRange));
+        }
+
+        [DataTestMethod]
+        [DataRow(0)]
+        [DataRow(5)]
+        [DataRow(10)]
+        [DataRow(20)]
+        [DataRow(30)]
+        public void CanParseWithOffset(int expectedOffset)
+        {
+            ICronRange actual = TestObject.HandleParse($"L-{expectedOffset}");
+
+            Assert.IsInstanceOfType(actual, typeof(LastDayOfMonthRange));
+            LastDayOfMonthRange range = (LastDayOfMonthRange)actual;
+            Assert.AreEqual(expectedOffset, range.Offset);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(FormatException))]
+        public void InvalidOffsetThrows()
+        {
+            TestObject.HandleParse("L-31");
         }
     }
 }

@@ -221,5 +221,18 @@ namespace Curds.Cron.Tests
             testTime = testTime.AddDays(1);
             Assert.IsFalse(expression.IsActive(testTime));
         }
+
+        [TestMethod]
+        public void CanParseExpressionsWithOffsetLastDayOfMonth()
+        {
+            ICronExpression expression = TestObject.Parse("* * L-5 * *");
+
+            DateTime testTime = new DateTime(2020, 2, 23);
+            Assert.IsFalse(expression.IsActive(testTime));
+            testTime = testTime.AddDays(1);
+            Assert.IsTrue(expression.IsActive(testTime));
+            testTime = testTime.AddDays(1);
+            Assert.IsFalse(expression.IsActive(testTime));
+        }
     }
 }
