@@ -165,5 +165,18 @@ namespace Curds.Cron.Tests
             testTime = testTime.AddDays(1);
             Assert.IsFalse(expression.IsActive(testTime));
         }
+
+        [TestMethod]
+        public void CanParseExpressionsWithNthDayOfWeek()
+        {
+            ICronExpression expression = TestObject.Parse("* * * * 4#2");
+
+            DateTime testTime = new DateTime(2019, 12, 11);
+            Assert.IsFalse(expression.IsActive(testTime));
+            testTime = testTime.AddDays(1);
+            Assert.IsTrue(expression.IsActive(testTime));
+            testTime = testTime.AddDays(1);
+            Assert.IsFalse(expression.IsActive(testTime));
+        }
     }
 }

@@ -6,6 +6,7 @@ namespace Curds.Cron.RangeLinkFactories.Tests
 {
     using Cron.Abstraction;
     using RangeLinks.Implementation;
+    using FieldDefinitions.Implementation;
 
     [TestClass]
     public class RangeLinkExtensionsTest
@@ -37,6 +38,14 @@ namespace Curds.Cron.RangeLinkFactories.Tests
         public void RangeValueAddsRangeValueLink()
         {
             VerifyLinkIsExpected(TestObject.AddRangeValue(MockFieldDefinition.Object), typeof(RangeValueRangeLink<ICronFieldDefinition>));
+        }
+
+        [TestMethod]
+        public void NthDayOfWeekAddsLink()
+        {
+            DayOfWeekFieldDefinition fieldDefinition = new DayOfWeekFieldDefinition();
+
+            VerifyLinkIsExpected(TestObject.AddNthDayOfWeek(fieldDefinition), typeof(NthDayOfWeekRangeLink));
         }
     }
 }

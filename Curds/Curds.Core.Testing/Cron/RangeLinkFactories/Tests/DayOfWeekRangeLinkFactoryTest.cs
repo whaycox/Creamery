@@ -6,6 +6,7 @@ namespace Curds.Cron.RangeLinkFactories.Tests
     using FieldDefinitions.Implementation;
     using Implementation;
     using Template;
+    using RangeLinks.Implementation;
 
     [TestClass]
     public class DayOfWeekRangeLinkFactoryTest : BaseRangeLinkFactoryTemplate
@@ -22,10 +23,11 @@ namespace Curds.Cron.RangeLinkFactories.Tests
         }
 
         [TestMethod]
-        public void HasDefaultChain()
+        public void HasExpectedChain()
         {
             SetTestRangeLinkToStartOfChain();
 
+            VerifyAndIncrementTestRangeLink(typeof(NthDayOfWeekRangeLink));
             VerifyDefaultChain<DayOfWeekFieldDefinition>();
         }
     }

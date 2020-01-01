@@ -6,6 +6,7 @@ namespace Curds.Cron.RangeLinkFactories
 {
     using Cron.Abstraction;
     using RangeLinks.Implementation;
+    using FieldDefinitions.Implementation;
 
     internal static class RangeLinkExtensions
     {
@@ -17,5 +18,8 @@ namespace Curds.Cron.RangeLinkFactories
 
         public static ICronRangeLink AddRangeValue<TFieldDefinition>(this ICronRangeLink rangeLink, TFieldDefinition fieldDefinition)
             where TFieldDefinition : ICronFieldDefinition => new RangeValueRangeLink<TFieldDefinition>(fieldDefinition, rangeLink);
+
+        public static ICronRangeLink AddNthDayOfWeek(this ICronRangeLink rangeLink, DayOfWeekFieldDefinition fieldDefinition) =>
+            new NthDayOfWeekRangeLink(fieldDefinition, rangeLink);
     }
 }
