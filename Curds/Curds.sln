@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curds.Core", "Curds.Core\Cu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curds.Core.Testing", "Curds.Core.Testing\Curds.Core.Testing.csproj", "{DDF5B631-C02B-4D0B-91CE-DC261E743795}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Whey", "..\Whey\Whey\Whey.csproj", "{E57A4ACD-E85B-4C9D-89FA-46815941DE37}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{DDF5B631-C02B-4D0B-91CE-DC261E743795}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDF5B631-C02B-4D0B-91CE-DC261E743795}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDF5B631-C02B-4D0B-91CE-DC261E743795}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E57A4ACD-E85B-4C9D-89FA-46815941DE37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E57A4ACD-E85B-4C9D-89FA-46815941DE37}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E57A4ACD-E85B-4C9D-89FA-46815941DE37}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E57A4ACD-E85B-4C9D-89FA-46815941DE37}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

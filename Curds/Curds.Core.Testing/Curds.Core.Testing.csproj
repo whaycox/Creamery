@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Whey\Whey\Whey.csproj" />
     <ProjectReference Include="..\Curds.Core\Curds.Core.csproj" />
   </ItemGroup>
 
