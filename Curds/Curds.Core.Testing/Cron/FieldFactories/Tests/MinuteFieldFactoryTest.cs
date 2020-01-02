@@ -4,16 +4,16 @@ using System;
 
 namespace Curds.Cron.FieldFactories.Tests
 {
-    using Curds.Cron.Abstraction;
+    using Cron.Abstraction;
+    using FieldDefinitions.Implementation;
     using Fields.Implementation;
     using Implementation;
-    using RangeFactories.Abstraction;
     using Template;
 
     [TestClass]
     public class MinuteFieldFactoryTest : BaseFieldFactoryTemplate
     {
-        private Mock<IMinuteRangeFactory> MockRangeFactory = new Mock<IMinuteRangeFactory>();
+        private Mock<ICronRangeFactory<MinuteFieldDefinition>> MockRangeFactory = new Mock<ICronRangeFactory<MinuteFieldDefinition>>();
 
         private MinuteFieldFactory _testObject = null;
         protected override ICronFieldFactory TestObject => _testObject;

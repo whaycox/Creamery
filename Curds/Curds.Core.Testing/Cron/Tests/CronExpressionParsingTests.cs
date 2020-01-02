@@ -1,71 +1,24 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
 namespace Curds.Cron.Tests
 {
     using Abstraction;
-    using FieldDefinitions.Implementation;
-    using FieldFactories.Implementation;
-    using Implementation;
-    using RangeFactories.Implementation;
-    using RangeFactories.Chains.Implementation;
 
     [TestClass]
     public class CronExpressionParsingTests
     {
-        private MinuteFieldDefinition TestMinuteFieldDefinition = new MinuteFieldDefinition();
-        private HourFieldDefinition TestHourFieldDefinition = new HourFieldDefinition();
-        private DayOfMonthFieldDefinition TestDayOfMonthFieldDefinition = new DayOfMonthFieldDefinition();
-        private MonthFieldDefinition TestMonthFieldDefinition = new MonthFieldDefinition();
-        private DayOfWeekFieldDefinition TestDayOfWeekFieldDefinition = new DayOfWeekFieldDefinition();
+        private IServiceProvider ServiceProvider = null;
 
-        private MinuteFieldFactory TestMinuteFieldFactory = null;
-        private HourFieldFactory TestHourFieldFactory = null;
-        private DayOfMonthFieldFactory TestDayOfMonthFieldFactory = null;
-        private MonthFieldFactory TestMonthFieldFactory = null;
-        private DayOfWeekFieldFactory TestDayOfWeekFieldFactory = null;
-
-        private MinuteRangeFactory TestMinuteRangeFactory = null;
-        private HourRangeFactory TestHourRangeFactory = null;
-        private DayOfMonthRangeFactory TestDayOfMonthRangeFactory = null;
-        private MonthRangeFactory TestMonthRangeFactory = null;
-        private DayOfWeekRangeFactory TestDayOfWeekRangeFactory = null;
-
-        private MinuteRangeLinkFactory TestMinuteRangeLinkFactory = null;
-        private HourRangeLinkFactory TestHourRangeLinkFactory = null;
-        private DayOfMonthRangeLinkFactory TestDayOfMonthRangeLinkFactory = null;
-        private MonthRangeLinkFactory TestMonthRangeLinkFactory = null;
-        private DayOfWeekRangeLinkFactory TestDayOfWeekRangeLinkFactory = null;
-
-        private CronExpressionFactory TestObject = null;
+        private ICronExpressionFactory TestObject => ServiceProvider.GetService<ICronExpressionFactory>();
 
         [TestInitialize]
         public void Init()
         {
-            TestMinuteRangeLinkFactory = new MinuteRangeLinkFactory(TestMinuteFieldDefinition);
-            TestHourRangeLinkFactory = new HourRangeLinkFactory(TestHourFieldDefinition);
-            TestDayOfMonthRangeLinkFactory = new DayOfMonthRangeLinkFactory(TestDayOfMonthFieldDefinition);
-            TestMonthRangeLinkFactory = new MonthRangeLinkFactory(TestMonthFieldDefinition);
-            TestDayOfWeekRangeLinkFactory = new DayOfWeekRangeLinkFactory(TestDayOfWeekFieldDefinition);
-
-            TestMinuteRangeFactory = new MinuteRangeFactory(TestMinuteRangeLinkFactory);
-            TestHourRangeFactory = new HourRangeFactory(TestHourRangeLinkFactory);
-            TestDayOfMonthRangeFactory = new DayOfMonthRangeFactory(TestDayOfMonthRangeLinkFactory);
-            TestMonthRangeFactory = new MonthRangeFactory(TestMonthRangeLinkFactory);
-            TestDayOfWeekRangeFactory = new DayOfWeekRangeFactory(TestDayOfWeekRangeLinkFactory);
-
-            TestMinuteFieldFactory = new MinuteFieldFactory(TestMinuteRangeFactory);
-            TestHourFieldFactory = new HourFieldFactory(TestHourRangeFactory);
-            TestDayOfMonthFieldFactory = new DayOfMonthFieldFactory(TestDayOfMonthRangeFactory);
-            TestMonthFieldFactory = new MonthFieldFactory(TestMonthRangeFactory);
-            TestDayOfWeekFieldFactory = new DayOfWeekFieldFactory(TestDayOfWeekRangeFactory);
-
-            TestObject = new CronExpressionFactory(
-                TestMinuteFieldFactory,
-                TestHourFieldFactory,
-                TestDayOfMonthFieldFactory,
-                TestMonthFieldFactory,
-                TestDayOfWeekFieldFactory);
+            ServiceProvider = new ServiceCollection()
+                .AddCurdsCron()
+                .BuildServiceProvider();
         }
 
         [TestMethod]
@@ -233,6 +186,46 @@ namespace Curds.Cron.Tests
             Assert.IsTrue(expression.IsActive(testTime));
             testTime = testTime.AddDays(1);
             Assert.IsFalse(expression.IsActive(testTime));
+        }
+
+
+        [TestMethod]
+        public void LastFridayEveryQuarter()
+        {
+            ICronExpression expression = TestObject.Parse("* * * MAR,JUN,SEP,DEC FRIL");
+
+            VerifyThreeConsecutiveDates(expression, new DateTime(2019, 3, 28));
+            VerifyThreeConsecutiveDates(expression, new DateTime(2019, 6, 27));
+            VerifyThreeConsecutiveDates(expression, new DateTime(2019, 9, 26));
+            VerifyThreeConsecutiveDates(expression, new DateTime(2019, 12, 26));
+        }
+        private void VerifyThreeConsecutiveDates(ICronExpression expression, DateTime testTime)
+        {
+            Assert.IsFalse(expression.IsActive(testTime));
+            testTime = testTime.AddDays(1);
+            Assert.IsTrue(expression.IsActive(testTime));
+            testTime = testTime.AddDays(1);
+            Assert.IsFalse(expression.IsActive(testTime));
+        }
+
+        [TestMethod]
+        public void EveryOtherHourOnLastDayOfMonth()
+        {
+            ICronExpression expression = TestObject.Parse("0 */2 L * *");
+
+            VerifyEveryOtherHour(expression, new DateTime(2019, 1, 31));
+            VerifyEveryOtherHour(expression, new DateTime(2019, 2, 28));
+            VerifyEveryOtherHour(expression, new DateTime(2019, 4, 30));
+        }
+        private void VerifyEveryOtherHour(ICronExpression expression, DateTime testTime)
+        {
+            for (int i = 0; i < 24; i++, testTime = testTime.AddHours(1))
+            {
+                if (i % 2 == 0)
+                    Assert.IsTrue(expression.IsActive(testTime));
+                else
+                    Assert.IsFalse(expression.IsActive(testTime));
+            }
         }
     }
 }

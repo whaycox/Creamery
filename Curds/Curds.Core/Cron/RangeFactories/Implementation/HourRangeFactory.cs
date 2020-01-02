@@ -1,11 +1,11 @@
 ﻿namespace Curds.Cron.RangeFactories.Implementation
 {
-    using Chains.Abstraction;
+    using FieldDefinitions.Implementation;
     using Abstraction;
 
-    internal class HourRangeFactory : BaseRangeFactory, IHourRangeFactory
+    internal class HourRangeFactory : BaseRangeFactory<HourFieldDefinition>
     {
-        public HourRangeFactory(IHourRangeLinkFactory rangeLinkFactory)
+        public HourRangeFactory(IRangeFactoryChain<HourFieldDefinition> rangeLinkFactory)
             : base(rangeLinkFactory)
         { }
     }

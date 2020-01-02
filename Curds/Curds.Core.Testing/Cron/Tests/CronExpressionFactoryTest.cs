@@ -5,7 +5,7 @@ using System;
 namespace Curds.Cron.Tests
 {
     using Abstraction;
-    using FieldFactories.Abstraction;
+    using FieldDefinitions.Implementation;
     using Implementation;
     using FieldFactories.Implementation;
 
@@ -19,15 +19,15 @@ namespace Curds.Cron.Tests
         private string TestDayOfWeekField = nameof(TestDayOfWeekField);
         private string TestExpression = null;
 
-        private Mock<IMinuteFieldFactory> MockMinuteFactory = new Mock<IMinuteFieldFactory>();
+        private Mock<ICronFieldFactory<MinuteFieldDefinition>> MockMinuteFactory = new Mock<ICronFieldFactory<MinuteFieldDefinition>>();
         private Mock<ICronField> MockMinuteField = new Mock<ICronField>();
-        private Mock<IHourFieldFactory> MockHourFactory = new Mock<IHourFieldFactory>();
+        private Mock<ICronFieldFactory<HourFieldDefinition>> MockHourFactory = new Mock<ICronFieldFactory<HourFieldDefinition>>();
         private Mock<ICronField> MockHourField = new Mock<ICronField>();
-        private Mock<IDayOfMonthFieldFactory> MockDayOfMonthFactory = new Mock<IDayOfMonthFieldFactory>();
+        private Mock<ICronFieldFactory<DayOfMonthFieldDefinition>> MockDayOfMonthFactory = new Mock<ICronFieldFactory<DayOfMonthFieldDefinition>>();
         private Mock<ICronField> MockDayOfMonthField = new Mock<ICronField>();
-        private Mock<IMonthFieldFactory> MockMonthFactory = new Mock<IMonthFieldFactory>();
+        private Mock<ICronFieldFactory<MonthFieldDefinition>> MockMonthFactory = new Mock<ICronFieldFactory<MonthFieldDefinition>>(); 
         private Mock<ICronField> MockMonthField = new Mock<ICronField>();
-        private Mock<IDayOfWeekFieldFactory> MockDayOfWeekFactory = new Mock<IDayOfWeekFieldFactory>();
+        private Mock<ICronFieldFactory<DayOfWeekFieldDefinition>> MockDayOfWeekFactory = new Mock<ICronFieldFactory<DayOfWeekFieldDefinition>>(); 
         private Mock<ICronField> MockDayOfWeekField = new Mock<ICronField>();
 
         private CronExpressionFactory TestObject = null;

@@ -8,12 +8,13 @@ namespace Curds.Cron.FieldFactories.Tests
     using Fields.Implementation;
     using Implementation;
     using RangeFactories.Abstraction;
+    using FieldDefinitions.Implementation;
     using Template;
 
     [TestClass]
     public class HourFieldFactoryTest : BaseFieldFactoryTemplate
     {
-        private Mock<IHourRangeFactory> MockRangeFactory = new Mock<IHourRangeFactory>();
+        private Mock<ICronRangeFactory<HourFieldDefinition>> MockRangeFactory = new Mock<ICronRangeFactory<HourFieldDefinition>>();
 
         private HourFieldFactory _testObject = null;
         protected override ICronFieldFactory TestObject => _testObject;

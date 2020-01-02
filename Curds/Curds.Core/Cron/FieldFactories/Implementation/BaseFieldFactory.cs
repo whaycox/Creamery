@@ -7,13 +7,14 @@ namespace Curds.Cron.FieldFactories.Implementation
 {
     using Cron.Abstraction;
 
-    internal abstract class BaseFieldFactory : ICronFieldFactory
+    internal abstract class BaseFieldFactory<TFieldDefinition> : ICronFieldFactory<TFieldDefinition>
+        where TFieldDefinition : ICronFieldDefinition
     {
         private const char RangeSeparator = ',';
 
-        private ICronRangeFactory RangeFactory { get; }
+        private ICronRangeFactory<TFieldDefinition> RangeFactory { get; }
 
-        public BaseFieldFactory(ICronRangeFactory rangeFactory)
+        public BaseFieldFactory(ICronRangeFactory<TFieldDefinition> rangeFactory)
         {
             RangeFactory = rangeFactory;
         }

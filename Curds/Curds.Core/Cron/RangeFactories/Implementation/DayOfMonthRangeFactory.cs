@@ -1,11 +1,11 @@
 ﻿namespace Curds.Cron.RangeFactories.Implementation
 {
     using Abstraction;
-    using Chains.Abstraction;
+    using FieldDefinitions.Implementation;
 
-    internal class DayOfMonthRangeFactory : BaseRangeFactory, IDayOfMonthRangeFactory
+    internal class DayOfMonthRangeFactory : BaseRangeFactory<DayOfMonthFieldDefinition>
     {
-        public DayOfMonthRangeFactory(IDayOfMonthRangeLinkFactory rangeLinkFactory)
+        public DayOfMonthRangeFactory(IRangeFactoryChain<DayOfMonthFieldDefinition> rangeLinkFactory)
             : base(rangeLinkFactory)
         { }
     }

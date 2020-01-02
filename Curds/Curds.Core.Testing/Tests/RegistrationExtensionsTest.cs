@@ -10,11 +10,9 @@ namespace Curds.Tests
     using Cron.FieldDefinitions.Implementation;
     using Cron.Abstraction;
     using Cron.Implementation;
-    using Cron.FieldFactories.Abstraction;
     using Cron.FieldFactories.Implementation;
     using Cron.RangeFactories.Abstraction;
     using Cron.RangeFactories.Implementation;
-    using Cron.RangeFactories.Chains.Abstraction;
     using Cron.RangeFactories.Chains.Implementation;
 
     [TestClass]
@@ -56,11 +54,11 @@ namespace Curds.Tests
         {
             AddCurdsCron();
 
-            VerifyServiceWasRegistered(typeof(IMinuteFieldFactory), typeof(MinuteFieldFactory), ServiceLifetime.Transient);
-            VerifyServiceWasRegistered(typeof(IHourFieldFactory), typeof(HourFieldFactory), ServiceLifetime.Transient);
-            VerifyServiceWasRegistered(typeof(IDayOfMonthFieldFactory), typeof(DayOfMonthFieldFactory), ServiceLifetime.Transient);
-            VerifyServiceWasRegistered(typeof(IMonthFieldFactory), typeof(MonthFieldFactory), ServiceLifetime.Transient);
-            VerifyServiceWasRegistered(typeof(IDayOfWeekFieldFactory), typeof(DayOfWeekFieldFactory), ServiceLifetime.Transient);
+            VerifyServiceWasRegistered(typeof(ICronFieldFactory<MinuteFieldDefinition>), typeof(MinuteFieldFactory), ServiceLifetime.Transient);
+            VerifyServiceWasRegistered(typeof(ICronFieldFactory<HourFieldDefinition>), typeof(HourFieldFactory), ServiceLifetime.Transient);
+            VerifyServiceWasRegistered(typeof(ICronFieldFactory<DayOfMonthFieldDefinition>), typeof(DayOfMonthFieldFactory), ServiceLifetime.Transient);
+            VerifyServiceWasRegistered(typeof(ICronFieldFactory<MonthFieldDefinition>), typeof(MonthFieldFactory), ServiceLifetime.Transient);
+            VerifyServiceWasRegistered(typeof(ICronFieldFactory<DayOfWeekFieldDefinition>), typeof(DayOfWeekFieldFactory), ServiceLifetime.Transient);
         }
 
         [TestMethod]
@@ -68,11 +66,11 @@ namespace Curds.Tests
         {
             AddCurdsCron();
 
-            VerifyServiceWasRegistered(typeof(IMinuteRangeFactory), typeof(MinuteRangeFactory), ServiceLifetime.Transient);
-            VerifyServiceWasRegistered(typeof(IHourRangeFactory), typeof(HourRangeFactory), ServiceLifetime.Transient);
-            VerifyServiceWasRegistered(typeof(IDayOfMonthRangeFactory), typeof(DayOfMonthRangeFactory), ServiceLifetime.Transient);
-            VerifyServiceWasRegistered(typeof(IMonthRangeFactory), typeof(MonthRangeFactory), ServiceLifetime.Transient);
-            VerifyServiceWasRegistered(typeof(IDayOfWeekRangeFactory), typeof(DayOfWeekRangeFactory), ServiceLifetime.Transient);
+            VerifyServiceWasRegistered(typeof(ICronRangeFactory<MinuteFieldDefinition>), typeof(MinuteRangeFactory), ServiceLifetime.Transient);
+            VerifyServiceWasRegistered(typeof(ICronRangeFactory<HourFieldDefinition>), typeof(HourRangeFactory), ServiceLifetime.Transient);
+            VerifyServiceWasRegistered(typeof(ICronRangeFactory<DayOfMonthFieldDefinition>), typeof(DayOfMonthRangeFactory), ServiceLifetime.Transient);
+            VerifyServiceWasRegistered(typeof(ICronRangeFactory<MonthFieldDefinition>), typeof(MonthRangeFactory), ServiceLifetime.Transient);
+            VerifyServiceWasRegistered(typeof(ICronRangeFactory<DayOfWeekFieldDefinition>), typeof(DayOfWeekRangeFactory), ServiceLifetime.Transient);
         }
 
         [TestMethod]
@@ -80,11 +78,11 @@ namespace Curds.Tests
         {
             AddCurdsCron();
 
-            VerifyServiceWasRegistered(typeof(IMinuteRangeLinkFactory), typeof(MinuteRangeLinkFactory), ServiceLifetime.Transient);
-            VerifyServiceWasRegistered(typeof(IHourRangeLinkFactory), typeof(HourRangeLinkFactory), ServiceLifetime.Transient);
-            VerifyServiceWasRegistered(typeof(IDayOfMonthRangeLinkFactory), typeof(DayOfMonthRangeLinkFactory), ServiceLifetime.Transient);
-            VerifyServiceWasRegistered(typeof(IMonthRangeLinkFactory), typeof(MonthRangeLinkFactory), ServiceLifetime.Transient);
-            VerifyServiceWasRegistered(typeof(IDayOfWeekRangeLinkFactory), typeof(DayOfWeekRangeLinkFactory), ServiceLifetime.Transient);
+            VerifyServiceWasRegistered(typeof(IRangeFactoryChain<MinuteFieldDefinition>), typeof(MinuteChain), ServiceLifetime.Transient);
+            VerifyServiceWasRegistered(typeof(IRangeFactoryChain<HourFieldDefinition>), typeof(HourChain), ServiceLifetime.Transient);
+            VerifyServiceWasRegistered(typeof(IRangeFactoryChain<DayOfMonthFieldDefinition>), typeof(DayOfMonthChain), ServiceLifetime.Transient);
+            VerifyServiceWasRegistered(typeof(IRangeFactoryChain<MonthFieldDefinition>), typeof(MonthChain), ServiceLifetime.Transient);
+            VerifyServiceWasRegistered(typeof(IRangeFactoryChain<DayOfWeekFieldDefinition>), typeof(DayOfWeekChain), ServiceLifetime.Transient);
         }
     }
 }

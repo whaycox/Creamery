@@ -5,7 +5,7 @@ using System.Linq;
 namespace Curds.Cron.Implementation
 {
     using Abstraction;
-    using FieldFactories.Abstraction;
+    using FieldDefinitions.Implementation;
 
     internal class CronExpressionFactory : ICronExpressionFactory
     {
@@ -21,18 +21,18 @@ namespace Curds.Cron.Implementation
         private const char FieldSeparator = ' ';
         private const int AllowedFields = 5;
 
-        private ICronFieldFactory MinuteFactory { get; }
-        private ICronFieldFactory HourFactory { get; }
-        private ICronFieldFactory DayOfMonthFactory { get; }
-        private ICronFieldFactory MonthFactory { get; }
-        private ICronFieldFactory DayOfWeekFactory { get; }
+        private ICronFieldFactory<MinuteFieldDefinition> MinuteFactory { get; }
+        private ICronFieldFactory<HourFieldDefinition> HourFactory { get; }
+        private ICronFieldFactory<DayOfMonthFieldDefinition> DayOfMonthFactory { get; }
+        private ICronFieldFactory<MonthFieldDefinition> MonthFactory { get; }
+        private ICronFieldFactory<DayOfWeekFieldDefinition> DayOfWeekFactory { get; }
 
         public CronExpressionFactory(
-            IMinuteFieldFactory minuteFactory,
-            IHourFieldFactory hourFactory,
-            IDayOfMonthFieldFactory dayOfMonthFactory,
-            IMonthFieldFactory monthFactory,
-            IDayOfWeekFieldFactory dayOfWeekFactory)
+            ICronFieldFactory<MinuteFieldDefinition> minuteFactory,
+            ICronFieldFactory<HourFieldDefinition> hourFactory,
+            ICronFieldFactory<DayOfMonthFieldDefinition> dayOfMonthFactory,
+            ICronFieldFactory<MonthFieldDefinition> monthFactory,
+            ICronFieldFactory<DayOfWeekFieldDefinition> dayOfWeekFactory)
         {
             MinuteFactory = minuteFactory;
             HourFactory = hourFactory;

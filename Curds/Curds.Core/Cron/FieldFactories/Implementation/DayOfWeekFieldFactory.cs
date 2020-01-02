@@ -3,13 +3,12 @@
 namespace Curds.Cron.FieldFactories.Implementation
 {
     using Abstraction;
-    using Cron.Abstraction;
     using Fields.Implementation;
-    using RangeFactories.Abstraction;
+    using FieldDefinitions.Implementation;
 
-    internal class DayOfWeekFieldFactory : BaseFieldFactory, IDayOfWeekFieldFactory
+    internal class DayOfWeekFieldFactory : BaseFieldFactory<DayOfWeekFieldDefinition>
     {
-        public DayOfWeekFieldFactory(IDayOfWeekRangeFactory rangeFactory)
+        public DayOfWeekFieldFactory(ICronRangeFactory<DayOfWeekFieldDefinition> rangeFactory)
             : base(rangeFactory)
         { }
 

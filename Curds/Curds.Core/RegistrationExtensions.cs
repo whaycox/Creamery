@@ -7,11 +7,9 @@ namespace Curds
     using Cron.FieldDefinitions.Implementation;
     using Cron.Abstraction;
     using Cron.Implementation;
-    using Cron.FieldFactories.Abstraction;
     using Cron.FieldFactories.Implementation;
     using Cron.RangeFactories.Abstraction;
     using Cron.RangeFactories.Implementation;
-    using Cron.RangeFactories.Chains.Abstraction;
     using Cron.RangeFactories.Chains.Implementation;
 
     public static class RegistrationExtensions
@@ -34,24 +32,24 @@ namespace Curds
             .AddSingleton<DayOfWeekFieldDefinition>();
 
         private static IServiceCollection AddCronFieldFactories(this IServiceCollection services) => services
-            .AddTransient<IMinuteFieldFactory, MinuteFieldFactory>()
-            .AddTransient<IHourFieldFactory, HourFieldFactory>()
-            .AddTransient<IDayOfMonthFieldFactory, DayOfMonthFieldFactory>()
-            .AddTransient<IMonthFieldFactory, MonthFieldFactory>()
-            .AddTransient<IDayOfWeekFieldFactory, DayOfWeekFieldFactory>();
+            .AddTransient<ICronFieldFactory<MinuteFieldDefinition>, MinuteFieldFactory>()
+            .AddTransient<ICronFieldFactory<HourFieldDefinition>, HourFieldFactory>()
+            .AddTransient<ICronFieldFactory<DayOfMonthFieldDefinition>, DayOfMonthFieldFactory>()
+            .AddTransient<ICronFieldFactory<MonthFieldDefinition>, MonthFieldFactory>()
+            .AddTransient<ICronFieldFactory<DayOfWeekFieldDefinition>, DayOfWeekFieldFactory>();
 
         private static IServiceCollection AddCronRangeFactories(this IServiceCollection services) => services
-            .AddTransient<IMinuteRangeFactory, MinuteRangeFactory>()
-            .AddTransient<IHourRangeFactory, HourRangeFactory>()
-            .AddTransient<IDayOfMonthRangeFactory, DayOfMonthRangeFactory>()
-            .AddTransient<IMonthRangeFactory, MonthRangeFactory>()
-            .AddTransient<IDayOfWeekRangeFactory, DayOfWeekRangeFactory>();
+            .AddTransient<ICronRangeFactory<MinuteFieldDefinition>, MinuteRangeFactory>()
+            .AddTransient<ICronRangeFactory<HourFieldDefinition>, HourRangeFactory>()
+            .AddTransient<ICronRangeFactory<DayOfMonthFieldDefinition>, DayOfMonthRangeFactory>()
+            .AddTransient<ICronRangeFactory<MonthFieldDefinition>, MonthRangeFactory>()
+            .AddTransient<ICronRangeFactory<DayOfWeekFieldDefinition>, DayOfWeekRangeFactory>();
 
         private static IServiceCollection AddCronRangeLinkFactories(this IServiceCollection services) => services
-            .AddTransient<IMinuteRangeLinkFactory, MinuteRangeLinkFactory>()
-            .AddTransient<IHourRangeLinkFactory, HourRangeLinkFactory>()
-            .AddTransient<IDayOfMonthRangeLinkFactory, DayOfMonthRangeLinkFactory>()
-            .AddTransient<IMonthRangeLinkFactory, MonthRangeLinkFactory>()
-            .AddTransient<IDayOfWeekRangeLinkFactory, DayOfWeekRangeLinkFactory>();
+            .AddTransient<IRangeFactoryChain<MinuteFieldDefinition>, MinuteChain>()
+            .AddTransient<IRangeFactoryChain<HourFieldDefinition>, HourChain>()
+            .AddTransient<IRangeFactoryChain<DayOfMonthFieldDefinition>, DayOfMonthChain>()
+            .AddTransient<IRangeFactoryChain<MonthFieldDefinition>, MonthChain>()
+            .AddTransient<IRangeFactoryChain<DayOfWeekFieldDefinition>, DayOfWeekChain>();
     }
 }

@@ -5,13 +5,14 @@ namespace Curds.Cron.RangeFactories.Tests
 {
     using Cron.Abstraction;
     using Implementation;
-    using Chains.Abstraction;
+    using FieldDefinitions.Implementation;
     using Template;
+    using Abstraction;
 
     [TestClass]
     public class DayOfMonthRangeFactoryTest : BaseRangeFactoryTemplate
     {
-        private Mock<IDayOfMonthRangeLinkFactory> MockRangeLinkFactory = new Mock<IDayOfMonthRangeLinkFactory>();
+        private Mock<IRangeFactoryChain<DayOfMonthFieldDefinition>> MockRangeLinkFactory = new Mock<IRangeFactoryChain<DayOfMonthFieldDefinition>>();
 
         private DayOfMonthRangeFactory _testObject = null;
         protected override ICronRangeFactory TestObject => _testObject;

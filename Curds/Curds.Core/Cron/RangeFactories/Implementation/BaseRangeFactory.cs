@@ -5,11 +5,12 @@ namespace Curds.Cron.RangeFactories.Implementation
     using Cron.Abstraction;
     using Abstraction;
 
-    internal abstract class BaseRangeFactory : ICronRangeFactory
+    internal abstract class BaseRangeFactory<TFieldDefinition> : ICronRangeFactory<TFieldDefinition>
+        where TFieldDefinition : ICronFieldDefinition
     {
-        private IRangeFactoryChain RangeFactoryChain { get; }
+        private IRangeFactoryChain<TFieldDefinition> RangeFactoryChain { get; }
 
-        public BaseRangeFactory(IRangeFactoryChain rangeFactoryChain)
+        public BaseRangeFactory(IRangeFactoryChain<TFieldDefinition> rangeFactoryChain)
         {
             RangeFactoryChain = rangeFactoryChain;
         }

@@ -4,7 +4,7 @@ namespace Curds.Cron.Ranges.Implementation
 {
     using Cron.Abstraction;
 
-    internal abstract class BaseRange<TFieldDefinition> : ICronRange
+    internal abstract class BaseRange<TFieldDefinition> : ICronRange<TFieldDefinition>
         where TFieldDefinition : ICronFieldDefinition
     {
         protected TFieldDefinition FieldDefinition { get; }

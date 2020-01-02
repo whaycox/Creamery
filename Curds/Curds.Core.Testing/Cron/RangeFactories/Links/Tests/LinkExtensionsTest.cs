@@ -26,19 +26,19 @@ namespace Curds.Cron.RangeFactories.Links.Tests
         [TestMethod]
         public void SingleValueAddsLink()
         {
-            VerifyLinkIsExpected(TestObject.AddSingleValue(MockFieldDefinition.Object), typeof(SingleValueRangeLink<ICronFieldDefinition>));
+            VerifyLinkIsExpected(TestObject.AddSingleValue(MockFieldDefinition.Object), typeof(SingleValueLink<ICronFieldDefinition>));
         }
 
         [TestMethod]
         public void WildcardAddsLink()
         {
-            VerifyLinkIsExpected(TestObject.AddWildcard(MockFieldDefinition.Object), typeof(WildcardRangeLink<ICronFieldDefinition>));
+            VerifyLinkIsExpected(TestObject.AddWildcard(MockFieldDefinition.Object), typeof(WildcardLink<ICronFieldDefinition>));
         }
 
         [TestMethod]
         public void RangeValueAddsLink()
         {
-            VerifyLinkIsExpected(TestObject.AddRangeValue(MockFieldDefinition.Object), typeof(RangeValueRangeLink<ICronFieldDefinition>));
+            VerifyLinkIsExpected(TestObject.AddRangeValue(MockFieldDefinition.Object), typeof(RangeValueLink<ICronFieldDefinition>));
         }
 
         [TestMethod]
@@ -46,7 +46,7 @@ namespace Curds.Cron.RangeFactories.Links.Tests
         {
             DayOfWeekFieldDefinition fieldDefinition = new DayOfWeekFieldDefinition();
 
-            VerifyLinkIsExpected(TestObject.AddNthDayOfWeek(fieldDefinition), typeof(NthDayOfWeekRangeLink));
+            VerifyLinkIsExpected(TestObject.AddNthDayOfWeek(fieldDefinition), typeof(NthDayOfWeekLink));
         }
 
         [TestMethod]
@@ -54,7 +54,7 @@ namespace Curds.Cron.RangeFactories.Links.Tests
         {
             DayOfWeekFieldDefinition fieldDefinition = new DayOfWeekFieldDefinition();
 
-            VerifyLinkIsExpected(TestObject.AddLastDayOfWeek(fieldDefinition), typeof(LastDayOfWeekRangeLink));
+            VerifyLinkIsExpected(TestObject.AddLastDayOfWeek(fieldDefinition), typeof(LastDayOfWeekLink));
         }
 
         [TestMethod]
@@ -62,7 +62,7 @@ namespace Curds.Cron.RangeFactories.Links.Tests
         {
             DayOfMonthFieldDefinition fieldDefinition = new DayOfMonthFieldDefinition();
 
-            VerifyLinkIsExpected(TestObject.AddNearestWeekday(fieldDefinition), typeof(NearestWeekdayRangeLink));
+            VerifyLinkIsExpected(TestObject.AddNearestWeekday(fieldDefinition), typeof(NearestWeekdayLink));
         }
 
         [TestMethod]
@@ -70,7 +70,7 @@ namespace Curds.Cron.RangeFactories.Links.Tests
         {
             DayOfMonthFieldDefinition fieldDefinition = new DayOfMonthFieldDefinition();
 
-            VerifyLinkIsExpected(TestObject.AddLastDayOfMonth(fieldDefinition), typeof(LastDayOfMonthRangeLink));
+            VerifyLinkIsExpected(TestObject.AddLastDayOfMonth(fieldDefinition), typeof(LastDayOfMonthLink));
         }
     }
 }

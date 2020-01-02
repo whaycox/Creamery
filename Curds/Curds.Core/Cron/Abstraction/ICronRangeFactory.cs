@@ -4,4 +4,8 @@
     {
         ICronRange Parse(string range);
     }
+
+    public interface ICronRangeFactory<TFieldDefinition> : ICronRangeFactory
+        where TFieldDefinition : ICronFieldDefinition
+    { }
 }

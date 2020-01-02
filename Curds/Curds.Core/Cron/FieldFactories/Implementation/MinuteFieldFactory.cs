@@ -3,13 +3,12 @@
 namespace Curds.Cron.FieldFactories.Implementation
 {
     using Abstraction;
-    using Cron.Abstraction;
     using Fields.Implementation;
-    using RangeFactories.Abstraction;
+    using FieldDefinitions.Implementation;
 
-    internal class MinuteFieldFactory : BaseFieldFactory, IMinuteFieldFactory
+    internal class MinuteFieldFactory : BaseFieldFactory<MinuteFieldDefinition>
     {
-        public MinuteFieldFactory(IMinuteRangeFactory rangeFactory)
+        public MinuteFieldFactory(ICronRangeFactory<MinuteFieldDefinition> rangeFactory)
             : base(rangeFactory)
         { }
 

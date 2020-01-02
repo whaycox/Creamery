@@ -8,12 +8,13 @@ namespace Curds.Cron.FieldFactories.Tests
     using Fields.Implementation;
     using Implementation;
     using RangeFactories.Abstraction;
+    using FieldDefinitions.Implementation;
     using Template;
 
     [TestClass]
     public class DayOfWeekFieldFactoryTest : BaseFieldFactoryTemplate
     {
-        private Mock<IDayOfWeekRangeFactory> MockRangeFactory = new Mock<IDayOfWeekRangeFactory>();
+        private Mock<ICronRangeFactory<DayOfWeekFieldDefinition>> MockRangeFactory = new Mock<ICronRangeFactory<DayOfWeekFieldDefinition>>();
 
         private DayOfWeekFieldFactory _testObject = null;
         protected override ICronFieldFactory TestObject => _testObject;

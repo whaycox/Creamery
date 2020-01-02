@@ -12,24 +12,24 @@ namespace Curds.Cron.RangeFactories.Links
     internal static class LinkExtensions
     {
         public static IRangeFactoryLink AddSingleValue<TFieldDefinition>(this IRangeFactoryLink rangeLink, TFieldDefinition fieldDefinition)
-            where TFieldDefinition : ICronFieldDefinition => new SingleValueRangeLink<TFieldDefinition>(fieldDefinition, rangeLink);
+            where TFieldDefinition : ICronFieldDefinition => new SingleValueLink<TFieldDefinition>(fieldDefinition, rangeLink);
 
         public static IRangeFactoryLink AddWildcard<TFieldDefinition>(this IRangeFactoryLink rangeLink, TFieldDefinition fieldDefinition)
-            where TFieldDefinition : ICronFieldDefinition => new WildcardRangeLink<TFieldDefinition>(fieldDefinition, rangeLink);
+            where TFieldDefinition : ICronFieldDefinition => new WildcardLink<TFieldDefinition>(fieldDefinition, rangeLink);
 
         public static IRangeFactoryLink AddRangeValue<TFieldDefinition>(this IRangeFactoryLink rangeLink, TFieldDefinition fieldDefinition)
-            where TFieldDefinition : ICronFieldDefinition => new RangeValueRangeLink<TFieldDefinition>(fieldDefinition, rangeLink);
+            where TFieldDefinition : ICronFieldDefinition => new RangeValueLink<TFieldDefinition>(fieldDefinition, rangeLink);
 
         public static IRangeFactoryLink AddNthDayOfWeek(this IRangeFactoryLink rangeLink, DayOfWeekFieldDefinition fieldDefinition) =>
-            new NthDayOfWeekRangeLink(fieldDefinition, rangeLink);
+            new NthDayOfWeekLink(fieldDefinition, rangeLink);
 
         public static IRangeFactoryLink AddLastDayOfWeek(this IRangeFactoryLink rangeLink, DayOfWeekFieldDefinition fieldDefinition) =>
-            new LastDayOfWeekRangeLink(fieldDefinition, rangeLink);
+            new LastDayOfWeekLink(fieldDefinition, rangeLink);
 
         public static IRangeFactoryLink AddNearestWeekday(this IRangeFactoryLink rangeLink, DayOfMonthFieldDefinition fieldDefinition) =>
-            new NearestWeekdayRangeLink(fieldDefinition, rangeLink);
+            new NearestWeekdayLink(fieldDefinition, rangeLink);
 
         public static IRangeFactoryLink AddLastDayOfMonth(this IRangeFactoryLink rangeLink, DayOfMonthFieldDefinition fieldDefinition) =>
-            new LastDayOfMonthRangeLink(fieldDefinition, rangeLink);
+            new LastDayOfMonthLink(fieldDefinition, rangeLink);
     }
 }
