@@ -26,11 +26,32 @@ namespace Curds.Cron.FieldDefinitions.Template
         protected abstract int ExpectedMax { get; }
 
         [TestMethod]
-        public void UnrecognizedStringIsReturnedOnLookup()
+        public void ParsesInput()
         {
-            string actual = InterfaceTestObject.LookupAlias(nameof(UnrecognizedStringIsReturnedOnLookup));
+            int actual = InterfaceTestObject.Parse("5");
 
-            Assert.AreEqual(nameof(UnrecognizedStringIsReturnedOnLookup), actual);
+            Assert.AreEqual(5, actual);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(FormatException))]
+        public void ParseThrowsOnNonInt()
+        {
+            InterfaceTestObject.Parse(nameof(ParseThrowsOnNonInt));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(FormatException))]
+        public void ParseThrowsBelowMin()
+        {
+            InterfaceTestObject.Parse((ExpectedMin - 1).ToString());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(FormatException))]
+        public void ParseThrowsAboveMax()
+        {
+            InterfaceTestObject.Parse((ExpectedMax + 1).ToString());
         }
 
         [TestMethod]

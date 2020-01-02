@@ -23,18 +23,21 @@ namespace Curds.Cron.RangeFactories.Links.Tests
         public void Init()
         {
             MockFieldDefinition
-                .Setup(field => field.LookupAlias(It.IsAny<string>()))
-                .Returns<string>(supplied => supplied);
+                .Setup(field => field.Parse(TestMinRange))
+                .Returns(TestAbsoluteMin);
+            MockFieldDefinition
+                .Setup(field => field.Parse(TestMaxRange))
+                .Returns(TestAbsoluteMax);
 
             TestObject = new SingleValueLink<ICronFieldDefinition>(MockFieldDefinition.Object, MockRangeLink.Object);
         }
 
         [TestMethod]
-        public void LooksupAliasedValue()
+        public void ParsesValue()
         {
             TestObject.HandleParse(TestMinRange);
 
-            MockFieldDefinition.Verify(field => field.LookupAlias(TestMinRange), Times.Once);
+            MockFieldDefinition.Verify(field => field.Parse(TestMinRange), Times.Once);
         }
 
         [TestMethod]
@@ -52,34 +55,6 @@ namespace Curds.Cron.RangeFactories.Links.Tests
 
             SingleValueRange<ICronFieldDefinition> range = (SingleValueRange<ICronFieldDefinition>)actual;
             Assert.AreEqual(TestAbsoluteMax, range.Value);
-        }
-
-        [DataTestMethod]
-        [DataRow("")]
-        [DataRow("  ")]
-        [DataRow("test")]
-        [DataRow("1e5")]
-        public void NullOnNonInt(string testRange)
-        {
-            Assert.IsNull(TestObject.HandleParse(testRange));
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(FormatException))]
-        public void LessThanAbsoluteMinThrows()
-        {
-            string invalidValue = (TestAbsoluteMin - 1).ToString();
-
-            TestObject.HandleParse(invalidValue);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(FormatException))]
-        public void MoreThanAbsoluteMaxThrows()
-        {
-            string invalidValue = (TestAbsoluteMax + 1).ToString();
-
-            TestObject.HandleParse(invalidValue);
         }
     }
 }

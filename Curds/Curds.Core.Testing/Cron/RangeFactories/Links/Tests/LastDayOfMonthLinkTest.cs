@@ -48,6 +48,18 @@ namespace Curds.Cron.RangeFactories.Links.Tests
         }
 
         [DataTestMethod]
+        [DataRow("")]
+        [DataRow("  ")]
+        [DataRow("5")]
+        [DataRow("MAR")]
+        [DataRow("FRI")]
+        [DataRow("5-6")]
+        public void ReturnsNullOnWrongPattern(string testRange)
+        {
+            Assert.IsNull(TestObject.HandleParse(testRange));
+        }
+
+        [DataTestMethod]
         [DataRow(0)]
         [DataRow(5)]
         [DataRow(10)]

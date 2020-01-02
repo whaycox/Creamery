@@ -18,24 +18,24 @@ namespace Curds.Cron.FieldDefinitions.Tests
         protected override Func<DateTime, int> ExpectedDatePart => (time) => (int)time.DayOfWeek;
 
         [DataTestMethod]
-        [DataRow("SUN", "0")]
-        [DataRow("MON", "1")]
-        [DataRow("TUE", "2")]
-        [DataRow("WED", "3")]
-        [DataRow("THU", "4")]
-        [DataRow("FRI", "5")]
-        [DataRow("SAT", "6")]
-        public void CanLookupDayOfWeekAliases(string aliasedValue, string expectedValue)
+        [DataRow("SUN", 0)]
+        [DataRow("MON", 1)]
+        [DataRow("TUE", 2)]
+        [DataRow("WED", 3)]
+        [DataRow("THU", 4)]
+        [DataRow("FRI", 5)]
+        [DataRow("SAT", 6)]
+        public void CanParseDayOfWeekAliases(string aliasedValue, int expectedValue)
         {
-            string actual = InterfaceTestObject.LookupAlias(aliasedValue);
+            int actual = InterfaceTestObject.Parse(aliasedValue);
 
             Assert.AreEqual(expectedValue, actual);
         }
 
         [TestMethod]
-        public void LookupIsCaseInsensitive()
+        public void ParseIsCaseInsensitive()
         {
-            Assert.AreEqual("3", InterfaceTestObject.LookupAlias("WeD"));
+            Assert.AreEqual(3, InterfaceTestObject.Parse("WeD"));
         }
     }
 }

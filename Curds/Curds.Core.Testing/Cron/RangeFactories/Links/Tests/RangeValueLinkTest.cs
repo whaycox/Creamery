@@ -22,19 +22,22 @@ namespace Curds.Cron.RangeFactories.Links.Tests
         public void Init()
         {
             MockFieldDefinition
-                .Setup(field => field.LookupAlias(It.IsAny<string>()))
-                .Returns<string>(supplied => supplied);
+                .Setup(field => field.Parse(TestAbsoluteMin.ToString()))
+                .Returns(TestAbsoluteMin);
+            MockFieldDefinition
+                .Setup(field => field.Parse(TestAbsoluteMax.ToString()))
+                .Returns(TestAbsoluteMax);
 
             TestObject = new RangeValueLink<ICronFieldDefinition>(MockFieldDefinition.Object, MockRangeLink.Object);
         }
 
         [TestMethod]
-        public void LooksupAliasedValues()
+        public void ParsesBothValues()
         {
             TestObject.HandleParse(TestRange(TestAbsoluteMin, TestAbsoluteMax));
 
-            MockFieldDefinition.Verify(field => field.LookupAlias(TestAbsoluteMin.ToString()), Times.Once);
-            MockFieldDefinition.Verify(field => field.LookupAlias(TestAbsoluteMax.ToString()), Times.Once);
+            MockFieldDefinition.Verify(field => field.Parse(TestAbsoluteMin.ToString()), Times.Once);
+            MockFieldDefinition.Verify(field => field.Parse(TestAbsoluteMax.ToString()), Times.Once);
         }
 
         [TestMethod]
@@ -46,7 +49,7 @@ namespace Curds.Cron.RangeFactories.Links.Tests
         }
 
         [TestMethod]
-        public void ReturnedRangeHasLowPopulated()
+        public void ReturnedRangeHasLowPopulatedFromParse()
         {
             ICronRange actual = TestObject.HandleParse(TestRange(TestAbsoluteMin, TestAbsoluteMax));
 
@@ -82,34 +85,6 @@ namespace Curds.Cron.RangeFactories.Links.Tests
         public void ThrowsIfRangeIsInverted()
         {
             TestObject.HandleParse(TestRange(TestAbsoluteMax, TestAbsoluteMin));
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(FormatException))]
-        public void ThrowsIfLowEndIsLessThanAbsoluteMin()
-        {
-            TestObject.HandleParse(TestRange(TestAbsoluteMin - 1, TestAbsoluteMax));
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(FormatException))]
-        public void ThrowsIfHighEndIsLessThanAbsoluteMin()
-        {
-            TestObject.HandleParse(TestRange(TestAbsoluteMin, TestAbsoluteMin - 1));
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(FormatException))]
-        public void ThrowsIfLowEndIsMoreThanAbsoluteMax()
-        {
-            TestObject.HandleParse(TestRange(TestAbsoluteMax + 1, TestAbsoluteMax));
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(FormatException))]
-        public void ThrowsIfHighEndIsMoreThanAbsoluteMax()
-        {
-            TestObject.HandleParse(TestRange(TestAbsoluteMin, TestAbsoluteMax + 1));
         }
     }
 }

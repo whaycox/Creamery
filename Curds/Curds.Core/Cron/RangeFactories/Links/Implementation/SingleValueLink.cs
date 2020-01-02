@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace Curds.Cron.RangeFactories.Links.Implementation
 {
@@ -18,15 +19,7 @@ namespace Curds.Cron.RangeFactories.Links.Implementation
             : base(fieldDefinition, successor)
         { }
 
-        public override ICronRange HandleParse(string range)
-        {
-            range = FieldDefinition.LookupAlias(range);
-            if (!int.TryParse(range, out int value))
-                return null;
-            if (!IsValid(value))
-                throw new FormatException($"Supplied value {value} is outside the accepted {FieldDefinition.AbsoluteMin}-{FieldDefinition.AbsoluteMax}");
-            return new SingleValueRange<TFieldDefinition>(FieldDefinition, value);
-        }
-
+        public override ICronRange HandleParse(string range) =>
+            new SingleValueRange<TFieldDefinition>(FieldDefinition, FieldDefinition.Parse(range));
     }
 }

@@ -24,12 +24,7 @@ namespace Curds.Cron.RangeFactories.Links.Implementation
             if (!match.Success)
                 return null;
 
-            string dayOfWeekString = FieldDefinition.LookupAlias(match.Groups[1].Value);
-            int dayOfWeek = int.Parse(dayOfWeekString);
-            if (!IsValid(dayOfWeek))
-                throw new FormatException($"Invalid Day of Week {dayOfWeekString}");
-
-            return new LastDayOfWeekRange(FieldDefinition, dayOfWeek);
+            return new LastDayOfWeekRange(FieldDefinition, FieldDefinition.Parse(match.Groups[1].Value));
         }
     }
 }

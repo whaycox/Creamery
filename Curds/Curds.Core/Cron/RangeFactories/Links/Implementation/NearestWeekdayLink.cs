@@ -22,11 +22,7 @@ namespace Curds.Cron.RangeFactories.Links.Implementation
             if (!match.Success)
                 return null;
 
-            int dayOfMonth = int.Parse(match.Groups[1].Value);
-            if (!IsValid(dayOfMonth))
-                throw new FormatException($"Cannot supply a day of month {dayOfMonth}");
-
-            return new NearestWeekdayRange(FieldDefinition, dayOfMonth);
+            return new NearestWeekdayRange(FieldDefinition, FieldDefinition.Parse(match.Groups[1].Value));
         }
     }
 }

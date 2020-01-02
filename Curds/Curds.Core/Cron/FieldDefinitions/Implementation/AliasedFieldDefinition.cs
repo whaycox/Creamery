@@ -6,12 +6,12 @@ namespace Curds.Cron.FieldDefinitions.Implementation
     {
         protected abstract Dictionary<string, string> Aliases { get; }
 
-        public override string LookupAlias(string value)
+        public override int Parse(string value)
         {
             if (Aliases.ContainsKey(value))
-                return Aliases[value];
-            else
-                return base.LookupAlias(value);
+                value = Aliases[value];
+            
+            return base.Parse(value);
         }
     }
 }

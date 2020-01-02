@@ -22,20 +22,12 @@ namespace Curds.Cron.RangeFactories.Links.Implementation
             if (!match.Success)
                 return null;
 
-            int low = ParseCapturedValue(match.Groups[1].Value);
-            int high = ParseCapturedValue(match.Groups[2].Value);
+            int low = FieldDefinition.Parse(match.Groups[1].Value);
+            int high = FieldDefinition.Parse(match.Groups[2].Value);
             if (low > high)
                 throw new FormatException($"Cannot supply an inverted range {range}");
 
             return new RangeValueRange<TFieldDefinition>(FieldDefinition, low, high);
-        }
-        private int ParseCapturedValue(string captured)
-        {
-            captured = FieldDefinition.LookupAlias(captured);
-            int parsedValue = int.Parse(captured);
-            if (!IsValid(parsedValue))
-                throw new FormatException($"Supplied value {captured} is outside the allowed {FieldDefinition.AbsoluteMin}-{FieldDefinition.AbsoluteMax}");
-            return parsedValue;
         }
     }
 }

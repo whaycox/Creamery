@@ -27,7 +27,6 @@ namespace Curds.Cron.RangeFactories.Links.Implementation
             int offset = default;
             if (match.Groups[1].Success)
                 offset = int.Parse(match.Groups[1].Value);
-
             if (!IsOffsetValid(offset))
                 throw new FormatException($"Must supply an Last Day of Month offset less than {FieldDefinition.AbsoluteMax}");
 

@@ -27,9 +27,9 @@ namespace Curds.Cron.RangeFactories.Chains.Template
         protected void VerifyDefaultChain<TFieldDefinition>()
             where TFieldDefinition : ICronFieldDefinition, new()
         {
-            VerifyAndIncrementTestRangeLink(typeof(SingleValueLink<TFieldDefinition>));
             VerifyAndIncrementTestRangeLink(typeof(RangeValueLink<TFieldDefinition>));
             VerifyAndIncrementTestRangeLink(typeof(WildcardLink<TFieldDefinition>));
+            VerifyAndIncrementTestRangeLink(typeof(SingleValueLink<TFieldDefinition>));
         }
     }
 }

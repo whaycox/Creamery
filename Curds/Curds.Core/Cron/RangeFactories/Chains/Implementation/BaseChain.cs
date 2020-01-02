@@ -1,8 +1,8 @@
 ﻿namespace Curds.Cron.RangeFactories.Chains.Implementation
 {
     using Cron.Abstraction;
-    using RangeFactories.Abstraction;
     using Links;
+    using RangeFactories.Abstraction;
 
     internal abstract class BaseChain<TFieldDefinition> : IRangeFactoryChain<TFieldDefinition>
         where TFieldDefinition : ICronFieldDefinition
@@ -17,8 +17,8 @@
         }
 
         public virtual IRangeFactoryLink BuildChain() => EmptyChain
+            .AddSingleValue(FieldDefinition)
             .AddWildcard(FieldDefinition)
-            .AddRangeValue(FieldDefinition)
-            .AddSingleValue(FieldDefinition);
+            .AddRangeValue(FieldDefinition);
     }
 }

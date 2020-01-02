@@ -20,7 +20,6 @@ namespace Curds.Cron.RangeFactories.Links.Implementation
             Successor = successor;
         }
 
-        protected bool IsValid(int parsedValue) => FieldDefinition.AbsoluteMin <= parsedValue && parsedValue <= FieldDefinition.AbsoluteMax;
 
         public abstract ICronRange HandleParse(string range);
     }
