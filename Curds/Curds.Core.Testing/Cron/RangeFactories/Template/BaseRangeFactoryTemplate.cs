@@ -5,12 +5,13 @@ using System;
 namespace Curds.Cron.RangeFactories.Template
 {
     using Cron.Abstraction;
+    using Abstraction;
 
     public abstract class BaseRangeFactoryTemplate
     {
         protected string TestRange = nameof(TestRange);
 
-        protected Mock<ICronRangeLink> MockRangeLink = new Mock<ICronRangeLink>();
+        protected Mock<IRangeFactoryLink> MockRangeLink = new Mock<IRangeFactoryLink>();
         protected Mock<ICronRange> MockRange = new Mock<ICronRange>();
 
         protected abstract ICronRangeFactory TestObject { get; }

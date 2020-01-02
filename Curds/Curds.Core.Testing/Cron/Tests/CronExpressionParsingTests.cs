@@ -8,7 +8,7 @@ namespace Curds.Cron.Tests
     using FieldFactories.Implementation;
     using Implementation;
     using RangeFactories.Implementation;
-    using RangeLinkFactories.Implementation;
+    using RangeFactories.Chains.Implementation;
 
     [TestClass]
     public class CronExpressionParsingTests

@@ -1,7 +1,7 @@
 ﻿namespace Curds.Cron.RangeFactories.Implementation
 {
     using Abstraction;
-    using RangeLinkFactories.Abstraction;
+    using Chains.Abstraction;
 
     internal class MonthRangeFactory : BaseRangeFactory, IMonthRangeFactory
     {

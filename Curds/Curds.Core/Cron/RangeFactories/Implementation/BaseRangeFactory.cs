@@ -3,23 +3,24 @@
 namespace Curds.Cron.RangeFactories.Implementation
 {
     using Cron.Abstraction;
+    using Abstraction;
 
     internal abstract class BaseRangeFactory : ICronRangeFactory
     {
-        private ICronRangeLinkFactory RangeLinkFactory { get; }
+        private IRangeFactoryChain RangeFactoryChain { get; }
 
-        public BaseRangeFactory(ICronRangeLinkFactory rangeLinkFactory)
+        public BaseRangeFactory(IRangeFactoryChain rangeFactoryChain)
         {
-            RangeLinkFactory = rangeLinkFactory;
+            RangeFactoryChain = rangeFactoryChain;
         }
 
         public ICronRange Parse(string range)
         {
-            ICronRangeLink currentLink = RangeLinkFactory.StartOfChain;
+            IRangeFactoryLink currentLink = RangeFactoryChain.BuildChain();
             ICronRange parsedRange = currentLink.HandleParse(range);
             while (parsedRange == null)
             {
-                ICronRangeLink successor = currentLink.Successor;
+                IRangeFactoryLink successor = currentLink.Successor;
                 if (successor == null)
                     throw new FormatException($"Failed to parse {range}");
 

@@ -5,7 +5,7 @@ namespace Curds.Cron.RangeFactories.Tests
 {
     using Cron.Abstraction;
     using Implementation;
-    using RangeLinkFactories.Abstraction;
+    using Chains.Abstraction;
     using Template;
 
     [TestClass]
@@ -23,10 +23,10 @@ namespace Curds.Cron.RangeFactories.Tests
         }
 
         protected override void SetupRangeLinkFactory() => MockRangeLinkFactory
-            .Setup(factory => factory.StartOfChain)
+            .Setup(factory => factory.BuildChain())
             .Returns(MockRangeLink.Object);
 
         protected override void VerifyChainWasRetrieved() => MockRangeLinkFactory
-            .Verify(factory => factory.StartOfChain, Times.Once);
+            .Verify(factory => factory.BuildChain(), Times.Once);
     }
 }

@@ -11,8 +11,8 @@ namespace Curds
     using Cron.FieldFactories.Implementation;
     using Cron.RangeFactories.Abstraction;
     using Cron.RangeFactories.Implementation;
-    using Cron.RangeLinkFactories.Abstraction;
-    using Cron.RangeLinkFactories.Implementation;
+    using Cron.RangeFactories.Chains.Abstraction;
+    using Cron.RangeFactories.Chains.Implementation;
 
     public static class RegistrationExtensions
     {
