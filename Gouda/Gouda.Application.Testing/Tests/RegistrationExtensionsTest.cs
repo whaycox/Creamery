@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using MediatR;
+using Whey.Template;
 
 namespace Gouda.Application.Tests
 {
@@ -21,20 +22,9 @@ namespace Gouda.Application.Tests
     using DeferredValues.Implementation;
 
     [TestClass]
-    public class RegistrationExtensionsTest
+    public class RegistrationExtensionsTest : RegistrationExtensionsTemplate
     {
-        private IServiceCollection TestServiceCollection = new ServiceCollection();
-
         private void TestAddGoudaApplication() => TestServiceCollection.AddGoudaApplication();
-
-        private void VerifyServiceWasRegistered(Type expectedInterface, Type expectedImplementation, ServiceLifetime expectedLifetime)
-        {
-            Assert.IsTrue(TestServiceCollection.Any(service =>
-                service.ServiceType == expectedInterface &&
-                service.ImplementationType == expectedImplementation &&
-                service.Lifetime == expectedLifetime
-            ));
-        }
 
         [TestMethod]
         public void GoudaApplicationAddsNavigationTreeBuilder()

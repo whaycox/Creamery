@@ -6,9 +6,11 @@ namespace Gouda.Checks.Implementation
 {
     using Gouda.Abstraction;
 
-    public class HeartbeatCheck : ICheck
+    internal class HeartbeatCheck : ICheck
     {
-        public Guid ID { get; } = Guid.Parse("b9e40947-cb83-446d-be2b-ff5f7b0dbc0c");
+        private static readonly Guid _id = Guid.Parse("b9e40947-cb83-446d-be2b-ff5f7b0dbc0c");
+
+        public Guid ID => _id;
         public string Name => "Heartbeat";
     }
 }

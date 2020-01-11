@@ -5,11 +5,11 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
+using Curds.Time.Abstraction;
 
 namespace Gouda.Application.Commands.CheckSchedule.Implementation
 {
     using Domain;
-    using Time.Abstraction;
     using Scheduling.Abstraction;
     using Gouda.Domain;
     using ExecuteCheck.Domain;

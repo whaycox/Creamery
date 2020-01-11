@@ -8,7 +8,7 @@ namespace Gouda.Communication.Implementation
     using Abstraction;
     using Gouda.Domain;
 
-    public class Communicator : ICommunicator
+    internal class Communicator : ICommunicator
     {
         public Task<List<DiagnosticData>> SendCheck(CheckDefinition check)
         {

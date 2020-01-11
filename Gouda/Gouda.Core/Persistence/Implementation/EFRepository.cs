@@ -11,7 +11,7 @@ namespace Gouda.Persistence.Implementation
     using Gouda.Domain;
     using Domain;
 
-    public class EFRepository<TEntity> : IRepository<TEntity>
+    internal class EFRepository<TEntity> : IRepository<TEntity>
         where TEntity : BaseEntity
     {
         private GoudaContext GoudaContext { get; }
@@ -21,7 +21,7 @@ namespace Gouda.Persistence.Implementation
             GoudaContext = goudaContext;
         }
 
-        public Task Insert(TEntity entity) => Task.FromResult(GoudaContext
+        public virtual Task Insert(TEntity entity) => Task.FromResult(GoudaContext
             .Set<TEntity>()
             .Add(entity));
 

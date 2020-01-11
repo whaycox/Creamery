@@ -3,6 +3,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Curds.Time.Abstraction;
 
 namespace Gouda.Scheduling.Tests
 {
@@ -10,7 +11,6 @@ namespace Gouda.Scheduling.Tests
     using Gouda.Domain;
     using Implementation;
     using Persistence.Abstraction;
-    using Time.Abstraction;
 
     [TestClass]
     public class SchedulerTest

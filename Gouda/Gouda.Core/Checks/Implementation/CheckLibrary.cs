@@ -7,7 +7,7 @@ namespace Gouda.Checks.Implementation
     using Abstraction;
     using Gouda.Abstraction;
 
-    public class CheckLibrary : ICheckLibrary
+    internal class CheckLibrary : ICheckLibrary
     {
         private Dictionary<Guid, ICheck> Checks = new Dictionary<Guid, ICheck>();
 

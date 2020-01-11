@@ -8,10 +8,13 @@ namespace Gouda.Template
         protected const int TestMonth = 8;
         protected const int TestDay = 15;
 
-        protected DateTimeOffset TestTime = new DateTimeOffset()
-           .WithYear(TestYear)
-           .WithMonth(TestMonth)
-           .WithDay(TestDay)
-           .Build();
+        protected DateTimeOffset TestTime = new DateTimeOffset(
+            TestYear, 
+            TestMonth, 
+            TestDay, 
+            0, 
+            0, 
+            0, 
+            TimeSpan.Zero);
     }
 }

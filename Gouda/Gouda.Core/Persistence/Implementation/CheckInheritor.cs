@@ -11,7 +11,7 @@ namespace Gouda.Persistence.Implementation
     using Gouda.Domain;
     using Exceptions;
 
-    public class CheckInheritor : ICheckInheritor
+    internal class CheckInheritor : ICheckInheritor
     {
         private const int MaxConcurrentAttempts = 3;
         private const int ConcurrentRetryDelayInMs = 10;
@@ -73,5 +73,10 @@ namespace Gouda.Persistence.Implementation
         //    ParentDefinitionID = inputCheck.ParentDefinitionID,
         //    RescheduleSecondInterval = inputCheck.RescheduleSecondInterval,
         //};
+
+        public Task Add(CheckDefinition checkDefinition)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

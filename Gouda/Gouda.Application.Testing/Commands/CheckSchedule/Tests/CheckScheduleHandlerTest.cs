@@ -9,12 +9,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Threading.Tasks;
 using MediatR;
+using Curds.Time.Abstraction;
 
 namespace Gouda.Application.Commands.CheckSchedule.Tests
 {
     using Implementation;
     using Domain;
-    using Time.Abstraction;
     using Scheduling.Abstraction;
     using Gouda.Domain;
     using ExecuteCheck.Domain;

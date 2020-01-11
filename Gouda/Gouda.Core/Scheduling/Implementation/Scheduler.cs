@@ -1,4 +1,6 @@
-﻿namespace Gouda.Scheduling.Implementation
+﻿using Curds.Time.Abstraction;
+
+namespace Gouda.Scheduling.Implementation
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +8,6 @@
     using Abstraction;
     using Gouda.Domain;
     using Persistence.Abstraction;
-    using Time.Abstraction;
 
     public class Scheduler : IScheduler
     {

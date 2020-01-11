@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
+using Whey.Template;
 
 namespace Gouda.Tests
 {
@@ -16,35 +17,14 @@ namespace Gouda.Tests
     using Persistence.Implementation;
     using Scheduling.Abstraction;
     using Scheduling.Implementation;
-    using Time.Abstraction;
-    using Time.Implementation;
     using Persistence.Domain;
 
     [TestClass]
-    public class RegistrationExtensionsTest
+    public class RegistrationExtensionsTest : RegistrationExtensionsTemplate
     {
-        private IServiceCollection TestServiceCollection = new ServiceCollection();
-
         private Mock<IConfiguration> MockConfiguration = new Mock<IConfiguration>();
 
         private void TestAddGoudaCore() => TestServiceCollection.AddGoudaCore(MockConfiguration.Object);
-
-        private void VerifyServiceWasRegistered(Type expectedInterface, Type expectedImplementation, ServiceLifetime expectedLifetime)
-        {
-            Assert.IsTrue(TestServiceCollection.Any(service =>
-                service.ServiceType == expectedInterface &&
-                service.ImplementationType == expectedImplementation &&
-                service.Lifetime == expectedLifetime
-            ));
-        }
-
-        [TestMethod]
-        public void GoudaCoreAddsTime()
-        {
-            TestAddGoudaCore();
-
-            VerifyServiceWasRegistered(typeof(ITime), typeof(MachineTime), ServiceLifetime.Transient);
-        }
 
         [TestMethod]
         public void GoudaCoreAddsScheduleFactory()

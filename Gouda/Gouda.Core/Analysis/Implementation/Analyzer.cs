@@ -8,7 +8,7 @@ namespace Gouda.Analysis.Implementation
     using Abstraction;
     using Gouda.Domain;
 
-    public class Analyzer : IAnalyzer
+    internal class Analyzer : IAnalyzer
     {
         public Task AnalyzeResult(CheckDefinition check, List<DiagnosticData> result)
         {

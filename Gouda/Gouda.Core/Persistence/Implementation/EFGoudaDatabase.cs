@@ -9,7 +9,7 @@ namespace Gouda.Persistence.Implementation
     using Domain;
     using System.Threading.Tasks;
 
-    public class EFGoudaDatabase : IGoudaDatabase
+    internal class EFGoudaDatabase : IGoudaDatabase
     {
         private GoudaContext GoudaContext { get; }
 

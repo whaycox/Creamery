@@ -11,5 +11,6 @@ namespace Gouda.Persistence.Abstraction
         Task<List<CheckDefinition>> Build(List<int> checkIDs);
 
         Task Seed(List<CheckDefinition> seedChecks);
+        Task Add(CheckDefinition checkDefinition);
     }
 }
