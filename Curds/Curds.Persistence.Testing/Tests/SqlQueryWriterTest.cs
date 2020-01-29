@@ -22,7 +22,8 @@ namespace Curds.Persistence.Tests
         private Column TestColumnTwo = new Column { Name = nameof(TestColumnTwo) };
         private List<ValueEntity> TestValueEntities = new List<ValueEntity>();
         private ValueEntity TestValueEntity = new ValueEntity();
-        private Value TestValue => throw new NotImplementedException();
+        private IntValue TestIntValue = new IntValue { Name = nameof(TestIntValue) };
+        private int TestInt = 10;
         private string TestParameterName = nameof(TestParameterName);
 
         private Mock<ISqlQueryParameterBuilder> MockParameterBuilder = new Mock<ISqlQueryParameterBuilder>();
@@ -35,6 +36,7 @@ namespace Curds.Persistence.Tests
             TestTable.Schema = TestSchema;
             TestTable.Name = TestTableName;
             TestValueEntities.Add(TestValueEntity);
+            TestIntValue.Int = TestInt;
 
             MockParameterBuilder
                 .Setup(builder => builder.RegisterNewParamater(It.IsAny<Value>()))
@@ -140,17 +142,17 @@ namespace Curds.Persistence.Tests
         public void ValueEntityRegistersParameterForEachValue(int valueNumber)
         {
             for (int i = 0; i < valueNumber; i++)
-                TestValueEntity.Values.Add(TestValue);
+                TestValueEntity.Values.Add(TestIntValue);
 
             TestObject.ValueEntities(TestValueEntities);
 
-            MockParameterBuilder.Verify(builder => builder.RegisterNewParamater(TestValue), Times.Exactly(valueNumber));
+            MockParameterBuilder.Verify(builder => builder.RegisterNewParamater(TestIntValue), Times.Exactly(valueNumber));
         }
 
         [TestMethod]
         public void SingleValueValueEntityWritesParameterNameToCommand()
         {
-            TestValueEntity.Values.Add(TestValue);
+            TestValueEntity.Values.Add(TestIntValue);
             TestObject.ValueEntities(TestValueEntities);
 
             SqlCommand actual = TestObject.Flush();
@@ -163,8 +165,8 @@ namespace Curds.Persistence.Tests
         [TestMethod]
         public void MultiValueValueEntityWritesParameterNameToCommand()
         {
-            TestValueEntity.Values.Add(TestValue);
-            TestValueEntity.Values.Add(TestValue);
+            TestValueEntity.Values.Add(TestIntValue);
+            TestValueEntity.Values.Add(TestIntValue);
             TestObject.ValueEntities(TestValueEntities);
 
             SqlCommand actual = TestObject.Flush();
@@ -182,11 +184,11 @@ namespace Curds.Persistence.Tests
             for (int i = 0; i < entityNumber; i++)
                 TestValueEntities.Add(TestValueEntity);
             for (int i = 0; i < valueNumber; i++)
-                TestValueEntity.Values.Add(TestValue);
+                TestValueEntity.Values.Add(TestIntValue);
 
             TestObject.ValueEntities(TestValueEntities);
 
-            MockParameterBuilder.Verify(builder => builder.RegisterNewParamater(TestValue), Times.Exactly(entityNumber * valueNumber));
+            MockParameterBuilder.Verify(builder => builder.RegisterNewParamater(TestIntValue), Times.Exactly(entityNumber * valueNumber));
         }
         private static IEnumerable<object[]> MultipleEntitiesMultipleValuesData()
         {
@@ -206,7 +208,7 @@ namespace Curds.Persistence.Tests
         [TestMethod]
         public void MultipleValueEntitiesWritesToCommand()
         {
-            TestValueEntity.Values.Add(TestValue);
+            TestValueEntity.Values.Add(TestIntValue);
             TestValueEntities.Add(TestValueEntity);
             TestObject.ValueEntities(TestValueEntities);
 
