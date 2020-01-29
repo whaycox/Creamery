@@ -1,10 +1,11 @@
 ﻿using System.Threading.Tasks;
+using System;
 
 namespace Curds.Persistence.Abstraction
 {
     public interface IDatabase
     {
-        Task BeginTransaction();
+        Task<IDisposable> BeginTransaction();
         Task CommitTransaction();
     }
 }
