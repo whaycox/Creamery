@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curds.Core", "Curds.Core\Cu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curds.Core.Testing", "Curds.Core.Testing\Curds.Core.Testing.csproj", "{DDF5B631-C02B-4D0B-91CE-DC261E743795}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Curds.Persistence", "Curds.Persistence\Curds.Persistence.csproj", "{B9303AD6-995C-4618-81D5-54C79D346F36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curds.Persistence.SqlServer", "Curds.Persistence.SqlServer\Curds.Persistence.SqlServer.csproj", "{B9303AD6-995C-4618-81D5-54C79D346F36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Curds.Persistence.Testing", "Curds.Persistence.Testing\Curds.Persistence.Testing.csproj", "{AB967D13-95EC-4ACB-80BC-034605687385}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curds.Persistence.SqlServer.Testing", "Curds.Persistence.SqlServer.Testing\Curds.Persistence.SqlServer.Testing.csproj", "{AB967D13-95EC-4ACB-80BC-034605687385}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Whey", "..\Whey\Whey\Whey.csproj", "{53BCA772-81A9-4B1A-A9A0-3E3B427A7B59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{AB967D13-95EC-4ACB-80BC-034605687385}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB967D13-95EC-4ACB-80BC-034605687385}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB967D13-95EC-4ACB-80BC-034605687385}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53BCA772-81A9-4B1A-A9A0-3E3B427A7B59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53BCA772-81A9-4B1A-A9A0-3E3B427A7B59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53BCA772-81A9-4B1A-A9A0-3E3B427A7B59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53BCA772-81A9-4B1A-A9A0-3E3B427A7B59}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
