@@ -28,6 +28,7 @@ namespace Curds.Persistence.Model.Tests
         private PropertyInfo TestIDProperty = typeof(TestEntity).GetProperty(nameof(TestEntity.ID));
         private PropertyInfo TestNameProperty = typeof(TestEntity).GetProperty(nameof(TestEntity.Name));
 
+        private Mock<IValueExpressionBuilder> MockValueExpressionBuilder = new Mock<IValueExpressionBuilder>();
         private Mock<ITypeMapper> MockTypeMapper = new Mock<ITypeMapper>();
         private Mock<IModelConfigurationFactory> MockConfigurationFactory = new Mock<IModelConfigurationFactory>();
         private Mock<IModelEntityConfiguration> MockConfiguration = new Mock<IModelEntityConfiguration>();
@@ -50,6 +51,7 @@ namespace Curds.Persistence.Model.Tests
                 .Returns(MockConfiguration.Object);
 
             TestObject = new DelegateMapper(
+                MockValueExpressionBuilder.Object,
                 MockTypeMapper.Object,
                 MockConfigurationFactory.Object);
         }

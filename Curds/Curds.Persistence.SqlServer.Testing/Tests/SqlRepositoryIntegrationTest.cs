@@ -26,6 +26,7 @@ namespace Curds.Persistence.Tests
     public class SqlRepositoryIntegrationTest
     {
         private TestEntity TestEntity = new TestEntity();
+        private OtherEntity OtherEntity = new OtherEntity();
         private SqlConnectionInformation TestConnectionInformation = new SqlConnectionInformation();
         private string TestServer = "localhost\\SQLEXPRESS";
         private string TestDatabase = "Testing";
@@ -39,6 +40,7 @@ namespace Curds.Persistence.Tests
         private List<IModelEntityConfiguration> TestModelEntityConfigurations = new List<IModelEntityConfiguration>();
         private ModelConfigurationFactory TestModelConfigurationFactory = null;
         private TypeMapper TestTypeMapper = null;
+        private ValueExpressionBuilder TestValueExpressionBuilder = null;
         private DelegateMapper TestDelegateMapper = null;
         private ModelBuilder TestModelBuilder = null;
         private ModelMapFactory TestModelMapFactory = null;
@@ -48,7 +50,8 @@ namespace Curds.Persistence.Tests
         private SqlConnectionContext TestConnectionContext = null;
         private SqlQueryExpressionParser<ITestDataModel> TestQueryExpressionParser = null;
         private SqlQueryBuilder<ITestDataModel> TestQueryBuilder = null;
-        private SqlRepository<ITestDataModel, TestEntity> TestRepository = null;
+        private SqlRepository<ITestDataModel, TestEntity> TestEntityRepository = null;
+        private SqlRepository<ITestDataModel, OtherEntity> OtherEntityRepository = null;
 
         [TestInitialize]
         public void Init()
@@ -62,7 +65,7 @@ namespace Curds.Persistence.Tests
                 .Returns(TestConnectionInformation);
         }
 
-        private void BuildTestRepository()
+        private void BuildTestObjects()
         {
             TestModelConfigurationFactory = new ModelConfigurationFactory(
                 TestGlobalConfigurations,
@@ -70,7 +73,9 @@ namespace Curds.Persistence.Tests
                 TestModelConfigurations,
                 TestModelEntityConfigurations);
             TestTypeMapper = new TypeMapper();
+            TestValueExpressionBuilder = new ValueExpressionBuilder();
             TestDelegateMapper = new DelegateMapper(
+                TestValueExpressionBuilder,
                 TestTypeMapper,
                 TestModelConfigurationFactory);
             TestModelBuilder = new ModelBuilder(
@@ -89,8 +94,11 @@ namespace Curds.Persistence.Tests
             TestQueryBuilder = new SqlQueryBuilder<ITestDataModel>(
                 TestModelMap, 
                 TestQueryExpressionParser);
-            TestRepository = new SqlRepository<ITestDataModel, TestEntity>(
+            TestEntityRepository = new SqlRepository<ITestDataModel, TestEntity>(
                 TestConnectionContext, 
+                TestQueryBuilder);
+            OtherEntityRepository = new SqlRepository<ITestDataModel, OtherEntity>(
+                TestConnectionContext,
                 TestQueryBuilder);
         }
 
@@ -101,11 +109,19 @@ namespace Curds.Persistence.Tests
         }
 
         [TestMethod]
-        public async Task CanInsertNewEntity()
+        public async Task CanInsertTestEntity()
         {
-            BuildTestRepository();
+            BuildTestObjects();
 
-            await TestRepository.Insert(TestEntity);
+            await TestEntityRepository.Insert(TestEntity);
+        }
+
+        [TestMethod]
+        public async Task CanInsertOtherEntity()
+        {
+            BuildTestObjects();
+
+            await OtherEntityRepository.Insert(OtherEntity);
         }
 
     }

@@ -14,28 +14,17 @@ namespace Curds.Persistence.Model.Implementation
 
     internal class DelegateMapper : IDelegateMapper
     {
-        private delegate Expression AssignValueDelegate(ParameterExpression valueParameter, PropertyInfo valueProperty, ParameterExpression entityParameter);
-
-        private Dictionary<Type, Type> ValueTypeMap { get; } = new Dictionary<Type, Type>
-        {
-            { typeof(string), typeof(StringValue) },
-            { typeof(int), typeof(IntValue) },
-        };
-        private Dictionary<Type, AssignValueDelegate> ValueAssignDelegateMap { get; }
-
+        private IValueExpressionBuilder ExpressionBuilder { get; }
         private ITypeMapper TypeMapper { get; }
         private IModelConfigurationFactory ConfigurationFactory { get; }
 
         public DelegateMapper(
+            IValueExpressionBuilder expressionBuilder,
             ITypeMapper typeMapper,
             IModelConfigurationFactory configurationFactory)
         {
-            ValueAssignDelegateMap = new Dictionary<Type, AssignValueDelegate>
-            {
-                { typeof(StringValue), AssignStringValue },
-                { typeof(IntValue), AssignIntValue },
-            };
 
+            ExpressionBuilder = expressionBuilder;
             TypeMapper = typeMapper;
             ConfigurationFactory = configurationFactory;
         }
@@ -79,9 +68,7 @@ namespace Curds.Persistence.Model.Implementation
         }
         private Expression AddValueExpression(PropertyInfo valueProperty, ParameterExpression entityParameter, ParameterExpression valueEntityParameter)
         {
-            if (!ValueTypeMap.TryGetValue(valueProperty.PropertyType, out Type valueType))
-                throw new ModelException($"{valueProperty.PropertyType.FullName} is an unsupported entity value type");
-
+            Type valueType = ExpressionBuilder.ValueType(valueProperty.PropertyType);
             ParameterExpression valueParameter = Expression.Parameter(valueType, nameof(valueParameter));
             List<ParameterExpression> addValueBlockParameters = new List<ParameterExpression>
             {
@@ -101,52 +88,16 @@ namespace Curds.Persistence.Model.Implementation
                 valueParameter);
 
             ConstructorInfo valueConstructor = valueType.GetConstructor(new Type[0]);
+            AssignValueDelegate assignValueDelegate = ExpressionBuilder.AssignValue(valueType);
             List<Expression> addValueBlockExpressions = new List<Expression>
             {
                 Expression.Assign(valueParameter, Expression.New(valueConstructor)),
                 assignNameExpression,
-                CreateAssignValueExpression(
-                    valueType,
-                    valueParameter,
-                    valueProperty,
-                    entityParameter),
+                assignValueDelegate(valueParameter, valueProperty, entityParameter),
                 addValueExpression,
             };
 
             return Expression.Block(addValueBlockParameters, addValueBlockExpressions);
-        }
-        private Expression CreateAssignValueExpression(Type valueType, ParameterExpression valueParameter, PropertyInfo valueProperty, ParameterExpression entityParameter)
-        {
-            if (!ValueAssignDelegateMap.TryGetValue(valueType, out AssignValueDelegate assignValueDelegate))
-                throw new ModelException($"Unsupported value type {valueType.FullName}");
-
-            return assignValueDelegate(valueParameter, valueProperty, entityParameter);
-        }
-        private Expression AssignStringValue(ParameterExpression valueParameter, PropertyInfo valueProperty, ParameterExpression entityParameter)
-        {
-            MethodInfo getEntityValueMethod = valueProperty.GetMethod;
-            MethodInfo setStringValueMethod = typeof(StringValue)
-                .GetProperty(nameof(StringValue.String))
-                .SetMethod;
-
-            return Expression.Call(
-                valueParameter,
-                setStringValueMethod,
-                Expression.Call(entityParameter, getEntityValueMethod));
-        }
-        private Expression AssignIntValue(ParameterExpression valueParameter, PropertyInfo valueProperty, ParameterExpression entityParameter)
-        {
-            MethodInfo getEntityValueMethod = valueProperty.GetMethod;
-            MethodInfo setIntValueMethod = typeof(IntValue)
-                .GetProperty(nameof(IntValue.Int))
-                .SetMethod;
-
-            return Expression.Call(
-                valueParameter,
-                setIntValueMethod,
-                Expression.Convert(
-                    Expression.Call(entityParameter, getEntityValueMethod),
-                    typeof(int?)));
         }
     }
 }

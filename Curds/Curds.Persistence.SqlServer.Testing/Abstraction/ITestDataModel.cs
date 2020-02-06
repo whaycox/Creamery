@@ -9,5 +9,6 @@ namespace Curds.Persistence.Abstraction
     public interface ITestDataModel : IDataModel
     {
         ITable<TestEntity> Test { get; }
+        ITable<OtherEntity> Other { get; }
     }
 }
