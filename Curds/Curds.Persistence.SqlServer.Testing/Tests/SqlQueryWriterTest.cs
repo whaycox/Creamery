@@ -109,10 +109,7 @@ namespace Curds.Persistence.Tests
 
             Assert.AreEqual(ExpectedOneColumnInsert, actual.CommandText);
         }
-        private string ExpectedOneColumnInsert => @$"INSERT [{TestSchema}].[{TestTableName}]
-(
-{"\t"}[{nameof(TestColumnOne)}]
-)
+        private string ExpectedOneColumnInsert => @$"INSERT [{TestSchema}].[{TestTableName}] ([{nameof(TestColumnOne)}])
 ";
 
         [TestMethod]
@@ -132,6 +129,19 @@ namespace Curds.Persistence.Tests
 {"\t"},[{nameof(TestColumnTwo)}]
 )
 ";
+
+        [TestMethod]
+        public void InsertDoesntIncludeIdentityColumn()
+        {
+            TestColumnTwo.IsIdentity = true;
+            TestTable.Columns.Add(TestColumnOne);
+            TestTable.Columns.Add(TestColumnTwo);
+            TestObject.Insert(TestTable);
+
+            SqlCommand actual = TestObject.Flush();
+
+            Assert.AreEqual(ExpectedOneColumnInsert, actual.CommandText);
+        }
 
         [DataTestMethod]
         [DataRow(1)]

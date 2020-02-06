@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 using System.Text;
 using System.Linq;
+using System;
 
 namespace Curds.Persistence.Implementation
 {
@@ -36,20 +37,24 @@ namespace Curds.Persistence.Implementation
 
         public void Insert(Table table)
         {
-            QueryBuilder.AppendLine($"{INSERT} {FormatTableName(table)}");
-            QueryBuilder.AppendLine("(");
+            QueryBuilder.Append($"{INSERT} {FormatTableName(table)}");
 
             List<Column> eligibleColumns = table
                 .Columns
                 .Where(column => !column.IsIdentity)
                 .ToList();
-            for (int i = 0; i < eligibleColumns.Count; i++)
-            {
-                if (i == 0)
-                    QueryBuilder.AppendLine($"\t{(eligibleColumns.Count > 1 ? " " : string.Empty)}{FormatColumnName(eligibleColumns[i])}");
-                else
-                    QueryBuilder.AppendLine($"\t,{FormatColumnName(eligibleColumns[i])}");
-            }
+            if (eligibleColumns.Count == 1)
+                WriteOneColumn(eligibleColumns.First());
+            else
+                WriteMultipleColumns(eligibleColumns);
+        }
+        private void WriteOneColumn(Column column) => QueryBuilder.AppendLine($" ({FormatColumnName(column)})");
+        private void WriteMultipleColumns(List<Column> columns)
+        {
+            QueryBuilder.Append(Environment.NewLine);
+            QueryBuilder.AppendLine("(");
+            for (int i = 0; i < columns.Count; i++)
+                QueryBuilder.AppendLine($"\t{(i == 0 ? " " : ",")}{FormatColumnName(columns[i])}");
             QueryBuilder.AppendLine(")");
         }
 
