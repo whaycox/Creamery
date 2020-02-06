@@ -20,6 +20,7 @@ namespace Curds.Persistence.Tests
     using Model.Implementation;
     using Model.Configuration.Implementation;
     using Model.Configuration.Abstraction;
+    using Model.Configuration.Domain;
 
     [TestClass]
     public class SqlRepositoryIntegrationTest
@@ -31,6 +32,7 @@ namespace Curds.Persistence.Tests
 
         private Mock<IOptions<SqlConnectionInformation>> MockOptions = new Mock<IOptions<SqlConnectionInformation>>();
 
+        private EntityConfiguration<SimpleEntity> SimpleEntityConfiguration = new EntityConfiguration<SimpleEntity> { Identity = nameof(SimpleEntity.ID) };
         private List<IGlobalConfiguration> TestGlobalConfigurations = new List<IGlobalConfiguration>();
         private List<IEntityConfiguration> TestEntityConfigurations = new List<IEntityConfiguration>();
         private List<IModelConfiguration> TestModelConfigurations = new List<IModelConfiguration>();
@@ -51,6 +53,7 @@ namespace Curds.Persistence.Tests
         [TestInitialize]
         public void Init()
         {
+            TestEntityConfigurations.Add(SimpleEntityConfiguration);
             TestConnectionInformation.Server = TestServer;
             TestConnectionInformation.Database = TestDatabase;
 
@@ -66,12 +69,14 @@ namespace Curds.Persistence.Tests
                 TestEntityConfigurations,
                 TestModelConfigurations,
                 TestModelEntityConfigurations);
-            TestTypeMapper = new TypeMapper(TestModelConfigurationFactory);
-            TestDelegateMapper = new DelegateMapper(TestTypeMapper);
-            TestModelBuilder = new ModelBuilder(
-                TestTypeMapper, 
-                TestDelegateMapper,
+            TestTypeMapper = new TypeMapper();
+            TestDelegateMapper = new DelegateMapper(
+                TestTypeMapper,
                 TestModelConfigurationFactory);
+            TestModelBuilder = new ModelBuilder(
+                TestModelConfigurationFactory,
+                TestTypeMapper, 
+                TestDelegateMapper);
             TestModelMapFactory = new ModelMapFactory(TestModelBuilder);
             TestModelMap = TestModelMapFactory.Build<ITestDataModel>() as ModelMap<ITestDataModel>;
             TestConnectionStringFactory = new SqlConnectionStringFactory();

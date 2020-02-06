@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Curds.Persistence.Model.Implementation
 {
     using Abstraction;
+    using Configuration.Abstraction;
+    using Domain;
     using Persistence.Abstraction;
     using Persistence.Domain;
     using Query.Domain;
-    using Domain;
 
     internal class DelegateMapper : IDelegateMapper
     {
@@ -28,8 +24,11 @@ namespace Curds.Persistence.Model.Implementation
         private Dictionary<Type, AssignValueDelegate> ValueAssignDelegateMap { get; }
 
         private ITypeMapper TypeMapper { get; }
+        private IModelConfigurationFactory ConfigurationFactory { get; }
 
-        public DelegateMapper(ITypeMapper typeMapper)
+        public DelegateMapper(
+            ITypeMapper typeMapper,
+            IModelConfigurationFactory configurationFactory)
         {
             ValueAssignDelegateMap = new Dictionary<Type, AssignValueDelegate>
             {
@@ -38,6 +37,7 @@ namespace Curds.Persistence.Model.Implementation
             };
 
             TypeMapper = typeMapper;
+            ConfigurationFactory = configurationFactory;
         }
 
         public ValueEntityDelegate MapValueEntityDelegate<TModel>(Type entityType)
@@ -60,8 +60,10 @@ namespace Curds.Persistence.Model.Implementation
                 Expression.Assign(valueEntityParameter, Expression.New(valueEntityConstructor)),
             };
 
+            IModelEntityConfiguration entityConfiguration = ConfigurationFactory.Build<TModel>(entityType);
             foreach (PropertyInfo valueInfo in TypeMapper.ValueTypes(entityType))
-                builderExpressions.Add(AddValueExpression(valueInfo, entityParameter, valueEntityParameter));
+                if (valueInfo.Name != entityConfiguration.Identity)
+                    builderExpressions.Add(AddValueExpression(valueInfo, entityParameter, valueEntityParameter));
 
             builderExpressions.AddRange(new List<Expression>
             {
@@ -113,7 +115,6 @@ namespace Curds.Persistence.Model.Implementation
 
             return Expression.Block(addValueBlockParameters, addValueBlockExpressions);
         }
-
         private Expression CreateAssignValueExpression(Type valueType, ParameterExpression valueParameter, PropertyInfo valueProperty, ParameterExpression entityParameter)
         {
             if (!ValueAssignDelegateMap.TryGetValue(valueType, out AssignValueDelegate assignValueDelegate))

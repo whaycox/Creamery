@@ -15,8 +15,5 @@ namespace Curds.Persistence.Model.Abstraction
             where TModel : IDataModel;
 
         IEnumerable<PropertyInfo> ValueTypes(Type entityType);
-
-        Table MapTable<TModel>(Type entityType) 
-            where TModel : IDataModel;
     }
 }

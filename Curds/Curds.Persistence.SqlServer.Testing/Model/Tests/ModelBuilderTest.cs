@@ -27,11 +27,11 @@ namespace Curds.Persistence.Model.Tests
         private string TestSchema = nameof(TestSchema);
         private string TestTable = nameof(TestTable);
 
+        private Mock<IModelConfigurationFactory> MockConfigurationFactory = new Mock<IModelConfigurationFactory>();
+        private Mock<IModelEntityConfiguration> MockConfiguration = new Mock<IModelEntityConfiguration>();
         private Mock<ITypeMapper> MockTypeMapper = new Mock<ITypeMapper>();
         private Mock<IDelegateMapper> MockDelegateMapper = new Mock<IDelegateMapper>();
         private Mock<ValueEntityDelegate> MockValueEntityDelegate = new Mock<ValueEntityDelegate>();
-        private Mock<IModelConfigurationFactory> MockConfigurationFactory = new Mock<IModelConfigurationFactory>();
-        private Mock<IModelEntityConfiguration> MockConfiguration = new Mock<IModelEntityConfiguration>();
 
         private ModelBuilder TestObject = null;
 
@@ -40,12 +40,6 @@ namespace Curds.Persistence.Model.Tests
         {
             TestTableTypes.Add((TestTableName, TestTableType));
 
-            MockTypeMapper
-                .Setup(mapper => mapper.TableTypes<ITestDataModel>())
-                .Returns(TestTableTypes);
-            MockDelegateMapper
-                .Setup(mapper => mapper.MapValueEntityDelegate<ITestDataModel>(It.IsAny<Type>()))
-                .Returns(MockValueEntityDelegate.Object);
             MockConfigurationFactory
                 .Setup(factory => factory.Build<ITestDataModel>(It.IsAny<Type>()))
                 .Returns(MockConfiguration.Object);
@@ -55,11 +49,17 @@ namespace Curds.Persistence.Model.Tests
             MockConfiguration
                 .Setup(configuration => configuration.Table)
                 .Returns(TestTable);
+            MockTypeMapper
+                .Setup(mapper => mapper.TableTypes<ITestDataModel>())
+                .Returns(TestTableTypes);
+            MockDelegateMapper
+                .Setup(mapper => mapper.MapValueEntityDelegate<ITestDataModel>(It.IsAny<Type>()))
+                .Returns(MockValueEntityDelegate.Object);
 
             TestObject = new ModelBuilder(
+                MockConfigurationFactory.Object,
                 MockTypeMapper.Object,
-                MockDelegateMapper.Object,
-                MockConfigurationFactory.Object);
+                MockDelegateMapper.Object);
         }
 
         [TestMethod]

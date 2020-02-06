@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
+using System.Linq;
 
 namespace Curds.Persistence.Implementation
 {
@@ -37,12 +38,17 @@ namespace Curds.Persistence.Implementation
         {
             QueryBuilder.AppendLine($"{INSERT} {FormatTableName(table)}");
             QueryBuilder.AppendLine("(");
-            for (int i = 0; i < table.Columns.Count; i++)
+
+            List<Column> eligibleColumns = table
+                .Columns
+                .Where(column => !column.IsIdentity)
+                .ToList();
+            for (int i = 0; i < eligibleColumns.Count; i++)
             {
                 if (i == 0)
-                    QueryBuilder.AppendLine($"\t{(table.Columns.Count > 1 ? " " : string.Empty)}{FormatColumnName(table.Columns[i])}");
+                    QueryBuilder.AppendLine($"\t{(eligibleColumns.Count > 1 ? " " : string.Empty)}{FormatColumnName(eligibleColumns[i])}");
                 else
-                    QueryBuilder.AppendLine($"\t,{FormatColumnName(table.Columns[i])}");
+                    QueryBuilder.AppendLine($"\t,{FormatColumnName(eligibleColumns[i])}");
             }
             QueryBuilder.AppendLine(")");
         }
