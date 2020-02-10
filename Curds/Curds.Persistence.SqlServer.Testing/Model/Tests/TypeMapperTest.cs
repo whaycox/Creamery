@@ -29,10 +29,13 @@ namespace Curds.Persistence.Model.Tests
         {
             var actual = TestObject.TableTypes<ITestDataModel>();
 
-            Assert.AreEqual(1, actual.Count());
+            Assert.AreEqual(2, actual.Count());
             var first = actual.First();
             Assert.AreEqual(nameof(ITestDataModel.Test), first.tableName);
             Assert.AreEqual(typeof(TestEntity), first.tableType);
+            var second = actual.Last();
+            Assert.AreEqual(nameof(ITestDataModel.Other), second.tableName);
+            Assert.AreEqual(typeof(OtherEntity), second.tableType);
         }
 
         [TestMethod]

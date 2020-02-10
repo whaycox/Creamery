@@ -16,7 +16,7 @@ namespace Curds.Persistence.Implementation
         public string RegisterNewParamater(Value value)
         {
             string paramName = GenerateParameterName(value.Name);
-            ParameterLookup.Add(paramName, new SqlParameter(paramName, value.Content));
+            ParameterLookup.Add(paramName, new SqlParameter(paramName, value.Content ?? DBNull.Value));
             return paramName;
         }
         private string GenerateParameterName(string valueName)

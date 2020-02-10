@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using System.Threading.Tasks;
 using System.Reflection;
 
 namespace Curds.Persistence.Model.Tests
 {
-    using Implementation;
-    using Persistence.Domain;
     using Abstraction;
-    using Persistence.Abstraction;
-    using Query.Domain;
     using Configuration.Abstraction;
+    using Implementation;
+    using Persistence.Abstraction;
+    using Persistence.Domain;
 
     [TestClass]
     public class DelegateMapperTest
@@ -32,6 +27,7 @@ namespace Curds.Persistence.Model.Tests
         private Mock<ITypeMapper> MockTypeMapper = new Mock<ITypeMapper>();
         private Mock<IModelConfigurationFactory> MockConfigurationFactory = new Mock<IModelConfigurationFactory>();
         private Mock<IModelEntityConfiguration> MockConfiguration = new Mock<IModelEntityConfiguration>();
+        private Mock<ValueEntityDelegate> MockValueEntityDelegate = new Mock<ValueEntityDelegate>();
 
         private DelegateMapper TestObject = null;
 
@@ -49,6 +45,9 @@ namespace Curds.Persistence.Model.Tests
             MockConfigurationFactory
                 .Setup(factory => factory.Build<ITestDataModel>(It.IsAny<Type>()))
                 .Returns(MockConfiguration.Object);
+            MockValueExpressionBuilder
+                .Setup(builder => builder.BuildValueEntityDelegate(It.IsAny<Type>(), It.IsAny<IEnumerable<PropertyInfo>>()))
+                .Returns(MockValueEntityDelegate.Object);
 
             TestObject = new DelegateMapper(
                 MockValueExpressionBuilder.Object,
@@ -57,42 +56,48 @@ namespace Curds.Persistence.Model.Tests
         }
 
         [TestMethod]
-        public void CanMapValueEntityDelegate()
+        public void ValueEntityDelegateRetrievesConfigForEntity()
         {
             TestObject.MapValueEntityDelegate<ITestDataModel>(typeof(TestEntity));
+
+            MockConfigurationFactory.Verify(factory => factory.Build<ITestDataModel>(typeof(TestEntity)), Times.Once);
         }
 
         [TestMethod]
-        public void ValueEntityDelegateWorksCorrectly()
+        public void ValueEntityDelegateRetrievesValueTypesFromMapper()
         {
-            ValueEntityDelegate valueEntityDelegate = TestObject.MapValueEntityDelegate<ITestDataModel>(typeof(TestEntity));
+            TestObject.MapValueEntityDelegate<ITestDataModel>(typeof(TestEntity));
 
-            ValueEntity actual = valueEntityDelegate(TestInputEntity);
-
-            Assert.AreEqual(2, actual.Values.Count);
-            Assert.IsInstanceOfType(actual.Values[0], typeof(IntValue));
-            Assert.AreEqual(TestIDProperty.Name, actual.Values[0].Name);
-            Assert.AreEqual(TestID, actual.Values[0].Content);
-            Assert.IsInstanceOfType(actual.Values[1], typeof(StringValue));
-            Assert.AreEqual(TestNameProperty.Name, actual.Values[1].Name);
-            Assert.AreEqual(TestName, actual.Values[1].Content);
+            MockTypeMapper.Verify(factory => factory.ValueTypes(typeof(TestEntity)), Times.Once);
         }
 
         [TestMethod]
-        public void ValueEntityDelegateDoesntIncludeIdentity()
+        public void ValueEntityDelegateGetsFromExpressionBuilder()
+        {
+            TestObject.MapValueEntityDelegate<ITestDataModel>(typeof(TestEntity));
+
+            MockValueExpressionBuilder.Verify(builder => builder.BuildValueEntityDelegate(typeof(TestEntity), TestValueTypes), Times.Once);
+        }
+
+        [TestMethod]
+        public void ValueEntityDelegateDoesntIncludeIdentityValue()
         {
             MockConfiguration
                 .Setup(config => config.Identity)
                 .Returns(TestIDProperty.Name);
-            ValueEntityDelegate valueEntityDelegate = TestObject.MapValueEntityDelegate<ITestDataModel>(typeof(TestEntity));
 
-            ValueEntity actual = valueEntityDelegate(TestInputEntity);
+            TestObject.MapValueEntityDelegate<ITestDataModel>(typeof(TestEntity));
 
-            Assert.AreEqual(1, actual.Values.Count);
-            Assert.IsInstanceOfType(actual.Values[0], typeof(StringValue));
-            Assert.AreEqual(TestNameProperty.Name, actual.Values[0].Name);
-            Assert.AreEqual(TestName, actual.Values[0].Content);
+            MockValueExpressionBuilder
+                .Verify(builder => builder.BuildValueEntityDelegate(typeof(TestEntity), It.Is<IEnumerable<PropertyInfo>>(properties => properties.Count() == 1)));
         }
 
+        [TestMethod]
+        public void ValueEntityDelegateReturnsFromExpressionBuilder()
+        {
+            ValueEntityDelegate actual = TestObject.MapValueEntityDelegate<ITestDataModel>(typeof(TestEntity));
+
+            Assert.AreSame(MockValueEntityDelegate.Object, actual);
+        }
     }
 }

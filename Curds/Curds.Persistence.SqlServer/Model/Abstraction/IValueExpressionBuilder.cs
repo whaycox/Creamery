@@ -6,12 +6,8 @@ using System.Reflection;
 
 namespace Curds.Persistence.Model.Abstraction
 {
-    internal delegate Expression AssignValueDelegate(ParameterExpression valueParameter, PropertyInfo valueProperty, ParameterExpression entityParameter);
-
     internal interface IValueExpressionBuilder
     {
-        Type ValueType(Type propertyType);
-        AssignValueDelegate AssignValue(Type valueType);
-
+        ValueEntityDelegate BuildValueEntityDelegate(Type entityType, IEnumerable<PropertyInfo> valueProperties);
     }
 }

@@ -1,27 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Curds.Persistence.Model.Implementation
 {
-    using Query.Domain;
     using Abstraction;
     using Domain;
+    using Persistence.Domain;
+    using Query.Domain;
+
+    internal delegate Expression AssignValueDelegate(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter);
+    internal delegate IEnumerable<Expression> AddValueExpressionsDelegate(ParameterExpression entityParameter, ParameterExpression valueEntityParameter);
 
     internal class ValueExpressionBuilder : IValueExpressionBuilder
     {
-
         private Dictionary<Type, Type> ValueTypeMap { get; } = new Dictionary<Type, Type>
         {
             { typeof(string), typeof(StringValue) },
             { typeof(bool), typeof(BoolValue) },
+            { typeof(bool?), typeof(NullableBoolValue) },
             { typeof(int), typeof(IntValue) },
+            { typeof(int?), typeof(NullableIntValue) },
             { typeof(DateTime), typeof(DateTimeValue) },
+            { typeof(DateTime?), typeof(NullableDateTimeValue) },
             { typeof(DateTimeOffset), typeof(DateTimeOffsetValue) },
+            { typeof(DateTimeOffset?), typeof(NullableDateTimeOffsetValue) },
             { typeof(decimal), typeof(DecimalValue) },
+            { typeof(decimal?), typeof(NullableDecimalValue) },
             { typeof(double), typeof(DoubleValue) },
+            { typeof(double?), typeof(NullableDoubleValue) },
         };
 
         private Dictionary<Type, AssignValueDelegate> ValueAssignDelegateMap { get; }
@@ -32,109 +40,83 @@ namespace Curds.Persistence.Model.Implementation
             {
                 { typeof(StringValue), AssignStringValue },
                 { typeof(BoolValue), AssignBoolValue },
+                { typeof(NullableBoolValue), AssignNullableBoolValue },
                 { typeof(IntValue), AssignIntValue },
+                { typeof(NullableIntValue), AssignNullableIntValue },
                 { typeof(DateTimeValue), AssignDateTimeValue },
+                { typeof(NullableDateTimeValue), AssignNullableDateTimeValue },
                 { typeof(DateTimeOffsetValue), AssignDateTimeOffsetValue },
+                { typeof(NullableDateTimeOffsetValue), AssignNullableDateTimeOffsetValue },
                 { typeof(DecimalValue), AssignDecimalValue },
+                { typeof(NullableDecimalValue), AssignNullableDecimalValue },
                 { typeof(DoubleValue), AssignDoubleValue },
+                { typeof(NullableDoubleValue), AssignNullableDoubleValue },
             };
         }
 
-        private Expression AssignStringValue(ParameterExpression valueParameter, PropertyInfo valueProperty, ParameterExpression entityParameter)
+        public ValueEntityDelegate BuildValueEntityDelegate(Type entityType, IEnumerable<PropertyInfo> valueProperties)
         {
-            MethodInfo getEntityValueMethod = valueProperty.GetMethod;
-            MethodInfo setStringValueMethod = typeof(StringValue)
-                .GetProperty(nameof(StringValue.String))
-                .SetMethod;
+            ParameterExpression baseEntityParameter = Expression.Parameter(typeof(BaseEntity), nameof(baseEntityParameter));
+            ParameterExpression entityParameter = Expression.Parameter(entityType, nameof(entityParameter));
+            ParameterExpression valueEntityParameter = Expression.Parameter(typeof(ValueEntity), nameof(valueEntityParameter));
+            List<ParameterExpression> builderExpressionParameters = new List<ParameterExpression>
+            {
+                entityParameter,
+                valueEntityParameter,
+            };
 
-            return Expression.Call(
-                valueParameter,
-                setStringValueMethod,
-                Expression.Call(entityParameter, getEntityValueMethod));
+            ConstructorInfo valueEntityConstructor = typeof(ValueEntity).GetConstructor(new Type[0]);
+            LabelTarget returnLabel = Expression.Label(typeof(ValueEntity));
+            List<Expression> builderExpressions = new List<Expression>
+            {
+                Expression.Assign(entityParameter, Expression.Convert(baseEntityParameter, entityType)),
+                Expression.Assign(valueEntityParameter, Expression.New(valueEntityConstructor)),
+            };
+
+            foreach (PropertyInfo valueProperty in valueProperties)
+                builderExpressions.Add(AddValueExpression(valueProperty, entityParameter, valueEntityParameter));
+            builderExpressions.Add(Expression.Return(returnLabel, valueEntityParameter));
+            builderExpressions.Add(Expression.Label(returnLabel, valueEntityParameter));
+
+            BlockExpression valueEntityBlock = Expression.Block(builderExpressionParameters, builderExpressions);
+
+            return Expression
+                .Lambda<ValueEntityDelegate>(valueEntityBlock, baseEntityParameter)
+                .Compile();
         }
-        private Expression AssignBoolValue(ParameterExpression valueParameter, PropertyInfo valueProperty, ParameterExpression entityParameter)
-        {
-            MethodInfo getEntityValueMethod = valueProperty.GetMethod;
-            MethodInfo setBoolValueMethod = typeof(BoolValue)
-                .GetProperty(nameof(BoolValue.Bool))
-                .SetMethod;
 
-            return Expression.Call(
-                valueParameter,
-                setBoolValueMethod,
-                Expression.Convert(
-                    Expression.Call(entityParameter, getEntityValueMethod),
-                    typeof(bool?)));
-        }
-        private Expression AssignIntValue(ParameterExpression valueParameter, PropertyInfo valueProperty, ParameterExpression entityParameter)
+        public Expression AddValueExpression(PropertyInfo valueProperty, ParameterExpression entityParameter, ParameterExpression valueEntityParameter)
         {
-            MethodInfo getEntityValueMethod = valueProperty.GetMethod;
-            MethodInfo setIntValueMethod = typeof(IntValue)
-                .GetProperty(nameof(IntValue.Int))
-                .SetMethod;
-
-            return Expression.Call(
+            Type valueType = ValueType(valueProperty.PropertyType);
+            ParameterExpression valueParameter = Expression.Parameter(valueType, nameof(valueParameter));
+            List<ParameterExpression> addValueBlockParameters = new List<ParameterExpression>
+            {
                 valueParameter,
-                setIntValueMethod,
-                Expression.Convert(
-                    Expression.Call(entityParameter, getEntityValueMethod),
-                    typeof(int?)));
-        }
-        private Expression AssignDateTimeValue(ParameterExpression valueParameter, PropertyInfo valueProperty, ParameterExpression entityParameter)
-        {
-            MethodInfo getEntityValueMethod = valueProperty.GetMethod;
-            MethodInfo setDateTimeValueMethod = typeof(DateTimeValue)
-                .GetProperty(nameof(DateTimeValue.DateTime))
-                .SetMethod;
+            };
 
-            return Expression.Call(
-                valueParameter,
-                setDateTimeValueMethod,
-                Expression.Convert(
-                    Expression.Call(entityParameter, getEntityValueMethod),
-                    typeof(DateTime?)));
-        }
-        private Expression AssignDateTimeOffsetValue(ParameterExpression valueParameter, PropertyInfo valueProperty, ParameterExpression entityParameter)
-        {
-            MethodInfo getEntityValueMethod = valueProperty.GetMethod;
-            MethodInfo setDateTimeOffsetValueMethod = typeof(DateTimeOffsetValue)
-                .GetProperty(nameof(DateTimeOffsetValue.DateTimeOffset))
-                .SetMethod;
+            PropertyInfo valueNameProperty = typeof(Value).GetProperty(nameof(Value.Name));
+            MethodInfo setValueNameMethod = valueNameProperty.SetMethod;
+            Expression assignNameExpression = Expression.Call(valueParameter, setValueNameMethod, Expression.Constant(valueProperty.Name, typeof(string)));
 
-            return Expression.Call(
-                valueParameter,
-                setDateTimeOffsetValueMethod,
-                Expression.Convert(
-                    Expression.Call(entityParameter, getEntityValueMethod),
-                    typeof(DateTimeOffset?)));
-        }
-        private Expression AssignDecimalValue(ParameterExpression valueParameter, PropertyInfo valueProperty, ParameterExpression entityParameter)
-        {
-            MethodInfo getEntityValueMethod = valueProperty.GetMethod;
-            MethodInfo setDecimalValueMethod = typeof(DecimalValue)
-                .GetProperty(nameof(DecimalValue.Decimal))
-                .SetMethod;
+            PropertyInfo valuesCollectionProperty = typeof(ValueEntity).GetProperty(nameof(ValueEntity.Values));
+            MethodInfo getValuesCollectionMethod = valuesCollectionProperty.GetMethod;
+            MethodInfo addValueMethod = valuesCollectionProperty.PropertyType.GetMethod(nameof(List<Value>.Add));
+            Expression addValueExpression = Expression.Call(
+                Expression.Call(valueEntityParameter, getValuesCollectionMethod),
+                addValueMethod,
+                valueParameter);
 
-            return Expression.Call(
-                valueParameter,
-                setDecimalValueMethod,
-                Expression.Convert(
-                    Expression.Call(entityParameter, getEntityValueMethod),
-                    typeof(decimal?)));
-        }
-        private Expression AssignDoubleValue(ParameterExpression valueParameter, PropertyInfo valueProperty, ParameterExpression entityParameter)
-        {
-            MethodInfo getEntityValueMethod = valueProperty.GetMethod;
-            MethodInfo setDoubleValueMethod = typeof(DoubleValue)
-                .GetProperty(nameof(DoubleValue.Double))
-                .SetMethod;
+            ConstructorInfo valueConstructor = valueType.GetConstructor(new Type[0]);
+            AssignValueDelegate assignValueDelegate = AssignValue(valueType);
+            List<Expression> addValueBlockExpressions = new List<Expression>
+            {
+                Expression.Assign(valueParameter, Expression.New(valueConstructor)),
+                assignNameExpression,
+                assignValueDelegate(valueParameter, valueProperty, entityParameter),
+                addValueExpression,
+            };
 
-            return Expression.Call(
-                valueParameter,
-                setDoubleValueMethod,
-                Expression.Convert(
-                    Expression.Call(entityParameter, getEntityValueMethod),
-                    typeof(double?)));
+            return Expression.Block(addValueBlockParameters, addValueBlockExpressions);
         }
 
         public Type ValueType(Type propertyType)
@@ -150,5 +132,55 @@ namespace Curds.Persistence.Model.Implementation
                 throw new ModelException($"Unsupported value type {valueType.FullName}");
             return assignValueDelegate;
         }
+
+        #region AssignValueMethods
+        private Expression CallMethodExpression(ParameterExpression calledObject, MethodInfo methodToCall, Expression valueExpression) =>
+            Expression.Call(calledObject, methodToCall, valueExpression);
+        private Expression CallMethodExpression<TCastType>(ParameterExpression calledObject, MethodInfo methodToCall, Expression valueExpression) =>
+            Expression.Call(calledObject, methodToCall, Expression.Convert(valueExpression, typeof(TCastType)));
+
+        private Expression GetEntityPropertyExpression(PropertyInfo entityProperty, ParameterExpression entityParameter) =>
+            Expression.Call(entityParameter, entityProperty.GetMethod);
+
+        private MethodInfo SetStringValueMethod => typeof(StringValue).GetProperty(nameof(StringValue.String)).SetMethod;
+        private Expression AssignStringValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
+            CallMethodExpression(valueParameter, SetStringValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
+
+        private MethodInfo SetBoolValueMethod = typeof(BoolValue).GetProperty(nameof(BoolValue.Bool)).SetMethod;
+        private Expression AssignBoolValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
+            CallMethodExpression<bool?>(valueParameter, SetBoolValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
+        private Expression AssignNullableBoolValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
+            CallMethodExpression(valueParameter, SetBoolValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
+
+        private MethodInfo SetIntValueMethod = typeof(IntValue).GetProperty(nameof(IntValue.Int)).SetMethod;
+        private Expression AssignIntValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
+            CallMethodExpression<int?>(valueParameter, SetIntValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
+        private Expression AssignNullableIntValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
+            CallMethodExpression(valueParameter, SetIntValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
+
+        private MethodInfo SetDateTimeValueMethod = typeof(DateTimeValue).GetProperty(nameof(DateTimeValue.DateTime)).SetMethod;
+        private Expression AssignDateTimeValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
+            CallMethodExpression<DateTime?>(valueParameter, SetDateTimeValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
+        private Expression AssignNullableDateTimeValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
+            CallMethodExpression(valueParameter, SetDateTimeValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
+
+        private MethodInfo SetDateTimeOffsetValueMethod = typeof(DateTimeOffsetValue).GetProperty(nameof(DateTimeOffsetValue.DateTimeOffset)).SetMethod;
+        private Expression AssignDateTimeOffsetValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
+            CallMethodExpression<DateTimeOffset?>(valueParameter, SetDateTimeOffsetValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
+        private Expression AssignNullableDateTimeOffsetValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
+            CallMethodExpression(valueParameter, SetDateTimeOffsetValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
+
+        private MethodInfo SetDecimalValueMethod = typeof(DecimalValue).GetProperty(nameof(DecimalValue.Decimal)).SetMethod;
+        private Expression AssignDecimalValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
+            CallMethodExpression<decimal?>(valueParameter, SetDecimalValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
+        private Expression AssignNullableDecimalValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
+            CallMethodExpression(valueParameter, SetDecimalValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
+
+        private MethodInfo SetDoubleValueMethod = typeof(DoubleValue).GetProperty(nameof(DoubleValue.Double)).SetMethod;
+        private Expression AssignDoubleValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
+            CallMethodExpression<double?>(valueParameter, SetDoubleValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
+        private Expression AssignNullableDoubleValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
+            CallMethodExpression(valueParameter, SetDoubleValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
+        #endregion
     }
 }

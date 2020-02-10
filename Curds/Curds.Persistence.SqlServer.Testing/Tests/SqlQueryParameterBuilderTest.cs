@@ -97,5 +97,15 @@ namespace Curds.Persistence.Tests
             Assert.AreEqual(TestInt, actual[0].Value);
         }
 
+        [TestMethod]
+        public void FlushedParametersWithNullValueAreDBNull()
+        {
+            TestStringValue.String = null;
+            TestObject.RegisterNewParamater(TestStringValue);
+
+            SqlParameter[] actual = TestObject.Flush();
+
+            Assert.AreEqual(DBNull.Value, actual[0].Value);
+        }
     }
 }
