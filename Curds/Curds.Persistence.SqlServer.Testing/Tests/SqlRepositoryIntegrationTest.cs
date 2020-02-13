@@ -30,6 +30,7 @@ namespace Curds.Persistence.Tests
         private SqlConnectionInformation TestConnectionInformation = new SqlConnectionInformation();
         private string TestServer = "localhost\\SQLEXPRESS";
         private string TestDatabase = "Testing";
+        private string TestSchema = nameof(TestSchema);
 
         private Mock<IOptions<SqlConnectionInformation>> MockOptions = new Mock<IOptions<SqlConnectionInformation>>();
 
@@ -126,6 +127,25 @@ namespace Curds.Persistence.Tests
             BuildTestObjects();
 
             await OtherEntityRepository.Insert(OtherEntity);
+        }
+
+        [TestMethod]
+        public async Task CanInsertTestEntityWithCustomNames()
+        {
+            GlobalConfiguration schemaConfig = new GlobalConfiguration { Schema = TestSchema };
+            TestGlobalConfigurations.Add(schemaConfig);
+            EntityConfiguration<TestEntity> customConfig = new EntityConfiguration<TestEntity>()
+                .WithTableName("TestCustomEntity")
+                .ConfigureColumn(entity => entity.ID)
+                    .WithColumnName("CustomIdentityField")
+                    .RegisterColumn()
+                .ConfigureColumn(entity => entity.Name)
+                    .WithColumnName("SomeOtherName")
+                    .RegisterColumn();
+            TestEntityConfigurations.Add(customConfig);
+            BuildTestObjects();
+
+            await TestEntityRepository.Insert(TestEntity);
         }
 
     }

@@ -9,7 +9,6 @@ namespace Curds.Persistence.Tests
     using Domain;
     using Model.Configuration.Abstraction;
     using Model.Configuration.Domain;
-    using Model.Domain;
 
     [TestClass]
     public class RegistrationExtensionsTest : RegistrationExtensionsTemplate
@@ -125,6 +124,44 @@ namespace Curds.Persistence.Tests
             Assert.AreEqual(1, actual.Columns.Count);
             IColumnConfiguration actualColumn = actual.Columns.First();
             return actualColumn.IsIdentity.Value;
+        }
+
+        [TestMethod]
+        public void CanConfigureAColumnName()
+        {
+            TestServiceCollection
+                .ConfigureEntity<TestEntity>()
+                    .ConfigureColumn(entity => entity.Name)
+                    .WithColumnName(nameof(CanConfigureAColumnName))
+                    .RegisterColumn()
+                .RegisterEntity();
+
+            VerifyServiceHasInstance<EntityConfiguration<TestEntity>>(typeof(IEntityConfiguration), ServiceLifetime.Singleton, VerifyTestEntityHasCustomColumnName);
+        }
+        private bool VerifyTestEntityHasCustomColumnName(EntityConfiguration<TestEntity> actual)
+        {
+            Assert.AreEqual(1, actual.Columns.Count);
+            IColumnConfiguration actualColumn = actual.Columns.First();
+            return actualColumn.Name == nameof(CanConfigureAColumnName);
+        }
+
+        [TestMethod]
+        public void CanConfigureAColumnNameInModel()
+        {
+            TestServiceCollection
+                .ConfigureEntity<ITestDataModel, TestEntity>()
+                    .ConfigureColumn(entity => entity.Name)
+                    .WithColumnName(nameof(CanConfigureAColumnName))
+                    .RegisterColumn()
+                .RegisterEntity();
+
+            VerifyServiceHasInstance<ModelEntityConfiguration<ITestDataModel, TestEntity>>(typeof(IModelEntityConfiguration), ServiceLifetime.Singleton, VerifyTestEntityHasCustomColumnNameInModel);
+        }
+        private bool VerifyTestEntityHasCustomColumnNameInModel(ModelEntityConfiguration<ITestDataModel, TestEntity> actual)
+        {
+            Assert.AreEqual(1, actual.Columns.Count);
+            IColumnConfiguration actualColumn = actual.Columns.First();
+            return actualColumn.Name == nameof(CanConfigureAColumnName);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Linq;
 using System.Linq.Expressions;
 
 namespace Curds.Persistence
@@ -11,7 +10,6 @@ namespace Curds.Persistence
     using Model.Abstraction;
     using Model.Configuration.Abstraction;
     using Model.Configuration.Domain;
-    using Model.Domain;
 
     public static class RegistrationExtensions
     {
@@ -66,7 +64,7 @@ namespace Curds.Persistence
         }
 
         public static IServiceCollection RegisterEntity<TEntity>(this EntityConfiguration<TEntity> configuration)
-                where TEntity : BaseEntity
+            where TEntity : BaseEntity
         {
             IServiceCollection services = configuration.ServiceCollection;
             configuration.ServiceCollection = null;
@@ -106,9 +104,16 @@ namespace Curds.Persistence
         }
 
         public static ColumnConfiguration<TEntity> IsIdentity<TEntity>(this ColumnConfiguration<TEntity> configuration)
-                where TEntity : BaseEntity
+            where TEntity : BaseEntity
         {
             configuration.IsIdentity = true;
+            return configuration;
+        }
+
+        public static ColumnConfiguration<TEntity> WithColumnName<TEntity>(this ColumnConfiguration<TEntity> configuration, string columnName)
+            where TEntity : BaseEntity
+        {
+            configuration.Name = columnName;
             return configuration;
         }
 
@@ -117,6 +122,14 @@ namespace Curds.Persistence
             where TEntity : BaseEntity
         {
             configuration.IsIdentity = true;
+            return configuration;
+        }
+
+        public static ModelColumnConfiguration<TModel, TEntity> WithColumnName<TModel, TEntity>(this ModelColumnConfiguration<TModel, TEntity> configuration, string columnName)
+            where TModel : IDataModel
+            where TEntity : BaseEntity
+        {
+            configuration.Name = columnName;
             return configuration;
         }
 
