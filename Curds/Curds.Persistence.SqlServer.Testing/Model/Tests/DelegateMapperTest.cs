@@ -12,6 +12,7 @@ namespace Curds.Persistence.Model.Tests
     using Implementation;
     using Persistence.Abstraction;
     using Persistence.Domain;
+    using Configuration.Domain;
 
     [TestClass]
     public class DelegateMapperTest
@@ -22,11 +23,11 @@ namespace Curds.Persistence.Model.Tests
         private List<PropertyInfo> TestValueTypes = new List<PropertyInfo>();
         private PropertyInfo TestIDProperty = typeof(TestEntity).GetProperty(nameof(TestEntity.ID));
         private PropertyInfo TestNameProperty = typeof(TestEntity).GetProperty(nameof(TestEntity.Name));
+        private CompiledConfiguration<ITestDataModel> TestCompiledConfiguration = new CompiledConfiguration<ITestDataModel>(typeof(TestEntity));
 
         private Mock<IValueExpressionBuilder> MockValueExpressionBuilder = new Mock<IValueExpressionBuilder>();
         private Mock<ITypeMapper> MockTypeMapper = new Mock<ITypeMapper>();
         private Mock<IModelConfigurationFactory> MockConfigurationFactory = new Mock<IModelConfigurationFactory>();
-        private Mock<IModelEntityConfiguration> MockConfiguration = new Mock<IModelEntityConfiguration>();
         private Mock<ValueEntityDelegate> MockValueEntityDelegate = new Mock<ValueEntityDelegate>();
 
         private DelegateMapper TestObject = null;
@@ -44,7 +45,7 @@ namespace Curds.Persistence.Model.Tests
                 .Returns(TestValueTypes);
             MockConfigurationFactory
                 .Setup(factory => factory.Build<ITestDataModel>(It.IsAny<Type>()))
-                .Returns(MockConfiguration.Object);
+                .Returns(TestCompiledConfiguration);
             MockValueExpressionBuilder
                 .Setup(builder => builder.BuildValueEntityDelegate(It.IsAny<Type>(), It.IsAny<IEnumerable<PropertyInfo>>()))
                 .Returns(MockValueEntityDelegate.Object);
@@ -82,9 +83,8 @@ namespace Curds.Persistence.Model.Tests
         [TestMethod]
         public void ValueEntityDelegateDoesntIncludeIdentityValue()
         {
-            MockConfiguration
-                .Setup(config => config.Identity)
-                .Returns(TestIDProperty.Name);
+            CompiledColumnConfiguration<ITestDataModel> identityColumn = new CompiledColumnConfiguration<ITestDataModel>(nameof(TestEntity.ID)) { IsIdentity = true };
+            TestCompiledConfiguration.Columns.Add(nameof(TestEntity.ID), identityColumn);
 
             TestObject.MapValueEntityDelegate<ITestDataModel>(typeof(TestEntity));
 

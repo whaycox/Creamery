@@ -6,9 +6,9 @@ namespace Curds.Persistence.Model.Configuration.Abstraction
     using Persistence.Abstraction;
     using Persistence.Domain;
 
-    public interface IModelConfigurationFactory
+    internal interface IModelConfigurationFactory
     {
-        IModelEntityConfiguration Build<TModel>(Type entityType)
+        CompiledConfiguration<TModel> Build<TModel>(Type entityType)
             where TModel : IDataModel;
     }
 }

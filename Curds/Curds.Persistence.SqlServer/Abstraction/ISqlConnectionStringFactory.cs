@@ -2,7 +2,7 @@
 {
     using Domain;
 
-    public interface ISqlConnectionStringFactory
+    internal interface ISqlConnectionStringFactory
     {
         string Build(SqlConnectionInformation connectionInformation);
     }

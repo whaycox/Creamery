@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace Curds.Persistence
@@ -7,9 +8,10 @@ namespace Curds.Persistence
     using Abstraction;
     using Domain;
     using Implementation;
-    using Model.Configuration.Domain;
     using Model.Abstraction;
     using Model.Configuration.Abstraction;
+    using Model.Configuration.Domain;
+    using Model.Domain;
 
     public static class RegistrationExtensions
     {
@@ -33,14 +35,14 @@ namespace Curds.Persistence
             where TModel : IDataModel
             where TEntity : BaseEntity => new ModelEntityConfiguration<TModel, TEntity> { ServiceCollection = services };
 
-        public static EntityConfiguration<TEntity> HasSchema<TEntity>(this EntityConfiguration<TEntity> configuration, string schemaName)
+        public static EntityConfiguration<TEntity> WithSchema<TEntity>(this EntityConfiguration<TEntity> configuration, string schemaName)
             where TEntity : BaseEntity
         {
             configuration.Schema = schemaName;
             return configuration;
         }
 
-        public static ModelEntityConfiguration<TModel, TEntity> HasSchema<TModel, TEntity>(this ModelEntityConfiguration<TModel, TEntity> configuration, string schemaName)
+        public static ModelEntityConfiguration<TModel, TEntity> WithSchema<TModel, TEntity>(this ModelEntityConfiguration<TModel, TEntity> configuration, string schemaName)
             where TModel : IDataModel
             where TEntity : BaseEntity
         {
@@ -48,14 +50,14 @@ namespace Curds.Persistence
             return configuration;
         }
 
-        public static EntityConfiguration<TEntity> HasTable<TEntity>(this EntityConfiguration<TEntity> configuration, string tableName)
+        public static EntityConfiguration<TEntity> WithTableName<TEntity>(this EntityConfiguration<TEntity> configuration, string tableName)
             where TEntity : BaseEntity
         {
             configuration.Table = tableName;
             return configuration;
         }
 
-        public static ModelEntityConfiguration<TModel, TEntity> HasTable<TModel, TEntity>(this ModelEntityConfiguration<TModel, TEntity> configuration, string tableName)
+        public static ModelEntityConfiguration<TModel, TEntity> WithTableName<TModel, TEntity>(this ModelEntityConfiguration<TModel, TEntity> configuration, string tableName)
             where TModel : IDataModel
             where TEntity : BaseEntity
         {
@@ -63,22 +65,7 @@ namespace Curds.Persistence
             return configuration;
         }
 
-        public static EntityConfiguration<TEntity> HasIdentity<TEntity>(this EntityConfiguration<TEntity> configuration, Expression<Func<TEntity, int>> intSelectionExpression)
-                where TEntity : BaseEntity
-        {
-            configuration.Identity = ExpressionParser.ParseEntityValueSelection(intSelectionExpression);
-            return configuration;
-        }
-
-        public static ModelEntityConfiguration<TModel, TEntity> HasIdentity<TModel, TEntity>(this ModelEntityConfiguration<TModel, TEntity> configuration, Expression<Func<TEntity, int>> intSelectionExpression)
-            where TModel : IDataModel
-            where TEntity : BaseEntity
-        {
-            configuration.Identity = ExpressionParser.ParseEntityValueSelection(intSelectionExpression);
-            return configuration;
-        }
-
-        public static IServiceCollection Register<TEntity>(this EntityConfiguration<TEntity> configuration)
+        public static IServiceCollection RegisterEntity<TEntity>(this EntityConfiguration<TEntity> configuration)
                 where TEntity : BaseEntity
         {
             IServiceCollection services = configuration.ServiceCollection;
@@ -87,7 +74,7 @@ namespace Curds.Persistence
             return services;
         }
 
-        public static IServiceCollection Register<TModel, TEntity>(this ModelEntityConfiguration<TModel, TEntity> configuration)
+        public static IServiceCollection RegisterEntity<TModel, TEntity>(this ModelEntityConfiguration<TModel, TEntity> configuration)
             where TModel : IDataModel
             where TEntity : BaseEntity
         {
@@ -95,6 +82,61 @@ namespace Curds.Persistence
             configuration.ServiceCollection = null;
             services.AddSingleton<IModelEntityConfiguration>(configuration);
             return services;
+        }
+
+        public static ColumnConfiguration<TEntity> ConfigureColumn<TEntity, TValue>(this EntityConfiguration<TEntity> configuration, Expression<Func<TEntity, TValue>> valueSelectionExpression)
+            where TEntity : BaseEntity
+        {
+            ColumnConfiguration<TEntity> column = new ColumnConfiguration<TEntity>(ExpressionParser.ParseEntityValueSelection(valueSelectionExpression))
+            {
+                EntityConfiguration = configuration,
+            };
+            return column;
+        }
+
+        public static ModelColumnConfiguration<TModel, TEntity> ConfigureColumn<TModel, TEntity, TValue>(this ModelEntityConfiguration<TModel, TEntity> configuration, Expression<Func<TEntity, TValue>> valueSelectionExpression)
+            where TModel : IDataModel
+            where TEntity : BaseEntity
+        {
+            ModelColumnConfiguration<TModel, TEntity> column = new ModelColumnConfiguration<TModel, TEntity>(ExpressionParser.ParseEntityValueSelection(valueSelectionExpression))
+            {
+                EntityConfiguration = configuration,
+            };
+            return column;
+        }
+
+        public static ColumnConfiguration<TEntity> IsIdentity<TEntity>(this ColumnConfiguration<TEntity> configuration)
+                where TEntity : BaseEntity
+        {
+            configuration.IsIdentity = true;
+            return configuration;
+        }
+
+        public static ModelColumnConfiguration<TModel, TEntity> IsIdentity<TModel, TEntity>(this ModelColumnConfiguration<TModel, TEntity> configuration)
+            where TModel : IDataModel
+            where TEntity : BaseEntity
+        {
+            configuration.IsIdentity = true;
+            return configuration;
+        }
+
+        public static EntityConfiguration<TEntity> RegisterColumn<TEntity>(this ColumnConfiguration<TEntity> configuration)
+                where TEntity : BaseEntity
+        {
+            EntityConfiguration<TEntity> entityConfiguration = configuration.EntityConfiguration;
+            configuration.EntityConfiguration = null;
+            entityConfiguration.Columns.Add(configuration);
+            return entityConfiguration;
+        }
+
+        public static ModelEntityConfiguration<TModel, TEntity> RegisterColumn<TModel, TEntity>(this ModelColumnConfiguration<TModel, TEntity> configuration)
+            where TModel : IDataModel
+            where TEntity : BaseEntity
+        {
+            ModelEntityConfiguration<TModel, TEntity> entityConfiguration = configuration.EntityConfiguration;
+            configuration.EntityConfiguration = null;
+            entityConfiguration.Columns.Add(configuration);
+            return entityConfiguration;
         }
     }
 }

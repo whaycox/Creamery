@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Linq.Expressions;
 
-namespace Curds.Persistence.Implementation
+namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
-    using Domain;
-    using Query.Implementation;
     using Model.Abstraction;
+    using Persistence.Abstraction;
+    using Persistence.Domain;
 
     internal class SqlQueryBuilder<TModel> : ISqlQueryBuilder<TModel>
         where TModel : IDataModel
@@ -24,7 +22,7 @@ namespace Curds.Persistence.Implementation
             QueryExpressionParser = queryExpressionParser;
         }
 
-        public ISqlQuery Insert<TEntity>(Expression<Func<TModel, ITable<TEntity>>> tableExpression, TEntity entity) 
+        public ISqlQuery Insert<TEntity>(Expression<Func<TModel, ITable<TEntity>>> tableExpression, TEntity entity)
             where TEntity : BaseEntity
         {
             InsertQuery<TEntity> query = QueryExpressionParser.Parse(tableExpression);

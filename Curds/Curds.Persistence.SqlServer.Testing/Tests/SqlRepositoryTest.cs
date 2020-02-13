@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Threading.Tasks;
+using System;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Curds.Persistence.Tests
 {
-    using Implementation;
     using Abstraction;
     using Domain;
+    using Implementation;
+    using Query.Abstraction;
 
     [TestClass]
     public class SqlRepositoryTest

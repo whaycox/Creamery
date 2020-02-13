@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Curds.Persistence.Implementation
 {
-    using Domain;
     using Abstraction;
+    using Domain;
+    using Query.Abstraction;
 
     public class SqlRepository<TModel, TEntity> : IRepository<TEntity>
         where TModel : IDataModel
@@ -27,7 +27,7 @@ namespace Curds.Persistence.Implementation
             QueryBuilder.Insert(model => model.Table<TEntity>(), entity));
 
         public Task Insert(IEnumerable<TEntity> entities) => throw new NotImplementedException();
-        
+
         public async Task<TEntity> Fetch(params object[] keys) => throw new NotImplementedException();
 
         public Task<List<TEntity>> FetchAll() => throw new NotImplementedException();

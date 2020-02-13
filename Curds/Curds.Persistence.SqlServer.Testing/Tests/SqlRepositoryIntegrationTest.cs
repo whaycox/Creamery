@@ -33,7 +33,7 @@ namespace Curds.Persistence.Tests
 
         private Mock<IOptions<SqlConnectionInformation>> MockOptions = new Mock<IOptions<SqlConnectionInformation>>();
 
-        private EntityConfiguration<SimpleEntity> SimpleEntityConfiguration = new EntityConfiguration<SimpleEntity> { Identity = nameof(SimpleEntity.ID) };
+        private EntityConfiguration<SimpleEntity> SimpleEntityConfiguration = new EntityConfiguration<SimpleEntity>();
         private List<IGlobalConfiguration> TestGlobalConfigurations = new List<IGlobalConfiguration>();
         private List<IEntityConfiguration> TestEntityConfigurations = new List<IEntityConfiguration>();
         private List<IModelConfiguration> TestModelConfigurations = new List<IModelConfiguration>();
@@ -56,6 +56,10 @@ namespace Curds.Persistence.Tests
         [TestInitialize]
         public void Init()
         {
+            SimpleEntityConfiguration = SimpleEntityConfiguration
+                .ConfigureColumn(entity => entity.ID)
+                .IsIdentity()
+                .RegisterColumn();
             TestEntityConfigurations.Add(SimpleEntityConfiguration);
             TestConnectionInformation.Server = TestServer;
             TestConnectionInformation.Database = TestDatabase;

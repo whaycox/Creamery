@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Curds.Persistence.Abstraction
+﻿namespace Curds.Persistence.Query.Abstraction
 {
-    using Domain;
+    using Persistence.Domain;
 
     public interface ISqlQuery
     {

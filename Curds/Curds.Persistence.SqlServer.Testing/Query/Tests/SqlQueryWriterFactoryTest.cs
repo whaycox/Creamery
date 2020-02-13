@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using System.Threading.Tasks;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Curds.Persistence.Tests
+namespace Curds.Persistence.Query.Tests
 {
-    using Implementation;
     using Abstraction;
+    using Implementation;
 
     [TestClass]
     public class SqlQueryWriterFactoryTest

@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using System.Threading.Tasks;
 
 namespace Curds.Persistence.Query.Tests
 {
-    using Persistence.Domain;
-    using Implementation;
+    using Abstraction;
     using Domain;
-    using Persistence.Abstraction;
+    using Implementation;
+    using Persistence.Domain;
+    using Model.Domain;
 
     [TestClass]
     public class InsertQueryTest

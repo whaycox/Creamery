@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq.Expressions;
 
-namespace Curds.Persistence.Abstraction
+namespace Curds.Persistence.Query.Abstraction
 {
-    using Query.Domain;
-    using Domain;
-    using Query.Implementation;
+    using Persistence.Abstraction;
+    using Implementation;
+    using Persistence.Domain;
 
     internal interface ISqlQueryExpressionParser<TModel>
         where TModel : IDataModel

@@ -8,6 +8,7 @@ namespace Curds.Persistence.Model.Configuration.Implementation
     using Domain;
     using Persistence.Abstraction;
     using Persistence.Domain;
+    using Model.Domain;
 
     internal class ModelConfigurationFactory : IModelConfigurationFactory
     {
@@ -39,13 +40,12 @@ namespace Curds.Persistence.Model.Configuration.Implementation
             }
         }
 
-        public IModelEntityConfiguration Build<TModel>(Type entityType)
+        public CompiledConfiguration<TModel> Build<TModel>(Type entityType)
             where TModel : IDataModel
         {
-            CompiledConfiguration<TModel> configuration = new CompiledConfiguration<TModel>(entityType)
-            {
-                Table = entityType.Name,
-            };
+            CompiledConfiguration<TModel> configuration = new CompiledConfiguration<TModel>(entityType);
+            configuration.Table = entityType.Name;
+
             ApplyGlobalConfigurations(configuration);
             ApplyEntityConfigurations(entityType, configuration);
             ApplyModelConfigurations(configuration);
@@ -53,12 +53,38 @@ namespace Curds.Persistence.Model.Configuration.Implementation
 
             return configuration;
         }
+
         private void ApplyGlobalConfigurations<TModel>(CompiledConfiguration<TModel> configuration)
             where TModel : IDataModel
         {
             foreach (GlobalConfiguration globalConfiguration in GlobalConfigurations)
                 configuration.Schema = globalConfiguration.Schema ?? configuration.Schema;
         }
+
+        private void ApplyEntityConfigurationToCompiled<TModel>(IEntityConfiguration suppliedConfig, CompiledConfiguration<TModel> compiledConfig)
+            where TModel : IDataModel
+        {
+            compiledConfig.Schema = suppliedConfig.Schema ?? compiledConfig.Schema;
+            compiledConfig.Table = suppliedConfig.Table ?? compiledConfig.Table;
+            foreach (IColumnConfiguration suppliedColumnConfig in suppliedConfig.Columns)
+            {
+                if (compiledConfig.Columns.TryGetValue(suppliedColumnConfig.ValueName, out CompiledColumnConfiguration<TModel> compiledColumnConfig))
+                {
+                    compiledColumnConfig.Name = suppliedColumnConfig.Name ?? compiledColumnConfig.Name;
+                    compiledColumnConfig.IsIdentity = suppliedColumnConfig.IsIdentity ?? compiledColumnConfig.IsIdentity;
+                }
+                else
+                {
+                    CompiledColumnConfiguration<TModel> newCompiledColumnConfig = new CompiledColumnConfiguration<TModel>(suppliedColumnConfig.ValueName)
+                    {
+                        Name = suppliedColumnConfig.Name,
+                        IsIdentity = suppliedColumnConfig.IsIdentity ?? false,
+                    };
+                    compiledConfig.Columns.Add(suppliedColumnConfig.ValueName, newCompiledColumnConfig);
+                }
+            }
+        }
+
         private void ApplyEntityConfigurations<TModel>(Type entityType, CompiledConfiguration<TModel> configuration)
             where TModel : IDataModel
         {
@@ -66,12 +92,9 @@ namespace Curds.Persistence.Model.Configuration.Implementation
                 ApplyEntityConfigurations(entityType.BaseType, configuration);
             if (EntityConfigurations.TryGetValue(entityType, out List<IEntityConfiguration> entityConfigurations))
                 foreach (IEntityConfiguration entityConfiguration in entityConfigurations)
-                {
-                    configuration.Schema = entityConfiguration.Schema ?? configuration.Schema;
-                    configuration.Table = entityConfiguration.Table ?? configuration.Table;
-                    configuration.Identity = entityConfiguration.Identity ?? configuration.Identity;
-                }
+                    ApplyEntityConfigurationToCompiled(entityConfiguration, configuration);
         }
+
         private void ApplyModelConfigurations<TModel>(CompiledConfiguration<TModel> configuration)
             where TModel : IDataModel
         {
@@ -79,6 +102,7 @@ namespace Curds.Persistence.Model.Configuration.Implementation
                 foreach (IModelConfiguration modelConfiguration in modelConfigurations)
                     configuration.Schema = modelConfiguration.Schema ?? configuration.Schema;
         }
+
         private void ApplyModelEntityConfigurations<TModel>(Type entityType, CompiledConfiguration<TModel> configuration)
             where TModel : IDataModel
         {
@@ -87,11 +111,7 @@ namespace Curds.Persistence.Model.Configuration.Implementation
             if (ModelEntityConfigurations.TryGetValue(typeof(TModel), out Dictionary<Type, List<IModelEntityConfiguration>> allModelConfigurations))
                 if (allModelConfigurations.TryGetValue(entityType, out List<IModelEntityConfiguration> modelEntityConfigurations))
                     foreach (IModelEntityConfiguration modelEntityConfiguration in modelEntityConfigurations)
-                    {
-                        configuration.Schema = modelEntityConfiguration.Schema ?? configuration.Schema;
-                        configuration.Table = modelEntityConfiguration.Table ?? configuration.Table;
-                        configuration.Identity = modelEntityConfiguration.Identity ?? configuration.Identity;
-                    }
+                        ApplyEntityConfigurationToCompiled(modelEntityConfiguration, configuration);
         }
     }
 }

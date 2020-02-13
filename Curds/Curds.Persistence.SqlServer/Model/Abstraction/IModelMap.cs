@@ -6,6 +6,7 @@ namespace Curds.Persistence.Model.Abstraction
 {
     using Persistence.Abstraction;
     using Persistence.Domain;
+    using Domain;
     using Query.Domain;
 
     public interface IModelMap<TModel>

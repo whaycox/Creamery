@@ -17,6 +17,7 @@ namespace Curds.Persistence.Model.Tests
     using Query.Domain;
     using Configuration.Abstraction;
     using Configuration.Domain;
+    using Domain;
 
     [TestClass]
     public class ModelBuilderTest
@@ -26,9 +27,9 @@ namespace Curds.Persistence.Model.Tests
         private Type TestTableType = typeof(TestEntity);
         private string TestSchema = nameof(TestSchema);
         private string TestTable = nameof(TestTable);
+        private CompiledConfiguration<ITestDataModel> TestCompiledConfiguration = new CompiledConfiguration<ITestDataModel>(typeof(TestEntity));
 
         private Mock<IModelConfigurationFactory> MockConfigurationFactory = new Mock<IModelConfigurationFactory>();
-        private Mock<IModelEntityConfiguration> MockConfiguration = new Mock<IModelEntityConfiguration>();
         private Mock<ITypeMapper> MockTypeMapper = new Mock<ITypeMapper>();
         private Mock<IDelegateMapper> MockDelegateMapper = new Mock<IDelegateMapper>();
         private Mock<ValueEntityDelegate> MockValueEntityDelegate = new Mock<ValueEntityDelegate>();
@@ -39,16 +40,12 @@ namespace Curds.Persistence.Model.Tests
         public void Init()
         {
             TestTableTypes.Add((TestTableName, TestTableType));
+            TestCompiledConfiguration.Schema = TestSchema;
+            TestCompiledConfiguration.Table = TestTable;
 
             MockConfigurationFactory
                 .Setup(factory => factory.Build<ITestDataModel>(It.IsAny<Type>()))
-                .Returns(MockConfiguration.Object);
-            MockConfiguration
-                .Setup(configuration => configuration.Schema)
-                .Returns(TestSchema);
-            MockConfiguration
-                .Setup(configuration => configuration.Table)
-                .Returns(TestTable);
+                .Returns(TestCompiledConfiguration);
             MockTypeMapper
                 .Setup(mapper => mapper.TableTypes<ITestDataModel>())
                 .Returns(TestTableTypes);

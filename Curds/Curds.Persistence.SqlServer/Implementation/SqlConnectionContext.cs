@@ -1,15 +1,14 @@
 ﻿using Microsoft.Extensions.Options;
-using System.Data.SqlClient;
 using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Threading.Tasks;
-using System.Linq;
 
 namespace Curds.Persistence.Implementation
 {
     using Abstraction;
-    using Curds.Persistence.Domain;
     using Domain;
-    using System.Collections.Generic;
+    using Query.Abstraction;
 
     internal class SqlConnectionContext : ISqlConnectionContext
     {

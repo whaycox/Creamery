@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 
 namespace Curds.Persistence.Model.Configuration.Domain
 {
     using Abstraction;
-    using Persistence.Abstraction;
+    using Model.Domain;
     using Persistence.Domain;
 
     public class EntityConfiguration<TEntity> : IEntityConfiguration
@@ -12,9 +13,9 @@ namespace Curds.Persistence.Model.Configuration.Domain
     {
         public Type EntityType => typeof(TEntity);
 
-        public string Table { get; set; }
-        public string Identity { get; set; }
         public string Schema { get; set; }
+        public string Table { get; set; }
+        public List<IColumnConfiguration> Columns { get; set; } = new List<IColumnConfiguration>();
 
         public IServiceCollection ServiceCollection { get; set; }
     }

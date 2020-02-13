@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using System.Threading.Tasks;
 using System.Data.SqlClient;
+using System.Linq;
 
-namespace Curds.Persistence.Tests
+namespace Curds.Persistence.Query.Tests
 {
+    using Domain;
     using Implementation;
-    using Query.Domain;
 
     [TestClass]
     public class SqlQueryParameterBuilderTest

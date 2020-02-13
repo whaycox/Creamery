@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq.Expressions;
 
-namespace Curds.Persistence.Abstraction
+namespace Curds.Persistence.Query.Abstraction
 {
-    using Domain;
+    using Persistence.Domain;
+    using Persistence.Abstraction;
 
     public interface ISqlQueryBuilder<TModel>
         where TModel : IDataModel

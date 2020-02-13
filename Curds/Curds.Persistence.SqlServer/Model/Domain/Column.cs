@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Curds.Persistence.Query.Domain
+namespace Curds.Persistence.Model.Domain
 {
     public class Column
     {

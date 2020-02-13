@@ -15,6 +15,7 @@ namespace Curds.Persistence.Model.Tests
     using Abstraction;
     using Persistence.Domain;
     using Query.Domain;
+    using Domain;
 
     [TestClass]
     public class ModelMapTest

@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Threading.Tasks;
+using System;
 
-namespace Curds.Persistence.Tests
+namespace Curds.Persistence.Query.Tests
 {
-    using Implementation;
-    using Abstraction;
     using Domain;
-    using Query.Domain;
-    using Query.Implementation;
+    using Implementation;
     using Model.Abstraction;
+    using Persistence.Abstraction;
+    using Persistence.Domain;
+    using Model.Domain;
 
     [TestClass]
     public class SqlQueryExpressionParserTest

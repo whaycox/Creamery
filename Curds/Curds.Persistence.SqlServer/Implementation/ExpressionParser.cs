@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Linq.Expressions;
 
 namespace Curds.Persistence.Implementation
@@ -10,7 +8,7 @@ namespace Curds.Persistence.Implementation
 
     internal class ExpressionParser : IExpressionParser
     {
-        public string ParseEntityValueSelection<TEntity, TValue>(Expression<Func<TEntity, TValue>> valueSelectionExpression) 
+        public string ParseEntityValueSelection<TEntity, TValue>(Expression<Func<TEntity, TValue>> valueSelectionExpression)
             where TEntity : BaseEntity
         {
             if (valueSelectionExpression.NodeType != ExpressionType.Lambda ||

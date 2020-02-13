@@ -4,11 +4,11 @@ using System.Text;
 using System.Linq;
 using System;
 
-namespace Curds.Persistence.Implementation
+namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
     using Domain;
-    using Query.Domain;
+    using Model.Domain;
 
     internal class SqlQueryWriter : ISqlQueryWriter
     {

@@ -1,14 +1,15 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
 using Whey.Template;
-using System;
 
 namespace Curds.Persistence.Tests
 {
     using Abstraction;
     using Domain;
-    using Model.Configuration.Domain;
     using Model.Configuration.Abstraction;
+    using Model.Configuration.Domain;
+    using Model.Domain;
 
     [TestClass]
     public class RegistrationExtensionsTest : RegistrationExtensionsTemplate
@@ -41,8 +42,8 @@ namespace Curds.Persistence.Tests
         {
             TestServiceCollection
                 .ConfigureEntity<TestEntity>()
-                .HasSchema(TestSchema)
-                .Register();
+                .WithSchema(TestSchema)
+                .RegisterEntity();
 
             VerifyServiceHasInstance<EntityConfiguration<TestEntity>>(typeof(IEntityConfiguration), ServiceLifetime.Singleton, VerifyTestEntityHasSchema);
         }
@@ -54,8 +55,8 @@ namespace Curds.Persistence.Tests
         {
             TestServiceCollection
                 .ConfigureEntity<ITestDataModel, TestEntity>()
-                .HasSchema(TestSchema)
-                .Register();
+                .WithSchema(TestSchema)
+                .RegisterEntity();
 
             VerifyServiceHasInstance<ModelEntityConfiguration<ITestDataModel, TestEntity>>(typeof(IModelEntityConfiguration), ServiceLifetime.Singleton, VerifyTestEntityHasSchemaInModel);
         }
@@ -67,8 +68,8 @@ namespace Curds.Persistence.Tests
         {
             TestServiceCollection
                 .ConfigureEntity<TestEntity>()
-                .HasTable(TestTable)
-                .Register();
+                .WithTableName(TestTable)
+                .RegisterEntity();
 
             VerifyServiceHasInstance<EntityConfiguration<TestEntity>>(typeof(IEntityConfiguration), ServiceLifetime.Singleton, VerifyTestEntityHasTable);
         }
@@ -80,8 +81,8 @@ namespace Curds.Persistence.Tests
         {
             TestServiceCollection
                 .ConfigureEntity<ITestDataModel, TestEntity>()
-                .HasTable(TestTable)
-                .Register();
+                .WithTableName(TestTable)
+                .RegisterEntity();
 
             VerifyServiceHasInstance<ModelEntityConfiguration<ITestDataModel, TestEntity>>(typeof(IModelEntityConfiguration), ServiceLifetime.Singleton, VerifyTestEntityHasTableInModel);
         }
@@ -93,25 +94,37 @@ namespace Curds.Persistence.Tests
         {
             TestServiceCollection
                 .ConfigureEntity<TestEntity>()
-                .HasIdentity(entity => entity.ID)
-                .Register();
+                    .ConfigureColumn(entity => entity.ID)
+                    .IsIdentity()
+                    .RegisterColumn()
+                .RegisterEntity();
 
             VerifyServiceHasInstance<EntityConfiguration<TestEntity>>(typeof(IEntityConfiguration), ServiceLifetime.Singleton, VerifyTestEntityHasIntIdentity);
         }
-        private bool VerifyTestEntityHasIntIdentity(EntityConfiguration<TestEntity> actual) =>
-            actual.Identity == nameof(TestEntity.ID);
+        private bool VerifyTestEntityHasIntIdentity(EntityConfiguration<TestEntity> actual)
+        {
+            Assert.AreEqual(1, actual.Columns.Count);
+            IColumnConfiguration actualColumn = actual.Columns.First();
+            return actualColumn.IsIdentity.Value;
+        }
 
         [TestMethod]
         public void CanConfigureAnIntIdentityInModel()
         {
             TestServiceCollection
                 .ConfigureEntity<ITestDataModel, TestEntity>()
-                .HasIdentity(entity => entity.ID)
-                .Register();
+                    .ConfigureColumn(entity => entity.ID)
+                    .IsIdentity()
+                    .RegisterColumn()
+                .RegisterEntity();
 
             VerifyServiceHasInstance<ModelEntityConfiguration<ITestDataModel, TestEntity>>(typeof(IModelEntityConfiguration), ServiceLifetime.Singleton, VerifyTestEntityHasIntIdentityInModel);
         }
-        private bool VerifyTestEntityHasIntIdentityInModel(ModelEntityConfiguration<ITestDataModel, TestEntity> actual) =>
-            actual.Identity == nameof(TestEntity.ID);
+        private bool VerifyTestEntityHasIntIdentityInModel(ModelEntityConfiguration<ITestDataModel, TestEntity> actual)
+        {
+            Assert.AreEqual(1, actual.Columns.Count);
+            IColumnConfiguration actualColumn = actual.Columns.First();
+            return actualColumn.IsIdentity.Value;
+        }
     }
 }

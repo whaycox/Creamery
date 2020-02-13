@@ -1,12 +1,10 @@
-﻿using System;
-using System.Data.SqlClient;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Curds.Persistence.Implementation
 {
     using Abstraction;
 
-    internal class SqlDatabase : IDatabase
+    public abstract class SqlDatabase : IDatabase
     {
         private ISqlConnectionContext ConnectionContext { get; }
 
@@ -18,7 +16,7 @@ namespace Curds.Persistence.Implementation
         public async Task<IDatabaseTransaction> BeginTransaction()
         {
             await ConnectionContext.BeginTransaction();
-            return new SqlDatabaseTransaction(ConnectionContext.CommitTransaction, ConnectionContext.RollbackTransaction);
+            return new SqlDatabaseTransaction(ConnectionContext);
         }
     }
 }

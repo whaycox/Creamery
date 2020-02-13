@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Curds.Persistence.Query.Implementation
 {
-    using Persistence.Abstraction;
-    using Persistence.Domain;
+    using Abstraction;
     using Domain;
+    using Persistence.Domain;
+    using Model.Domain;
 
     public class InsertQuery<TEntity> : ISqlQuery
         where TEntity : BaseEntity

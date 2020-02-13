@@ -9,6 +9,7 @@ namespace Curds.Persistence.Model.Implementation
     using Abstraction;
     using Query.Domain;
     using Persistence.Domain;
+    using Domain;
 
     internal abstract class ModelMap
     { }

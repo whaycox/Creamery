@@ -12,6 +12,7 @@ namespace Curds.Persistence.Model.Implementation
     using Persistence.Abstraction;
     using Persistence.Domain;
     using Query.Domain;
+    using Configuration.Domain;
 
     internal class DelegateMapper : IDelegateMapper
     {
@@ -32,10 +33,13 @@ namespace Curds.Persistence.Model.Implementation
         public ValueEntityDelegate MapValueEntityDelegate<TModel>(Type entityType)
             where TModel : IDataModel
         {
-            IModelEntityConfiguration entityConfiguration = ConfigurationFactory.Build<TModel>(entityType);
             IEnumerable<PropertyInfo> valueProperties = TypeMapper
-                .ValueTypes(entityType)
-                .Where(valueInfo => valueInfo.Name != entityConfiguration.Identity);
+                .ValueTypes(entityType);
+
+            CompiledConfiguration<TModel> entityConfiguration = ConfigurationFactory.Build<TModel>(entityType);
+            foreach (CompiledColumnConfiguration<TModel> configuredColumn in entityConfiguration.Columns.Values)
+                if (configuredColumn.IsIdentity)
+                    valueProperties = valueProperties.Where(property => property.Name != configuredColumn.ValueName);
 
             return ExpressionBuilder.BuildValueEntityDelegate(entityType, valueProperties);
         }

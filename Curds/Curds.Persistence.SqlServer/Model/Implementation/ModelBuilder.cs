@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Linq;
 
 namespace Curds.Persistence.Model.Implementation
 {
@@ -8,8 +9,10 @@ namespace Curds.Persistence.Model.Implementation
     using Persistence.Abstraction;
     using Query.Domain;
     using Configuration.Abstraction;
+    using Domain;
+    using Configuration.Domain;
 
-    public class ModelBuilder : IModelBuilder
+    internal class ModelBuilder : IModelBuilder
     {
         private IModelConfigurationFactory ConfigurationFactory { get; }
         private ITypeMapper TypeMapper { get; }
@@ -28,21 +31,25 @@ namespace Curds.Persistence.Model.Implementation
         private Table BuildTable<TModel>(Type entityType)
             where TModel : IDataModel
         {
-            IModelEntityConfiguration configuration = ConfigurationFactory.Build<TModel>(entityType);
+            CompiledConfiguration<TModel> configuration = ConfigurationFactory.Build<TModel>(entityType);
             Table table = new Table
             {
                 Schema = configuration.Schema,
                 Name = configuration.Table,
             };
             foreach (PropertyInfo propertyInfo in TypeMapper.ValueTypes(entityType))
-                table.Columns.Add(BuildColumn(propertyInfo, configuration));
+            {
+                Column valueColumn = new Column { Name = propertyInfo.Name };
+
+                if (configuration.Columns.TryGetValue(propertyInfo.Name, out CompiledColumnConfiguration<TModel> configuredColumn))
+                {
+                    valueColumn.Name = configuredColumn.Name ?? valueColumn.Name;
+                    valueColumn.IsIdentity = configuredColumn.IsIdentity;
+                }
+                table.Columns.Add(valueColumn);
+            }
             return table;
         }
-        private Column BuildColumn(PropertyInfo propertyInfo, IModelEntityConfiguration configuration) => new Column
-        {
-            Name = propertyInfo.Name,
-            IsIdentity = propertyInfo.Name == configuration.Identity,
-        };
 
         public Dictionary<string, Table> TablesByName<TModel>()
             where TModel : IDataModel

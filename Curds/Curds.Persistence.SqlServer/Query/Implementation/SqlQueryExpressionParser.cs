@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Linq.Expressions;
 
-namespace Curds.Persistence.Implementation
+namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
     using Domain;
-    using Query.Domain;
-    using Query.Implementation;
     using Model.Abstraction;
+    using Persistence.Abstraction;
+    using Persistence.Domain;
+    using Model.Domain;
 
     internal class SqlQueryExpressionParser<TModel> : ISqlQueryExpressionParser<TModel>
         where TModel : IDataModel

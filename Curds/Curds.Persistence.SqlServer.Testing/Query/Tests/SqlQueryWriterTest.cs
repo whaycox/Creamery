@@ -3,14 +3,13 @@ using Moq;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System;
 
-namespace Curds.Persistence.Tests
+namespace Curds.Persistence.Query.Tests
 {
     using Abstraction;
     using Domain;
     using Implementation;
-    using Query.Domain;
+    using Model.Domain;
 
     [TestClass]
     public class SqlQueryWriterTest

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace Curds.Persistence.Model.Configuration.Domain
 {
     using Abstraction;
+    using Model.Domain;
     using Persistence.Abstraction;
 
     internal class CompiledConfiguration<TModel> : IModelEntityConfiguration
@@ -15,7 +16,11 @@ namespace Curds.Persistence.Model.Configuration.Domain
 
         public string Schema { get; set; }
         public string Table { get; set; }
-        public string Identity { get; set; }
+        public Dictionary<string, CompiledColumnConfiguration<TModel>> Columns { get; set; } = new Dictionary<string, CompiledColumnConfiguration<TModel>>();
+        List<IColumnConfiguration> IEntityConfiguration.Columns => Columns
+            .Select(pair => pair.Value)
+            .Cast<IColumnConfiguration>()
+            .ToList();
 
         public CompiledConfiguration(Type entityType)
         {

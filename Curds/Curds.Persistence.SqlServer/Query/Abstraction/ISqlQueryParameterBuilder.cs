@@ -1,8 +1,8 @@
 ﻿using System.Data.SqlClient;
 
-namespace Curds.Persistence.Abstraction
+namespace Curds.Persistence.Query.Abstraction
 {
-    using Query.Domain;
+    using Domain;
 
     public interface ISqlQueryParameterBuilder
     {

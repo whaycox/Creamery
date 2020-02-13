@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Curds.Persistence.Implementation
 {
@@ -9,16 +6,14 @@ namespace Curds.Persistence.Implementation
 
     internal class SqlDatabaseTransaction : IDatabaseTransaction
     {
-        private Func<Task> CommitDelegate { get; }
-        private Func<Task> DisposableDelegate { get; }
+        private ISqlConnectionContext ConnectionContext { get; }
 
-        public SqlDatabaseTransaction(Func<Task> commitDelegate, Func<Task> disposeDelegate)
+        public SqlDatabaseTransaction(ISqlConnectionContext connectionContext)
         {
-            CommitDelegate = commitDelegate;
-            DisposableDelegate = disposeDelegate;
+            ConnectionContext = connectionContext;
         }
 
-        public Task CommitTransaction() => CommitDelegate();
+        public Task CommitTransaction() => ConnectionContext.CommitTransaction();
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
@@ -29,7 +24,8 @@ namespace Curds.Persistence.Implementation
             {
                 if (disposing)
                 {
-                    DisposableDelegate()
+                    ConnectionContext?
+                        .RollbackTransaction()
                         .GetAwaiter()
                         .GetResult();
                 }

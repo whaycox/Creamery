@@ -4,10 +4,10 @@ using System.Text;
 using System.Data.SqlClient;
 using System.Linq;
 
-namespace Curds.Persistence.Implementation
+namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
-    using Query.Domain;
+    using Domain;
 
     internal class SqlQueryParameterBuilder : ISqlQueryParameterBuilder
     {

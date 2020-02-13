@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Data.SqlClient;
 
-namespace Curds.Persistence.Abstraction
+namespace Curds.Persistence.Query.Abstraction
 {
-    using Query.Domain;
-    using Persistence.Domain;
+    using Domain;
+    using Model.Domain;
 
     public interface ISqlQueryWriter
     {

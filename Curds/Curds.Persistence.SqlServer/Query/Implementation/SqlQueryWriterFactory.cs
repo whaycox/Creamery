@@ -1,4 +1,4 @@
-﻿namespace Curds.Persistence.Implementation
+﻿namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
 

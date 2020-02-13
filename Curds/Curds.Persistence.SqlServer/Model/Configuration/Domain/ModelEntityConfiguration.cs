@@ -8,6 +8,7 @@ namespace Curds.Persistence.Model.Configuration.Domain
     using Persistence.Abstraction;
     using Persistence.Domain;
     using Abstraction;
+    using Model.Domain;
 
     public class ModelEntityConfiguration<TModel, TEntity> : IModelEntityConfiguration
         where TModel : IDataModel
@@ -18,7 +19,7 @@ namespace Curds.Persistence.Model.Configuration.Domain
 
         public string Schema { get; set; }
         public string Table { get; set; }
-        public string Identity { get; set; }
+        public List<IColumnConfiguration> Columns { get; set; } = new List<IColumnConfiguration>();
 
         public IServiceCollection ServiceCollection { get; set; }
     }

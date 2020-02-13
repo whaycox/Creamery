@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Curds.Persistence.Model.Abstraction
 {
-    using Query.Domain;
+    using Domain;
     using Persistence.Abstraction;
 
     public interface IModelBuilder
