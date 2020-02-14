@@ -17,22 +17,22 @@ namespace Curds.Persistence.Model.Configuration.Tests
         private GlobalConfiguration OtherGlobalConfiguration = new GlobalConfiguration { Schema = nameof(OtherGlobalConfiguration) };
         private List<GlobalConfiguration> TestGlobalConfigurations = new List<GlobalConfiguration>();
         private EntityConfiguration<TestEntity> TestEntityConfiguration = new EntityConfiguration<TestEntity> { Schema = nameof(TestEntityConfiguration), Table = nameof(TestEntityConfiguration) };
-        private ColumnConfiguration<TestEntity> TestEntityColumnConfiguration = new ColumnConfiguration<TestEntity>(nameof(TestEntityColumnConfiguration)) { Name = nameof(TestEntityColumnConfiguration) };
+        private ColumnConfiguration<TestEntity, string> TestEntityColumnConfiguration = new ColumnConfiguration<TestEntity, string>(nameof(TestEntityColumnConfiguration)) { Name = nameof(TestEntityColumnConfiguration) };
         private EntityConfiguration<OtherEntity> OtherEntityConfiguration = new EntityConfiguration<OtherEntity>();
         private EntityConfiguration<BaseEntity> BaseEntityConfiguration = new EntityConfiguration<BaseEntity> { Schema = nameof(BaseEntityConfiguration), Table = nameof(BaseEntityConfiguration) };
-        private ColumnConfiguration<BaseEntity> BaseEntityColumnConfiguration = new ColumnConfiguration<BaseEntity>(nameof(TestEntityColumnConfiguration)) { Name = nameof(BaseEntityColumnConfiguration) };
+        private ColumnConfiguration<BaseEntity, string> BaseEntityColumnConfiguration = new ColumnConfiguration<BaseEntity, string>(nameof(TestEntityColumnConfiguration)) { Name = nameof(BaseEntityColumnConfiguration) };
         private EntityConfiguration<SimpleEntity> SimpleEntityConfiguration = new EntityConfiguration<SimpleEntity> { Schema = nameof(SimpleEntityConfiguration), Table = nameof(SimpleEntityConfiguration) };
-        private ColumnConfiguration<SimpleEntity> SimpleEntityColumnConfiguration = new ColumnConfiguration<SimpleEntity>(nameof(SimpleEntityColumnConfiguration)) { Name = nameof(SimpleEntityColumnConfiguration) };
+        private ColumnConfiguration<SimpleEntity, string> SimpleEntityColumnConfiguration = new ColumnConfiguration<SimpleEntity, string>(nameof(SimpleEntityColumnConfiguration)) { Name = nameof(SimpleEntityColumnConfiguration) };
         private List<IEntityConfiguration> TestEntityConfigurations = new List<IEntityConfiguration>();
         private ModelConfiguration<ITestDataModel> TestModelConfiguration = new ModelConfiguration<ITestDataModel> { Schema = nameof(TestModelConfiguration) };
         private ModelConfiguration<ITestDataModel> OtherModelConfiguration = new ModelConfiguration<ITestDataModel> { Schema = nameof(OtherModelConfiguration) };
         private List<IModelConfiguration> TestModelConfigurations = new List<IModelConfiguration>();
         private ModelEntityConfiguration<ITestDataModel, TestEntity> TestModelEntityConfiguration = new ModelEntityConfiguration<ITestDataModel, TestEntity> { Schema = nameof(TestModelEntityConfiguration), Table = nameof(TestModelEntityConfiguration) };
-        private ModelColumnConfiguration<ITestDataModel, TestEntity> TestModelEntityColumnConfiguration = new ModelColumnConfiguration<ITestDataModel, TestEntity>(nameof(TestModelEntityColumnConfiguration)) { Name = nameof(TestModelEntityColumnConfiguration) };
+        private ModelColumnConfiguration<ITestDataModel, TestEntity, string> TestModelEntityColumnConfiguration = new ModelColumnConfiguration<ITestDataModel, TestEntity, string>(nameof(TestModelEntityColumnConfiguration)) { Name = nameof(TestModelEntityColumnConfiguration) };
         private ModelEntityConfiguration<ITestDataModel, SimpleEntity> SimpleModelEntityConfiguration = new ModelEntityConfiguration<ITestDataModel, SimpleEntity> { Schema = nameof(SimpleModelEntityConfiguration), Table = nameof(SimpleModelEntityConfiguration) };
-        private ModelColumnConfiguration<ITestDataModel, SimpleEntity> SimpleModelEntityColumnConfiguration = new ModelColumnConfiguration<ITestDataModel, SimpleEntity>(nameof(SimpleModelEntityColumnConfiguration)) { Name = nameof(SimpleModelEntityColumnConfiguration) };
+        private ModelColumnConfiguration<ITestDataModel, SimpleEntity, string> SimpleModelEntityColumnConfiguration = new ModelColumnConfiguration<ITestDataModel, SimpleEntity, string>(nameof(SimpleModelEntityColumnConfiguration)) { Name = nameof(SimpleModelEntityColumnConfiguration) };
         private ModelEntityConfiguration<ITestDataModel, BaseEntity> BaseModelEntityConfiguration = new ModelEntityConfiguration<ITestDataModel, BaseEntity> { Schema = nameof(BaseModelEntityConfiguration), Table = nameof(BaseModelEntityConfiguration) };
-        private ModelColumnConfiguration<ITestDataModel, BaseEntity> BaseModelEntityColumnConfiguration = new ModelColumnConfiguration<ITestDataModel, BaseEntity>(nameof(TestModelEntityColumnConfiguration)) { Name = nameof(BaseModelEntityColumnConfiguration) };
+        private ModelColumnConfiguration<ITestDataModel, BaseEntity, string> BaseModelEntityColumnConfiguration = new ModelColumnConfiguration<ITestDataModel, BaseEntity, string>(nameof(TestModelEntityColumnConfiguration)) { Name = nameof(BaseModelEntityColumnConfiguration) };
         private List<IModelEntityConfiguration> TestModelEntityConfigurations = new List<IModelEntityConfiguration>();
 
         private ModelConfigurationFactory TestObject = null;

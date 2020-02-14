@@ -7,8 +7,14 @@ namespace Curds.Persistence.Domain
         public string Name { get; set; } = Guid.NewGuid().ToString();
         public bool BoolValue { get; set; } = true;
         public bool? NullableBoolValue { get; set; }
+        public byte ByteValue { get; set; } = 255;
+        public byte? NullableByteValue { get; set; }
+        public short ShortValue { get; set; } = 20000;
+        public short? NullableShortValue { get; set; }
         public int IntValue { get; set; } = 157;
         public int? NullableIntValue { get; set; }
+        public long LongValue { get; set; } = long.MaxValue;
+        public long? NullableLongValue { get; set; }
         public DateTime DateTimeValue { get; set; } = DateTime.UtcNow;
         public DateTime? NullableDateTimeValue { get; set; }
         public DateTimeOffset DateTimeOffsetValue { get; set; } = DateTimeOffset.Now;

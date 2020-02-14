@@ -130,6 +130,23 @@ namespace Curds.Persistence.Tests
         }
 
         [TestMethod]
+        public async Task CanInsertPopulatedOtherEntity()
+        {
+            OtherEntity.NullableBoolValue = OtherEntity.BoolValue;
+            OtherEntity.NullableByteValue = OtherEntity.ByteValue;
+            OtherEntity.NullableShortValue = OtherEntity.ShortValue;
+            OtherEntity.NullableIntValue = OtherEntity.IntValue;
+            OtherEntity.NullableLongValue = OtherEntity.LongValue;
+            OtherEntity.NullableDateTimeValue = OtherEntity.DateTimeValue;
+            OtherEntity.NullableDateTimeOffsetValue = OtherEntity.DateTimeOffsetValue;
+            OtherEntity.NullableDecimalValue = OtherEntity.DecimalValue;
+            OtherEntity.NullableDoubleValue = OtherEntity.DoubleValue;
+            BuildTestObjects();
+
+            await OtherEntityRepository.Insert(OtherEntity);
+        }
+
+        [TestMethod]
         public async Task CanInsertTestEntityWithCustomNames()
         {
             GlobalConfiguration schemaConfig = new GlobalConfiguration { Schema = TestSchema };

@@ -36,6 +36,48 @@ namespace Curds.Persistence.Model.Tests
             new object[] { false },
         };
 
+        private static IEnumerable<object[]> ByteDynamicData => new List<object[]>
+        {
+            new object[] { (byte)0 },
+            new object[] { (byte)2 },
+            new object[] { (byte)4 },
+            new object[] { (byte)8 },
+            new object[] { (byte)16 },
+            new object[] { (byte)32 },
+            new object[] { (byte)64 },
+            new object[] { (byte)128 },
+            new object[] { (byte)255 },
+        };
+        private static IEnumerable<object[]> NullableByteDynamicData => new List<object[]>
+        {
+            new object[] { null },
+            new object[] { (byte)0 },
+            new object[] { (byte)2 },
+            new object[] { (byte)4 },
+            new object[] { (byte)8 },
+            new object[] { (byte)16 },
+            new object[] { (byte)32 },
+            new object[] { (byte)64 },
+            new object[] { (byte)128 },
+            new object[] { (byte)255 },
+        };
+
+        private static IEnumerable<object[]> ShortDynamicData => new List<object[]>
+        {
+            new object[] { short.MinValue },
+            new object[] { (short)0 },
+            new object[] { (short)100 },
+            new object[] { short.MaxValue },
+        };
+        private static IEnumerable<object[]> NullableShortDynamicData => new List<object[]>
+        {
+            new object[] { null },
+            new object[] { short.MinValue },
+            new object[] { (short)0 },
+            new object[] { (short)100 },
+            new object[] { short.MaxValue },
+        };
+
         private static IEnumerable<object[]> NullableIntDynamicData => new List<object[]>
         {
             new object[] { null },
@@ -50,6 +92,22 @@ namespace Curds.Persistence.Model.Tests
             new object[] { -10 },
             new object[] { 100 },
             new object[] { int.MaxValue },
+        };
+
+        private static IEnumerable<object[]> NullableLongDynamicData => new List<object[]>
+        {
+            new object[] { null },
+            new object[] { long.MinValue },
+            new object[] { -10L },
+            new object[] { 100L },
+            new object[] { long.MaxValue },
+        };
+        private static IEnumerable<object[]> LongDynamicData => new List<object[]>
+        {
+            new object[] { long.MinValue },
+            new object[] { -10L },
+            new object[] { 100L },
+            new object[] { long.MaxValue },
         };
 
         private static IEnumerable<object[]> DateTimeDynamicData => new List<object[]>
@@ -170,7 +228,7 @@ namespace Curds.Persistence.Model.Tests
 
             ValueEntity actual = valueEntityDelegate(TestOtherEntity);
 
-            Assert.AreEqual(14, actual.Values.Count);
+            Assert.AreEqual(20, actual.Values.Count);
         }
 
         [DataTestMethod]
@@ -196,19 +254,25 @@ namespace Curds.Persistence.Model.Tests
             ValueEntity actual = valueEntityDelegate(TestOtherEntity);
 
             Assert.AreEqual(TestOtherEntity.BoolValue, actual.Values[0].Content);
-            Assert.AreEqual(TestOtherEntity.DateTimeOffsetValue, actual.Values[1].Content);
-            Assert.AreEqual(TestOtherEntity.DateTimeValue, actual.Values[2].Content);
-            Assert.AreEqual(TestOtherEntity.DecimalValue, actual.Values[3].Content);
-            Assert.AreEqual(TestOtherEntity.DoubleValue, actual.Values[4].Content);
-            Assert.AreEqual(TestOtherEntity.ID, actual.Values[5].Content);
-            Assert.AreEqual(TestOtherEntity.IntValue, actual.Values[6].Content);
-            Assert.AreEqual(TestOtherEntity.Name, actual.Values[7].Content);
-            Assert.AreEqual(TestOtherEntity.NullableBoolValue, actual.Values[8].Content);
-            Assert.AreEqual(TestOtherEntity.NullableDateTimeOffsetValue, actual.Values[9].Content);
-            Assert.AreEqual(TestOtherEntity.NullableDateTimeValue, actual.Values[10].Content);
-            Assert.AreEqual(TestOtherEntity.NullableDecimalValue, actual.Values[11].Content);
-            Assert.AreEqual(TestOtherEntity.NullableDoubleValue, actual.Values[12].Content);
-            Assert.AreEqual(TestOtherEntity.NullableIntValue, actual.Values[13].Content);
+            Assert.AreEqual(TestOtherEntity.ByteValue, actual.Values[1].Content);
+            Assert.AreEqual(TestOtherEntity.DateTimeOffsetValue, actual.Values[2].Content);
+            Assert.AreEqual(TestOtherEntity.DateTimeValue, actual.Values[3].Content);
+            Assert.AreEqual(TestOtherEntity.DecimalValue, actual.Values[4].Content);
+            Assert.AreEqual(TestOtherEntity.DoubleValue, actual.Values[5].Content);
+            Assert.AreEqual(TestOtherEntity.ID, actual.Values[6].Content);
+            Assert.AreEqual(TestOtherEntity.IntValue, actual.Values[7].Content);
+            Assert.AreEqual(TestOtherEntity.LongValue, actual.Values[8].Content);
+            Assert.AreEqual(TestOtherEntity.Name, actual.Values[9].Content);
+            Assert.AreEqual(TestOtherEntity.NullableBoolValue, actual.Values[10].Content);
+            Assert.AreEqual(TestOtherEntity.NullableByteValue, actual.Values[11].Content);
+            Assert.AreEqual(TestOtherEntity.NullableDateTimeOffsetValue, actual.Values[12].Content);
+            Assert.AreEqual(TestOtherEntity.NullableDateTimeValue, actual.Values[13].Content);
+            Assert.AreEqual(TestOtherEntity.NullableDecimalValue, actual.Values[14].Content);
+            Assert.AreEqual(TestOtherEntity.NullableDoubleValue, actual.Values[15].Content);
+            Assert.AreEqual(TestOtherEntity.NullableIntValue, actual.Values[16].Content);
+            Assert.AreEqual(TestOtherEntity.NullableLongValue, actual.Values[17].Content);
+            Assert.AreEqual(TestOtherEntity.NullableShortValue, actual.Values[18].Content);
+            Assert.AreEqual(TestOtherEntity.ShortValue, actual.Values[19].Content);
         }
 
         private void TestAddValueExpression(string propertyName, object expectedValue)
@@ -254,6 +318,42 @@ namespace Curds.Persistence.Model.Tests
         }
 
         [DataTestMethod]
+        [DynamicData(nameof(ByteDynamicData))]
+        public void AddByteValueExpressionBehavesProperly(byte testByte)
+        {
+            TestOtherEntity.ByteValue = testByte;
+
+            TestAddValueExpression(nameof(OtherEntity.ByteValue), testByte);
+        }
+
+        [DataTestMethod]
+        [DynamicData(nameof(NullableByteDynamicData))]
+        public void AddNullableByteValueExpressionBehavesProperly(byte? testByte)
+        {
+            TestOtherEntity.NullableByteValue = testByte;
+
+            TestAddValueExpression(nameof(OtherEntity.NullableByteValue), testByte);
+        }
+
+        [DataTestMethod]
+        [DynamicData(nameof(ShortDynamicData))]
+        public void AddShortValueExpressionBehavesProperly(short testShort)
+        {
+            TestOtherEntity.ShortValue = testShort;
+
+            TestAddValueExpression(nameof(OtherEntity.ShortValue), testShort);
+        }
+
+        [DataTestMethod]
+        [DynamicData(nameof(NullableShortDynamicData))]
+        public void AddNullableShortValueExpressionBehavesProperly(short? testShort)
+        {
+            TestOtherEntity.NullableShortValue = testShort;
+
+            TestAddValueExpression(nameof(OtherEntity.NullableShortValue), testShort);
+        }
+
+        [DataTestMethod]
         [DynamicData(nameof(IntDynamicData))]
         public void AddIntValueExpressionBehavesProperly(int testInt)
         {
@@ -269,6 +369,24 @@ namespace Curds.Persistence.Model.Tests
             TestOtherEntity.NullableIntValue = testInt;
 
             TestAddValueExpression(nameof(OtherEntity.NullableIntValue), testInt);
+        }
+
+        [DataTestMethod]
+        [DynamicData(nameof(LongDynamicData))]
+        public void AddLongValueExpressionBehavesProperly(long testLong)
+        {
+            TestOtherEntity.LongValue = testLong;
+
+            TestAddValueExpression(nameof(OtherEntity.LongValue), testLong);
+        }
+
+        [DataTestMethod]
+        [DynamicData(nameof(NullableLongDynamicData))]
+        public void AddNullableLongValueExpressionBehavesProperly(long? testLong)
+        {
+            TestOtherEntity.NullableLongValue = testLong;
+
+            TestAddValueExpression(nameof(OtherEntity.NullableLongValue), testLong);
         }
 
         [DataTestMethod]
@@ -347,8 +465,14 @@ namespace Curds.Persistence.Model.Tests
         [DataRow(typeof(string), typeof(StringValue))]
         [DataRow(typeof(bool), typeof(BoolValue))]
         [DataRow(typeof(bool?), typeof(NullableBoolValue))]
+        [DataRow(typeof(byte), typeof(ByteValue))]
+        [DataRow(typeof(byte?), typeof(NullableByteValue))]
+        [DataRow(typeof(short), typeof(ShortValue))]
+        [DataRow(typeof(short?), typeof(NullableShortValue))]
         [DataRow(typeof(int), typeof(IntValue))]
         [DataRow(typeof(int?), typeof(NullableIntValue))]
+        [DataRow(typeof(long), typeof(LongValue))]
+        [DataRow(typeof(long?), typeof(NullableLongValue))]
         [DataRow(typeof(DateTime), typeof(DateTimeValue))]
         [DataRow(typeof(DateTime?), typeof(NullableDateTimeValue))]
         [DataRow(typeof(DateTimeOffset), typeof(DateTimeOffsetValue))]

@@ -1,23 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System;
-using System.Collections.Generic;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using System.Threading.Tasks;
 
 namespace Curds.Persistence.Model.Tests
 {
+    using Abstraction;
+    using Domain;
     using Implementation;
     using Persistence.Abstraction;
     using Persistence.Domain;
-    using Domain;
-    using Abstraction;
-    using Query.Domain;
-    using Configuration.Abstraction;
-    using Configuration.Domain;
 
     [TestClass]
     public class TypeMapperTest

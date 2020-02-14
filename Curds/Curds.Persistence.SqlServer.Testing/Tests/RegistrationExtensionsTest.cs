@@ -88,42 +88,122 @@ namespace Curds.Persistence.Tests
         private bool VerifyTestEntityHasTableInModel(ModelEntityConfiguration<ITestDataModel, TestEntity> actual) =>
             TestTable == actual.Table;
 
+        private bool VerifyOtherEntityHasIdentity(EntityConfiguration<OtherEntity> actual)
+        {
+            Assert.AreEqual(1, actual.Columns.Count);
+            IColumnConfiguration actualColumn = actual.Columns.First();
+            return actualColumn.IsIdentity.Value;
+        }
+
+        [TestMethod]
+        public void CanConfigureAByteIdentity()
+        {
+            TestServiceCollection
+                .ConfigureEntity<OtherEntity>()
+                    .ConfigureColumn(entity => entity.ByteValue)
+                    .IsIdentity()
+                    .RegisterColumn()
+                .RegisterEntity();
+
+            VerifyServiceHasInstance<EntityConfiguration<OtherEntity>>(typeof(IEntityConfiguration), ServiceLifetime.Singleton, VerifyOtherEntityHasIdentity);
+        }
+
+        [TestMethod]
+        public void CanConfigureAShortIdentity()
+        {
+            TestServiceCollection
+                .ConfigureEntity<OtherEntity>()
+                    .ConfigureColumn(entity => entity.ShortValue)
+                    .IsIdentity()
+                    .RegisterColumn()
+                .RegisterEntity();
+
+            VerifyServiceHasInstance<EntityConfiguration<OtherEntity>>(typeof(IEntityConfiguration), ServiceLifetime.Singleton, VerifyOtherEntityHasIdentity);
+        }
+
         [TestMethod]
         public void CanConfigureAnIntIdentity()
         {
             TestServiceCollection
-                .ConfigureEntity<TestEntity>()
+                .ConfigureEntity<OtherEntity>()
                     .ConfigureColumn(entity => entity.ID)
                     .IsIdentity()
                     .RegisterColumn()
                 .RegisterEntity();
 
-            VerifyServiceHasInstance<EntityConfiguration<TestEntity>>(typeof(IEntityConfiguration), ServiceLifetime.Singleton, VerifyTestEntityHasIntIdentity);
+            VerifyServiceHasInstance<EntityConfiguration<OtherEntity>>(typeof(IEntityConfiguration), ServiceLifetime.Singleton, VerifyOtherEntityHasIdentity);
         }
-        private bool VerifyTestEntityHasIntIdentity(EntityConfiguration<TestEntity> actual)
+
+        [TestMethod]
+        public void CanConfigureALongIdentity()
+        {
+            TestServiceCollection
+                .ConfigureEntity<OtherEntity>()
+                    .ConfigureColumn(entity => entity.LongValue)
+                    .IsIdentity()
+                    .RegisterColumn()
+                .RegisterEntity();
+
+            VerifyServiceHasInstance<EntityConfiguration<OtherEntity>>(typeof(IEntityConfiguration), ServiceLifetime.Singleton, VerifyOtherEntityHasIdentity);
+        }
+
+        private bool VerifyOtherEntityHasIdentityInModel(ModelEntityConfiguration<ITestDataModel, OtherEntity> actual)
         {
             Assert.AreEqual(1, actual.Columns.Count);
             IColumnConfiguration actualColumn = actual.Columns.First();
             return actualColumn.IsIdentity.Value;
+        }
+
+        [TestMethod]
+        public void CanConfigureAByteIdentityInModel()
+        {
+            TestServiceCollection
+                .ConfigureEntity<ITestDataModel, OtherEntity>()
+                    .ConfigureColumn(entity => entity.ByteValue)
+                    .IsIdentity()
+                    .RegisterColumn()
+                .RegisterEntity();
+
+            VerifyServiceHasInstance<ModelEntityConfiguration<ITestDataModel, OtherEntity>>(typeof(IModelEntityConfiguration), ServiceLifetime.Singleton, VerifyOtherEntityHasIdentityInModel);
+        }
+
+        [TestMethod]
+        public void CanConfigureAShortIdentityInModel()
+        {
+            TestServiceCollection
+                .ConfigureEntity<ITestDataModel, OtherEntity>()
+                    .ConfigureColumn(entity => entity.ShortValue)
+                    .IsIdentity()
+                    .RegisterColumn()
+                .RegisterEntity();
+
+            VerifyServiceHasInstance<ModelEntityConfiguration<ITestDataModel, OtherEntity>>(typeof(IModelEntityConfiguration), ServiceLifetime.Singleton, VerifyOtherEntityHasIdentityInModel);
         }
 
         [TestMethod]
         public void CanConfigureAnIntIdentityInModel()
         {
             TestServiceCollection
-                .ConfigureEntity<ITestDataModel, TestEntity>()
+                .ConfigureEntity<ITestDataModel, OtherEntity>()
                     .ConfigureColumn(entity => entity.ID)
                     .IsIdentity()
                     .RegisterColumn()
                 .RegisterEntity();
 
-            VerifyServiceHasInstance<ModelEntityConfiguration<ITestDataModel, TestEntity>>(typeof(IModelEntityConfiguration), ServiceLifetime.Singleton, VerifyTestEntityHasIntIdentityInModel);
+            VerifyServiceHasInstance<ModelEntityConfiguration<ITestDataModel, OtherEntity>>(typeof(IModelEntityConfiguration), ServiceLifetime.Singleton, VerifyOtherEntityHasIdentityInModel);
         }
-        private bool VerifyTestEntityHasIntIdentityInModel(ModelEntityConfiguration<ITestDataModel, TestEntity> actual)
+
+        [TestMethod]
+        public void CanConfigureALongIdentityInModel()
         {
-            Assert.AreEqual(1, actual.Columns.Count);
-            IColumnConfiguration actualColumn = actual.Columns.First();
-            return actualColumn.IsIdentity.Value;
+            TestServiceCollection
+                .ConfigureEntity<ITestDataModel, OtherEntity>()
+                    .ConfigureColumn(entity => entity.LongValue)
+                    .IsIdentity()
+                    .RegisterColumn()
+                .RegisterEntity();
+
+            VerifyServiceHasInstance<ModelEntityConfiguration<ITestDataModel, OtherEntity>>(typeof(IModelEntityConfiguration), ServiceLifetime.Singleton, VerifyOtherEntityHasIdentityInModel);
         }
 
         [TestMethod]

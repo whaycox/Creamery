@@ -8,7 +8,7 @@ namespace Curds.Persistence.Model.Configuration.Domain
     using Persistence.Domain;
     using Abstraction;
 
-    public class ModelColumnConfiguration<TModel, TEntity> : BaseColumnConfiguration
+    public class ModelColumnConfiguration<TModel, TEntity, TValue> : BaseColumnConfiguration
         where TModel : IDataModel
         where TEntity : BaseEntity
     {

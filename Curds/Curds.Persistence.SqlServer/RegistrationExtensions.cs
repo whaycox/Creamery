@@ -82,42 +82,63 @@ namespace Curds.Persistence
             return services;
         }
 
-        public static ColumnConfiguration<TEntity> ConfigureColumn<TEntity, TValue>(this EntityConfiguration<TEntity> configuration, Expression<Func<TEntity, TValue>> valueSelectionExpression)
+        public static ColumnConfiguration<TEntity, TValue> ConfigureColumn<TEntity, TValue>(this EntityConfiguration<TEntity> configuration, Expression<Func<TEntity, TValue>> valueSelectionExpression)
             where TEntity : BaseEntity
         {
-            ColumnConfiguration<TEntity> column = new ColumnConfiguration<TEntity>(ExpressionParser.ParseEntityValueSelection(valueSelectionExpression))
+            ColumnConfiguration<TEntity, TValue> column = new ColumnConfiguration<TEntity, TValue>(ExpressionParser.ParseEntityValueSelection(valueSelectionExpression))
             {
                 EntityConfiguration = configuration,
             };
             return column;
         }
 
-        public static ModelColumnConfiguration<TModel, TEntity> ConfigureColumn<TModel, TEntity, TValue>(this ModelEntityConfiguration<TModel, TEntity> configuration, Expression<Func<TEntity, TValue>> valueSelectionExpression)
+        public static ModelColumnConfiguration<TModel, TEntity, TValue> ConfigureColumn<TModel, TEntity, TValue>(this ModelEntityConfiguration<TModel, TEntity> configuration, Expression<Func<TEntity, TValue>> valueSelectionExpression)
             where TModel : IDataModel
             where TEntity : BaseEntity
         {
-            ModelColumnConfiguration<TModel, TEntity> column = new ModelColumnConfiguration<TModel, TEntity>(ExpressionParser.ParseEntityValueSelection(valueSelectionExpression))
+            ModelColumnConfiguration<TModel, TEntity, TValue> column = new ModelColumnConfiguration<TModel, TEntity, TValue>(ExpressionParser.ParseEntityValueSelection(valueSelectionExpression))
             {
                 EntityConfiguration = configuration,
             };
             return column;
         }
 
-        public static ColumnConfiguration<TEntity> IsIdentity<TEntity>(this ColumnConfiguration<TEntity> configuration)
+        public static ColumnConfiguration<TEntity, byte> IsIdentity<TEntity>(this ColumnConfiguration<TEntity, byte> configuration)
             where TEntity : BaseEntity
         {
             configuration.IsIdentity = true;
             return configuration;
         }
 
-        public static ColumnConfiguration<TEntity> WithColumnName<TEntity>(this ColumnConfiguration<TEntity> configuration, string columnName)
+        public static ColumnConfiguration<TEntity, short> IsIdentity<TEntity>(this ColumnConfiguration<TEntity, short> configuration)
+            where TEntity : BaseEntity
+        {
+            configuration.IsIdentity = true;
+            return configuration;
+        }
+
+        public static ColumnConfiguration<TEntity, int> IsIdentity<TEntity>(this ColumnConfiguration<TEntity, int> configuration)
+            where TEntity : BaseEntity
+        {
+            configuration.IsIdentity = true;
+            return configuration;
+        }
+
+        public static ColumnConfiguration<TEntity, long> IsIdentity<TEntity>(this ColumnConfiguration<TEntity, long> configuration)
+            where TEntity : BaseEntity
+        {
+            configuration.IsIdentity = true;
+            return configuration;
+        }
+
+        public static ColumnConfiguration<TEntity, TValue> WithColumnName<TEntity, TValue>(this ColumnConfiguration<TEntity, TValue> configuration, string columnName)
             where TEntity : BaseEntity
         {
             configuration.Name = columnName;
             return configuration;
         }
 
-        public static ModelColumnConfiguration<TModel, TEntity> IsIdentity<TModel, TEntity>(this ModelColumnConfiguration<TModel, TEntity> configuration)
+        public static ModelColumnConfiguration<TModel, TEntity, byte> IsIdentity<TModel, TEntity>(this ModelColumnConfiguration<TModel, TEntity, byte> configuration)
             where TModel : IDataModel
             where TEntity : BaseEntity
         {
@@ -125,7 +146,31 @@ namespace Curds.Persistence
             return configuration;
         }
 
-        public static ModelColumnConfiguration<TModel, TEntity> WithColumnName<TModel, TEntity>(this ModelColumnConfiguration<TModel, TEntity> configuration, string columnName)
+        public static ModelColumnConfiguration<TModel, TEntity, short> IsIdentity<TModel, TEntity>(this ModelColumnConfiguration<TModel, TEntity, short> configuration)
+            where TModel : IDataModel
+            where TEntity : BaseEntity
+        {
+            configuration.IsIdentity = true;
+            return configuration;
+        }
+
+        public static ModelColumnConfiguration<TModel, TEntity, int> IsIdentity<TModel, TEntity>(this ModelColumnConfiguration<TModel, TEntity, int> configuration)
+            where TModel : IDataModel
+            where TEntity : BaseEntity
+        {
+            configuration.IsIdentity = true;
+            return configuration;
+        }
+
+        public static ModelColumnConfiguration<TModel, TEntity, long> IsIdentity<TModel, TEntity>(this ModelColumnConfiguration<TModel, TEntity, long> configuration)
+            where TModel : IDataModel
+            where TEntity : BaseEntity
+        {
+            configuration.IsIdentity = true;
+            return configuration;
+        }
+
+        public static ModelColumnConfiguration<TModel, TEntity, TValue> WithColumnName<TModel, TEntity, TValue>(this ModelColumnConfiguration<TModel, TEntity, TValue> configuration, string columnName)
             where TModel : IDataModel
             where TEntity : BaseEntity
         {
@@ -133,7 +178,7 @@ namespace Curds.Persistence
             return configuration;
         }
 
-        public static EntityConfiguration<TEntity> RegisterColumn<TEntity>(this ColumnConfiguration<TEntity> configuration)
+        public static EntityConfiguration<TEntity> RegisterColumn<TEntity, TValue>(this ColumnConfiguration<TEntity, TValue> configuration)
                 where TEntity : BaseEntity
         {
             EntityConfiguration<TEntity> entityConfiguration = configuration.EntityConfiguration;
@@ -142,7 +187,7 @@ namespace Curds.Persistence
             return entityConfiguration;
         }
 
-        public static ModelEntityConfiguration<TModel, TEntity> RegisterColumn<TModel, TEntity>(this ModelColumnConfiguration<TModel, TEntity> configuration)
+        public static ModelEntityConfiguration<TModel, TEntity> RegisterColumn<TModel, TEntity, TValue>(this ModelColumnConfiguration<TModel, TEntity, TValue> configuration)
             where TModel : IDataModel
             where TEntity : BaseEntity
         {
