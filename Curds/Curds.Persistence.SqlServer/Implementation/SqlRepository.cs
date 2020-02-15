@@ -26,7 +26,8 @@ namespace Curds.Persistence.Implementation
         public Task Insert(TEntity entity) => ConnectionContext.Execute(
             QueryBuilder.Insert(model => model.Table<TEntity>(), entity));
 
-        public Task Insert(IEnumerable<TEntity> entities) => throw new NotImplementedException();
+        public Task Insert(IEnumerable<TEntity> entities) => ConnectionContext.Execute(
+            QueryBuilder.Insert(model => model.Table<TEntity>(), entities));
 
         public async Task<TEntity> Fetch(params object[] keys) => throw new NotImplementedException();
 

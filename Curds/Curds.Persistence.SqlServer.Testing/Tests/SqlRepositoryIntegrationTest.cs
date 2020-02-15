@@ -54,6 +54,19 @@ namespace Curds.Persistence.Tests
         private SqlRepository<ITestDataModel, TestEntity> TestEntityRepository = null;
         private SqlRepository<ITestDataModel, OtherEntity> OtherEntityRepository = null;
 
+        private void FullyPopulateOtherEntity()
+        {
+            OtherEntity.NullableBoolValue = OtherEntity.BoolValue;
+            OtherEntity.NullableByteValue = OtherEntity.ByteValue;
+            OtherEntity.NullableShortValue = OtherEntity.ShortValue;
+            OtherEntity.NullableIntValue = OtherEntity.IntValue;
+            OtherEntity.NullableLongValue = OtherEntity.LongValue;
+            OtherEntity.NullableDateTimeValue = OtherEntity.DateTimeValue;
+            OtherEntity.NullableDateTimeOffsetValue = OtherEntity.DateTimeOffsetValue;
+            OtherEntity.NullableDecimalValue = OtherEntity.DecimalValue;
+            OtherEntity.NullableDoubleValue = OtherEntity.DoubleValue;
+        }
+
         [TestInitialize]
         public void Init()
         {
@@ -132,15 +145,7 @@ namespace Curds.Persistence.Tests
         [TestMethod]
         public async Task CanInsertPopulatedOtherEntity()
         {
-            OtherEntity.NullableBoolValue = OtherEntity.BoolValue;
-            OtherEntity.NullableByteValue = OtherEntity.ByteValue;
-            OtherEntity.NullableShortValue = OtherEntity.ShortValue;
-            OtherEntity.NullableIntValue = OtherEntity.IntValue;
-            OtherEntity.NullableLongValue = OtherEntity.LongValue;
-            OtherEntity.NullableDateTimeValue = OtherEntity.DateTimeValue;
-            OtherEntity.NullableDateTimeOffsetValue = OtherEntity.DateTimeOffsetValue;
-            OtherEntity.NullableDecimalValue = OtherEntity.DecimalValue;
-            OtherEntity.NullableDoubleValue = OtherEntity.DoubleValue;
+            FullyPopulateOtherEntity();
             BuildTestObjects();
 
             await OtherEntityRepository.Insert(OtherEntity);
@@ -163,6 +168,20 @@ namespace Curds.Persistence.Tests
             BuildTestObjects();
 
             await TestEntityRepository.Insert(TestEntity);
+        }
+
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(5)]
+        [DataRow(10)]
+        public async Task CanInsertMultipleOtherEntities(int entities)
+        {
+            List<OtherEntity> otherEntities = new List<OtherEntity>();
+            for (int i = 0; i < entities; i++)
+                otherEntities.Add(OtherEntity);
+            BuildTestObjects();
+
+            await OtherEntityRepository.Insert(otherEntities);
         }
 
     }

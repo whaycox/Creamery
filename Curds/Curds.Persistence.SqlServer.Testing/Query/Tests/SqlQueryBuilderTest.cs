@@ -2,6 +2,8 @@
 using Moq;
 using System;
 using System.Linq.Expressions;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Curds.Persistence.Query.Tests
 {
@@ -15,6 +17,7 @@ namespace Curds.Persistence.Query.Tests
     [TestClass]
     public class SqlQueryBuilderTest
     {
+        private List<TestEntity> TestEntities = new List<TestEntity>();
         private TestEntity TestEntity = new TestEntity();
         private ValueEntity TestValueEntity = new ValueEntity();
         private InsertQuery<TestEntity> TestInsertQuery = new InsertQuery<TestEntity>();
@@ -68,7 +71,54 @@ namespace Curds.Persistence.Query.Tests
         {
             TestObject.Insert(model => model.Test, TestEntity);
 
-            Assert.AreSame(TestValueEntity, TestInsertQuery.Entity);
+            Assert.AreSame(TestValueEntity, TestInsertQuery.Entities[0]);
+        }
+
+        private void PopulateNEntities(int entities)
+        {
+            for (int i = 0; i < entities; i++)
+                TestEntities.Add(TestEntity);
+        }
+
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(3)]
+        [DataRow(5)]
+        [DataRow(7)]
+        [DataRow(10)]
+        public void InsertManyMapsValueEntities(int entities)
+        {
+            PopulateNEntities(entities);
+
+            TestObject.Insert(model => model.Test, TestEntities);
+
+            MockModelMap.Verify(map => map.ValueEntity(TestEntity), Times.Exactly(entities));
+        }
+
+        [TestMethod]
+        public void InsertManyReturnsParsedQuery()
+        {
+            PopulateNEntities(1);
+
+            ISqlQuery actual = TestObject.Insert(model => model.Test, TestEntities);
+
+            Assert.AreSame(TestInsertQuery, actual);
+        }
+
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(3)]
+        [DataRow(5)]
+        [DataRow(7)]
+        [DataRow(10)]
+        public void InsertManyAttachesEachToParsedQuery(int entities)
+        {
+            PopulateNEntities(entities);
+
+            TestObject.Insert(model => model.Test, TestEntities);
+
+            Assert.AreEqual(entities, TestInsertQuery.Entities.Count);
+            Assert.IsTrue(TestInsertQuery.Entities.All(entity => entity == TestValueEntity));
         }
     }
 }

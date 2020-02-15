@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Collections.Generic;
 
 namespace Curds.Persistence.Query.Implementation
 {
@@ -23,10 +24,14 @@ namespace Curds.Persistence.Query.Implementation
         }
 
         public ISqlQuery Insert<TEntity>(Expression<Func<TModel, ITable<TEntity>>> tableExpression, TEntity entity)
+            where TEntity : BaseEntity => Insert(tableExpression, new List<TEntity> { entity });
+
+        public ISqlQuery Insert<TEntity>(Expression<Func<TModel, ITable<TEntity>>> tableExpression, IEnumerable<TEntity> entities) 
             where TEntity : BaseEntity
         {
             InsertQuery<TEntity> query = QueryExpressionParser.Parse(tableExpression);
-            query.Entity = ModelMap.ValueEntity(entity);
+            foreach (TEntity entity in entities)
+                query.Entities.Add(ModelMap.ValueEntity(entity));
             return query;
         }
     }

@@ -11,12 +11,12 @@ namespace Curds.Persistence.Query.Implementation
         where TEntity : BaseEntity
     {
         public Table Table { get; set; }
-        public ValueEntity Entity { get; set; }
+        public List<ValueEntity> Entities { get; set; } = new List<ValueEntity>();
 
         public void Write(ISqlQueryWriter queryWriter)
         {
             queryWriter.Insert(Table);
-            queryWriter.ValueEntities(new List<ValueEntity> { Entity });
+            queryWriter.ValueEntities(Entities);
         }
     }
 }

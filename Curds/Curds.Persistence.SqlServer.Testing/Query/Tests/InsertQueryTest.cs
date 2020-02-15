@@ -25,7 +25,7 @@ namespace Curds.Persistence.Query.Tests
         public void Init()
         {
             TestObject.Table = TestTable;
-            TestObject.Entity = TestEntity;
+            TestObject.Entities.Add(TestEntity);
         }
 
         [TestMethod]
