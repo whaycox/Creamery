@@ -13,9 +13,9 @@ namespace Curds.Persistence.Model.Implementation
     {
         private const string InvalidModelPropertiesMessage = "All model properties must be ITable<SomeEntity>";
 
-        public IEnumerable<(string tableName, Type tableType)> TableTypes<TModel>()
+        public IEnumerable<Type> TableTypes<TModel>()
             where TModel : IDataModel => ModelProperties(typeof(TModel))
-                .Select(property => ProcessTableType(property))
+                .Select(property => ParseModelPropertyToTableType(property))
                 .ToList();
         private IEnumerable<PropertyInfo> ModelProperties(Type modelType)
         {
@@ -23,7 +23,6 @@ namespace Curds.Persistence.Model.Implementation
                 throw new ModelException("All data models must be interfaces");
             return modelType.GetProperties();
         }
-        private (string tableName, Type tableType) ProcessTableType(PropertyInfo propertyInfo) => (propertyInfo.Name, ParseModelPropertyToTableType(propertyInfo));
         private Type ParseModelPropertyToTableType(PropertyInfo propertyInfo)
         {
             Type propertyType = propertyInfo.PropertyType;

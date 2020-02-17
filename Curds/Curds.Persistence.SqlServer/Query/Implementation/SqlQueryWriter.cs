@@ -1,19 +1,41 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
-using System.Text;
 using System.Linq;
-using System;
+using System.Text;
 
 namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
+    using Curds.Persistence.Model.Domain;
     using Domain;
-    using Model.Domain;
 
     internal class SqlQueryWriter : ISqlQueryWriter
     {
+        private const string CREATE = nameof(CREATE);
+        private const string DROP = nameof(DROP);
+        private const string TABLE = nameof(TABLE);
         private const string INSERT = nameof(INSERT);
+        private const string OUTPUT = nameof(OUTPUT);
+        private const string INTO = nameof(INTO);
         private const string VALUES = nameof(VALUES);
+        private const string SELECT = nameof(SELECT);
+        private const string FROM = nameof(FROM);
+
+        private static readonly Dictionary<SqlDbType, string> TypeNames = new Dictionary<SqlDbType, string>
+        {
+            { SqlDbType.NVarChar, "NVARCHAR(100)" },
+            { SqlDbType.Bit, "BIT" },
+            { SqlDbType.TinyInt, "TINYINT" },
+            { SqlDbType.SmallInt, "SMALLINT" },
+            { SqlDbType.Int, "INT" },
+            { SqlDbType.BigInt, "BIGINT" },
+            { SqlDbType.DateTime, "DATETIME" },
+            { SqlDbType.DateTimeOffset, "DATETIMEOFFSET" },
+            { SqlDbType.Decimal, "DECIMAL(10, 3)" },
+            { SqlDbType.Float, "FLOAT" },
+        };
 
         private StringBuilder QueryBuilder { get; } = new StringBuilder();
 
@@ -34,6 +56,28 @@ namespace Curds.Persistence.Query.Implementation
 
         private string FormatTableName(Table table) => $"{(string.IsNullOrWhiteSpace(table.Schema) ? string.Empty : $"[{table.Schema}].")}[{table.Name}]";
         private string FormatColumnName(Column column) => $"[{column.Name}]";
+        private string FormatTemporaryIdentityName(Table table) => $"[#{table.Name}_Identities]";
+
+        public void CreateTemporaryIdentityTable(Table table)
+        {
+            Column identityColumn = table.IdentityColumn;
+            QueryBuilder.AppendLine($"{CREATE} {TABLE} {FormatTemporaryIdentityName(table)} ({FormatColumnName(identityColumn ?? throw new InvalidOperationException("No identity column configured"))} {TypeNames[identityColumn.SqlType]} NOT NULL)");
+        }
+
+        public void OutputIdentitiesToTemporaryTable(Table table)
+        {
+            Column identityColumn = table.IdentityColumn;
+            QueryBuilder.AppendLine($"{OUTPUT} [inserted].[{identityColumn.Name}] {INTO} {FormatTemporaryIdentityName(table)}");
+        }
+
+        public void SelectTemporaryIdentityTable(Table table)
+        {
+            Column identityColumn = table.IdentityColumn;
+            QueryBuilder.AppendLine($"{SELECT} [{identityColumn.Name}] {FROM} {FormatTemporaryIdentityName(table)}");
+        }
+
+        public void DropTemporaryIdentityTable(Table table) =>
+            QueryBuilder.AppendLine($"{DROP} {TABLE} {FormatTemporaryIdentityName(table)}");
 
         public void Insert(Table table)
         {
@@ -58,19 +102,21 @@ namespace Curds.Persistence.Query.Implementation
             QueryBuilder.AppendLine(")");
         }
 
-        public void ValueEntities(List<ValueEntity> entities)
+        public void ValueEntities(IEnumerable<ValueEntity> entities)
         {
             QueryBuilder.AppendLine(VALUES);
-            for (int i = 0; i < entities.Count; i++)
+            int writtenEntities = 0;
+            foreach (ValueEntity valueEntity in entities)
             {
-                if (i == 0)
-                    AddValueEntity(entities[i]);
+                if (writtenEntities++ == 0)
+                    AddValueEntity(valueEntity);
                 else
                 {
                     QueryBuilder.AppendLine(",");
-                    AddValueEntity(entities[i]);
+                    AddValueEntity(valueEntity);
                 }
             }
+            QueryBuilder.AppendLine(string.Empty);
         }
         private void AddValueEntity(ValueEntity entity)
         {

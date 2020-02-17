@@ -27,18 +27,18 @@ namespace Curds.Persistence.Query.Tests
         }
 
         [TestMethod]
-        public void ParseInsertExpressionWithPropertyLooksupTableByName()
+        public void ParseInsertExpressionWithPropertyLooksupTableByType()
         {
             TestObject.Parse(model => model.Test);
 
-            MockModelMap.Verify(map => map.Table(nameof(ITestDataModel.Test)), Times.Once);
+            MockModelMap.Verify(map => map.Table(typeof(TestEntity)), Times.Once);
         }
 
         [TestMethod]
         public void ParseInsertExpressionWithPropertyAttachesTable()
         {
             MockModelMap
-                .Setup(map => map.Table(It.IsAny<string>()))
+                .Setup(map => map.Table(It.IsAny<Type>()))
                 .Returns(TestTable);
 
             InsertQuery<TestEntity> actual = TestObject.Parse(model => model.Test);

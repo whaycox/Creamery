@@ -3,12 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
+using System.Data;
 
 namespace Curds.Persistence.Implementation
 {
     using Abstraction;
     using Domain;
     using Query.Abstraction;
+    using Query.Implementation;
 
     internal class SqlConnectionContext : ISqlConnectionContext
     {
@@ -29,11 +31,12 @@ namespace Curds.Persistence.Implementation
             QueryWriterFactory = queryWriterFactory;
         }
 
-        private Task CheckConnectionIsOpen()
+        private async Task CheckConnectionIsOpen()
         {
             if (Connection == null)
                 Connection = new SqlConnection(ConnectionStringFactory.Build(ConnectionInformation));
-            return Connection.OpenAsync();
+            if (Connection.State != ConnectionState.Open)
+                await Connection.OpenAsync();
         }
 
         public Task BeginTransaction()
@@ -51,7 +54,7 @@ namespace Curds.Persistence.Implementation
             throw new NotImplementedException();
         }
 
-        public async Task Execute(ISqlQuery query)
+        private async Task<SqlCommand> BuildCommand(ISqlQuery query)
         {
             ISqlQueryWriter writer = QueryWriterFactory.Create();
             query.Write(writer);
@@ -62,12 +65,20 @@ namespace Curds.Persistence.Implementation
             if (Transaction != null)
                 command.Transaction = Transaction;
 
+            return command;
+        }
+
+        public async Task Execute(ISqlQuery query)
+        {
+            SqlCommand command = await BuildCommand(query);
             await command.ExecuteNonQueryAsync();
         }
 
-        public Task<List<TEntity>> Execute<TEntity>(ISqlQuery<TEntity> query) where TEntity : BaseEntity
+        public async Task<ISqlQueryReader> ExecuteWithResult(ISqlQuery query)
         {
-            throw new NotImplementedException();
+            SqlCommand command = await BuildCommand(query);
+            SqlDataReader reader = await command.ExecuteReaderAsync();
+            return new SqlQueryReader(reader);
         }
 
         #region IDisposable Support

@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -10,6 +11,7 @@ namespace Curds.Persistence.Query.Tests
     using Domain;
     using Implementation;
     using Model.Domain;
+    using Persistence.Domain;
 
     [TestClass]
     public class SqlQueryWriterTest
@@ -20,7 +22,7 @@ namespace Curds.Persistence.Query.Tests
         private Column TestColumnOne = new Column { Name = nameof(TestColumnOne) };
         private Column TestColumnTwo = new Column { Name = nameof(TestColumnTwo) };
         private List<ValueEntity> TestValueEntities = new List<ValueEntity>();
-        private ValueEntity TestValueEntity = new ValueEntity();
+        private ValueEntity TestValueEntity = new ValueEntity<TestEntity>();
         private IntValue TestIntValue = new IntValue { Name = nameof(TestIntValue) };
         private int TestInt = 10;
         private string TestParameterName = nameof(TestParameterName);
@@ -98,6 +100,77 @@ namespace Curds.Persistence.Query.Tests
             Assert.AreSame(testParameter, actual.Parameters[0]);
         }
 
+        [DataTestMethod]
+        [DataRow(SqlDbType.TinyInt, "TINYINT")]
+        [DataRow(SqlDbType.SmallInt, "SMALLINT")]
+        [DataRow(SqlDbType.Int, "INT")]
+        [DataRow(SqlDbType.BigInt, "BIGINT")]
+        public void CreateTemporaryIdentityTableWritesTableDefinitionToCommand(SqlDbType testIdentityType, string expectedType)
+        {
+            TestColumnOne.IsIdentity = true;
+            TestColumnOne.SqlType = testIdentityType;
+            TestTable.Columns.Add(TestColumnOne);
+            TestTable.Columns.Add(TestColumnTwo);
+            TestObject.CreateTemporaryIdentityTable(TestTable);
+
+            SqlCommand actual = TestObject.Flush();
+
+            Assert.AreEqual(ExpectedCreateTemporaryIdentityTable(expectedType), actual.CommandText);
+
+        }
+        private string ExpectedCreateTemporaryIdentityTable(string expectedType) => @$"CREATE TABLE [#{TestTableName}_Identities] ([{nameof(TestColumnOne)}] {expectedType} NOT NULL)
+";
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void CreateTemporaryIdentityTableThrowsIfNoIdentityColumn()
+        {
+            TestTable.Columns.Add(TestColumnOne);
+            TestTable.Columns.Add(TestColumnTwo);
+
+            TestObject.CreateTemporaryIdentityTable(TestTable);
+        }
+
+        [TestMethod]
+        public void OutputTemporaryIdentityTableWritesStatementToCommand()
+        {
+            TestColumnOne.IsIdentity = true;
+            TestTable.Columns.Add(TestColumnOne);
+            TestObject.OutputIdentitiesToTemporaryTable(TestTable);
+
+            SqlCommand actual = TestObject.Flush();
+
+            Assert.AreEqual(ExpectedOutputTemporaryIdentity, actual.CommandText);
+        }
+        private string ExpectedOutputTemporaryIdentity => @$"OUTPUT [inserted].[{nameof(TestColumnOne)}] INTO [#{TestTableName}_Identities]
+";
+
+        [TestMethod]
+        public void SelectTemporaryIdentityTableWritesStatementToCommand()
+        {
+            TestColumnTwo.IsIdentity = true;
+            TestTable.Columns.Add(TestColumnTwo);
+            TestObject.SelectTemporaryIdentityTable(TestTable);
+
+            SqlCommand actual = TestObject.Flush();
+
+            Assert.AreEqual(ExpectedSelectTemporaryIdentity, actual.CommandText);
+        }
+        private string ExpectedSelectTemporaryIdentity => @$"SELECT [{nameof(TestColumnTwo)}] FROM [#{TestTableName}_Identities]
+";
+
+        [TestMethod]
+        public void DropTemporaryIdentityTableWritesStatementToCommand()
+        {
+            TestObject.DropTemporaryIdentityTable(TestTable);
+
+            SqlCommand actual = TestObject.Flush();
+
+            Assert.AreEqual(ExpectedDropTemporaryIdentity, actual.CommandText);
+        }
+        private string ExpectedDropTemporaryIdentity => @$"DROP TABLE [#{TestTableName}_Identities]
+";
+
         [TestMethod]
         public void OneColumnInsertWritesTableDefinitionToCommand()
         {
@@ -169,7 +242,8 @@ namespace Curds.Persistence.Query.Tests
             Assert.AreEqual(ExpectedSingleValueValueEntities, actual.CommandText);
         }
         private string ExpectedSingleValueValueEntities => $@"VALUES
-(@{nameof(TestParameterName)})";
+(@{nameof(TestParameterName)})
+";
 
         [TestMethod]
         public void MultiValueValueEntityWritesParameterNameToCommand()
@@ -183,7 +257,8 @@ namespace Curds.Persistence.Query.Tests
             Assert.AreEqual(ExpectedMultiValueValueEntities, actual.CommandText);
         }
         private string ExpectedMultiValueValueEntities => $@"VALUES
-(@{nameof(TestParameterName)}, @{nameof(TestParameterName)})";
+(@{nameof(TestParameterName)}, @{nameof(TestParameterName)})
+";
 
         [DataTestMethod]
         [DynamicData(nameof(MultipleEntitiesMultipleValuesData), DynamicDataSourceType.Method)]
@@ -227,6 +302,7 @@ namespace Curds.Persistence.Query.Tests
         }
         private string ExpectedMultipleValueEntities => $@"VALUES
 (@{nameof(TestParameterName)}),
-(@{nameof(TestParameterName)})";
+(@{nameof(TestParameterName)})
+";
     }
 }

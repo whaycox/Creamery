@@ -17,22 +17,23 @@ namespace Curds.Persistence.Model.Implementation
     internal class ModelMap<TModel> : ModelMap, IModelMap<TModel>
         where TModel : IDataModel
     {
-        private Dictionary<string, Table> TablesByName { get; }
         private Dictionary<Type, Table> TablesByType { get; }
         private Dictionary<Type, ValueEntityDelegate> ValueEntityDelegatesByType { get; }
+        private Dictionary<Type, AssignIdentityDelegate> AssignIdentityDelegatesByType { get; }
 
         public ModelMap(IModelBuilder modelBuilder)
         {
-            TablesByName = modelBuilder.TablesByName<TModel>();
             TablesByType = modelBuilder.TablesByType<TModel>();
             ValueEntityDelegatesByType = modelBuilder.ValueEntityDelegatesByType<TModel>();
+            AssignIdentityDelegatesByType = modelBuilder.AssignIdentityDelegatesByType<TModel>();
         }
 
-        public Table Table(string name) => TablesByName[name];
         public Table Table(Type type) => TablesByType[type];
 
-        public ValueEntity ValueEntity<TEntity>(TEntity entity)
-            where TEntity : BaseEntity => 
-            ValueEntityDelegatesByType[typeof(TEntity)](entity);
+        public ValueEntity<TEntity> ValueEntity<TEntity>(TEntity entity)
+            where TEntity : BaseEntity => ValueEntityDelegatesByType[typeof(TEntity)](entity) as ValueEntity<TEntity>;
+
+        public AssignIdentityDelegate AssignIdentityDelegate<TEntity>()
+            where TEntity : BaseEntity => AssignIdentityDelegatesByType[typeof(TEntity)];
     }
 }

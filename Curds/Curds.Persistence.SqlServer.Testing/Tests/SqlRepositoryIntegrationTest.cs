@@ -21,15 +21,13 @@ namespace Curds.Persistence.Tests
     using Model.Configuration.Implementation;
     using Model.Configuration.Abstraction;
     using Model.Configuration.Domain;
+    using Template;
 
     [TestClass]
-    public class SqlRepositoryIntegrationTest
+    public class SqlRepositoryIntegrationTest : SqlTemplate
     {
         private TestEntity TestEntity = new TestEntity();
         private OtherEntity OtherEntity = new OtherEntity();
-        private SqlConnectionInformation TestConnectionInformation = new SqlConnectionInformation();
-        private string TestServer = "localhost\\SQLEXPRESS";
-        private string TestDatabase = "Testing";
         private string TestSchema = nameof(TestSchema);
 
         private Mock<IOptions<SqlConnectionInformation>> MockOptions = new Mock<IOptions<SqlConnectionInformation>>();
@@ -42,6 +40,7 @@ namespace Curds.Persistence.Tests
         private ModelConfigurationFactory TestModelConfigurationFactory = null;
         private TypeMapper TestTypeMapper = null;
         private ValueExpressionBuilder TestValueExpressionBuilder = null;
+        private AssignIdentityExpressionBuilder TestAssignIdentityExpressionBuilder = null;
         private DelegateMapper TestDelegateMapper = null;
         private ModelBuilder TestModelBuilder = null;
         private ModelMapFactory TestModelMapFactory = null;
@@ -92,8 +91,10 @@ namespace Curds.Persistence.Tests
                 TestModelEntityConfigurations);
             TestTypeMapper = new TypeMapper();
             TestValueExpressionBuilder = new ValueExpressionBuilder();
+            TestAssignIdentityExpressionBuilder = new AssignIdentityExpressionBuilder();
             TestDelegateMapper = new DelegateMapper(
                 TestValueExpressionBuilder,
+                TestAssignIdentityExpressionBuilder,
                 TestTypeMapper,
                 TestModelConfigurationFactory);
             TestModelBuilder = new ModelBuilder(
@@ -113,10 +114,12 @@ namespace Curds.Persistence.Tests
                 TestModelMap, 
                 TestQueryExpressionParser);
             TestEntityRepository = new SqlRepository<ITestDataModel, TestEntity>(
-                TestConnectionContext, 
+                TestConnectionContext,
+                TestModelMap,
                 TestQueryBuilder);
             OtherEntityRepository = new SqlRepository<ITestDataModel, OtherEntity>(
                 TestConnectionContext,
+                TestModelMap,
                 TestQueryBuilder);
         }
 
@@ -151,8 +154,7 @@ namespace Curds.Persistence.Tests
             await OtherEntityRepository.Insert(OtherEntity);
         }
 
-        [TestMethod]
-        public async Task CanInsertTestEntityWithCustomNames()
+        private void ConfigureCustomTestEntity()
         {
             GlobalConfiguration schemaConfig = new GlobalConfiguration { Schema = TestSchema };
             TestGlobalConfigurations.Add(schemaConfig);
@@ -165,6 +167,12 @@ namespace Curds.Persistence.Tests
                     .WithColumnName("SomeOtherName")
                     .RegisterColumn();
             TestEntityConfigurations.Add(customConfig);
+        }
+
+        [TestMethod]
+        public async Task CanInsertTestEntityWithCustomNames()
+        {
+            ConfigureCustomTestEntity();
             BuildTestObjects();
 
             await TestEntityRepository.Insert(TestEntity);
@@ -184,5 +192,43 @@ namespace Curds.Persistence.Tests
             await OtherEntityRepository.Insert(otherEntities);
         }
 
+        [TestMethod]
+        public async Task InsertPopulatesNewIdentity()
+        {
+            BuildTestObjects();
+
+            await OtherEntityRepository.Insert(OtherEntity);
+
+            Assert.AreNotEqual(0, OtherEntity.ID);
+        }
+
+        [TestMethod]
+        public async Task InsertManyPopulatesNewIdentities()
+        {
+            List<TestEntity> testEntities = new List<TestEntity>();
+            for (int i = 0; i < 5; i++)
+                testEntities.Add(new TestEntity() { Name = $"{nameof(InsertManyPopulatesNewIdentities)}{i}" });
+            BuildTestObjects();
+
+            await TestEntityRepository.Insert(testEntities);
+
+            Assert.IsTrue(testEntities.All(entity => entity.ID != 0));
+            Assert.AreEqual(5, testEntities.GroupBy(entity => entity.ID).Count());
+        }
+
+        [TestMethod]
+        public async Task InsertManyPopulatesNewIdentitiesWithCustomNames()
+        {
+            List<TestEntity> testEntities = new List<TestEntity>();
+            for (int i = 0; i < 5; i++)
+                testEntities.Add(new TestEntity() { Name = $"{nameof(InsertManyPopulatesNewIdentitiesWithCustomNames)}{i}" });
+            ConfigureCustomTestEntity();
+            BuildTestObjects();
+
+            await TestEntityRepository.Insert(testEntities.OrderByDescending(entity => entity.Name));
+
+            Assert.IsTrue(testEntities.All(entity => entity.ID != 0));
+            Assert.AreEqual(5, testEntities.GroupBy(entity => entity.ID).Count());
+        }
     }
 }

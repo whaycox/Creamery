@@ -24,11 +24,14 @@ namespace Curds.Persistence.Model.Tests
         private PropertyInfo TestIDProperty = typeof(TestEntity).GetProperty(nameof(TestEntity.ID));
         private PropertyInfo TestNameProperty = typeof(TestEntity).GetProperty(nameof(TestEntity.Name));
         private CompiledConfiguration<ITestDataModel> TestCompiledConfiguration = new CompiledConfiguration<ITestDataModel>(typeof(TestEntity));
+        private CompiledColumnConfiguration<ITestDataModel> TestIdentityColumnConfiguration = null;
 
         private Mock<IValueExpressionBuilder> MockValueExpressionBuilder = new Mock<IValueExpressionBuilder>();
+        private Mock<IAssignIdentityExpressionBuilder> MockAssignIdentityExpressionBuilder = new Mock<IAssignIdentityExpressionBuilder>();
         private Mock<ITypeMapper> MockTypeMapper = new Mock<ITypeMapper>();
         private Mock<IModelConfigurationFactory> MockConfigurationFactory = new Mock<IModelConfigurationFactory>();
         private Mock<ValueEntityDelegate> MockValueEntityDelegate = new Mock<ValueEntityDelegate>();
+        private Mock<AssignIdentityDelegate> MockAssignIdentityDelegate = new Mock<AssignIdentityDelegate>();
 
         private DelegateMapper TestObject = null;
 
@@ -39,6 +42,7 @@ namespace Curds.Persistence.Model.Tests
             TestInputEntity.Name = TestName;
             TestValueTypes.Add(TestIDProperty);
             TestValueTypes.Add(TestNameProperty);
+            TestIdentityColumnConfiguration = new CompiledColumnConfiguration<ITestDataModel>(TestIDProperty.Name) { IsIdentity = true };
 
             MockTypeMapper
                 .Setup(mapper => mapper.ValueTypes(It.IsAny<Type>()))
@@ -49,9 +53,13 @@ namespace Curds.Persistence.Model.Tests
             MockValueExpressionBuilder
                 .Setup(builder => builder.BuildValueEntityDelegate(It.IsAny<Type>(), It.IsAny<IEnumerable<PropertyInfo>>()))
                 .Returns(MockValueEntityDelegate.Object);
+            MockAssignIdentityExpressionBuilder
+                .Setup(builder => builder.BuildAssignIdentityDelegate(It.IsAny<Type>(), It.IsAny<PropertyInfo>()))
+                .Returns(MockAssignIdentityDelegate.Object);
 
             TestObject = new DelegateMapper(
                 MockValueExpressionBuilder.Object,
+                MockAssignIdentityExpressionBuilder.Object,
                 MockTypeMapper.Object,
                 MockConfigurationFactory.Object);
         }
@@ -98,6 +106,43 @@ namespace Curds.Persistence.Model.Tests
             ValueEntityDelegate actual = TestObject.MapValueEntityDelegate<ITestDataModel>(typeof(TestEntity));
 
             Assert.AreSame(MockValueEntityDelegate.Object, actual);
+        }
+
+        [TestMethod]
+        public void AssignIdentityDelegateRetrievesConfigForEntity()
+        {
+            TestCompiledConfiguration.Columns.Add(TestIdentityColumnConfiguration.ValueName, TestIdentityColumnConfiguration);
+
+            TestObject.MapAssignIdentityDelegate<ITestDataModel>(typeof(TestEntity));
+
+            MockConfigurationFactory.Verify(factory => factory.Build<ITestDataModel>(typeof(TestEntity)), Times.Once);
+        }
+
+        [TestMethod]
+        public void AssignIdentityDelegatePassesIdentityPropertyToBuilder()
+        {
+            TestCompiledConfiguration.Columns.Add(TestIdentityColumnConfiguration.ValueName, TestIdentityColumnConfiguration);
+
+            TestObject.MapAssignIdentityDelegate<ITestDataModel>(typeof(TestEntity));
+
+            MockAssignIdentityExpressionBuilder.Verify(builder => builder.BuildAssignIdentityDelegate(typeof(TestEntity), TestIDProperty), Times.Once);
+        }
+
+        [TestMethod]
+        public void AssignIdentityDelegateReturnsFromExpressionBuilder()
+        {
+            TestCompiledConfiguration.Columns.Add(TestIdentityColumnConfiguration.ValueName, TestIdentityColumnConfiguration);
+
+            AssignIdentityDelegate actual = TestObject.MapAssignIdentityDelegate<ITestDataModel>(typeof(TestEntity));
+
+            Assert.AreSame(MockAssignIdentityDelegate.Object, actual);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void AssignIdentityDelegateThrowsWhenNone()
+        {
+            TestObject.MapAssignIdentityDelegate<ITestDataModel>(typeof(TestEntity));
         }
     }
 }

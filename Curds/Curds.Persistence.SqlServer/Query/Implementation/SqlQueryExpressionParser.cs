@@ -28,19 +28,23 @@ namespace Curds.Persistence.Query.Implementation
         }
         private Table ParseTableExpression(Expression expression)
         {
+            Type entityType = null;
             switch (expression.NodeType)
             {
                 case ExpressionType.MemberAccess:
                     MemberExpression memberExpression = (MemberExpression)expression;
-                    return ModelMap.Table(memberExpression.Member.Name);
+                    entityType = ParseTableEntityType(memberExpression.Type);
+                    break;
                 case ExpressionType.Call:
                     MethodCallExpression methodCallExpression = (MethodCallExpression)expression;
                     if (methodCallExpression.Method.Name != nameof(IDataModel.Table))
                         throw new FormatException($"Unsupported method name: {methodCallExpression.Method.Name}");
-                    return ModelMap.Table(ParseTableEntityType(methodCallExpression.Method.ReturnType));
+                    entityType = ParseTableEntityType(methodCallExpression.Method.ReturnType);
+                    break;
                 default:
                     throw new InvalidOperationException($"Unsupported {nameof(expression.NodeType)}: {expression.NodeType}");
             }
+            return ModelMap.Table(entityType);
         }
         private Type ParseTableEntityType(Type tableType) => tableType.GenericTypeArguments[0];
     }

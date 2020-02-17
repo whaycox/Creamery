@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Data.SqlClient;
 
 namespace Curds.Persistence.Abstraction
 {
@@ -14,7 +15,6 @@ namespace Curds.Persistence.Abstraction
         Task CommitTransaction();
 
         Task Execute(ISqlQuery query);
-        Task<List<TEntity>> Execute<TEntity>(ISqlQuery<TEntity> query)
-            where TEntity : BaseEntity;
+        Task<ISqlQueryReader> ExecuteWithResult(ISqlQuery query);
     }
 }

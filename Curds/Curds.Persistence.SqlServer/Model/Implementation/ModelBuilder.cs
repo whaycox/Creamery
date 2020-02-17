@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
+using System.Data;
 
 namespace Curds.Persistence.Model.Implementation
 {
@@ -14,6 +15,29 @@ namespace Curds.Persistence.Model.Implementation
 
     internal class ModelBuilder : IModelBuilder
     {
+        private static readonly Dictionary<Type, SqlDbType> ColumnTypeMap = new Dictionary<Type, SqlDbType>
+        {
+            { typeof(string), SqlDbType.NVarChar },
+            { typeof(bool), SqlDbType.Bit },
+            { typeof(bool?), SqlDbType.Bit },
+            { typeof(byte), SqlDbType.TinyInt },
+            { typeof(byte?), SqlDbType.TinyInt },
+            { typeof(short), SqlDbType.SmallInt },
+            { typeof(short?), SqlDbType.SmallInt },
+            { typeof(int), SqlDbType.Int },
+            { typeof(int?), SqlDbType.Int },
+            { typeof(long), SqlDbType.BigInt },
+            { typeof(long?), SqlDbType.BigInt },
+            { typeof(DateTime), SqlDbType.DateTime },
+            { typeof(DateTime?), SqlDbType.DateTime },
+            { typeof(DateTimeOffset), SqlDbType.DateTimeOffset },
+            { typeof(DateTimeOffset?), SqlDbType.DateTimeOffset },
+            { typeof(decimal), SqlDbType.Decimal },
+            { typeof(decimal?), SqlDbType.Decimal },
+            { typeof(double), SqlDbType.Float },
+            { typeof(double?), SqlDbType.Float },
+        };
+
         private IModelConfigurationFactory ConfigurationFactory { get; }
         private ITypeMapper TypeMapper { get; }
         private IDelegateMapper DelegateMapper { get; }
@@ -39,7 +63,7 @@ namespace Curds.Persistence.Model.Implementation
             };
             foreach (PropertyInfo propertyInfo in TypeMapper.ValueTypes(entityType))
             {
-                Column valueColumn = new Column { Name = propertyInfo.Name };
+                Column valueColumn = BuildDefaultColumn(propertyInfo);
 
                 if (configuration.Columns.TryGetValue(propertyInfo.Name, out CompiledColumnConfiguration<TModel> configuredColumn))
                 {
@@ -51,21 +75,18 @@ namespace Curds.Persistence.Model.Implementation
             return table;
         }
 
-        public Dictionary<string, Table> TablesByName<TModel>()
-            where TModel : IDataModel
-        {
-            Dictionary<string, Table> tables = new Dictionary<string, Table>();
-            foreach (var tableEntityTypes in TypeMapper.TableTypes<TModel>())
-                tables.Add(tableEntityTypes.tableName, BuildTable<TModel>(tableEntityTypes.tableType));
-            return tables;
-        }
+        public Column BuildDefaultColumn(PropertyInfo propertyInfo) => new Column 
+        { 
+            Name = propertyInfo.Name,
+            SqlType = ColumnTypeMap[propertyInfo.PropertyType],
+        };
 
         public Dictionary<Type, Table> TablesByType<TModel>()
             where TModel : IDataModel
         {
             Dictionary<Type, Table> tables = new Dictionary<Type, Table>();
-            foreach (var tableEntityTypes in TypeMapper.TableTypes<TModel>())
-                tables.Add(tableEntityTypes.tableType, BuildTable<TModel>(tableEntityTypes.tableType));
+            foreach (Type entityType in TypeMapper.TableTypes<TModel>())
+                tables.Add(entityType, BuildTable<TModel>(entityType));
             return tables;
         }
 
@@ -73,9 +94,25 @@ namespace Curds.Persistence.Model.Implementation
             where TModel : IDataModel
         {
             Dictionary<Type, ValueEntityDelegate> valueEntityDelegates = new Dictionary<Type, ValueEntityDelegate>();
-            foreach (var tableType in TypeMapper.TableTypes<TModel>())
-                valueEntityDelegates.Add(tableType.tableType, DelegateMapper.MapValueEntityDelegate<TModel>(tableType.tableType));
+            foreach (Type entityType in TypeMapper.TableTypes<TModel>())
+                valueEntityDelegates.Add(entityType, DelegateMapper.MapValueEntityDelegate<TModel>(entityType));
             return valueEntityDelegates;
+        }
+
+        public Dictionary<Type, AssignIdentityDelegate> AssignIdentityDelegatesByType<TModel>() 
+            where TModel : IDataModel
+        {
+            Dictionary<Type, AssignIdentityDelegate> assignIdentityDelegates = new Dictionary<Type, AssignIdentityDelegate>();
+            foreach (Type entityType in TypeMapper.TableTypes<TModel>())
+                if (TypeHasIdentityColumn<TModel>(entityType))
+                    assignIdentityDelegates.Add(entityType, DelegateMapper.MapAssignIdentityDelegate<TModel>(entityType));
+            return assignIdentityDelegates;
+        }
+        private bool TypeHasIdentityColumn<TModel>(Type entityType)
+            where TModel : IDataModel
+        {
+            CompiledConfiguration<TModel> entityConfiguration = ConfigurationFactory.Build<TModel>(entityType);
+            return entityConfiguration.Columns.Any(column => column.Value.IsIdentity);
         }
     }
 }

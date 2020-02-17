@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace Curds.Persistence.Model.Domain
 {
@@ -10,5 +11,6 @@ namespace Curds.Persistence.Model.Domain
         public string Name { get; set; }
 
         public List<Column> Columns { get; set; } = new List<Column>();
+        public Column IdentityColumn => Columns.FirstOrDefault(column => column.IsIdentity);
     }
 }

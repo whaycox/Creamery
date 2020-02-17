@@ -23,13 +23,11 @@ namespace Curds.Persistence.Query.Implementation
             QueryExpressionParser = queryExpressionParser;
         }
 
-        public ISqlQuery Insert<TEntity>(Expression<Func<TModel, ITable<TEntity>>> tableExpression, TEntity entity)
-            where TEntity : BaseEntity => Insert(tableExpression, new List<TEntity> { entity });
-
         public ISqlQuery Insert<TEntity>(Expression<Func<TModel, ITable<TEntity>>> tableExpression, IEnumerable<TEntity> entities) 
             where TEntity : BaseEntity
         {
             InsertQuery<TEntity> query = QueryExpressionParser.Parse(tableExpression);
+            query.AssignIdentityDelegate = ModelMap.AssignIdentityDelegate<TEntity>();
             foreach (TEntity entity in entities)
                 query.Entities.Add(ModelMap.ValueEntity(entity));
             return query;

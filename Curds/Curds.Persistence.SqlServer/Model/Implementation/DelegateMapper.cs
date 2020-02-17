@@ -16,16 +16,19 @@ namespace Curds.Persistence.Model.Implementation
 
     internal class DelegateMapper : IDelegateMapper
     {
-        private IValueExpressionBuilder ExpressionBuilder { get; }
+        private IValueExpressionBuilder ValueExpressionBuilder { get; }
+        private IAssignIdentityExpressionBuilder AssignIdentityExpressionBuilder { get; }
         private ITypeMapper TypeMapper { get; }
         private IModelConfigurationFactory ConfigurationFactory { get; }
 
         public DelegateMapper(
-            IValueExpressionBuilder expressionBuilder,
+            IValueExpressionBuilder valueExpressionBuilder,
+            IAssignIdentityExpressionBuilder assignIdentityExpressionBuilder,
             ITypeMapper typeMapper,
             IModelConfigurationFactory configurationFactory)
         {
-            ExpressionBuilder = expressionBuilder;
+            ValueExpressionBuilder = valueExpressionBuilder;
+            AssignIdentityExpressionBuilder = assignIdentityExpressionBuilder;
             TypeMapper = typeMapper;
             ConfigurationFactory = configurationFactory;
         }
@@ -41,7 +44,16 @@ namespace Curds.Persistence.Model.Implementation
                 if (configuredColumn.IsIdentity)
                     valueProperties = valueProperties.Where(property => property.Name != configuredColumn.ValueName);
 
-            return ExpressionBuilder.BuildValueEntityDelegate(entityType, valueProperties);
+            return ValueExpressionBuilder.BuildValueEntityDelegate(entityType, valueProperties);
+        }
+
+        public AssignIdentityDelegate MapAssignIdentityDelegate<TModel>(Type entityType)
+            where TModel : IDataModel
+        {
+            CompiledConfiguration<TModel> entityConfiguration = ConfigurationFactory.Build<TModel>(entityType);
+            CompiledColumnConfiguration<TModel> identityConfiguration = entityConfiguration.Columns.First(column => column.Value.IsIdentity).Value;
+            PropertyInfo identityProperty = TypeMapper.ValueTypes(entityType).Where(property => property.Name == identityConfiguration.ValueName).First();
+            return AssignIdentityExpressionBuilder.BuildAssignIdentityDelegate(entityType, identityProperty);
         }
     }
 }

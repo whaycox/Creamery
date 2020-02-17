@@ -27,7 +27,7 @@ namespace Curds.Persistence.Model.Tests
         private Type TestTableType = typeof(TestEntity);
         private Dictionary<Type, ValueEntityDelegate> TestValueEntityDelegatesByType = new Dictionary<Type, ValueEntityDelegate>();
         private TestEntity TestEntity = new TestEntity();
-        private ValueEntity TestValueEntity = new ValueEntity();
+        private ValueEntity TestValueEntity = new ValueEntity<TestEntity>();
 
         private Mock<IModelBuilder> MockModelBuilder = new Mock<IModelBuilder>();
         private Mock<ValueEntityDelegate> MockValueEntityDelegate = new Mock<ValueEntityDelegate>();
@@ -37,14 +37,6 @@ namespace Curds.Persistence.Model.Tests
         private void BuildTestObject()
         {
             TestObject = new ModelMap<ITestDataModel>(MockModelBuilder.Object);
-        }
-
-        [TestMethod]
-        public void BuildingMapGetsTablesByName()
-        {
-            BuildTestObject();
-
-            MockModelBuilder.Verify(builder => builder.TablesByName<ITestDataModel>(), Times.Once);
         }
 
         [TestMethod]
@@ -61,20 +53,6 @@ namespace Curds.Persistence.Model.Tests
             BuildTestObject();
 
             MockModelBuilder.Verify(builder => builder.ValueEntityDelegatesByType<ITestDataModel>(), Times.Once);
-        }
-
-        [TestMethod]
-        public void CanGetMappedTableByName()
-        {
-            TestTablesByName.Add(TestTableName, TestTable);
-            MockModelBuilder
-                .Setup(builder => builder.TablesByName<ITestDataModel>())
-                .Returns(TestTablesByName);
-            BuildTestObject();
-
-            Table actual = TestObject.Table(TestTableName);
-
-            Assert.AreSame(TestTable, actual);
         }
 
         [TestMethod]

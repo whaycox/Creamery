@@ -19,10 +19,11 @@ namespace Curds.Persistence.Query.Tests
     {
         private List<TestEntity> TestEntities = new List<TestEntity>();
         private TestEntity TestEntity = new TestEntity();
-        private ValueEntity TestValueEntity = new ValueEntity();
+        private ValueEntity<TestEntity> TestValueEntity = new ValueEntity<TestEntity>();
         private InsertQuery<TestEntity> TestInsertQuery = new InsertQuery<TestEntity>();
 
         private Mock<IModelMap<ITestDataModel>> MockModelMap = new Mock<IModelMap<ITestDataModel>>();
+        private Mock<AssignIdentityDelegate> MockAssignIdentityDelegate = new Mock<AssignIdentityDelegate>();
         private Mock<ISqlQueryExpressionParser<ITestDataModel>> MockQueryExpressionParser = new Mock<ISqlQueryExpressionParser<ITestDataModel>>();
 
         private SqlQueryBuilder<ITestDataModel> TestObject = null;
@@ -33,6 +34,9 @@ namespace Curds.Persistence.Query.Tests
             MockModelMap
                 .Setup(map => map.ValueEntity(It.IsAny<TestEntity>()))
                 .Returns(TestValueEntity);
+            MockModelMap
+                .Setup(map => map.AssignIdentityDelegate<TestEntity>())
+                .Returns(MockAssignIdentityDelegate.Object);
             MockQueryExpressionParser
                 .Setup(parser => parser.Parse(It.IsAny<Expression<Func<ITestDataModel, ITable<TestEntity>>>>()))
                 .Returns(TestInsertQuery);
@@ -43,35 +47,20 @@ namespace Curds.Persistence.Query.Tests
         }
 
         [TestMethod]
-        public void InsertParsesExpression()
+        public void InsertManyParsesExpression()
         {
-            TestObject.Insert(model => model.Test, TestEntity);
+            TestObject.Insert(model => model.Test, TestEntities);
 
             MockQueryExpressionParser.Verify(parser => parser.Parse(model => model.Test), Times.Once);
         }
 
         [TestMethod]
-        public void InsertMapsValueEntity()
+        public void InsertManySetsAssignIdentityDelegate()
         {
-            TestObject.Insert(model => model.Test, TestEntity);
+            TestObject.Insert(model => model.Test, TestEntities);
 
-            MockModelMap.Verify(map => map.ValueEntity(TestEntity), Times.Once);
-        }
-
-        [TestMethod]
-        public void InsertReturnsParsedQuery()
-        {
-            ISqlQuery actual = TestObject.Insert(model => model.Test, TestEntity);
-
-            Assert.AreSame(TestInsertQuery, actual);
-        }
-
-        [TestMethod]
-        public void InsertAttachesMappedEntityToParsedQuery()
-        {
-            TestObject.Insert(model => model.Test, TestEntity);
-
-            Assert.AreSame(TestValueEntity, TestInsertQuery.Entities[0]);
+            MockModelMap.Verify(map => map.AssignIdentityDelegate<TestEntity>());
+            TestInsertQuery.AssignIdentityDelegate = MockAssignIdentityDelegate.Object;
         }
 
         private void PopulateNEntities(int entities)

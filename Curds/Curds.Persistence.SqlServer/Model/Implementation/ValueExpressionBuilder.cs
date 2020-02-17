@@ -13,7 +13,7 @@ namespace Curds.Persistence.Model.Implementation
     internal delegate Expression AssignValueDelegate(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter);
     internal delegate IEnumerable<Expression> AddValueExpressionsDelegate(ParameterExpression entityParameter, ParameterExpression valueEntityParameter);
 
-    internal class ValueExpressionBuilder : IValueExpressionBuilder
+    internal class ValueExpressionBuilder : BaseExpressionBuilder, IValueExpressionBuilder
     {
         private Dictionary<Type, Type> ValueTypeMap { get; } = new Dictionary<Type, Type>
         {
@@ -68,25 +68,29 @@ namespace Curds.Persistence.Model.Implementation
 
         public ValueEntityDelegate BuildValueEntityDelegate(Type entityType, IEnumerable<PropertyInfo> valueProperties)
         {
+            Type valueEntityType = typeof(ValueEntity<>).MakeGenericType(new Type[] { entityType });
             ParameterExpression baseEntityParameter = Expression.Parameter(typeof(BaseEntity), nameof(baseEntityParameter));
             ParameterExpression entityParameter = Expression.Parameter(entityType, nameof(entityParameter));
-            ParameterExpression valueEntityParameter = Expression.Parameter(typeof(ValueEntity), nameof(valueEntityParameter));
+            ParameterExpression valueEntityParameter = Expression.Parameter(valueEntityType, nameof(valueEntityParameter));
             List<ParameterExpression> builderExpressionParameters = new List<ParameterExpression>
             {
                 entityParameter,
                 valueEntityParameter,
             };
 
-            ConstructorInfo valueEntityConstructor = typeof(ValueEntity).GetConstructor(new Type[0]);
-            LabelTarget returnLabel = Expression.Label(typeof(ValueEntity));
+            ConstructorInfo valueEntityConstructor = valueEntityType.GetConstructor(new Type[0]);
+            MethodInfo setSourceMethod = valueEntityType.GetProperty(nameof(ValueEntity<BaseEntity>.Source)).SetMethod;
             List<Expression> builderExpressions = new List<Expression>
             {
                 Expression.Assign(entityParameter, Expression.Convert(baseEntityParameter, entityType)),
                 Expression.Assign(valueEntityParameter, Expression.New(valueEntityConstructor)),
+                CallMethodExpression(valueEntityParameter, setSourceMethod, Expression.Convert(baseEntityParameter, entityType)),
             };
 
             foreach (PropertyInfo valueProperty in valueProperties)
                 builderExpressions.Add(AddValueExpression(valueProperty, entityParameter, valueEntityParameter));
+
+            LabelTarget returnLabel = Expression.Label(typeof(ValueEntity));
             builderExpressions.Add(Expression.Return(returnLabel, valueEntityParameter));
             builderExpressions.Add(Expression.Label(returnLabel, valueEntityParameter));
 
@@ -146,11 +150,6 @@ namespace Curds.Persistence.Model.Implementation
         }
 
         #region AssignValueMethods
-        private Expression CallMethodExpression(ParameterExpression calledObject, MethodInfo methodToCall, Expression valueExpression) =>
-            Expression.Call(calledObject, methodToCall, valueExpression);
-        private Expression CallMethodExpression<TCastType>(ParameterExpression calledObject, MethodInfo methodToCall, Expression valueExpression) =>
-            Expression.Call(calledObject, methodToCall, Expression.Convert(valueExpression, typeof(TCastType)));
-
         private Expression GetEntityPropertyExpression(PropertyInfo entityProperty, ParameterExpression entityParameter) =>
             Expression.Call(entityParameter, entityProperty.GetMethod);
 
