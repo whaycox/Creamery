@@ -15,6 +15,8 @@ namespace Curds.Persistence.Abstraction
         Task CommitTransaction();
 
         Task Execute(ISqlQuery query);
-        Task<ISqlQueryReader> ExecuteWithResult(ISqlQuery query);
+        Task ExecuteWithResult(ISqlQuery query);
+        Task<List<TEntity>> ExecuteWithResult<TEntity>(ISqlQuery<TEntity> query)
+            where TEntity : BaseEntity;
     }
 }

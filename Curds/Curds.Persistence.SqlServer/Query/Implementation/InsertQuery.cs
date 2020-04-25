@@ -10,7 +10,7 @@ namespace Curds.Persistence.Query.Implementation
     using Model.Domain;
     using Model.Abstraction;
 
-    public class InsertQuery<TEntity> : ISqlQuery
+    internal class InsertQuery<TEntity> : ISqlQuery
         where TEntity : BaseEntity
     {
         public Table Table { get; set; }

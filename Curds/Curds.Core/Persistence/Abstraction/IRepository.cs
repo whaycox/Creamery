@@ -6,7 +6,8 @@ namespace Curds.Persistence.Abstraction
 {
     using Domain;
 
-    public interface IRepository<TEntity>
+    public interface IRepository<TModel, TEntity>
+        where TModel : IDataModel
         where TEntity : BaseEntity
     {
         Task Insert(TEntity entity);

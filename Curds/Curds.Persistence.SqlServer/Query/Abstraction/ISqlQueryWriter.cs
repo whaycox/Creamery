@@ -17,6 +17,9 @@ namespace Curds.Persistence.Query.Abstraction
 
         void Insert(Table table);
         void ValueEntities(IEnumerable<ValueEntity> entities);
+        void Select(List<Column> columns);
+
+        void From(Table table);
 
         SqlCommand Flush();
     }

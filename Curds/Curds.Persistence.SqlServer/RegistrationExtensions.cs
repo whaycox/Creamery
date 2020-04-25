@@ -8,16 +8,50 @@ namespace Curds.Persistence
     using Domain;
     using Implementation;
     using Model.Abstraction;
+    using Model.Implementation;
     using Model.Configuration.Abstraction;
     using Model.Configuration.Domain;
+    using Model.Configuration.Implementation;
+    using Query.Abstraction;
+    using Query.Implementation;
+    using Query.Formatters.Implementation;
 
     public static class RegistrationExtensions
     {
-        private static readonly IExpressionParser ExpressionParser = new ExpressionParser();
+        public static IServiceCollection AddCurdsPersistence(this IServiceCollection services) => services
+            .AddCurdsCore()
+            .AddFactories()
+            .AddModelConstruction()
+            .AddQueryConstruction()
+            .AddScoped<ISqlConnectionContext, SqlConnectionContext>()
+            .AddTransient(typeof(IRepository<,>), typeof(SqlRepository<,>))
+            .ConfigureEntity<SimpleEntity>()
+                .ConfigureColumn(column => column.ID)
+                .IsIdentity()
+                .RegisterColumn()
+            .RegisterEntity();
 
-        public static IServiceCollection RegisterModel<TModel>(this IServiceCollection services)
-            where TModel : IDataModel => services
-            .AddTransient(provider => provider.GetService<IModelMapFactory>().Build<TModel>());
+        private static IServiceCollection AddFactories(this IServiceCollection services) => services
+            .AddSingleton<ISqlConnectionStringFactory, SqlConnectionStringFactory>()
+            .AddSingleton<ISqlQueryReaderFactory, SqlQueryReaderFactory>()
+            .AddSingleton<IModelConfigurationFactory, ModelConfigurationFactory>()
+            .AddScoped<ISqlQueryTokenFactory, SqlQueryTokenFactory>();
+
+        private static IServiceCollection AddModelConstruction(this IServiceCollection services) => services
+            .AddSingleton<ITypeMapper, TypeMapper>()
+            .AddSingleton<IValueExpressionBuilder, ValueExpressionBuilder>()
+            .AddSingleton<IAssignIdentityExpressionBuilder, AssignIdentityExpressionBuilder>()
+            .AddSingleton<IDelegateMapper, DelegateMapper>()
+            .AddSingleton<IModelBuilder, ModelBuilder>()
+            .AddSingleton(typeof(IModelMap<>), typeof(ModelMap<>));
+
+        private static IServiceCollection AddQueryConstruction(this IServiceCollection services) => services
+            .AddTransient(typeof(ISqlQueryBuilder<>), typeof(SqlQueryBuilder<>))
+            .AddTransient<ISqlQueryWriter, SqlQueryWriter>()
+            .AddTransient<ISqlQueryFormatter, ProperSqlQueryFormatter>()
+            .AddScoped<ISqlQueryParameterBuilder, SqlQueryParameterBuilder>();
+
+        private static readonly IExpressionParser ExpressionParser = new ExpressionParser();
 
         public static IServiceCollection ConfigureDefaultSchema(this IServiceCollection services, string defaultSchema) => services
             .AddSingleton(typeof(IGlobalConfiguration), new GlobalConfiguration { Schema = defaultSchema });

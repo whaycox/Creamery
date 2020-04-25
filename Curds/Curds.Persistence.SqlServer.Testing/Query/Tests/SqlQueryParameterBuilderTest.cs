@@ -6,8 +6,8 @@ using System.Linq;
 
 namespace Curds.Persistence.Query.Tests
 {
-    using Domain;
     using Implementation;
+    using Values.Domain;
 
     [TestClass]
     public class SqlQueryParameterBuilderTest

@@ -11,11 +11,14 @@ namespace Curds
     using Cron.RangeFactories.Abstraction;
     using Cron.RangeFactories.Implementation;
     using Cron.RangeFactories.Chains.Implementation;
+    using Text.Abstraction;
+    using Text.Implementation;
 
     public static class RegistrationExtensions
     {
         public static IServiceCollection AddCurdsCore(this IServiceCollection services) => services
-            .AddTransient<ITime, MachineTime>();
+            .AddSingleton<ITime, MachineTime>()
+            .AddTransient<IIndentStringBuilder, IndentStringBuilder>();
 
         public static IServiceCollection AddCurdsCron(this IServiceCollection services) => services
             .AddTransient<ICronExpressionFactory, CronExpressionFactory>()

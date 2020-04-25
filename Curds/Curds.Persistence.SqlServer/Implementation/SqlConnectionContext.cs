@@ -1,34 +1,37 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
-using System.Data;
 
 namespace Curds.Persistence.Implementation
 {
     using Abstraction;
     using Domain;
     using Query.Abstraction;
-    using Query.Implementation;
 
     internal class SqlConnectionContext : ISqlConnectionContext
     {
+        private IServiceProvider ServiceProvider { get; }
         private ISqlConnectionStringFactory ConnectionStringFactory { get; }
         private SqlConnectionInformation ConnectionInformation { get; }
-        private ISqlQueryWriterFactory QueryWriterFactory { get; }
+        private ISqlQueryReaderFactory QueryReaderFactory { get; }
 
         private SqlConnection Connection { get; set; }
         private SqlTransaction Transaction { get; set; }
 
         public SqlConnectionContext(
+            IServiceProvider serviceProvider,
             ISqlConnectionStringFactory connectionStringFactory,
             IOptions<SqlConnectionInformation> connectionInformation,
-            ISqlQueryWriterFactory queryWriterFactory)
+            ISqlQueryReaderFactory queryReaderFactory)
         {
+            ServiceProvider = serviceProvider;
             ConnectionStringFactory = connectionStringFactory;
             ConnectionInformation = connectionInformation.Value;
-            QueryWriterFactory = queryWriterFactory;
+            QueryReaderFactory = queryReaderFactory;
         }
 
         private async Task CheckConnectionIsOpen()
@@ -56,7 +59,7 @@ namespace Curds.Persistence.Implementation
 
         private async Task<SqlCommand> BuildCommand(ISqlQuery query)
         {
-            ISqlQueryWriter writer = QueryWriterFactory.Create();
+            ISqlQueryWriter writer = ServiceProvider.GetRequiredService<ISqlQueryWriter>();
             query.Write(writer);
 
             SqlCommand command = writer.Flush();
@@ -74,11 +77,20 @@ namespace Curds.Persistence.Implementation
             await command.ExecuteNonQueryAsync();
         }
 
-        public async Task<ISqlQueryReader> ExecuteWithResult(ISqlQuery query)
+        public async Task ExecuteWithResult(ISqlQuery query)
         {
             SqlCommand command = await BuildCommand(query);
-            SqlDataReader reader = await command.ExecuteReaderAsync();
-            return new SqlQueryReader(reader);
+            using (ISqlQueryReader queryReader = await QueryReaderFactory.Create(command))
+                await query.ProcessResult(queryReader);
+        }
+
+        public async Task<List<TEntity>> ExecuteWithResult<TEntity>(ISqlQuery<TEntity> query)
+            where TEntity : BaseEntity
+        {
+            SqlCommand command = await BuildCommand(query);
+            using (ISqlQueryReader queryReader = await QueryReaderFactory.Create(command))
+                await query.ProcessResult(queryReader);
+            return query.Results;
         }
 
         #region IDisposable Support

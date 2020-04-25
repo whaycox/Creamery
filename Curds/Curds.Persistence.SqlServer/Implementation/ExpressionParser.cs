@@ -4,23 +4,51 @@ using System.Linq.Expressions;
 namespace Curds.Persistence.Implementation
 {
     using Abstraction;
+    using Curds.Persistence.Domain;
     using Domain;
 
     internal class ExpressionParser : IExpressionParser
     {
-        public string ParseEntityValueSelection<TEntity, TValue>(Expression<Func<TEntity, TValue>> valueSelectionExpression)
+        public Type ParseModelEntitySelection<TModel, TEntity>(Expression<Func<TModel, ITable<TEntity>>> modelEntitySelectionExpression)
+            where TModel : IDataModel
             where TEntity : BaseEntity
         {
-            if (valueSelectionExpression.NodeType != ExpressionType.Lambda ||
-                valueSelectionExpression.Body.NodeType != ExpressionType.MemberAccess)
-                throw InvalidValueSelectionExpression(valueSelectionExpression);
+            if (modelEntitySelectionExpression.NodeType != ExpressionType.Lambda)
+                throw InvalidModelEntitySelectionExpression(modelEntitySelectionExpression);
 
-            MemberExpression memberAccessExpression = (MemberExpression)valueSelectionExpression.Body;
+            Expression lambdaBody = modelEntitySelectionExpression.Body;
+            switch (lambdaBody.NodeType)
+            {
+                case ExpressionType.MemberAccess:
+                    MemberExpression memberExpression = (MemberExpression)lambdaBody;
+                    return ParseTableEntityType(memberExpression.Type);
+                case ExpressionType.Call:
+                    MethodCallExpression methodCallExpression = (MethodCallExpression)lambdaBody;
+                    if (methodCallExpression.Method.Name != nameof(IDataModel.Table))
+                        throw new FormatException($"Unsupported method name: {methodCallExpression.Method.Name}");
+                    return ParseTableEntityType(methodCallExpression.Method.ReturnType);
+                default:
+                    throw InvalidModelEntitySelectionExpression(modelEntitySelectionExpression);
+            }
+        }
+        private Type ParseTableEntityType(Type tableType) => tableType.GenericTypeArguments[0];
+        private FormatException InvalidModelEntitySelectionExpression<TModel, TEntity>(Expression<Func<TModel, ITable<TEntity>>> modelEntitySelectionExpression)
+            where TModel : IDataModel
+            where TEntity : BaseEntity => new FormatException($"Invalid model entity selection: {modelEntitySelectionExpression}");
+
+        public string ParseEntityValueSelection<TEntity, TValue>(Expression<Func<TEntity, TValue>> entityValueSelectionExpression)
+            where TEntity : BaseEntity
+        {
+            if (entityValueSelectionExpression.NodeType != ExpressionType.Lambda ||
+                entityValueSelectionExpression.Body.NodeType != ExpressionType.MemberAccess)
+                throw InvalidEntityValueSelectionExpression(entityValueSelectionExpression);
+
+            MemberExpression memberAccessExpression = (MemberExpression)entityValueSelectionExpression.Body;
             if (memberAccessExpression.Expression.NodeType != ExpressionType.Parameter)
-                throw InvalidValueSelectionExpression(valueSelectionExpression);
+                throw InvalidEntityValueSelectionExpression(entityValueSelectionExpression);
             return memberAccessExpression.Member.Name;
         }
-        private FormatException InvalidValueSelectionExpression<TEntity, TValue>(Expression<Func<TEntity, TValue>> valueSelectionExpression)
-            where TEntity : BaseEntity => new FormatException($"Invalid entity value selection: {valueSelectionExpression}");
+        private FormatException InvalidEntityValueSelectionExpression<TEntity, TValue>(Expression<Func<TEntity, TValue>> entityValueSelectionExpression)
+            where TEntity : BaseEntity => new FormatException($"Invalid entity value selection: {entityValueSelectionExpression}");
     }
 }

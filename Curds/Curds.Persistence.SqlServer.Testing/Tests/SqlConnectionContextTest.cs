@@ -1,23 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
+using System;
 
 namespace Curds.Persistence.Tests
 {
-    using Implementation;
-    using Abstraction;
     using Domain;
+    using Implementation;
     using Query.Abstraction;
     using Template;
-    using Query.Implementation;
 
     [TestClass]
     public class SqlConnectionContextTest : SqlTemplate
@@ -25,26 +17,33 @@ namespace Curds.Persistence.Tests
         private SqlConnectionInformation TestConnectionInfo = new SqlConnectionInformation();
         private SqlCommand TestCommand = new SqlCommand("SELECT 1");
 
-        private Mock<ISqlQueryWriterFactory> MockQueryWriterFactory = new Mock<ISqlQueryWriterFactory>();
+        private Mock<IServiceProvider> MockServiceProvider = new Mock<IServiceProvider>();
         private Mock<ISqlQueryWriter> MockQueryWriter = new Mock<ISqlQueryWriter>();
+        private Mock<ISqlQueryReaderFactory> MockQueryReaderFactory = new Mock<ISqlQueryReaderFactory>();
+        private Mock<ISqlQueryReader> MockQueryReader = new Mock<ISqlQueryReader>();
         private Mock<ISqlQuery> MockQuery = new Mock<ISqlQuery>();
+        private Mock<ISqlQuery<TestEntity>> MockReturnQuery = new Mock<ISqlQuery<TestEntity>>();
 
         private SqlConnectionContext TestObject = null;
 
         [TestInitialize]
         public void Init()
         {
-            MockQueryWriterFactory
-                .Setup(factory => factory.Create())
+            MockServiceProvider
+                .Setup(provider => provider.GetService(typeof(ISqlQueryWriter)))
                 .Returns(MockQueryWriter.Object);
+            MockQueryReaderFactory
+                .Setup(factory => factory.Create(It.IsAny<SqlCommand>()))
+                .ReturnsAsync(MockQueryReader.Object);
             MockQueryWriter
                 .Setup(writer => writer.Flush())
                 .Returns(TestCommand);
 
             TestObject = new SqlConnectionContext(
+                MockServiceProvider.Object,
                 MockConnectionStringFactory.Object,
                 MockConnectionOptions.Object,
-                MockQueryWriterFactory.Object);
+                MockQueryReaderFactory.Object);
         }
 
         [TestCleanup]
@@ -53,10 +52,20 @@ namespace Curds.Persistence.Tests
             TestObject?.Dispose();
         }
 
-        private void VerifyCommandWasBuilt()
+        private void VerifyCommandWasBuiltWithQuery()
         {
-            MockQueryWriterFactory.Verify(factory => factory.Create(), Times.Once);
             MockQuery.Verify(query => query.Write(MockQueryWriter.Object), Times.Once);
+            VerifyCommandWasBuiltCommon();
+
+        }
+        private void VerifyCommandWasBuiltWithReturnQuery()
+        {
+            MockReturnQuery.Verify(query => query.Write(MockQueryWriter.Object), Times.Once);
+            VerifyCommandWasBuiltCommon();
+        }
+        private void VerifyCommandWasBuiltCommon()
+        {
+            MockServiceProvider.Verify(provider => provider.GetService(typeof(ISqlQueryWriter)), Times.Once);
             MockQueryWriter.Verify(writer => writer.Flush(), Times.Once);
             Assert.IsNotNull(TestCommand.Connection);
             Assert.IsNull(TestCommand.Transaction);
@@ -67,7 +76,7 @@ namespace Curds.Persistence.Tests
         {
             await TestObject.Execute(MockQuery.Object);
 
-            VerifyCommandWasBuilt();
+            VerifyCommandWasBuiltWithQuery();
         }
 
         [TestMethod]
@@ -85,26 +94,63 @@ namespace Curds.Persistence.Tests
         {
             await TestObject.ExecuteWithResult(MockQuery.Object);
 
-            VerifyCommandWasBuilt();
+            VerifyCommandWasBuiltWithQuery();
         }
 
         [TestMethod]
-        public async Task ExecuteWithResultReaderIsExpectedType()
+        public async Task ExecuteWithResultBuildsReaderFromFactory()
         {
-            using (ISqlQueryReader actual = await TestObject.ExecuteWithResult(MockQuery.Object))
-                Assert.IsInstanceOfType(actual, typeof(SqlQueryReader));
+            await TestObject.ExecuteWithResult(MockQuery.Object);
+
+            MockQueryReaderFactory.Verify(factory => factory.Create(TestCommand), Times.Once);
         }
 
         [TestMethod]
-        public async Task ExecuteWithResultCanRead()
+        public async Task ExecuteWithResultPassesQueryReaderToQuery()
         {
-            using (ISqlQueryReader reader = await TestObject.ExecuteWithResult(MockQuery.Object))
-            {
-                Assert.IsTrue(await reader.Advance());
-                Assert.AreEqual(1, reader.ReadInt(0));
-                Assert.IsFalse(await reader.Advance());
-            }
+            await TestObject.ExecuteWithResult(MockQuery.Object);
+
+            MockQuery.Verify(query => query.ProcessResult(MockQueryReader.Object), Times.Once);
         }
 
+        [TestMethod]
+        public async Task ExecuteWithResultDisposesOfReader()
+        {
+            await TestObject.ExecuteWithResult(MockQuery.Object);
+
+            MockQueryReader.Verify(reader => reader.Dispose(), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task ExecuteWithResultGenericBuildsCommand()
+        {
+            await TestObject.ExecuteWithResult(MockReturnQuery.Object);
+
+            VerifyCommandWasBuiltWithReturnQuery();
+        }
+
+        [TestMethod]
+        public async Task ExecuteWithResultGenericBuildsReaderFromFactory()
+        {
+            await TestObject.ExecuteWithResult(MockReturnQuery.Object);
+
+            MockQueryReaderFactory.Verify(factory => factory.Create(TestCommand), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task ExecuteWithResultGenericPassesQueryReaderToQuery()
+        {
+            await TestObject.ExecuteWithResult(MockReturnQuery.Object);
+
+            MockReturnQuery.Verify(query => query.ProcessResult(MockQueryReader.Object), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task ExecuteWithResultGenericDisposesOfReader()
+        {
+            await TestObject.ExecuteWithResult(MockReturnQuery.Object);
+
+            MockQueryReader.Verify(reader => reader.Dispose(), Times.Once);
+        }
     }
 }

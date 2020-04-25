@@ -11,6 +11,7 @@ namespace Curds.Persistence.Model.Tests
     using Implementation;
     using Persistence.Domain;
     using Query.Domain;
+    using Query.Values.Domain;
 
     [TestClass]
     public class ValueExpressionBuilderTest

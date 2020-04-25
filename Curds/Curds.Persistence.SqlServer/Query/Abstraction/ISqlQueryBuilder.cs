@@ -11,7 +11,10 @@ namespace Curds.Persistence.Query.Abstraction
     public interface ISqlQueryBuilder<TModel>
         where TModel : IDataModel
     {
-        ISqlQuery Insert<TEntity>(Expression<Func<TModel, ITable<TEntity>>> tableExpression, IEnumerable<TEntity> entities)
+        ISqlQuery Insert<TEntity>(IEnumerable<TEntity> entities)
+            where TEntity : BaseEntity;
+
+        ISqlUniverse<TEntity> From<TEntity>()
             where TEntity : BaseEntity;
     }
 }

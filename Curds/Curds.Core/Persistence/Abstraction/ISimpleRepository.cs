@@ -5,7 +5,8 @@ namespace Curds.Persistence.Abstraction
 {
     using Domain;
 
-    public interface ISimpleRepository<TEntity> : IRepository<TEntity>
+    public interface ISimpleRepository<TModel, TEntity> : IRepository<TModel, TEntity>
+        where TModel : IDataModel
         where TEntity : SimpleEntity
     {
         Task<TEntity> Fetch(int id);

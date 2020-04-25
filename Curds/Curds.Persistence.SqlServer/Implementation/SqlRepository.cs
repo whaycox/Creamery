@@ -10,17 +10,15 @@ namespace Curds.Persistence.Implementation
     using Query.Abstraction;
     using Model.Abstraction;
 
-    public class SqlRepository<TModel, TEntity> : IRepository<TEntity>
+    public class SqlRepository<TModel, TEntity> : IRepository<TModel, TEntity>
         where TModel : IDataModel
         where TEntity : BaseEntity
     {
         protected ISqlConnectionContext ConnectionContext { get; }
-        protected IModelMap<TModel> ModelMap { get; }
         protected ISqlQueryBuilder<TModel> QueryBuilder { get; }
 
         public SqlRepository(
             ISqlConnectionContext connectionContext,
-            IModelMap<TModel> modelMap,
             ISqlQueryBuilder<TModel> queryBuilder)
         {
             ConnectionContext = connectionContext;
@@ -29,16 +27,16 @@ namespace Curds.Persistence.Implementation
 
         public Task Insert(TEntity entity) => Insert(new List<TEntity> { entity });
 
-        public async Task Insert(IEnumerable<TEntity> entities)
-        {
-            ISqlQuery insertQuery = QueryBuilder.Insert(model => model.Table<TEntity>(), entities);
-            using (ISqlQueryReader reader = await ConnectionContext.ExecuteWithResult(insertQuery))
-                insertQuery.ProcessResult(reader);
-        }
+        public Task Insert(IEnumerable<TEntity> entities) => 
+            ConnectionContext.ExecuteWithResult(
+                QueryBuilder.Insert(entities));
 
         public Task<TEntity> Fetch(params object[] keys) => throw new NotImplementedException();
 
-        public Task<List<TEntity>> FetchAll() => throw new NotImplementedException();
+        public Task<List<TEntity>> FetchAll() =>
+            ConnectionContext.ExecuteWithResult(
+                QueryBuilder.From<TEntity>()
+                .ProjectEntity());
 
         public Task Update(Action<TEntity> modifier, params object[] keys)
         {
