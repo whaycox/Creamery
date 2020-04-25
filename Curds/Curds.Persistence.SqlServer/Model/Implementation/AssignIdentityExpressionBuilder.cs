@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 namespace Curds.Persistence.Model.Implementation
 {
     using Abstraction;
-    using Persistence.Domain;
+    using Persistence.Abstraction;
     using Query.Abstraction;
 
     internal class AssignIdentityExpressionBuilder : BaseExpressionBuilder, IAssignIdentityExpressionBuilder
@@ -42,7 +42,7 @@ namespace Curds.Persistence.Model.Implementation
         public AssignIdentityDelegate BuildAssignIdentityDelegate(Type entityType, PropertyInfo identityProperty)
         {
             ParameterExpression queryReaderParameter = Expression.Parameter(typeof(ISqlQueryReader), nameof(queryReaderParameter));
-            ParameterExpression baseEntityParameter = Expression.Parameter(typeof(BaseEntity), nameof(baseEntityParameter));
+            ParameterExpression iEntityParameter = Expression.Parameter(typeof(IEntity), nameof(iEntityParameter));
             ParameterExpression entityParameter = Expression.Parameter(entityType, nameof(entityParameter));
             List<ParameterExpression> builderExpressionParameters = new List<ParameterExpression>
             {
@@ -53,14 +53,14 @@ namespace Curds.Persistence.Model.Implementation
             var readIdentityDelegate = ReadIdentityMap[identityProperty.PropertyType];
             List<Expression> builderExpressions = new List<Expression>
             {
-                Expression.Assign(entityParameter, Expression.Convert(baseEntityParameter, entityType)),
+                Expression.Assign(entityParameter, Expression.Convert(iEntityParameter, entityType)),
                 readIdentityDelegate(entityParameter, setIdentityMethod, queryReaderParameter),
             };
 
             BlockExpression builderBlock = Expression.Block(builderExpressionParameters, builderExpressions);
 
             return Expression
-                .Lambda<AssignIdentityDelegate>(builderBlock, new ParameterExpression[] { queryReaderParameter, baseEntityParameter })
+                .Lambda<AssignIdentityDelegate>(builderBlock, new ParameterExpression[] { queryReaderParameter, iEntityParameter })
                 .Compile();
         }
     }

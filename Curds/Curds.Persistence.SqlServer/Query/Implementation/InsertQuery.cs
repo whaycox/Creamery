@@ -9,9 +9,10 @@ namespace Curds.Persistence.Query.Implementation
     using Persistence.Domain;
     using Model.Domain;
     using Model.Abstraction;
+    using Persistence.Abstraction;
 
     internal class InsertQuery<TEntity> : ISqlQuery
-        where TEntity : BaseEntity
+        where TEntity : IEntity
     {
         public Table Table { get; set; }
         public List<ValueEntity<TEntity>> Entities { get; set; } = new List<ValueEntity<TEntity>>();

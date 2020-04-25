@@ -31,9 +31,9 @@ namespace Curds.Persistence.Model.Implementation
         public Table Table(Type type) => TablesByType[type];
 
         public ValueEntity<TEntity> ValueEntity<TEntity>(TEntity entity)
-            where TEntity : BaseEntity => ValueEntityDelegatesByType[typeof(TEntity)](entity) as ValueEntity<TEntity>;
+            where TEntity : IEntity => ValueEntityDelegatesByType[typeof(TEntity)](entity) as ValueEntity<TEntity>;
 
         public AssignIdentityDelegate AssignIdentityDelegate<TEntity>()
-            where TEntity : BaseEntity => AssignIdentityDelegatesByType[typeof(TEntity)];
+            where TEntity : IEntity => AssignIdentityDelegatesByType[typeof(TEntity)];
     }
 }

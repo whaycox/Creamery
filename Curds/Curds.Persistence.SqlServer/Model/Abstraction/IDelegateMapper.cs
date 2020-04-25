@@ -5,12 +5,11 @@ using System.Text;
 namespace Curds.Persistence.Model.Abstraction
 {
     using Query.Domain;
-    using Persistence.Domain;
     using Persistence.Abstraction;
     using Query.Abstraction;
 
-    public delegate ValueEntity ValueEntityDelegate(BaseEntity entity);
-    public delegate void AssignIdentityDelegate(ISqlQueryReader queryReader, BaseEntity entity);
+    public delegate ValueEntity ValueEntityDelegate(IEntity entity);
+    public delegate void AssignIdentityDelegate(ISqlQueryReader queryReader, IEntity entity);
 
     public interface IDelegateMapper
     {

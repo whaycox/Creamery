@@ -8,9 +8,8 @@ namespace Curds.Persistence.Model.Domain
     public class NotAnInterfaceModel : IDataModel
     {
         public ITable<TestEntity> PublicEntity { get; }
-        private ITable<OtherEntity> PrivateEntity { get; }
 
         public ITable<TEntity> Table<TEntity>()
-            where TEntity : BaseEntity => throw new NotImplementedException();
+            where TEntity : IEntity => throw new NotImplementedException();
     }
 }

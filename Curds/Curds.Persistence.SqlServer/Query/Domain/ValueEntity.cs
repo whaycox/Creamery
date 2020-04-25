@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Curds.Persistence.Query.Domain
 {
-    using Persistence.Domain;
+    using Persistence.Abstraction;
 
     public abstract class ValueEntity
     {
@@ -12,7 +12,7 @@ namespace Curds.Persistence.Query.Domain
     }
 
     public class ValueEntity<TEntity> : ValueEntity
-        where TEntity : BaseEntity
+        where TEntity : IEntity
     {
         public TEntity Source { get; set; }
     }

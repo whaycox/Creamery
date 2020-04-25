@@ -5,10 +5,10 @@ using System.Text;
 namespace Curds.Persistence.Model.Configuration.Domain
 {
     using Abstraction;
-    using Persistence.Domain;
+    using Persistence.Abstraction;
 
     public class ColumnConfiguration<TEntity, TValue> : BaseColumnConfiguration
-        where TEntity : BaseEntity
+        where TEntity : IEntity
     {
         public EntityConfiguration<TEntity> EntityConfiguration { get; set; }
 

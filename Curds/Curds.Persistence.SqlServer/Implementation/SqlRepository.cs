@@ -12,7 +12,7 @@ namespace Curds.Persistence.Implementation
 
     public class SqlRepository<TModel, TEntity> : IRepository<TModel, TEntity>
         where TModel : IDataModel
-        where TEntity : BaseEntity
+        where TEntity : IEntity
     {
         protected ISqlConnectionContext ConnectionContext { get; }
         protected ISqlQueryBuilder<TModel> QueryBuilder { get; }

@@ -11,7 +11,7 @@ namespace Curds.Persistence.Implementation
     {
         public Type ParseModelEntitySelection<TModel, TEntity>(Expression<Func<TModel, ITable<TEntity>>> modelEntitySelectionExpression)
             where TModel : IDataModel
-            where TEntity : BaseEntity
+            where TEntity : IEntity
         {
             if (modelEntitySelectionExpression.NodeType != ExpressionType.Lambda)
                 throw InvalidModelEntitySelectionExpression(modelEntitySelectionExpression);
@@ -34,10 +34,10 @@ namespace Curds.Persistence.Implementation
         private Type ParseTableEntityType(Type tableType) => tableType.GenericTypeArguments[0];
         private FormatException InvalidModelEntitySelectionExpression<TModel, TEntity>(Expression<Func<TModel, ITable<TEntity>>> modelEntitySelectionExpression)
             where TModel : IDataModel
-            where TEntity : BaseEntity => new FormatException($"Invalid model entity selection: {modelEntitySelectionExpression}");
+            where TEntity : IEntity => new FormatException($"Invalid model entity selection: {modelEntitySelectionExpression}");
 
         public string ParseEntityValueSelection<TEntity, TValue>(Expression<Func<TEntity, TValue>> entityValueSelectionExpression)
-            where TEntity : BaseEntity
+            where TEntity : IEntity
         {
             if (entityValueSelectionExpression.NodeType != ExpressionType.Lambda ||
                 entityValueSelectionExpression.Body.NodeType != ExpressionType.MemberAccess)
@@ -49,6 +49,6 @@ namespace Curds.Persistence.Implementation
             return memberAccessExpression.Member.Name;
         }
         private FormatException InvalidEntityValueSelectionExpression<TEntity, TValue>(Expression<Func<TEntity, TValue>> entityValueSelectionExpression)
-            where TEntity : BaseEntity => new FormatException($"Invalid entity value selection: {entityValueSelectionExpression}");
+            where TEntity : IEntity => new FormatException($"Invalid entity value selection: {entityValueSelectionExpression}");
     }
 }

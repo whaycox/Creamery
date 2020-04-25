@@ -20,7 +20,7 @@ namespace Curds.Persistence.Query.Implementation
         }
 
         public ISqlQuery Insert<TEntity>(IEnumerable<TEntity> entities) 
-            where TEntity : BaseEntity
+            where TEntity : IEntity
         {
             InsertQuery<TEntity> query = new InsertQuery<TEntity>();
             query.Table = ModelMap.Table(typeof(TEntity));
@@ -31,7 +31,7 @@ namespace Curds.Persistence.Query.Implementation
         }
 
         public ISqlUniverse<TEntity> From<TEntity>() 
-            where TEntity : BaseEntity
+            where TEntity : IEntity
         {
             SqlUniverse<TEntity> universe = new SqlUniverse<TEntity>();
             universe.Table = ModelMap.Table(typeof(TEntity));

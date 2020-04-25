@@ -85,7 +85,7 @@ namespace Curds.Persistence.Implementation
         }
 
         public async Task<List<TEntity>> ExecuteWithResult<TEntity>(ISqlQuery<TEntity> query)
-            where TEntity : BaseEntity
+            where TEntity : IEntity
         {
             SqlCommand command = await BuildCommand(query);
             using (ISqlQueryReader queryReader = await QueryReaderFactory.Create(command))

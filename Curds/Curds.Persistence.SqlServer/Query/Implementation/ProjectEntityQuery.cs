@@ -8,9 +8,10 @@ namespace Curds.Persistence.Query.Implementation
     using Abstraction;
     using Persistence.Domain;
     using Model.Domain;
+    using Persistence.Abstraction;
 
     internal class ProjectEntityQuery<TEntity> : ISqlQuery<TEntity>
-        where TEntity : BaseEntity
+        where TEntity : IEntity
     {
         public Table ProjectedTable { get; set; }
 

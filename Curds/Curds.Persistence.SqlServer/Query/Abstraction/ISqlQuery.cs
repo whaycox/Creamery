@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Curds.Persistence.Query.Abstraction
 {
-    using Persistence.Domain;
+    using Persistence.Abstraction;
 
     public interface ISqlQuery
     {
@@ -13,7 +13,7 @@ namespace Curds.Persistence.Query.Abstraction
     }
 
     public interface ISqlQuery<TEntity> : ISqlQuery
-        where TEntity : BaseEntity
+        where TEntity : IEntity
     {
         List<TEntity> Results { get; }
     }

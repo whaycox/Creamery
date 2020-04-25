@@ -6,10 +6,10 @@ namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
     using Model.Domain;
-    using Persistence.Domain;
+    using Persistence.Abstraction;
 
     internal class SqlUniverse<TEntity> : ISqlUniverse<TEntity>
-        where TEntity : BaseEntity
+        where TEntity : IEntity
     {
         public Table Table { get; set; }
 

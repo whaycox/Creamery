@@ -10,6 +10,7 @@ namespace Curds.Persistence.Model.Implementation
     using Persistence.Domain;
     using Query.Domain;
     using Query.Values.Domain;
+    using Persistence.Abstraction;
 
     internal delegate Expression AssignValueDelegate(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter);
     internal delegate IEnumerable<Expression> AddValueExpressionsDelegate(ParameterExpression entityParameter, ParameterExpression valueEntityParameter);
@@ -70,7 +71,7 @@ namespace Curds.Persistence.Model.Implementation
         public ValueEntityDelegate BuildValueEntityDelegate(Type entityType, IEnumerable<PropertyInfo> valueProperties)
         {
             Type valueEntityType = typeof(ValueEntity<>).MakeGenericType(new Type[] { entityType });
-            ParameterExpression baseEntityParameter = Expression.Parameter(typeof(BaseEntity), nameof(baseEntityParameter));
+            ParameterExpression iEntityParameter = Expression.Parameter(typeof(IEntity), nameof(iEntityParameter));
             ParameterExpression entityParameter = Expression.Parameter(entityType, nameof(entityParameter));
             ParameterExpression valueEntityParameter = Expression.Parameter(valueEntityType, nameof(valueEntityParameter));
             List<ParameterExpression> builderExpressionParameters = new List<ParameterExpression>
@@ -80,12 +81,12 @@ namespace Curds.Persistence.Model.Implementation
             };
 
             ConstructorInfo valueEntityConstructor = valueEntityType.GetConstructor(new Type[0]);
-            MethodInfo setSourceMethod = valueEntityType.GetProperty(nameof(ValueEntity<BaseEntity>.Source)).SetMethod;
+            MethodInfo setSourceMethod = valueEntityType.GetProperty(nameof(ValueEntity<IEntity>.Source)).SetMethod;
             List<Expression> builderExpressions = new List<Expression>
             {
-                Expression.Assign(entityParameter, Expression.Convert(baseEntityParameter, entityType)),
+                Expression.Assign(entityParameter, Expression.Convert(iEntityParameter, entityType)),
                 Expression.Assign(valueEntityParameter, Expression.New(valueEntityConstructor)),
-                CallMethodExpression(valueEntityParameter, setSourceMethod, Expression.Convert(baseEntityParameter, entityType)),
+                CallMethodExpression(valueEntityParameter, setSourceMethod, Expression.Convert(iEntityParameter, entityType)),
             };
 
             foreach (PropertyInfo valueProperty in valueProperties)
@@ -98,7 +99,7 @@ namespace Curds.Persistence.Model.Implementation
             BlockExpression valueEntityBlock = Expression.Block(builderExpressionParameters, builderExpressions);
 
             return Expression
-                .Lambda<ValueEntityDelegate>(valueEntityBlock, baseEntityParameter)
+                .Lambda<ValueEntityDelegate>(valueEntityBlock, iEntityParameter)
                 .Compile();
         }
 

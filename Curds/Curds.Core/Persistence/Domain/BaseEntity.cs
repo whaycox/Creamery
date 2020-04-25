@@ -1,6 +1,8 @@
 ﻿namespace Curds.Persistence.Domain
 {
-    public abstract class BaseEntity
+    using Abstraction;
+
+    public abstract class BaseEntity : IEntity
     {
         public abstract object[] Keys { get; }
     }

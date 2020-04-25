@@ -10,7 +10,7 @@ namespace Curds.Persistence.Model.Configuration.Domain
 
     public class ModelColumnConfiguration<TModel, TEntity, TValue> : BaseColumnConfiguration
         where TModel : IDataModel
-        where TEntity : BaseEntity
+        where TEntity : IEntity
     {
         public ModelEntityConfiguration<TModel, TEntity> EntityConfiguration { get; set; }
 

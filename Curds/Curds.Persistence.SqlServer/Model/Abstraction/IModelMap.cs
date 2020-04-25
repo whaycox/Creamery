@@ -5,7 +5,6 @@ using System.Text;
 namespace Curds.Persistence.Model.Abstraction
 {
     using Persistence.Abstraction;
-    using Persistence.Domain;
     using Domain;
     using Query.Domain;
 
@@ -15,8 +14,8 @@ namespace Curds.Persistence.Model.Abstraction
         Table Table(Type type);
 
         ValueEntity<TEntity> ValueEntity<TEntity>(TEntity entity)
-            where TEntity : BaseEntity;
+            where TEntity : IEntity;
         AssignIdentityDelegate AssignIdentityDelegate<TEntity>()
-            where TEntity : BaseEntity;
+            where TEntity : IEntity;
     }
 }

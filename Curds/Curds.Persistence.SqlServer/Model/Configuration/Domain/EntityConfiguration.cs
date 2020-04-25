@@ -6,10 +6,10 @@ namespace Curds.Persistence.Model.Configuration.Domain
 {
     using Abstraction;
     using Model.Domain;
-    using Persistence.Domain;
+    using Persistence.Abstraction;
 
     public class EntityConfiguration<TEntity> : IEntityConfiguration
-        where TEntity : BaseEntity
+        where TEntity : IEntity
     {
         public Type EntityType => typeof(TEntity);
 

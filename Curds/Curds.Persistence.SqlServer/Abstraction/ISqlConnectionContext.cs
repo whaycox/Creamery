@@ -5,7 +5,6 @@ using System.Data.SqlClient;
 
 namespace Curds.Persistence.Abstraction
 {
-    using Domain;
     using Query.Abstraction;
 
     public interface ISqlConnectionContext : IDisposable
@@ -17,6 +16,6 @@ namespace Curds.Persistence.Abstraction
         Task Execute(ISqlQuery query);
         Task ExecuteWithResult(ISqlQuery query);
         Task<List<TEntity>> ExecuteWithResult<TEntity>(ISqlQuery<TEntity> query)
-            where TEntity : BaseEntity;
+            where TEntity : IEntity;
     }
 }

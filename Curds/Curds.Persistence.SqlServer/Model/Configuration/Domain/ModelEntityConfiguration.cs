@@ -12,7 +12,7 @@ namespace Curds.Persistence.Model.Configuration.Domain
 
     public class ModelEntityConfiguration<TModel, TEntity> : IModelEntityConfiguration
         where TModel : IDataModel
-        where TEntity : BaseEntity
+        where TEntity : IEntity
     {
         public Type ModelType => typeof(TModel);
         public Type EntityType => typeof(TEntity);

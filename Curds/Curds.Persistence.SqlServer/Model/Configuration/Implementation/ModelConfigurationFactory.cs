@@ -88,8 +88,11 @@ namespace Curds.Persistence.Model.Configuration.Implementation
         private void ApplyEntityConfigurations<TModel>(Type entityType, CompiledConfiguration<TModel> configuration)
             where TModel : IDataModel
         {
-            if (entityType != typeof(BaseEntity))
+            if (!typeof(IEntity).IsAssignableFrom(entityType))
+                return;
+            else
                 ApplyEntityConfigurations(entityType.BaseType, configuration);
+
             if (EntityConfigurations.TryGetValue(entityType, out List<IEntityConfiguration> entityConfigurations))
                 foreach (IEntityConfiguration entityConfiguration in entityConfigurations)
                     ApplyEntityConfigurationToCompiled(entityConfiguration, configuration);
@@ -106,8 +109,11 @@ namespace Curds.Persistence.Model.Configuration.Implementation
         private void ApplyModelEntityConfigurations<TModel>(Type entityType, CompiledConfiguration<TModel> configuration)
             where TModel : IDataModel
         {
-            if (entityType != typeof(BaseEntity))
+            if (!typeof(IEntity).IsAssignableFrom(entityType))
+                return;
+            else
                 ApplyModelEntityConfigurations(entityType.BaseType, configuration);
+
             if (ModelEntityConfigurations.TryGetValue(typeof(TModel), out Dictionary<Type, List<IModelEntityConfiguration>> allModelConfigurations))
                 if (allModelConfigurations.TryGetValue(entityType, out List<IModelEntityConfiguration> modelEntityConfigurations))
                     foreach (IModelEntityConfiguration modelEntityConfiguration in modelEntityConfigurations)

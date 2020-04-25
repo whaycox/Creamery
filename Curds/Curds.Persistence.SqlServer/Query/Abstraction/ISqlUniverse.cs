@@ -5,10 +5,10 @@ using System.Linq.Expressions;
 
 namespace Curds.Persistence.Query.Abstraction
 {
-    using Persistence.Domain;
+    using Persistence.Abstraction;
 
     public interface ISqlUniverse<TEntity> 
-        where TEntity : BaseEntity
+        where TEntity : IEntity
     {
         ISqlQuery<TEntity> ProjectEntity();
     }

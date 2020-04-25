@@ -4,11 +4,9 @@ using System.Threading.Tasks;
 
 namespace Curds.Persistence.Abstraction
 {
-    using Domain;
-
     public interface IRepository<TModel, TEntity>
         where TModel : IDataModel
-        where TEntity : BaseEntity
+        where TEntity : IEntity
     {
         Task Insert(TEntity entity);
         Task Insert(IEnumerable<TEntity> entities);
