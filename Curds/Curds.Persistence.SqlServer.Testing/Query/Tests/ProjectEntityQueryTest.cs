@@ -14,6 +14,7 @@ namespace Curds.Persistence.Query.Tests
     using Persistence.Domain;
     using Model.Domain;
     using Abstraction;
+    using Model.Abstraction;
 
     [TestClass]
     public class ProjectEntityQueryTest
@@ -24,6 +25,7 @@ namespace Curds.Persistence.Query.Tests
         private Column TestColumnTwo = new Column();
 
         private Mock<ISqlQueryWriter> MockQueryWriter = new Mock<ISqlQueryWriter>();
+        private Mock<IEntityModel<TestEntity>> MockEntityModel = new Mock<IEntityModel<TestEntity>>();
 
         private ProjectEntityQuery<TestEntity> TestObject = new ProjectEntityQuery<TestEntity>();
 
@@ -34,7 +36,11 @@ namespace Curds.Persistence.Query.Tests
             TestColumns.Add(TestColumnTwo);
             TestTable.Columns = TestColumns;
 
-            TestObject.ProjectedTable = TestTable;
+            MockEntityModel
+                .Setup(model => model.Table())
+                .Returns(TestTable);
+
+            TestObject.Model = MockEntityModel.Object;
         }
 
         [TestMethod]
@@ -52,6 +58,12 @@ namespace Curds.Persistence.Query.Tests
 
             MockQueryWriter.Verify(writer => writer.Select(TestColumns), Times.Once);
             MockQueryWriter.Verify(writer => writer.From(TestTable), Times.Once);
+        }
+
+        [TestMethod]
+        public void Read()
+        {
+            throw new NotImplementedException();
         }
 
     }

@@ -9,6 +9,7 @@ namespace Curds.Persistence.Model.Configuration.Domain
     using Persistence.Domain;
     using Abstraction;
     using Model.Domain;
+    using Model.Abstraction;
 
     public class ModelEntityConfiguration<TModel, TEntity> : IModelEntityConfiguration
         where TModel : IDataModel

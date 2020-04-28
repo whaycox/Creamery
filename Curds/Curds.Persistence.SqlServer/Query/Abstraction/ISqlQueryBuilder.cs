@@ -7,6 +7,7 @@ namespace Curds.Persistence.Query.Abstraction
 {
     using Persistence.Domain;
     using Persistence.Abstraction;
+    using Model.Abstraction;
 
     public interface ISqlQueryBuilder<TModel>
         where TModel : IDataModel

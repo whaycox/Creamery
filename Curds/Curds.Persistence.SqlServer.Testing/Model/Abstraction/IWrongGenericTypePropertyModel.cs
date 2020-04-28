@@ -7,7 +7,7 @@ namespace Curds.Persistence.Model.Abstraction
 
     public interface IWrongGenericTypePropertyModel : IDataModel
     {
-        ITable<TestEntity> Test { get; }
+        IEntityModel<TestEntity> Test { get; }
         List<OtherEntity> Other { get; }
     }
 }

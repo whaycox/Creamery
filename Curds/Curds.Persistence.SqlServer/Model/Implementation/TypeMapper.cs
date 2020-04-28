@@ -11,9 +11,9 @@ namespace Curds.Persistence.Model.Implementation
 
     internal class TypeMapper : ITypeMapper
     {
-        private const string InvalidModelPropertiesMessage = "All model properties must be ITable<SomeEntity>";
+        private const string InvalidModelPropertiesMessage = "All model properties must be IEntity types";
 
-        public IEnumerable<Type> TableTypes<TModel>()
+        public IEnumerable<Type> EntityTypes<TModel>()
             where TModel : IDataModel => ModelProperties(typeof(TModel))
                 .Select(property => ParseModelPropertyToTableType(property))
                 .ToList();
@@ -26,13 +26,10 @@ namespace Curds.Persistence.Model.Implementation
         private Type ParseModelPropertyToTableType(PropertyInfo propertyInfo)
         {
             Type propertyType = propertyInfo.PropertyType;
-            if (!propertyType.IsGenericType)
-                throw new ModelException(InvalidModelPropertiesMessage);
-            Type genericType = propertyType.GetGenericTypeDefinition();
-            if (genericType != typeof(ITable<>))
+            if (!typeof(IEntity).IsAssignableFrom(propertyType))
                 throw new ModelException(InvalidModelPropertiesMessage);
 
-            return propertyType.GenericTypeArguments[0];
+            return propertyType;
         }
 
         public IEnumerable<PropertyInfo> ValueTypes(Type entityType) => entityType

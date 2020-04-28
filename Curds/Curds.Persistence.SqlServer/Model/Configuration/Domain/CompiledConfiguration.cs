@@ -7,6 +7,7 @@ namespace Curds.Persistence.Model.Configuration.Domain
     using Abstraction;
     using Model.Domain;
     using Persistence.Abstraction;
+    using Model.Abstraction;
 
     internal class CompiledConfiguration<TModel> : IModelEntityConfiguration
         where TModel : IDataModel

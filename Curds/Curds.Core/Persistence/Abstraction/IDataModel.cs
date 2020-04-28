@@ -2,7 +2,6 @@
 {
     public interface IDataModel
     {
-        ITable<TEntity> Table<TEntity>() 
-            where TEntity : IEntity;
+        TEntity Entity<TEntity>() where TEntity : IEntity;
     }
 }

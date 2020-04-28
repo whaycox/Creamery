@@ -85,7 +85,7 @@ namespace Curds.Persistence.Model.Implementation
             where TModel : IDataModel
         {
             Dictionary<Type, Table> tables = new Dictionary<Type, Table>();
-            foreach (Type entityType in TypeMapper.TableTypes<TModel>())
+            foreach (Type entityType in TypeMapper.EntityTypes<TModel>())
                 tables.Add(entityType, BuildTable<TModel>(entityType));
             return tables;
         }
@@ -94,7 +94,7 @@ namespace Curds.Persistence.Model.Implementation
             where TModel : IDataModel
         {
             Dictionary<Type, ValueEntityDelegate> valueEntityDelegates = new Dictionary<Type, ValueEntityDelegate>();
-            foreach (Type entityType in TypeMapper.TableTypes<TModel>())
+            foreach (Type entityType in TypeMapper.EntityTypes<TModel>())
                 valueEntityDelegates.Add(entityType, DelegateMapper.MapValueEntityDelegate<TModel>(entityType));
             return valueEntityDelegates;
         }
@@ -103,7 +103,7 @@ namespace Curds.Persistence.Model.Implementation
             where TModel : IDataModel
         {
             Dictionary<Type, AssignIdentityDelegate> assignIdentityDelegates = new Dictionary<Type, AssignIdentityDelegate>();
-            foreach (Type entityType in TypeMapper.TableTypes<TModel>())
+            foreach (Type entityType in TypeMapper.EntityTypes<TModel>())
                 if (TypeHasIdentityColumn<TModel>(entityType))
                     assignIdentityDelegates.Add(entityType, DelegateMapper.MapAssignIdentityDelegate<TModel>(entityType));
             return assignIdentityDelegates;
@@ -113,6 +113,15 @@ namespace Curds.Persistence.Model.Implementation
         {
             CompiledConfiguration<TModel> entityConfiguration = ConfigurationFactory.Build<TModel>(entityType);
             return entityConfiguration.Columns.Any(column => column.Value.IsIdentity);
+        }
+
+        public Dictionary<Type, ProjectEntityDelegate<IEntity>> ProjectEntityDelegatesByType<TModel>() 
+            where TModel : IDataModel
+        {
+            Dictionary<Type, ProjectEntityDelegate<IEntity>> projectEntityDelegates = new Dictionary<Type, ProjectEntityDelegate<IEntity>>();
+            foreach (Type entityType in TypeMapper.EntityTypes<TModel>())
+                projectEntityDelegates.Add(entityType, DelegateMapper.MapProjectEntityDelegate<TModel>(entityType));
+            return projectEntityDelegates;
         }
     }
 }

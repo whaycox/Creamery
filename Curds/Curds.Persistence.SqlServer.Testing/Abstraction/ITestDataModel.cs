@@ -5,10 +5,11 @@ using System.Text;
 namespace Curds.Persistence.Abstraction
 {
     using Domain;
+    using Model.Abstraction;
 
     public interface ITestDataModel : IDataModel
     {
-        ITable<TestEntity> Test { get; }
-        ITable<OtherEntity> Other { get; }
+        TestEntity Test { get; }
+        OtherEntity Other { get; }
     }
 }

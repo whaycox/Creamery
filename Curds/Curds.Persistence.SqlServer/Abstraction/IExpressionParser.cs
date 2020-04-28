@@ -3,9 +3,11 @@ using System.Linq.Expressions;
 
 namespace Curds.Persistence.Abstraction
 {
+    using Model.Abstraction;
+
     internal interface IExpressionParser
     {
-        Type ParseModelEntitySelection<TModel, TEntity>(Expression<Func<TModel, ITable<TEntity>>> entitySelectionExpression)
+        Type ParseModelEntitySelection<TModel, TEntity>(Expression<Func<TModel, IEntityModel<TEntity>>> entitySelectionExpression)
             where TModel : IDataModel
             where TEntity : IEntity;
 

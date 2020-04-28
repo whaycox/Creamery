@@ -16,5 +16,6 @@ namespace Curds.Persistence.Query.Abstraction
         short? ReadShort(int index);
         int? ReadInt(int index);
         long? ReadLong(int index);
+        string ReadString(int index);
     }
 }

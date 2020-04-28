@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Curds.Persistence.Query.Implementation
 {
@@ -14,18 +15,22 @@ namespace Curds.Persistence.Query.Implementation
     internal class InsertQuery<TEntity> : ISqlQuery
         where TEntity : IEntity
     {
-        public Table Table { get; set; }
-        public List<ValueEntity<TEntity>> Entities { get; set; } = new List<ValueEntity<TEntity>>();
-        public AssignIdentityDelegate AssignIdentityDelegate { get; set; }
+        public IEntityModel<TEntity> Model { get; set; }
+        public List<TEntity> Entities { get; set; } = new List<TEntity>();
+        private List<ValueEntity<TEntity>> ValueEntities => Entities
+            .Select(entity => Model.ValueEntity(entity))
+            .ToList();
 
         public void Write(ISqlQueryWriter queryWriter)
         {
-            queryWriter.CreateTemporaryIdentityTable(Table);
-            queryWriter.Insert(Table);
-            queryWriter.OutputIdentitiesToTemporaryTable(Table);
-            queryWriter.ValueEntities(Entities);
-            queryWriter.SelectTemporaryIdentityTable(Table);
-            queryWriter.DropTemporaryIdentityTable(Table);
+            Table table = Model.Table();
+
+            queryWriter.CreateTemporaryIdentityTable(table);
+            queryWriter.Insert(table);
+            queryWriter.OutputIdentitiesToTemporaryTable(table);
+            queryWriter.ValueEntities(ValueEntities);
+            queryWriter.SelectTemporaryIdentityTable(table);
+            queryWriter.DropTemporaryIdentityTable(table);
         }
 
         public async Task ProcessResult(ISqlQueryReader queryReader)
@@ -35,11 +40,11 @@ namespace Curds.Persistence.Query.Implementation
             if (await queryReader.Advance())
                 throw new InvalidOperationException("There were more new identities than inserted entities");
         }
-        private async Task AssignIdentity(ISqlQueryReader queryReader, ValueEntity<TEntity> valueEntity)
+        private async Task AssignIdentity(ISqlQueryReader queryReader, TEntity entity)
         {
             if (!await queryReader.Advance())
                 throw new InvalidOperationException("There were less new identities than inserted entities");
-            AssignIdentityDelegate(queryReader, valueEntity.Source);
+            Model.AssignIdentityDelegate(queryReader, entity);
         }
     }
 }

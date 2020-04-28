@@ -51,7 +51,7 @@ namespace Curds.Persistence.Model.Tests
                 .Setup(factory => factory.Build<ITestDataModel>(It.IsAny<Type>()))
                 .Returns(TestCompiledConfiguration);
             MockTypeMapper
-                .Setup(mapper => mapper.TableTypes<ITestDataModel>())
+                .Setup(mapper => mapper.EntityTypes<ITestDataModel>())
                 .Returns(TestTableTypes);
             MockTypeMapper
                 .Setup(mapper => mapper.ValueTypes(It.IsAny<Type>()))
@@ -113,7 +113,7 @@ namespace Curds.Persistence.Model.Tests
         {
             TestObject.TablesByType<ITestDataModel>();
 
-            MockTypeMapper.Verify(mapper => mapper.TableTypes<ITestDataModel>(), Times.Once);
+            MockTypeMapper.Verify(mapper => mapper.EntityTypes<ITestDataModel>(), Times.Once);
         }
 
         [TestMethod]
@@ -173,7 +173,7 @@ namespace Curds.Persistence.Model.Tests
         {
             TestObject.ValueEntityDelegatesByType<ITestDataModel>();
 
-            MockTypeMapper.Verify(mapper => mapper.TableTypes<ITestDataModel>(), Times.Once);
+            MockTypeMapper.Verify(mapper => mapper.EntityTypes<ITestDataModel>(), Times.Once);
         }
 
         [TestMethod]
@@ -199,7 +199,7 @@ namespace Curds.Persistence.Model.Tests
         {
             TestObject.AssignIdentityDelegatesByType<ITestDataModel>();
 
-            MockTypeMapper.Verify(mapper => mapper.TableTypes<ITestDataModel>(), Times.Once);
+            MockTypeMapper.Verify(mapper => mapper.EntityTypes<ITestDataModel>(), Times.Once);
         }
 
         [TestMethod]

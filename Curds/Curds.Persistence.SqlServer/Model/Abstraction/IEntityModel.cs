@@ -5,16 +5,16 @@ using System.Text;
 namespace Curds.Persistence.Model.Abstraction
 {
     using Persistence.Abstraction;
-    using Model.Domain;
+    using Domain;
     using Query.Domain;
 
-    public interface IModelEntity<TModel, TEntity>
-        where TModel : IDataModel
+    public interface IEntityModel<TEntity>
         where TEntity : IEntity
     {
-        Table Table();
+        AssignIdentityDelegate AssignIdentityDelegate { get; }
+        ProjectEntityDelegate<TEntity> ProjectEntityDelegate { get; }
 
+        Table Table();
         ValueEntity<TEntity> ValueEntity(TEntity entity);
-        AssignIdentityDelegate AssignIdentityDelegate();
     }
 }

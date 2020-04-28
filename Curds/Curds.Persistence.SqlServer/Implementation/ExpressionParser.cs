@@ -6,10 +6,11 @@ namespace Curds.Persistence.Implementation
     using Abstraction;
     using Curds.Persistence.Domain;
     using Domain;
+    using Model.Abstraction;
 
     internal class ExpressionParser : IExpressionParser
     {
-        public Type ParseModelEntitySelection<TModel, TEntity>(Expression<Func<TModel, ITable<TEntity>>> modelEntitySelectionExpression)
+        public Type ParseModelEntitySelection<TModel, TEntity>(Expression<Func<TModel, IEntityModel<TEntity>>> modelEntitySelectionExpression)
             where TModel : IDataModel
             where TEntity : IEntity
         {
@@ -24,7 +25,7 @@ namespace Curds.Persistence.Implementation
                     return ParseTableEntityType(memberExpression.Type);
                 case ExpressionType.Call:
                     MethodCallExpression methodCallExpression = (MethodCallExpression)lambdaBody;
-                    if (methodCallExpression.Method.Name != nameof(IDataModel.Table))
+                    if (methodCallExpression.Method.Name != nameof(IDataModel.Entity))
                         throw new FormatException($"Unsupported method name: {methodCallExpression.Method.Name}");
                     return ParseTableEntityType(methodCallExpression.Method.ReturnType);
                 default:
@@ -32,7 +33,7 @@ namespace Curds.Persistence.Implementation
             }
         }
         private Type ParseTableEntityType(Type tableType) => tableType.GenericTypeArguments[0];
-        private FormatException InvalidModelEntitySelectionExpression<TModel, TEntity>(Expression<Func<TModel, ITable<TEntity>>> modelEntitySelectionExpression)
+        private FormatException InvalidModelEntitySelectionExpression<TModel, TEntity>(Expression<Func<TModel, IEntityModel<TEntity>>> modelEntitySelectionExpression)
             where TModel : IDataModel
             where TEntity : IEntity => new FormatException($"Invalid model entity selection: {modelEntitySelectionExpression}");
 

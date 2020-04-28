@@ -20,20 +20,24 @@ namespace Curds.Persistence.Model.Implementation
         private Dictionary<Type, Table> TablesByType { get; }
         private Dictionary<Type, ValueEntityDelegate> ValueEntityDelegatesByType { get; }
         private Dictionary<Type, AssignIdentityDelegate> AssignIdentityDelegatesByType { get; }
+        private Dictionary<Type, ProjectEntityDelegate<IEntity>> ProjectEntityDelegatesByType { get; }
 
         public ModelMap(IModelBuilder modelBuilder)
         {
             TablesByType = modelBuilder.TablesByType<TModel>();
             ValueEntityDelegatesByType = modelBuilder.ValueEntityDelegatesByType<TModel>();
             AssignIdentityDelegatesByType = modelBuilder.AssignIdentityDelegatesByType<TModel>();
+            ProjectEntityDelegatesByType = modelBuilder.ProjectEntityDelegatesByType<TModel>();
         }
 
-        public Table Table(Type type) => TablesByType[type];
+        public IEntityModel<TEntity> Entity<TEntity>()
+            where TEntity : IEntity => new EntityModel<TEntity>
+            {
+                _table = TablesByType[typeof(TEntity)],
 
-        public ValueEntity<TEntity> ValueEntity<TEntity>(TEntity entity)
-            where TEntity : IEntity => ValueEntityDelegatesByType[typeof(TEntity)](entity) as ValueEntity<TEntity>;
-
-        public AssignIdentityDelegate AssignIdentityDelegate<TEntity>()
-            where TEntity : IEntity => AssignIdentityDelegatesByType[typeof(TEntity)];
+                AssignIdentityDelegate = AssignIdentityDelegatesByType[typeof(TEntity)],
+                ValueEntityDelegate = ValueEntityDelegatesByType[typeof(TEntity)],
+                ProjectEntityDelegate = ProjectEntityDelegatesByType[typeof(TEntity)] as ProjectEntityDelegate<TEntity>,
+            };
     }
 }

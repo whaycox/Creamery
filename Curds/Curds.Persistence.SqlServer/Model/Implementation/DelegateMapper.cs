@@ -18,17 +18,20 @@ namespace Curds.Persistence.Model.Implementation
     {
         private IValueExpressionBuilder ValueExpressionBuilder { get; }
         private IAssignIdentityExpressionBuilder AssignIdentityExpressionBuilder { get; }
+        private IProjectEntityExpressionBuilder ProjectEntityExpressionBuilder { get; }
         private ITypeMapper TypeMapper { get; }
         private IModelConfigurationFactory ConfigurationFactory { get; }
 
         public DelegateMapper(
             IValueExpressionBuilder valueExpressionBuilder,
             IAssignIdentityExpressionBuilder assignIdentityExpressionBuilder,
+            IProjectEntityExpressionBuilder projectEntityExpressionBuilder,
             ITypeMapper typeMapper,
             IModelConfigurationFactory configurationFactory)
         {
             ValueExpressionBuilder = valueExpressionBuilder;
             AssignIdentityExpressionBuilder = assignIdentityExpressionBuilder;
+            ProjectEntityExpressionBuilder = projectEntityExpressionBuilder;
             TypeMapper = typeMapper;
             ConfigurationFactory = configurationFactory;
         }
@@ -54,6 +57,15 @@ namespace Curds.Persistence.Model.Implementation
             CompiledColumnConfiguration<TModel> identityConfiguration = entityConfiguration.Columns.First(column => column.Value.IsIdentity).Value;
             PropertyInfo identityProperty = TypeMapper.ValueTypes(entityType).Where(property => property.Name == identityConfiguration.ValueName).First();
             return AssignIdentityExpressionBuilder.BuildAssignIdentityDelegate(entityType, identityProperty);
+        }
+
+        public ProjectEntityDelegate<IEntity> MapProjectEntityDelegate<TModel>(Type entityType)
+            where TModel : IDataModel
+        {
+            IEnumerable<PropertyInfo> valueProperties = TypeMapper
+                .ValueTypes(entityType);
+
+            return ProjectEntityExpressionBuilder.BuildProjectEntityDelegate(entityType, valueProperties);
         }
     }
 }

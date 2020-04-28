@@ -13,16 +13,17 @@ namespace Curds.Persistence.Query.Tests
     using Persistence.Domain;
     using Model.Domain;
     using Model.Abstraction;
+    using Persistence.Abstraction;
 
     [TestClass]
     public class InsertQueryTest
     {
         private Table TestTable = new Table();
         private TestEntity TestEntity = new TestEntity();
-        private ValueEntity<TestEntity> TestValueEntity = new ValueEntity<TestEntity>();
 
         private Mock<ISqlQueryWriter> MockQueryWriter = new Mock<ISqlQueryWriter>();
         private Mock<ISqlQueryReader> MockQueryReader = new Mock<ISqlQueryReader>();
+        private Mock<IEntityModel<TestEntity>> MockEntityModel = new Mock<IEntityModel<TestEntity>>();
         private Mock<AssignIdentityDelegate> MockAssignIdentityDelegate = new Mock<AssignIdentityDelegate>();
 
         private InsertQuery<TestEntity> TestObject = new InsertQuery<TestEntity>();
@@ -30,12 +31,15 @@ namespace Curds.Persistence.Query.Tests
         [TestInitialize]
         public void Init()
         {
-            TestValueEntity.Source = TestEntity;
+            MockEntityModel
+                .Setup(model => model.Table())
+                .Returns(TestTable);
+            MockEntityModel
+                .Setup(model => model.AssignIdentityDelegate)
+                .Returns(MockAssignIdentityDelegate.Object);
 
-            TestObject.AssignIdentityDelegate = MockAssignIdentityDelegate.Object;
-
-            TestObject.Table = TestTable;
-            TestObject.Entities.Add(TestValueEntity);
+            TestObject.Model = MockEntityModel.Object;
+            TestObject.Entities.Add(TestEntity);
         }
 
         [TestMethod]
@@ -66,9 +70,17 @@ namespace Curds.Persistence.Query.Tests
             MockQueryWriter.Verify(writer => writer.CreateTemporaryIdentityTable(TestTable), Times.Once);
             MockQueryWriter.Verify(writer => writer.Insert(TestTable), Times.Once);
             MockQueryWriter.Verify(writer => writer.OutputIdentitiesToTemporaryTable(TestTable), Times.Once);
-            MockQueryWriter.Verify(writer => writer.ValueEntities(It.Is<IEnumerable<ValueEntity>>(arg => arg.Count() == 1 && arg.First() == TestValueEntity)), Times.Once);
+            MockQueryWriter.Verify(writer => writer.ValueEntities(It.Is<IEnumerable<ValueEntity>>(arg => arg.Count() == 1)), Times.Once);
             MockQueryWriter.Verify(writer => writer.SelectTemporaryIdentityTable(TestTable), Times.Once);
             MockQueryWriter.Verify(writer => writer.DropTemporaryIdentityTable(TestTable), Times.Once);
+        }
+
+        [TestMethod]
+        public void WriteBuildsValueEntityFromModel()
+        {
+            TestObject.Write(MockQueryWriter.Object);
+
+            MockEntityModel.Verify(model => model.ValueEntity(TestEntity), Times.Once);
         }
 
         [DataTestMethod]
@@ -78,13 +90,13 @@ namespace Curds.Persistence.Query.Tests
         [DataRow(10)]
         [DataRow(13)]
         [DataRow(20)]
-        public async Task ProcessResultsAssignsIdentitiesForEachEntities(int entities)
+        public async Task ProcessResultsAssignsIdentitiesForEachEntity(int entities)
         {
             TestObject.Entities.Clear();
             var sequenceSetup = MockQueryReader.SetupSequence(reader => reader.Advance());
             for (int i = 0; i < entities; i++)
             {
-                TestObject.Entities.Add(TestValueEntity);
+                TestObject.Entities.Add(TestEntity);
                 sequenceSetup.ReturnsAsync(true);
             }
             sequenceSetup.ReturnsAsync(false);

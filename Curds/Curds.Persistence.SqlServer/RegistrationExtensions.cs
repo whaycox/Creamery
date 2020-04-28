@@ -41,6 +41,7 @@ namespace Curds.Persistence
             .AddSingleton<ITypeMapper, TypeMapper>()
             .AddSingleton<IValueExpressionBuilder, ValueExpressionBuilder>()
             .AddSingleton<IAssignIdentityExpressionBuilder, AssignIdentityExpressionBuilder>()
+            .AddSingleton<IProjectEntityExpressionBuilder, ProjectEntityExpressionBuilder>()
             .AddSingleton<IDelegateMapper, DelegateMapper>()
             .AddSingleton<IModelBuilder, ModelBuilder>()
             .AddSingleton(typeof(IModelMap<>), typeof(ModelMap<>));

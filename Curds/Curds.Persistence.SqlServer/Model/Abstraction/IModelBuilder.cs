@@ -18,5 +18,7 @@ namespace Curds.Persistence.Model.Abstraction
             where TModel : IDataModel;
         Dictionary<Type, AssignIdentityDelegate> AssignIdentityDelegatesByType<TModel>()
             where TModel : IDataModel;
+        Dictionary<Type, ProjectEntityDelegate<IEntity>> ProjectEntityDelegatesByType<TModel>()
+            where TModel : IDataModel;
     }
 }

@@ -10,16 +10,16 @@ namespace Curds.Persistence.Implementation
     using Query.Abstraction;
     using Model.Abstraction;
 
-    public class SqlRepository<TModel, TEntity> : IRepository<TModel, TEntity>
-        where TModel : IDataModel
+    public class SqlRepository<TDataModel, TEntity> : IRepository<TDataModel, TEntity>
+        where TDataModel : IDataModel
         where TEntity : IEntity
     {
         protected ISqlConnectionContext ConnectionContext { get; }
-        protected ISqlQueryBuilder<TModel> QueryBuilder { get; }
+        protected ISqlQueryBuilder<TDataModel> QueryBuilder { get; }
 
         public SqlRepository(
             ISqlConnectionContext connectionContext,
-            ISqlQueryBuilder<TModel> queryBuilder)
+            ISqlQueryBuilder<TDataModel> queryBuilder)
         {
             ConnectionContext = connectionContext;
             QueryBuilder = queryBuilder;

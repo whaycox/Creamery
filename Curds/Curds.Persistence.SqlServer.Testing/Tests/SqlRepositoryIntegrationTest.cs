@@ -221,6 +221,7 @@ namespace Curds.Persistence.Tests
                 List<TestEntity> entities = await testRepository.FetchAll();
 
                 Assert.AreNotEqual(0, entities.Count);
+                Assert.IsFalse(entities.Any(entity => entity.ID == 0));
             }
         }
     }

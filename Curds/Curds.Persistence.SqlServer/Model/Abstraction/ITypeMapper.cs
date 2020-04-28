@@ -11,7 +11,7 @@ namespace Curds.Persistence.Model.Abstraction
 
     public interface ITypeMapper
     {
-        IEnumerable<Type> TableTypes<TModel>() 
+        IEnumerable<Type> EntityTypes<TModel>() 
             where TModel : IDataModel;
 
         IEnumerable<PropertyInfo> ValueTypes(Type entityType);

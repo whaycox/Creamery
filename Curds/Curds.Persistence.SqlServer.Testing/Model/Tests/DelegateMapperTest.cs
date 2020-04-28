@@ -28,6 +28,7 @@ namespace Curds.Persistence.Model.Tests
 
         private Mock<IValueExpressionBuilder> MockValueExpressionBuilder = new Mock<IValueExpressionBuilder>();
         private Mock<IAssignIdentityExpressionBuilder> MockAssignIdentityExpressionBuilder = new Mock<IAssignIdentityExpressionBuilder>();
+        private Mock<IProjectEntityExpressionBuilder> MockProjectEntityExpressionBuilder = new Mock<IProjectEntityExpressionBuilder>();
         private Mock<ITypeMapper> MockTypeMapper = new Mock<ITypeMapper>();
         private Mock<IModelConfigurationFactory> MockConfigurationFactory = new Mock<IModelConfigurationFactory>();
         private Mock<ValueEntityDelegate> MockValueEntityDelegate = new Mock<ValueEntityDelegate>();
@@ -60,6 +61,7 @@ namespace Curds.Persistence.Model.Tests
             TestObject = new DelegateMapper(
                 MockValueExpressionBuilder.Object,
                 MockAssignIdentityExpressionBuilder.Object,
+                MockProjectEntityExpressionBuilder.Object,
                 MockTypeMapper.Object,
                 MockConfigurationFactory.Object);
         }

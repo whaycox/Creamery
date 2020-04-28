@@ -9,23 +9,29 @@ namespace Curds.Persistence.Query.Implementation
     using Persistence.Domain;
     using Model.Domain;
     using Persistence.Abstraction;
+    using Model.Abstraction;
 
     internal class ProjectEntityQuery<TEntity> : ISqlQuery<TEntity>
         where TEntity : IEntity
     {
-        public Table ProjectedTable { get; set; }
+        public IEntityModel<TEntity> Model { get; set; }
 
-        public List<TEntity> Results => throw new NotImplementedException();
+        public List<TEntity> Results { get; private set; }
 
         public void Write(ISqlQueryWriter queryWriter)
         {
-            queryWriter.Select(ProjectedTable.Columns);
-            queryWriter.From(ProjectedTable);
+            Table table = Model.Table();
+
+            queryWriter.Select(table.Columns);
+            queryWriter.From(table);
         }
 
-        public Task ProcessResult(ISqlQueryReader queryReader)
+        public async Task ProcessResult(ISqlQueryReader queryReader)
         {
-            throw new NotImplementedException();
+            List<TEntity> results = new List<TEntity>();
+            while (await queryReader.Advance())
+                results.Add(Model.ProjectEntityDelegate(queryReader));
+            Results = results;
         }
     }
 }

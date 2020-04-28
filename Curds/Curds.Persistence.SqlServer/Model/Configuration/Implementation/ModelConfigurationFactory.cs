@@ -9,6 +9,7 @@ namespace Curds.Persistence.Model.Configuration.Implementation
     using Persistence.Abstraction;
     using Persistence.Domain;
     using Model.Domain;
+    using Model.Abstraction;
 
     internal class ModelConfigurationFactory : IModelConfigurationFactory
     {

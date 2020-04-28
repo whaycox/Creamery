@@ -64,9 +64,10 @@ namespace Curds.Persistence.Model.Tests
                 .Returns(TestTablesByType);
             BuildTestObject();
 
-            Table actual = TestObject.Table(TestTableType);
+            throw new NotImplementedException();
+            //Table actual = TestObject.Table(TestTableType);
 
-            Assert.AreSame(TestTable, actual);
+            //Assert.AreSame(TestTable, actual);
         }
 
         [TestMethod]
@@ -81,10 +82,11 @@ namespace Curds.Persistence.Model.Tests
                 .Returns(TestValueEntityDelegatesByType);
             BuildTestObject();
 
-            ValueEntity actual = TestObject.ValueEntity(TestEntity);
+            throw new NotImplementedException();
+            //ValueEntity actual = TestObject.ValueEntity(TestEntity);
 
-            MockValueEntityDelegate.Verify(del => del(TestEntity), Times.Once);
-            Assert.AreSame(TestValueEntity, actual);
+            //MockValueEntityDelegate.Verify(del => del(TestEntity), Times.Once);
+            //Assert.AreSame(TestValueEntity, actual);
         }
     }
 }

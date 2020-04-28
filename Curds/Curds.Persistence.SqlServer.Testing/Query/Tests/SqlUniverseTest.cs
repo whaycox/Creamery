@@ -15,18 +15,21 @@ namespace Curds.Persistence.Query.Tests
     using Persistence.Domain;
     using Model.Domain;
     using Abstraction;
+    using Model.Abstraction;
 
     [TestClass]
     public class SqlUniverseTest
     {
         private Table TestTable = new Table();
 
+        private Mock<IEntityModel<TestEntity>> MockEntityModel = new Mock<IEntityModel<TestEntity>>();
+
         private SqlUniverse<TestEntity> TestObject = new SqlUniverse<TestEntity>();
 
         [TestInitialize]
         public void Init()
         {
-            TestObject.Table = TestTable;
+            TestObject.Model = MockEntityModel.Object;
         }
 
         [TestMethod]
@@ -34,16 +37,16 @@ namespace Curds.Persistence.Query.Tests
         {
             ISqlQuery actual = TestObject.ProjectEntity();
 
-            actual.VerifyIsActually<ProjectEntityQuery<TestEntity>>();
+            Assert.IsInstanceOfType(actual, typeof(ProjectEntityQuery<TestEntity>));
         }
 
         [TestMethod]
-        public void ProjectEntityAttachesProjectedTable()
+        public void ProjectEntityAttachesModel()
         {
             ISqlQuery actual = TestObject.ProjectEntity();
 
             ProjectEntityQuery<TestEntity> query = actual.VerifyIsActually<ProjectEntityQuery<TestEntity>>();
-            Assert.AreSame(TestTable, query.ProjectedTable);
+            Assert.AreSame(MockEntityModel.Object, query.Model);
         }
     }
 }

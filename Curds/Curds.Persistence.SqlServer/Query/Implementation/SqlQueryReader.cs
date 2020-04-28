@@ -40,6 +40,13 @@ namespace Curds.Persistence.Query.Implementation
             throw new NotImplementedException();
         }
 
+        public string ReadString(int index)
+        {
+            if (DataReader.IsDBNull(index))
+                return null;
+            return DataReader.GetString(index);
+        }
+
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 

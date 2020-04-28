@@ -23,10 +23,8 @@ namespace Curds.Persistence.Query.Implementation
             where TEntity : IEntity
         {
             InsertQuery<TEntity> query = new InsertQuery<TEntity>();
-            query.Table = ModelMap.Table(typeof(TEntity));
-            query.AssignIdentityDelegate = ModelMap.AssignIdentityDelegate<TEntity>();
-            foreach (TEntity entity in entities)
-                query.Entities.Add(ModelMap.ValueEntity(entity));
+            query.Model = ModelMap.Entity<TEntity>();
+            query.Entities.AddRange(entities);
             return query;
         }
 
@@ -34,7 +32,7 @@ namespace Curds.Persistence.Query.Implementation
             where TEntity : IEntity
         {
             SqlUniverse<TEntity> universe = new SqlUniverse<TEntity>();
-            universe.Table = ModelMap.Table(typeof(TEntity));
+            universe.Model = ModelMap.Entity<TEntity>();
             return universe;
         }
     }

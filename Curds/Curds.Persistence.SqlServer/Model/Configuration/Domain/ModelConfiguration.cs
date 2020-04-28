@@ -6,6 +6,7 @@ namespace Curds.Persistence.Model.Configuration.Domain
 {
     using Persistence.Abstraction;
     using Abstraction;
+    using Model.Abstraction;
 
     public class ModelConfiguration<TModel> : IModelConfiguration
         where TModel : IDataModel

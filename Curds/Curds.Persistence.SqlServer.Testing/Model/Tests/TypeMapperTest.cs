@@ -17,7 +17,7 @@ namespace Curds.Persistence.Model.Tests
         [TestMethod]
         public void MapsTableTypes()
         {
-            var actual = TestObject.TableTypes<ITestDataModel>();
+            var actual = TestObject.EntityTypes<ITestDataModel>();
 
             Assert.AreEqual(2, actual.Count());
             var first = actual.First();
@@ -30,21 +30,21 @@ namespace Curds.Persistence.Model.Tests
         [ExpectedException(typeof(ModelException))]
         public void NonTablePropertiesThrowMappingTableTypes()
         {
-            TestObject.TableTypes<IPlainEntityPropertyModel>();
+            TestObject.EntityTypes<IPlainEntityPropertyModel>();
         }
 
         [TestMethod]
         [ExpectedException(typeof(ModelException))]
         public void WrongGenericPropertiesThrowMappingTableTypes()
         {
-            TestObject.TableTypes<IWrongGenericTypePropertyModel>();
+            TestObject.EntityTypes<IWrongGenericTypePropertyModel>();
         }
 
         [TestMethod]
         [ExpectedException(typeof(ModelException))]
         public void NonInterfaceModelThrowsMappingTableTypes()
         {
-            TestObject.TableTypes<NotAnInterfaceModel>();
+            TestObject.EntityTypes<NotAnInterfaceModel>();
         }
     }
 }

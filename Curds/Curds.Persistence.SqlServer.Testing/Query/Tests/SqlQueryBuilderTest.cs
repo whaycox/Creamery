@@ -24,6 +24,7 @@ namespace Curds.Persistence.Query.Tests
         private Table TestTable = new Table();
 
         private Mock<IModelMap<ITestDataModel>> MockModelMap = new Mock<IModelMap<ITestDataModel>>();
+        private Mock<IEntityModel<TestEntity>> MockEntityModel = new Mock<IEntityModel<TestEntity>>();
         private Mock<AssignIdentityDelegate> MockAssignIdentityDelegate = new Mock<AssignIdentityDelegate>();
 
         private SqlQueryBuilder<ITestDataModel> TestObject = null;
@@ -32,14 +33,8 @@ namespace Curds.Persistence.Query.Tests
         public void Init()
         {
             MockModelMap
-                .Setup(map => map.ValueEntity(It.IsAny<TestEntity>()))
-                .Returns(TestValueEntity);
-            MockModelMap
-                .Setup(map => map.Table(It.IsAny<Type>()))
-                .Returns(TestTable);
-            MockModelMap
-                .Setup(map => map.AssignIdentityDelegate<TestEntity>())
-                .Returns(MockAssignIdentityDelegate.Object);
+                .Setup(map => map.Entity<TestEntity>())
+                .Returns(MockEntityModel.Object);
 
             TestObject = new SqlQueryBuilder<ITestDataModel>(MockModelMap.Object);
         }
@@ -49,27 +44,24 @@ namespace Curds.Persistence.Query.Tests
         {
             ISqlQuery actual = TestObject.Insert(TestEntities);
 
-            actual.VerifyIsActually<InsertQuery<TestEntity>>();
+            Assert.IsInstanceOfType(actual, typeof(InsertQuery<TestEntity>));
         }
 
         [TestMethod]
-        public void InsertManySetsTable()
+        public void InsertBuildsModel()
         {
-            ISqlQuery actual = TestObject.Insert(TestEntities);
+            TestObject.Insert(TestEntities);
 
-            MockModelMap.Verify(map => map.Table(typeof(TestEntity)), Times.Once);
-            InsertQuery<TestEntity> testQuery = actual.VerifyIsActually<InsertQuery<TestEntity>>();
-            Assert.AreSame(testQuery.Table, TestTable);
+            MockModelMap.Verify(map => map.Entity<TestEntity>(), Times.Once);
         }
 
         [TestMethod]
-        public void InsertManySetsAssignIdentityDelegate()
+        public void InsertSetsModel()
         {
             ISqlQuery actual = TestObject.Insert(TestEntities);
 
-            MockModelMap.Verify(map => map.AssignIdentityDelegate<TestEntity>());
             InsertQuery<TestEntity> testQuery = actual.VerifyIsActually<InsertQuery<TestEntity>>();
-            Assert.AreSame(testQuery.AssignIdentityDelegate, MockAssignIdentityDelegate.Object);
+            Assert.AreSame(MockEntityModel.Object, testQuery.Model);
         }
 
         private void PopulateNEntities(int entities)
@@ -84,30 +76,14 @@ namespace Curds.Persistence.Query.Tests
         [DataRow(5)]
         [DataRow(7)]
         [DataRow(10)]
-        public void InsertManyMapsValueEntities(int entities)
-        {
-            PopulateNEntities(entities);
-
-            TestObject.Insert(TestEntities);
-
-            MockModelMap.Verify(map => map.ValueEntity(TestEntity), Times.Exactly(entities));
-        }
-
-        [DataTestMethod]
-        [DataRow(1)]
-        [DataRow(3)]
-        [DataRow(5)]
-        [DataRow(7)]
-        [DataRow(10)]
-        public void InsertManyAttachesEachToParsedQuery(int entities)
+        public void InsertSetsEntities(int entities)
         {
             PopulateNEntities(entities);
 
             ISqlQuery actual = TestObject.Insert(TestEntities);
 
             InsertQuery<TestEntity> testQuery = actual.VerifyIsActually<InsertQuery<TestEntity>>();
-            Assert.AreEqual(entities, testQuery.Entities.Count);
-            Assert.IsTrue(testQuery.Entities.All(entity => entity == TestValueEntity));
+            CollectionAssert.AreEqual(TestEntities, testQuery.Entities);
         }
 
         [TestMethod]
@@ -115,17 +91,24 @@ namespace Curds.Persistence.Query.Tests
         {
             ISqlUniverse<TestEntity> actual = TestObject.From<TestEntity>();
 
-            actual.VerifyIsActually<SqlUniverse<TestEntity>>();
+            Assert.IsInstanceOfType(actual, typeof(SqlUniverse<TestEntity>));
         }
 
         [TestMethod]
-        public void FromSetsTable()
+        public void FromBuildsModel()
+        {
+            TestObject.From<TestEntity>();
+
+            MockModelMap.Verify(map => map.Entity<TestEntity>(), Times.Once);
+        }
+
+        [TestMethod]
+        public void FromSetsModel()
         {
             ISqlUniverse<TestEntity> actual = TestObject.From<TestEntity>();
 
-            MockModelMap.Verify(map => map.Table(typeof(TestEntity)), Times.Once);
             SqlUniverse<TestEntity> universe = actual.VerifyIsActually<SqlUniverse<TestEntity>>();
-            Assert.AreSame(TestTable, universe.Table);
+            Assert.AreSame(MockEntityModel.Object, universe.Model);
         }
     }
 }

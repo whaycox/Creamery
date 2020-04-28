@@ -7,7 +7,7 @@ namespace Curds.Persistence.Model.Abstraction
 
     public interface IPlainEntityPropertyModel : IDataModel
     {
-        ITable<TestEntity> Test { get; }
+        IEntityModel<TestEntity> Test { get; }
         OtherEntity Other { get; }
     }
 }
