@@ -1,20 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Linq;
 
 namespace Curds.Persistence.Model.Implementation
 {
-    using Persistence.Abstraction;
     using Abstraction;
-    using Query.Domain;
-    using Persistence.Domain;
     using Domain;
+    using Persistence.Abstraction;
 
-    internal abstract class ModelMap
-    { }
-
-    internal class ModelMap<TModel> : ModelMap, IModelMap<TModel>
+    internal class ModelMap<TModel> : IModelMap<TModel>
         where TModel : IDataModel
     {
         private Dictionary<Type, Table> TablesByType { get; }
@@ -35,9 +28,9 @@ namespace Curds.Persistence.Model.Implementation
             {
                 _table = TablesByType[typeof(TEntity)],
 
-                AssignIdentityDelegate = AssignIdentityDelegatesByType[typeof(TEntity)],
-                ValueEntityDelegate = ValueEntityDelegatesByType[typeof(TEntity)],
-                ProjectEntityDelegate = ProjectEntityDelegatesByType[typeof(TEntity)] as ProjectEntityDelegate<TEntity>,
+                AssignIdentity = AssignIdentityDelegatesByType[typeof(TEntity)],
+                ValueEntity = ValueEntityDelegatesByType[typeof(TEntity)],
+                ProjectEntity = ProjectEntityDelegatesByType[typeof(TEntity)] as ProjectEntityDelegate<TEntity>,
             };
     }
 }

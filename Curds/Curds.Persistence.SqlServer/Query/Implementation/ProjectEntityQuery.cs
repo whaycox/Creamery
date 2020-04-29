@@ -30,7 +30,7 @@ namespace Curds.Persistence.Query.Implementation
         {
             List<TEntity> results = new List<TEntity>();
             while (await queryReader.Advance())
-                results.Add(Model.ProjectEntityDelegate(queryReader));
+                results.Add(Model.ProjectEntity(queryReader));
             Results = results;
         }
     }

@@ -17,7 +17,7 @@ namespace Curds.Persistence.Query.Implementation
     {
         public IEntityModel<TEntity> Model { get; set; }
         public List<TEntity> Entities { get; set; } = new List<TEntity>();
-        private List<ValueEntity<TEntity>> ValueEntities => Entities
+        private List<ValueEntity> ValueEntities => Entities
             .Select(entity => Model.ValueEntity(entity))
             .ToList();
 
@@ -44,7 +44,7 @@ namespace Curds.Persistence.Query.Implementation
         {
             if (!await queryReader.Advance())
                 throw new InvalidOperationException("There were less new identities than inserted entities");
-            Model.AssignIdentityDelegate(queryReader, entity);
+            Model.AssignIdentity(queryReader, entity);
         }
     }
 }

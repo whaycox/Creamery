@@ -1,38 +1,55 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using System.Threading.Tasks;
 
 namespace Curds.Persistence.Model.Tests
 {
+    using Abstraction;
+    using Domain;
     using Implementation;
     using Persistence.Abstraction;
-    using Abstraction;
     using Persistence.Domain;
-    using Query.Domain;
-    using Domain;
 
     [TestClass]
     public class ModelMapTest
     {
-        private Dictionary<string, Table> TestTablesByName = new Dictionary<string, Table>();
-        private string TestTableName = nameof(TestTableName);
+        private Type TestEntityType = typeof(TestEntity);
         private Table TestTable = new Table();
         private Dictionary<Type, Table> TestTablesByType = new Dictionary<Type, Table>();
-        private Type TestTableType = typeof(TestEntity);
         private Dictionary<Type, ValueEntityDelegate> TestValueEntityDelegatesByType = new Dictionary<Type, ValueEntityDelegate>();
-        private TestEntity TestEntity = new TestEntity();
-        private ValueEntity TestValueEntity = new ValueEntity<TestEntity>();
+        private Dictionary<Type, AssignIdentityDelegate> TestAssignEntityDelegatesByType = new Dictionary<Type, AssignIdentityDelegate>();
+        private Dictionary<Type, ProjectEntityDelegate<IEntity>> TestProjectEntityDelegatesByType = new Dictionary<Type, ProjectEntityDelegate<IEntity>>();
 
         private Mock<IModelBuilder> MockModelBuilder = new Mock<IModelBuilder>();
         private Mock<ValueEntityDelegate> MockValueEntityDelegate = new Mock<ValueEntityDelegate>();
+        private Mock<AssignIdentityDelegate> MockAssignEntityDelegate = new Mock<AssignIdentityDelegate>();
+        private Mock<ProjectEntityDelegate<TestEntity>> MockProjectEntityDelegate = new Mock<ProjectEntityDelegate<TestEntity>>();
 
         private ModelMap<ITestDataModel> TestObject = null;
+
+        [TestInitialize]
+        public void Init()
+        {
+            TestTablesByType.Add(TestEntityType, TestTable);
+            TestValueEntityDelegatesByType.Add(TestEntityType, MockValueEntityDelegate.Object);
+            TestAssignEntityDelegatesByType.Add(TestEntityType, MockAssignEntityDelegate.Object);
+            TestProjectEntityDelegatesByType.Add(TestEntityType, MockProjectEntityDelegate.Object);
+
+            MockModelBuilder
+                .Setup(builder => builder.TablesByType<ITestDataModel>())
+                .Returns(TestTablesByType);
+            MockModelBuilder
+                .Setup(builder => builder.ValueEntityDelegatesByType<ITestDataModel>())
+                .Returns(TestValueEntityDelegatesByType);
+            MockModelBuilder
+                .Setup(builder => builder.AssignIdentityDelegatesByType<ITestDataModel>())
+                .Returns(TestAssignEntityDelegatesByType);
+            MockModelBuilder
+                .Setup(builder => builder.ProjectEntityDelegatesByType<ITestDataModel>())
+                .Returns(TestProjectEntityDelegatesByType);
+
+        }
 
         private void BuildTestObject()
         {
@@ -56,37 +73,43 @@ namespace Curds.Persistence.Model.Tests
         }
 
         [TestMethod]
-        public void CanGetMappedTableByType()
+        public void BuildingMapGetsAssignIdentityDelegatesByType()
         {
-            TestTablesByType.Add(TestTableType, TestTable);
-            MockModelBuilder
-                .Setup(builder => builder.TablesByType<ITestDataModel>())
-                .Returns(TestTablesByType);
             BuildTestObject();
 
-            throw new NotImplementedException();
-            //Table actual = TestObject.Table(TestTableType);
-
-            //Assert.AreSame(TestTable, actual);
+            MockModelBuilder.Verify(builder => builder.AssignIdentityDelegatesByType<ITestDataModel>(), Times.Once);
         }
 
         [TestMethod]
-        public void ValueEntityInvokesDelegateByType()
+        public void BuildingMapGetsProjectEntityDelegatesByType()
         {
-            MockValueEntityDelegate
-                .Setup(del => del(It.IsAny<BaseEntity>()))
-                .Returns(TestValueEntity);
-            TestValueEntityDelegatesByType.Add(TestTableType, MockValueEntityDelegate.Object);
-            MockModelBuilder
-                .Setup(builder => builder.ValueEntityDelegatesByType<ITestDataModel>())
-                .Returns(TestValueEntityDelegatesByType);
             BuildTestObject();
 
-            throw new NotImplementedException();
-            //ValueEntity actual = TestObject.ValueEntity(TestEntity);
+            MockModelBuilder.Verify(builder => builder.ProjectEntityDelegatesByType<ITestDataModel>(), Times.Once);
+        }
 
-            //MockValueEntityDelegate.Verify(del => del(TestEntity), Times.Once);
-            //Assert.AreSame(TestValueEntity, actual);
+        [TestMethod]
+        public void EntityReturnsExpectedType()
+        {
+            BuildTestObject();
+
+            IEntityModel<TestEntity> actual = TestObject.Entity<TestEntity>();
+
+            Assert.IsInstanceOfType(actual, typeof(EntityModel<TestEntity>));
+        }
+
+        [TestMethod]
+        public void EntityModelHasDelegatesFromDictionaries()
+        {
+            BuildTestObject();
+
+            IEntityModel<TestEntity> actual = TestObject.Entity<TestEntity>();
+
+            EntityModel<TestEntity> model = (EntityModel<TestEntity>)actual;
+            Assert.AreSame(TestTable, model._table);
+            Assert.AreSame(MockValueEntityDelegate.Object, model.ValueEntity);
+            Assert.AreSame(MockAssignEntityDelegate.Object, model.AssignIdentity);
+            Assert.AreSame(MockProjectEntityDelegate.Object, model.ProjectEntity);
         }
     }
 }

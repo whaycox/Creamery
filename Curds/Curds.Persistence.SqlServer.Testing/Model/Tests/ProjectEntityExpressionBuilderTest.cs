@@ -39,10 +39,10 @@ namespace Curds.Persistence.Model.Tests
             };
 
             MockQueryReader
-                .Setup(reader => reader.ReadInt(It.IsAny<int>()))
+                .Setup(reader => reader.ReadInt(It.IsAny<string>()))
                 .Returns(TestReadInt);
             MockQueryReader
-                .Setup(reader => reader.ReadString(It.IsAny<int>()))
+                .Setup(reader => reader.ReadString(It.IsAny<string>()))
                 .Returns(TestReadString);
         }
 
@@ -59,8 +59,8 @@ namespace Curds.Persistence.Model.Tests
 
             projection(MockQueryReader.Object);
 
-            MockQueryReader.Verify(reader => reader.ReadInt(0), Times.Once);
-            MockQueryReader.Verify(reader => reader.ReadString(1), Times.Once);
+            MockQueryReader.Verify(reader => reader.ReadInt(nameof(TestEntity.ID)), Times.Once);
+            MockQueryReader.Verify(reader => reader.ReadString(nameof(TestEntity.Name)), Times.Once);
         }
 
         [TestMethod]

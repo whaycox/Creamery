@@ -20,7 +20,7 @@ namespace Curds.Persistence.Query.Tests
     public class SqlQueryWriterTest : SqlQueryWriterTemplate
     {
         private List<ValueEntity> TestValueEntities = new List<ValueEntity>();
-        private ValueEntity TestValueEntity = new ValueEntity<TestEntity>();
+        private ValueEntity TestValueEntity = new ValueEntity();
         private IntValue TestIntValue = new IntValue { Name = nameof(TestIntValue) };
         private int TestInt = 10;
         private string TestFormattedTokens = nameof(TestFormattedTokens);
@@ -459,6 +459,15 @@ namespace Curds.Persistence.Query.Tests
         }
 
         [TestMethod]
+        public void SelectAddsPhraseToTokens()
+        {
+            TestObject.Select(TestTable.Columns);
+
+            Assert.AreEqual(1, TestObject.Tokens.Count);
+            Assert.AreSame(MockPhraseToken.Object, TestObject.Tokens[0]);
+        }
+
+        [TestMethod]
         public void SelectBuildsSelectKeyword()
         {
             TestObject.Select(TestTable.Columns);
@@ -473,21 +482,23 @@ namespace Curds.Persistence.Query.Tests
 
             TestObject.Select(TestTable.Columns);
 
-            MockTokenFactory.Verify(factory => factory.ColumnList(TestTable.Columns, false), Times.Once);
+            MockTokenFactory.Verify(factory => factory.SelectList(TestTable.Columns), Times.Once);
         }
 
         [TestMethod]
-        public void SelectAddsExpectedTokens()
+        public void SelectBuildsExpectedPhrase()
         {
             TestTable.Columns.Add(TestColumnOne);
             ISqlQueryToken selectKeyword = SetupFactoryForKeyword(SqlQueryKeyword.SELECT);
-            ISqlQueryToken columnList = SetupFactory(factory => factory.ColumnList(It.IsAny<IEnumerable<Column>>(), It.IsAny<bool>()));
+            ISqlQueryToken selectList = SetupFactory(factory => factory.SelectList(It.IsAny<IEnumerable<Column>>()));
 
             TestObject.Select(TestTable.Columns);
 
-            Assert.AreEqual(2, TestObject.Tokens.Count);
-            Assert.AreSame(selectKeyword, TestObject.Tokens[0]);
-            Assert.AreSame(columnList, TestObject.Tokens[1]);
+            Assert.AreEqual(1, SuppliedPhraseTokens.Count);
+            ISqlQueryToken[] phraseTokens = SuppliedPhraseTokens[0];
+            Assert.AreEqual(2, phraseTokens.Length);
+            Assert.AreSame(selectKeyword, phraseTokens[0]);
+            Assert.AreSame(selectList, phraseTokens[1]);
         }
 
         [TestMethod]

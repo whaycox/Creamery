@@ -194,7 +194,7 @@ namespace Curds.Persistence.Model.Tests
         private OtherEntity TestOtherEntity = new OtherEntity();
         private ParameterExpression OtherEntityParameter = Expression.Parameter(typeof(OtherEntity), nameof(OtherEntityParameter));
         private List<PropertyInfo> OtherEntityProperties = null;
-        private ValueEntity TestValueEntity = new ValueEntity<OtherEntity>();
+        private ValueEntity TestValueEntity = new ValueEntity();
         private ParameterExpression ValueEntityParameter = Expression.Parameter(typeof(ValueEntity), nameof(ValueEntityParameter));
 
         private ValueExpressionBuilder TestObject = new ValueExpressionBuilder();
@@ -220,19 +220,6 @@ namespace Curds.Persistence.Model.Tests
             ValueEntity actual = valueEntityDelegate(TestOtherEntity);
 
             Assert.AreEqual(0, actual.Values.Count);
-        }
-
-        [TestMethod]
-        public void ValueEntityDelegatesAttachesSourceEntity()
-        {
-            OtherEntityProperties.Clear();
-            ValueEntityDelegate valueEntityDelegate = TestObject.BuildValueEntityDelegate(typeof(OtherEntity), OtherEntityProperties);
-
-            ValueEntity actual = valueEntityDelegate(TestOtherEntity);
-
-            Assert.IsInstanceOfType(actual, typeof(ValueEntity<OtherEntity>));
-            ValueEntity<OtherEntity> otherValueEntity = (ValueEntity<OtherEntity>)actual;
-            Assert.AreSame(TestOtherEntity, otherValueEntity.Source);
         }
 
         [TestMethod]

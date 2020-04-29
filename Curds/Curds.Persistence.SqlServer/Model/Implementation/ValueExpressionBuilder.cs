@@ -70,23 +70,20 @@ namespace Curds.Persistence.Model.Implementation
 
         public ValueEntityDelegate BuildValueEntityDelegate(Type entityType, IEnumerable<PropertyInfo> valueProperties)
         {
-            Type valueEntityType = typeof(ValueEntity<>).MakeGenericType(new Type[] { entityType });
             ParameterExpression iEntityParameter = Expression.Parameter(typeof(IEntity), nameof(iEntityParameter));
             ParameterExpression entityParameter = Expression.Parameter(entityType, nameof(entityParameter));
-            ParameterExpression valueEntityParameter = Expression.Parameter(valueEntityType, nameof(valueEntityParameter));
+            ParameterExpression valueEntityParameter = Expression.Parameter(typeof(ValueEntity), nameof(valueEntityParameter));
             List<ParameterExpression> builderExpressionParameters = new List<ParameterExpression>
             {
                 entityParameter,
                 valueEntityParameter,
             };
 
-            ConstructorInfo valueEntityConstructor = valueEntityType.GetConstructor(new Type[0]);
-            MethodInfo setSourceMethod = valueEntityType.GetProperty(nameof(ValueEntity<IEntity>.Source)).SetMethod;
+            ConstructorInfo valueEntityConstructor = typeof(ValueEntity).GetConstructor(new Type[0]);
             List<Expression> builderExpressions = new List<Expression>
             {
                 Expression.Assign(entityParameter, Expression.Convert(iEntityParameter, entityType)),
                 Expression.Assign(valueEntityParameter, Expression.New(valueEntityConstructor)),
-                CallMethodExpression(valueEntityParameter, setSourceMethod, Expression.Convert(iEntityParameter, entityType)),
             };
 
             foreach (PropertyInfo valueProperty in valueProperties)

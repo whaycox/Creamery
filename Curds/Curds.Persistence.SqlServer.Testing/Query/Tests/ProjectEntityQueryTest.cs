@@ -23,9 +23,12 @@ namespace Curds.Persistence.Query.Tests
         private List<Column> TestColumns = new List<Column>();
         private Column TestColumnOne = new Column();
         private Column TestColumnTwo = new Column();
+        private TestEntity TestEntity = new TestEntity();
 
         private Mock<ISqlQueryWriter> MockQueryWriter = new Mock<ISqlQueryWriter>();
+        private Mock<ISqlQueryReader> MockQueryReader = new Mock<ISqlQueryReader>();
         private Mock<IEntityModel<TestEntity>> MockEntityModel = new Mock<IEntityModel<TestEntity>>();
+        private Mock<ProjectEntityDelegate<TestEntity>> MockProjectEntityDelegate = new Mock<ProjectEntityDelegate<TestEntity>>();
 
         private ProjectEntityQuery<TestEntity> TestObject = new ProjectEntityQuery<TestEntity>();
 
@@ -39,6 +42,12 @@ namespace Curds.Persistence.Query.Tests
             MockEntityModel
                 .Setup(model => model.Table())
                 .Returns(TestTable);
+            MockEntityModel
+                .Setup(model => model.ProjectEntity)
+                .Returns(MockProjectEntityDelegate.Object);
+            MockProjectEntityDelegate
+                .Setup(del => del(It.IsAny<ISqlQueryReader>()))
+                .Returns(TestEntity);
 
             TestObject.Model = MockEntityModel.Object;
         }
@@ -60,11 +69,46 @@ namespace Curds.Persistence.Query.Tests
             MockQueryWriter.Verify(writer => writer.From(TestTable), Times.Once);
         }
 
-        [TestMethod]
-        public void Read()
+        private void SetupReaderForNEntities(int entities)
         {
-            throw new NotImplementedException();
+            var sequenceSetup = MockQueryReader.SetupSequence(reader => reader.Advance());
+            for (int i = 0; i < entities; i++)
+                sequenceSetup.ReturnsAsync(true);
+            sequenceSetup.ReturnsAsync(false);
         }
 
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(5)]
+        [DataRow(7)]
+        [DataRow(10)]
+        [DataRow(13)]
+        [DataRow(20)]
+        public async Task ProcessResultsProjectsEachReturnedEntity(int entities)
+        {
+            SetupReaderForNEntities(entities);
+
+            await TestObject.ProcessResult(MockQueryReader.Object);
+
+            MockProjectEntityDelegate.Verify(del => del(MockQueryReader.Object), Times.Exactly(entities));
+        }
+
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(5)]
+        [DataRow(7)]
+        [DataRow(10)]
+        [DataRow(13)]
+        [DataRow(20)]
+        public async Task ProcessResultsAddsEachProjectionToResults(int entities)
+        {
+            SetupReaderForNEntities(entities);
+
+            await TestObject.ProcessResult(MockQueryReader.Object);
+
+            Assert.AreEqual(entities, TestObject.Results.Count);
+            foreach (TestEntity entity in TestObject.Results)
+                Assert.AreSame(TestEntity, entity);
+        }
     }
 }

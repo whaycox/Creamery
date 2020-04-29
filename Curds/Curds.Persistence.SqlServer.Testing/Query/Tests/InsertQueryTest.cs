@@ -20,10 +20,12 @@ namespace Curds.Persistence.Query.Tests
     {
         private Table TestTable = new Table();
         private TestEntity TestEntity = new TestEntity();
+        private ValueEntity TestValueEntity = new ValueEntity();
 
         private Mock<ISqlQueryWriter> MockQueryWriter = new Mock<ISqlQueryWriter>();
         private Mock<ISqlQueryReader> MockQueryReader = new Mock<ISqlQueryReader>();
         private Mock<IEntityModel<TestEntity>> MockEntityModel = new Mock<IEntityModel<TestEntity>>();
+        private Mock<ValueEntityDelegate> MockValueEntityDelegate = new Mock<ValueEntityDelegate>();
         private Mock<AssignIdentityDelegate> MockAssignIdentityDelegate = new Mock<AssignIdentityDelegate>();
 
         private InsertQuery<TestEntity> TestObject = new InsertQuery<TestEntity>();
@@ -35,7 +37,13 @@ namespace Curds.Persistence.Query.Tests
                 .Setup(model => model.Table())
                 .Returns(TestTable);
             MockEntityModel
-                .Setup(model => model.AssignIdentityDelegate)
+                .Setup(model => model.ValueEntity)
+                .Returns(MockValueEntityDelegate.Object);
+            MockValueEntityDelegate
+                .Setup(del => del(It.IsAny<IEntity>()))
+                .Returns(TestValueEntity);
+            MockEntityModel
+                .Setup(model => model.AssignIdentity)
                 .Returns(MockAssignIdentityDelegate.Object);
 
             TestObject.Model = MockEntityModel.Object;
@@ -76,11 +84,11 @@ namespace Curds.Persistence.Query.Tests
         }
 
         [TestMethod]
-        public void WriteBuildsValueEntityFromModel()
+        public void WriteBuildsValueEntityFromDelegate()
         {
             TestObject.Write(MockQueryWriter.Object);
 
-            MockEntityModel.Verify(model => model.ValueEntity(TestEntity), Times.Once);
+            MockValueEntityDelegate.Verify(del => del(TestEntity), Times.Once);
         }
 
         [DataTestMethod]

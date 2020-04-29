@@ -14,12 +14,10 @@ namespace Curds.Persistence.Model.Implementation
     {
         public Table _table = null;
 
-        public AssignIdentityDelegate AssignIdentityDelegate { get; set; }
-        public ProjectEntityDelegate<TEntity> ProjectEntityDelegate { get; set; }
-        public ValueEntityDelegate ValueEntityDelegate { get; set; }
+        public AssignIdentityDelegate AssignIdentity { get; set; }
+        public ProjectEntityDelegate<TEntity> ProjectEntity { get; set; }
+        public ValueEntityDelegate ValueEntity { get; set; }
 
         public Table Table() => _table;
-
-        public ValueEntity<TEntity> ValueEntity(TEntity entity) => ValueEntityDelegate(entity) as ValueEntity<TEntity>;
     }
 }

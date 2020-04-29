@@ -12,10 +12,15 @@ namespace Curds.Persistence.Query.Abstraction
     {
         Task<bool> Advance();
 
-        byte? ReadByte(int index);
-        short? ReadShort(int index);
-        int? ReadInt(int index);
-        long? ReadLong(int index);
-        string ReadString(int index);
+        string ReadString(string columnName);
+        bool? ReadBool(string columnName);
+        byte? ReadByte(string columnName);
+        short? ReadShort(string columnName);
+        int? ReadInt(string columnName);
+        long? ReadLong(string columnName);
+        DateTime? ReadDateTime(string columnName);
+        DateTimeOffset? ReadDateTimeOffset(string columnName);
+        decimal? ReadDecimal(string columnName);
+        double? ReadDouble(string columnName);
     }
 }

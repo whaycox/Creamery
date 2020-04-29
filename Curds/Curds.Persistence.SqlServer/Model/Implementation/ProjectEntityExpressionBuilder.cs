@@ -10,77 +10,12 @@ namespace Curds.Persistence.Model.Implementation
     using Persistence.Abstraction;
     using Query.Abstraction;
 
-    internal delegate Expression PopulateValueDelegate(ParameterExpression entityParameter, PropertyInfo valueProperty, ParameterExpression queryReaderParameter);
-
-    internal class ProjectEntityExpressionBuilder : BaseExpressionBuilder, IProjectEntityExpressionBuilder
+    internal class ProjectEntityExpressionBuilder : BaseQueryReaderExpressionBuilder, IProjectEntityExpressionBuilder
     {
-        private Dictionary<Type, PopulateValueDelegate> PopulateTypeMap { get; }
-
-        public ProjectEntityExpressionBuilder()
-        {
-            PopulateTypeMap = new Dictionary<Type, PopulateValueDelegate>
-            {
-                { typeof(string), PopulateStringValue },
-                { typeof(bool), PopulateBoolValue },
-                { typeof(bool?), PopulateNullableBoolValue },
-                { typeof(byte), PopulateByteValue },
-                { typeof(byte?), PopulateNullableByteValue },
-                { typeof(short), PopulateShortValue },
-                { typeof(short?), PopulateNullableShortValue },
-                { typeof(int), PopulateIntValue },
-                { typeof(int?), PopulateNullableIntValue },
-                { typeof(long), PopulateLongValue },
-                { typeof(long?), PopulateNullableLongValue },
-                { typeof(DateTime), PopulateDateTimeValue },
-                { typeof(DateTime?), PopulateNullableDateTimeValue },
-                { typeof(DateTimeOffset), PopulateDateTimeOffsetValue },
-                { typeof(DateTimeOffset?), PopulateNullableDateTimeOffsetValue },
-                { typeof(decimal), PopulateDecimalValue },
-                { typeof(decimal?), PopulateNullableDecimalValue },
-                { typeof(double), PopulateDoubleValue },
-                { typeof(double?), PopulateNullableDoubleValue }
-            };
-        }
-
-        private Expression PopulateBoolValue(ParameterExpression entityParameter, PropertyInfo valueProperty, ParameterExpression queryReaderParameter) => 
-            Expression.Throw(Expression.Constant(new NotImplementedException()));
-        private Expression PopulateNullableBoolValue(ParameterExpression entityParameter, PropertyInfo valueProperty, ParameterExpression queryReaderParameter) =>
-            Expression.Throw(Expression.Constant(new NotImplementedException()));
-        private Expression PopulateByteValue(ParameterExpression entityParameter, PropertyInfo valueProperty, ParameterExpression queryReaderParameter) =>
-            Expression.Throw(Expression.Constant(new NotImplementedException()));
-        private Expression PopulateNullableByteValue(ParameterExpression entityParameter, PropertyInfo valueProperty, ParameterExpression queryReaderParameter) =>
-            Expression.Throw(Expression.Constant(new NotImplementedException()));
-        private Expression PopulateShortValue(ParameterExpression entityParameter, PropertyInfo valueProperty, ParameterExpression queryReaderParameter) =>
-            Expression.Throw(Expression.Constant(new NotImplementedException()));
-        private Expression PopulateNullableShortValue(ParameterExpression entityParameter, PropertyInfo valueProperty, ParameterExpression queryReaderParameter) =>
-            Expression.Throw(Expression.Constant(new NotImplementedException()));
-        private Expression PopulateNullableIntValue(ParameterExpression entityParameter, PropertyInfo valueProperty, ParameterExpression queryReaderParameter) =>
-            Expression.Throw(Expression.Constant(new NotImplementedException()));
-        private Expression PopulateLongValue(ParameterExpression entityParameter, PropertyInfo valueProperty, ParameterExpression queryReaderParameter) =>
-            Expression.Throw(Expression.Constant(new NotImplementedException()));
-        private Expression PopulateNullableLongValue(ParameterExpression entityParameter, PropertyInfo valueProperty, ParameterExpression queryReaderParameter) =>
-            Expression.Throw(Expression.Constant(new NotImplementedException()));
-        private Expression PopulateDateTimeValue(ParameterExpression entityParameter, PropertyInfo valueProperty, ParameterExpression queryReaderParameter) =>
-            Expression.Throw(Expression.Constant(new NotImplementedException()));
-        private Expression PopulateNullableDateTimeValue(ParameterExpression entityParameter, PropertyInfo valueProperty, ParameterExpression queryReaderParameter) =>
-            Expression.Throw(Expression.Constant(new NotImplementedException()));
-        private Expression PopulateDateTimeOffsetValue(ParameterExpression entityParameter, PropertyInfo valueProperty, ParameterExpression queryReaderParameter) =>
-            Expression.Throw(Expression.Constant(new NotImplementedException()));
-        private Expression PopulateNullableDateTimeOffsetValue(ParameterExpression entityParameter, PropertyInfo valueProperty, ParameterExpression queryReaderParameter) =>
-            Expression.Throw(Expression.Constant(new NotImplementedException()));
-        private Expression PopulateDecimalValue(ParameterExpression entityParameter, PropertyInfo valueProperty, ParameterExpression queryReaderParameter) =>
-            Expression.Throw(Expression.Constant(new NotImplementedException()));
-        private Expression PopulateNullableDecimalValue(ParameterExpression entityParameter, PropertyInfo valueProperty, ParameterExpression queryReaderParameter) =>
-            Expression.Throw(Expression.Constant(new NotImplementedException()));
-        private Expression PopulateDoubleValue(ParameterExpression entityParameter, PropertyInfo valueProperty, ParameterExpression queryReaderParameter) =>
-            Expression.Throw(Expression.Constant(new NotImplementedException()));
-        private Expression PopulateNullableDoubleValue(ParameterExpression entityParameter, PropertyInfo valueProperty, ParameterExpression queryReaderParameter) =>
-            Expression.Throw(Expression.Constant(new NotImplementedException()));
-
         private Expression PopulateIntValue(ParameterExpression entityParameter, PropertyInfo valueProperty, ParameterExpression queryReaderParameter)
         {
             MethodInfo readIntMethod = typeof(ISqlQueryReader).GetMethod(nameof(ISqlQueryReader.ReadInt));
-            Expression readIntExpression = Expression.Call(queryReaderParameter, readIntMethod, Expression.Constant(0, typeof(int)));
+            Expression readIntExpression = Expression.Call(queryReaderParameter, readIntMethod, Expression.Constant(valueProperty.Name, typeof(string)));
             MethodInfo nullableIntValueMethod = typeof(int?).GetProperty(nameof(Nullable<int>.Value)).GetMethod;
             Expression nullableIntValueExpression = Expression.Call(readIntExpression, nullableIntValueMethod);
             return Expression.Call(entityParameter, valueProperty.SetMethod, nullableIntValueExpression);
@@ -89,7 +24,7 @@ namespace Curds.Persistence.Model.Implementation
         private Expression PopulateStringValue(ParameterExpression entityParameter, PropertyInfo valueProperty, ParameterExpression queryReaderParameter)
         {
             MethodInfo readStringMethod = typeof(ISqlQueryReader).GetMethod(nameof(ISqlQueryReader.ReadString));
-            Expression readStringExpression = Expression.Call(queryReaderParameter, readStringMethod, Expression.Constant(1, typeof(int)));
+            Expression readStringExpression = Expression.Call(queryReaderParameter, readStringMethod, Expression.Constant(valueProperty.Name, typeof(string)));
             return Expression.Call(entityParameter, valueProperty.SetMethod, readStringExpression);
         }
 
@@ -125,12 +60,6 @@ namespace Curds.Persistence.Model.Implementation
                 .Lambda(delegateType, projectionBlock, queryReaderParameter)
                 .Compile();
             return projection as ProjectEntityDelegate<IEntity>;
-        }
-        private Expression PopulateValueFromReader(ParameterExpression entityParameter, PropertyInfo valueProperty, ParameterExpression queryReaderParameter)
-        {
-            if (!PopulateTypeMap.TryGetValue(valueProperty.PropertyType, out PopulateValueDelegate populateDelegate))
-                throw new ArgumentException($"Unsupported type for {nameof(valueProperty)}, {valueProperty.PropertyType}");
-            return populateDelegate(entityParameter, valueProperty, queryReaderParameter);
         }
     }
 }

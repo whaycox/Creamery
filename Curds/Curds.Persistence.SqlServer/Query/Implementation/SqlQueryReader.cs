@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Data.SqlClient;
 
 namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
+    using Domain;
     using System.Threading.Tasks;
 
     internal class SqlQueryReader : ISqlQueryReader
@@ -19,32 +18,96 @@ namespace Curds.Persistence.Query.Implementation
 
         public Task<bool> Advance() => DataReader.ReadAsync();
 
-        public byte? ReadByte(int index)
+        private int GetIndex(string columnName)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return DataReader.GetOrdinal(columnName);
+            }
+            catch (IndexOutOfRangeException)
+            {
+                throw new InvalidColumnNameException(columnName);
+            }
         }
 
-        public short? ReadShort(int index)
+        public string ReadString(string columnName)
         {
-            throw new NotImplementedException();
+            int index = GetIndex(columnName);
+            if (DataReader.IsDBNull(index))
+                return null;
+            return DataReader.GetString(index);
         }
-        public int? ReadInt(int index)
+
+        public bool? ReadBool(string columnName)
         {
+            int index = GetIndex(columnName);
+            if (DataReader.IsDBNull(index))
+                return null;
+            return DataReader.GetBoolean(index);
+        }
+
+        public byte? ReadByte(string columnName)
+        {
+            int index = GetIndex(columnName);
+            if (DataReader.IsDBNull(index))
+                return null;
+            return DataReader.GetByte(index);
+        }
+
+        public short? ReadShort(string columnName)
+        {
+            int index = GetIndex(columnName);
+            if (DataReader.IsDBNull(index))
+                return null;
+            return DataReader.GetInt16(index);
+        }
+
+        public int? ReadInt(string columnName)
+        {
+            int index = GetIndex(columnName);
             if (DataReader.IsDBNull(index))
                 return null;
             return DataReader.GetInt32(index);
         }
 
-        public long? ReadLong(int index)
+        public long? ReadLong(string columnName)
         {
-            throw new NotImplementedException();
-        }
-
-        public string ReadString(int index)
-        {
+            int index = GetIndex(columnName);
             if (DataReader.IsDBNull(index))
                 return null;
-            return DataReader.GetString(index);
+            return DataReader.GetInt64(index);
+        }
+
+        public DateTime? ReadDateTime(string columnName)
+        {
+            int index = GetIndex(columnName);
+            if (DataReader.IsDBNull(index))
+                return null;
+            return DataReader.GetDateTime(index);
+        }
+
+        public DateTimeOffset? ReadDateTimeOffset(string columnName)
+        {
+            int index = GetIndex(columnName);
+            if (DataReader.IsDBNull(index))
+                return null;
+            return DataReader.GetDateTimeOffset(index);
+        }
+
+        public decimal? ReadDecimal(string columnName)
+        {
+            int index = GetIndex(columnName);
+            if (DataReader.IsDBNull(index))
+                return null;
+            return DataReader.GetDecimal(index);
+        }
+
+        public double? ReadDouble(string columnName)
+        {
+            int index = GetIndex(columnName);
+            if (DataReader.IsDBNull(index))
+                return null;
+            return DataReader.GetDouble(index);
         }
 
         #region IDisposable Support

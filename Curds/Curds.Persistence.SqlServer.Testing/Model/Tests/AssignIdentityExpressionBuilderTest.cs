@@ -37,7 +37,7 @@ namespace Curds.Persistence.Model.Tests
         public void BuiltDelegateAssignsByteIdentity()
         {
             MockQueryReader
-                .Setup(reader => reader.ReadByte(It.IsAny<int>()))
+                .Setup(reader => reader.ReadByte(It.IsAny<string>()))
                 .Returns(TestByteIdentity);
             AssignIdentityDelegate actual = TestObject.BuildAssignIdentityDelegate(typeof(OtherEntity), TestByteProperty);
             actual(MockQueryReader.Object, TestEntity);
@@ -49,7 +49,7 @@ namespace Curds.Persistence.Model.Tests
         public void BuiltDelegateAssignsShortIdentity()
         {
             MockQueryReader
-                .Setup(reader => reader.ReadShort(It.IsAny<int>()))
+                .Setup(reader => reader.ReadShort(It.IsAny<string>()))
                 .Returns(TestShortIdentity);
             AssignIdentityDelegate actual = TestObject.BuildAssignIdentityDelegate(typeof(OtherEntity), TestShortProperty);
             actual(MockQueryReader.Object, TestEntity);
@@ -61,7 +61,7 @@ namespace Curds.Persistence.Model.Tests
         public void BuiltDelegateAssignsIntIdentity()
         {
             MockQueryReader
-                .Setup(reader => reader.ReadInt(It.IsAny<int>()))
+                .Setup(reader => reader.ReadInt(It.IsAny<string>()))
                 .Returns(TestIntIdentity);
             AssignIdentityDelegate actual = TestObject.BuildAssignIdentityDelegate(typeof(OtherEntity), TestIntProperty);
             actual(MockQueryReader.Object, TestEntity);
@@ -73,7 +73,7 @@ namespace Curds.Persistence.Model.Tests
         public void BuiltDelegateAssignsLongIdentity()
         {
             MockQueryReader
-                .Setup(reader => reader.ReadLong(It.IsAny<int>()))
+                .Setup(reader => reader.ReadLong(It.IsAny<string>()))
                 .Returns(TestLongIdentity);
             AssignIdentityDelegate actual = TestObject.BuildAssignIdentityDelegate(typeof(OtherEntity), TestLongProperty);
             actual(MockQueryReader.Object, TestEntity);

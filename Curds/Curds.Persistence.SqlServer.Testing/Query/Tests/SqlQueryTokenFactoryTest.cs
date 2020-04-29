@@ -131,7 +131,7 @@ namespace Curds.Persistence.Query.Tests
         {
             int testInt = 20;
             Value testValue = new IntValue { Name = nameof(testValue), Int = testInt };
-            ValueEntity<TestEntity> testEntity = new ValueEntity<TestEntity>();
+            ValueEntity testEntity = new ValueEntity();
             testEntity.Values.Add(testValue);
             var testEntities = new ValueEntity[] { testEntity };
             MockParameterBuilder

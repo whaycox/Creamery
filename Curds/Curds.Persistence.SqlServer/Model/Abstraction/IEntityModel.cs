@@ -11,10 +11,10 @@ namespace Curds.Persistence.Model.Abstraction
     public interface IEntityModel<TEntity>
         where TEntity : IEntity
     {
-        AssignIdentityDelegate AssignIdentityDelegate { get; }
-        ProjectEntityDelegate<TEntity> ProjectEntityDelegate { get; }
+        AssignIdentityDelegate AssignIdentity { get; }
+        ProjectEntityDelegate<TEntity> ProjectEntity { get; }
+        ValueEntityDelegate ValueEntity { get; }
 
         Table Table();
-        ValueEntity<TEntity> ValueEntity(TEntity entity);
     }
 }

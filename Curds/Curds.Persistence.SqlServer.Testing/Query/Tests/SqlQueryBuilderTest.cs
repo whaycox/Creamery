@@ -20,7 +20,7 @@ namespace Curds.Persistence.Query.Tests
     {
         private List<TestEntity> TestEntities = new List<TestEntity>();
         private TestEntity TestEntity = new TestEntity();
-        private ValueEntity<TestEntity> TestValueEntity = new ValueEntity<TestEntity>();
+        private ValueEntity TestValueEntity = new ValueEntity();
         private Table TestTable = new Table();
 
         private Mock<IModelMap<ITestDataModel>> MockModelMap = new Mock<IModelMap<ITestDataModel>>();
