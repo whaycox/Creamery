@@ -15,7 +15,7 @@ namespace Curds.Persistence.Query.Implementation
     internal class InsertQuery<TEntity> : ISqlQuery
         where TEntity : IEntity
     {
-        public IEntityModel<TEntity> Model { get; set; }
+        public IEntityModel Model { get; set; }
         public List<TEntity> Entities { get; set; } = new List<TEntity>();
         private List<ValueEntity> ValueEntities => Entities
             .Select(entity => Model.ValueEntity(entity))
@@ -23,14 +23,12 @@ namespace Curds.Persistence.Query.Implementation
 
         public void Write(ISqlQueryWriter queryWriter)
         {
-            Table table = Model.Table();
-
-            queryWriter.CreateTemporaryIdentityTable(table);
-            queryWriter.Insert(table);
-            queryWriter.OutputIdentitiesToTemporaryTable(table);
+            queryWriter.CreateTemporaryIdentityTable(Model);
+            queryWriter.Insert(Model);
+            queryWriter.OutputIdentitiesToTemporaryTable(Model);
             queryWriter.ValueEntities(ValueEntities);
-            queryWriter.SelectTemporaryIdentityTable(table);
-            queryWriter.DropTemporaryIdentityTable(table);
+            queryWriter.SelectTemporaryIdentityTable(Model);
+            queryWriter.DropTemporaryIdentityTable(Model);
         }
 
         public async Task ProcessResult(ISqlQueryReader queryReader)

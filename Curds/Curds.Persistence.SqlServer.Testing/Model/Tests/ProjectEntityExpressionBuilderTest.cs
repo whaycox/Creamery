@@ -49,40 +49,31 @@ namespace Curds.Persistence.Model.Tests
         [TestMethod]
         public void CanBuildDelegate()
         {
-            TestObject.BuildProjectEntityDelegate(TestType, TestProperties);
+            throw new NotImplementedException();
+            //TestObject.BuildProjectEntityDelegate(TestType, TestProperties);
         }
 
         [TestMethod]
         public void BuiltDelegateReadsFromReader()
         {
-            ProjectEntityDelegate<IEntity> projection = TestObject.BuildProjectEntityDelegate(TestType, TestProperties);
+            throw new NotImplementedException();
+            //ProjectEntityDelegate projection = TestObject.BuildProjectEntityDelegate(TestType, TestProperties);
 
-            projection(MockQueryReader.Object);
+            //projection(MockQueryReader.Object);
 
-            MockQueryReader.Verify(reader => reader.ReadInt(nameof(TestEntity.ID)), Times.Once);
-            MockQueryReader.Verify(reader => reader.ReadString(nameof(TestEntity.Name)), Times.Once);
+            //MockQueryReader.Verify(reader => reader.ReadInt(nameof(TestEntity.ID)), Times.Once);
+            //MockQueryReader.Verify(reader => reader.ReadString(nameof(TestEntity.Name)), Times.Once);
         }
 
         [TestMethod]
         public void BuiltDelegateReturnsExpectedType()
         {
-            ProjectEntityDelegate<IEntity> projection = TestObject.BuildProjectEntityDelegate(TestType, TestProperties);
-            
-            IEntity actual = projection(MockQueryReader.Object);
+            throw new NotImplementedException();
+            //ProjectEntityDelegate projection = TestObject.BuildProjectEntityDelegate(TestType, TestProperties);
 
-            Assert.IsInstanceOfType(actual, typeof(TestEntity));
-        }
+            //IEntity actual = projection(MockQueryReader.Object);
 
-        [TestMethod]
-        public void BuiltDelegateCanBeBoxedToType()
-        {
-            ProjectEntityDelegate<IEntity> projection = TestObject.BuildProjectEntityDelegate(TestType, TestProperties);
-            ProjectEntityDelegate<TestEntity> boxed = projection as ProjectEntityDelegate<TestEntity>;
-
-            TestEntity actual = boxed(MockQueryReader.Object);
-
-            Assert.AreEqual(TestReadInt, actual.ID);
-            Assert.AreEqual(TestReadString, actual.Name);
+            //Assert.IsInstanceOfType(actual, typeof(TestEntity));
         }
     }
 }

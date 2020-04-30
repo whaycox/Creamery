@@ -8,6 +8,6 @@ namespace Curds.Persistence.Model.Abstraction
 {
     internal interface IValueExpressionBuilder
     {
-        ValueEntityDelegate BuildValueEntityDelegate(Type entityType, IEnumerable<PropertyInfo> valueProperties);
+        ValueEntityDelegate BuildValueEntityDelegate(IEntityModel entityModel);
     }
 }

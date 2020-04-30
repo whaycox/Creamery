@@ -6,9 +6,10 @@ using System.Linq;
 namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
-    using Model.Domain;
+    using Model.Abstraction;
     using Domain;
     using Tokens.Implementation;
+    using Persistence.Abstraction;
 
     internal class SqlQueryTokenFactory : ISqlQueryTokenFactory
     {
@@ -19,22 +20,22 @@ namespace Curds.Persistence.Query.Implementation
             ParameterBuilder = parameterBuilder;
         }
 
-        public ISqlQueryToken ColumnList(IEnumerable<Column> columns, bool includeDefinition) =>
-            new ColumnListSqlQueryToken(columns) 
+        public ISqlQueryToken ColumnList(IEnumerable<IValueModel> values, bool includeDefinition) =>
+            new ColumnListSqlQueryToken(values) 
             { 
                 IncludeDefinition = includeDefinition,
                 IncludeGrouping = true,
             };
 
-        public ISqlQueryToken SelectList(IEnumerable<Column> columns) =>
-            new ColumnListSqlQueryToken(columns)
+        public ISqlQueryToken SelectList(IEnumerable<IValueModel> values) =>
+            new ColumnListSqlQueryToken(values)
             {
                 IncludeDefinition = false,
                 IncludeGrouping = false,
             };
 
-        public ISqlQueryToken InsertedIdentityName(Table table) =>
-            new InsertedIdentityColumnSqlQueryToken(table.IdentityColumn);
+        public ISqlQueryToken InsertedIdentityName(IEntityModel entityModel) =>
+            new InsertedIdentityColumnSqlQueryToken(entityModel.Identity);
 
         public ISqlQueryToken Keyword(SqlQueryKeyword keyword) =>
             new KeywordSqlQueryToken(keyword);
@@ -42,11 +43,11 @@ namespace Curds.Persistence.Query.Implementation
         public ISqlQueryToken Phrase(params ISqlQueryToken[] tokens) =>
             new PhraseSqlQueryToken(tokens);
 
-        public ISqlQueryToken QualifiedObjectName(Table table) =>
-            new QualifiedObjectSqlQueryToken(table);
+        public ISqlQueryToken QualifiedObjectName(IEntityModel entityModel) =>
+            new QualifiedObjectSqlQueryToken(entityModel);
 
-        public ISqlQueryToken TemporaryIdentityName(Table table) =>
-            new TemporaryIdentityTableNameSqlQueryToken(table);
+        public ISqlQueryToken TemporaryIdentityName(IEntityModel entityModel) =>
+            new TemporaryIdentityTableNameSqlQueryToken(entityModel);
 
         public ISqlQueryToken ValueEntities(IEnumerable<ValueEntity> valueEntities) =>
             new ValueEntitiesSqlQueryToken(valueEntities.Select(valueEntity => BuildValueEntityToken(valueEntity)));

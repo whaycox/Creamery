@@ -7,6 +7,6 @@ namespace Curds.Persistence.Model.Abstraction
 {
     public interface IAssignIdentityExpressionBuilder
     {
-        AssignIdentityDelegate BuildAssignIdentityDelegate(Type entityType, PropertyInfo identityProperty);
+        AssignIdentityDelegate BuildAssignIdentityDelegate(IEntityModel entityModel);
     }
 }

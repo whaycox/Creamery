@@ -4,15 +4,15 @@ using System.Text;
 
 namespace Curds.Persistence.Query.Tokens.Implementation
 {
-    using Model.Domain;
+    using Model.Abstraction;
     using Query.Domain;
 
     public class InsertedIdentityColumnSqlQueryToken : QualifiedObjectSqlQueryToken
     {
-        public InsertedIdentityColumnSqlQueryToken(Column identityColumn)
+        public InsertedIdentityColumnSqlQueryToken(IValueModel identity)
             : base(
                 new ObjectNameSqlQueryToken(nameof(SqlQueryKeyword.inserted)),
-                new ObjectNameSqlQueryToken(identityColumn.Name))
+                new ObjectNameSqlQueryToken(identity.Name))
         { }
     }
 }

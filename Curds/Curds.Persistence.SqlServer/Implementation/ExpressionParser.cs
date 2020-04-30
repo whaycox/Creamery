@@ -10,9 +10,8 @@ namespace Curds.Persistence.Implementation
 
     internal class ExpressionParser : IExpressionParser
     {
-        public Type ParseModelEntitySelection<TModel, TEntity>(Expression<Func<TModel, IEntityModel<TEntity>>> modelEntitySelectionExpression)
+        public Type ParseModelEntitySelection<TModel>(Expression<Func<TModel, IEntityModel>> modelEntitySelectionExpression)
             where TModel : IDataModel
-            where TEntity : IEntity
         {
             if (modelEntitySelectionExpression.NodeType != ExpressionType.Lambda)
                 throw InvalidModelEntitySelectionExpression(modelEntitySelectionExpression);
@@ -33,9 +32,8 @@ namespace Curds.Persistence.Implementation
             }
         }
         private Type ParseTableEntityType(Type tableType) => tableType.GenericTypeArguments[0];
-        private FormatException InvalidModelEntitySelectionExpression<TModel, TEntity>(Expression<Func<TModel, IEntityModel<TEntity>>> modelEntitySelectionExpression)
-            where TModel : IDataModel
-            where TEntity : IEntity => new FormatException($"Invalid model entity selection: {modelEntitySelectionExpression}");
+        private FormatException InvalidModelEntitySelectionExpression<TModel>(Expression<Func<TModel, IEntityModel>> modelEntitySelectionExpression)
+            where TModel : IDataModel => new FormatException($"Invalid model entity selection: {modelEntitySelectionExpression}");
 
         public string ParseEntityValueSelection<TEntity, TValue>(Expression<Func<TEntity, TValue>> entityValueSelectionExpression)
             where TEntity : IEntity

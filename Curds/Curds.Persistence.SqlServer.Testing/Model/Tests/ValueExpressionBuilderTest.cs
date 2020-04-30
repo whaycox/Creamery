@@ -214,22 +214,24 @@ namespace Curds.Persistence.Model.Tests
         [TestMethod]
         public void ValueEntityDelegateReturnsEmptyValueEntity()
         {
-            OtherEntityProperties.Clear();
-            ValueEntityDelegate valueEntityDelegate = TestObject.BuildValueEntityDelegate(typeof(OtherEntity), OtherEntityProperties);
+            throw new NotImplementedException();
+            //OtherEntityProperties.Clear();
+            //ValueEntityDelegate valueEntityDelegate = TestObject.BuildValueEntityDelegate(typeof(OtherEntity), OtherEntityProperties);
 
-            ValueEntity actual = valueEntityDelegate(TestOtherEntity);
+            //ValueEntity actual = valueEntityDelegate(TestOtherEntity);
 
-            Assert.AreEqual(0, actual.Values.Count);
+            //Assert.AreEqual(0, actual.Values.Count);
         }
 
         [TestMethod]
         public void ValueEntityDelegateAddsProvidedValues()
         {
-            ValueEntityDelegate valueEntityDelegate = TestObject.BuildValueEntityDelegate(typeof(OtherEntity), OtherEntityProperties);
+            throw new NotImplementedException();
+            //ValueEntityDelegate valueEntityDelegate = TestObject.BuildValueEntityDelegate(typeof(OtherEntity), OtherEntityProperties);
 
-            ValueEntity actual = valueEntityDelegate(TestOtherEntity);
+            //ValueEntity actual = valueEntityDelegate(TestOtherEntity);
 
-            Assert.AreEqual(20, actual.Values.Count);
+            //Assert.AreEqual(20, actual.Values.Count);
         }
 
         [DataTestMethod]
@@ -237,43 +239,45 @@ namespace Curds.Persistence.Model.Tests
         [DataRow(true)]
         public void ValueEntityDelegateAddsProvidedExpressionsInOrder(bool sortAscending)
         {
-            if (!sortAscending)
-                OtherEntityProperties = OtherEntityProperties.OrderByDescending(property => property.Name).ToList();
-            ValueEntityDelegate valueEntityDelegate = TestObject.BuildValueEntityDelegate(typeof(OtherEntity), OtherEntityProperties);
+            throw new NotImplementedException();
+            //if (!sortAscending)
+            //    OtherEntityProperties = OtherEntityProperties.OrderByDescending(property => property.Name).ToList();
+            //ValueEntityDelegate valueEntityDelegate = TestObject.BuildValueEntityDelegate(typeof(OtherEntity), OtherEntityProperties);
 
-            ValueEntity actual = valueEntityDelegate(TestOtherEntity);
+            //ValueEntity actual = valueEntityDelegate(TestOtherEntity);
 
-            for (int i = 0; i < OtherEntityProperties.Count; i++)
-                Assert.AreEqual(OtherEntityProperties[i].Name, actual.Values[i].Name);
+            //for (int i = 0; i < OtherEntityProperties.Count; i++)
+            //    Assert.AreEqual(OtherEntityProperties[i].Name, actual.Values[i].Name);
         }
 
         [TestMethod]
         public void ValueEntityDelegatePopulatesValues()
         {
-            ValueEntityDelegate valueEntityDelegate = TestObject.BuildValueEntityDelegate(typeof(OtherEntity), OtherEntityProperties);
+            throw new NotImplementedException();
+            //ValueEntityDelegate valueEntityDelegate = TestObject.BuildValueEntityDelegate(typeof(OtherEntity), OtherEntityProperties);
 
-            ValueEntity actual = valueEntityDelegate(TestOtherEntity);
+            //ValueEntity actual = valueEntityDelegate(TestOtherEntity);
 
-            Assert.AreEqual(TestOtherEntity.BoolValue, actual.Values[0].Content);
-            Assert.AreEqual(TestOtherEntity.ByteValue, actual.Values[1].Content);
-            Assert.AreEqual(TestOtherEntity.DateTimeOffsetValue, actual.Values[2].Content);
-            Assert.AreEqual(TestOtherEntity.DateTimeValue, actual.Values[3].Content);
-            Assert.AreEqual(TestOtherEntity.DecimalValue, actual.Values[4].Content);
-            Assert.AreEqual(TestOtherEntity.DoubleValue, actual.Values[5].Content);
-            Assert.AreEqual(TestOtherEntity.ID, actual.Values[6].Content);
-            Assert.AreEqual(TestOtherEntity.IntValue, actual.Values[7].Content);
-            Assert.AreEqual(TestOtherEntity.LongValue, actual.Values[8].Content);
-            Assert.AreEqual(TestOtherEntity.Name, actual.Values[9].Content);
-            Assert.AreEqual(TestOtherEntity.NullableBoolValue, actual.Values[10].Content);
-            Assert.AreEqual(TestOtherEntity.NullableByteValue, actual.Values[11].Content);
-            Assert.AreEqual(TestOtherEntity.NullableDateTimeOffsetValue, actual.Values[12].Content);
-            Assert.AreEqual(TestOtherEntity.NullableDateTimeValue, actual.Values[13].Content);
-            Assert.AreEqual(TestOtherEntity.NullableDecimalValue, actual.Values[14].Content);
-            Assert.AreEqual(TestOtherEntity.NullableDoubleValue, actual.Values[15].Content);
-            Assert.AreEqual(TestOtherEntity.NullableIntValue, actual.Values[16].Content);
-            Assert.AreEqual(TestOtherEntity.NullableLongValue, actual.Values[17].Content);
-            Assert.AreEqual(TestOtherEntity.NullableShortValue, actual.Values[18].Content);
-            Assert.AreEqual(TestOtherEntity.ShortValue, actual.Values[19].Content);
+            //Assert.AreEqual(TestOtherEntity.BoolValue, actual.Values[0].Content);
+            //Assert.AreEqual(TestOtherEntity.ByteValue, actual.Values[1].Content);
+            //Assert.AreEqual(TestOtherEntity.DateTimeOffsetValue, actual.Values[2].Content);
+            //Assert.AreEqual(TestOtherEntity.DateTimeValue, actual.Values[3].Content);
+            //Assert.AreEqual(TestOtherEntity.DecimalValue, actual.Values[4].Content);
+            //Assert.AreEqual(TestOtherEntity.DoubleValue, actual.Values[5].Content);
+            //Assert.AreEqual(TestOtherEntity.ID, actual.Values[6].Content);
+            //Assert.AreEqual(TestOtherEntity.IntValue, actual.Values[7].Content);
+            //Assert.AreEqual(TestOtherEntity.LongValue, actual.Values[8].Content);
+            //Assert.AreEqual(TestOtherEntity.Name, actual.Values[9].Content);
+            //Assert.AreEqual(TestOtherEntity.NullableBoolValue, actual.Values[10].Content);
+            //Assert.AreEqual(TestOtherEntity.NullableByteValue, actual.Values[11].Content);
+            //Assert.AreEqual(TestOtherEntity.NullableDateTimeOffsetValue, actual.Values[12].Content);
+            //Assert.AreEqual(TestOtherEntity.NullableDateTimeValue, actual.Values[13].Content);
+            //Assert.AreEqual(TestOtherEntity.NullableDecimalValue, actual.Values[14].Content);
+            //Assert.AreEqual(TestOtherEntity.NullableDoubleValue, actual.Values[15].Content);
+            //Assert.AreEqual(TestOtherEntity.NullableIntValue, actual.Values[16].Content);
+            //Assert.AreEqual(TestOtherEntity.NullableLongValue, actual.Values[17].Content);
+            //Assert.AreEqual(TestOtherEntity.NullableShortValue, actual.Values[18].Content);
+            //Assert.AreEqual(TestOtherEntity.ShortValue, actual.Values[19].Content);
         }
 
         private void TestAddValueExpression(string propertyName, object expectedValue)

@@ -12,11 +12,11 @@ namespace Curds.Persistence.Model.Implementation
 
     internal class AssignIdentityExpressionBuilder : BaseQueryReaderExpressionBuilder, IAssignIdentityExpressionBuilder
     {
-        public AssignIdentityDelegate BuildAssignIdentityDelegate(Type entityType, PropertyInfo identityProperty)
+        public AssignIdentityDelegate BuildAssignIdentityDelegate(IEntityModel entityModel)
         {
             ParameterExpression queryReaderParameter = Expression.Parameter(typeof(ISqlQueryReader), nameof(queryReaderParameter));
             ParameterExpression iEntityParameter = Expression.Parameter(typeof(IEntity), nameof(iEntityParameter));
-            ParameterExpression entityParameter = Expression.Parameter(entityType, nameof(entityParameter));
+            ParameterExpression entityParameter = Expression.Parameter(entityModel.EntityType, nameof(entityParameter));
             List<ParameterExpression> builderExpressionParameters = new List<ParameterExpression>
             {
                 entityParameter,
@@ -24,8 +24,8 @@ namespace Curds.Persistence.Model.Implementation
 
             List<Expression> builderExpressions = new List<Expression>
             {
-                Expression.Assign(entityParameter, Expression.Convert(iEntityParameter, entityType)),
-                PopulateValueFromReader(entityParameter, identityProperty, queryReaderParameter),
+                Expression.Assign(entityParameter, Expression.Convert(iEntityParameter, entityModel.EntityType)),
+                PopulateValueFromReader(entityParameter, entityModel.Identity, queryReaderParameter),
             };
 
             BlockExpression builderBlock = Expression.Block(builderExpressionParameters, builderExpressions);

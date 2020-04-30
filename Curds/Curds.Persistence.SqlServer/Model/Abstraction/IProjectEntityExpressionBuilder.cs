@@ -9,6 +9,6 @@ namespace Curds.Persistence.Model.Abstraction
 
     public interface IProjectEntityExpressionBuilder
     {
-        ProjectEntityDelegate<IEntity> BuildProjectEntityDelegate(Type entityType, IEnumerable<PropertyInfo> valueProperties);
+        ProjectEntityDelegate BuildProjectEntityDelegate(IEntityModel entityModel);
     }
 }

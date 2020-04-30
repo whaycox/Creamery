@@ -8,13 +8,19 @@ namespace Curds.Persistence.Model.Abstraction
     using Domain;
     using Query.Domain;
 
-    public interface IEntityModel<TEntity>
-        where TEntity : IEntity
+    public interface IEntityModel
     {
-        AssignIdentityDelegate AssignIdentity { get; }
-        ProjectEntityDelegate<TEntity> ProjectEntity { get; }
-        ValueEntityDelegate ValueEntity { get; }
+        Type EntityType { get; }
 
-        Table Table();
+        string Schema { get; }
+        string Table { get; }
+
+        IEnumerable<IValueModel> Values { get; }
+        IValueModel Identity { get; }
+        IEnumerable<IValueModel> NonIdentities { get; }
+
+        AssignIdentityDelegate AssignIdentity { get; }
+        ProjectEntityDelegate ProjectEntity { get; }
+        ValueEntityDelegate ValueEntity { get; }
     }
 }

@@ -7,6 +7,7 @@ namespace Curds.Persistence.Query.Formatters.Implementation
     using Tokens.Implementation;
     using Query.Abstraction;
     using Model.Domain;
+    using Model.Abstraction;
 
     public class ProperSqlQueryFormatter : BaseSqlQueryFormatter
     {
@@ -23,20 +24,20 @@ namespace Curds.Persistence.Query.Formatters.Implementation
                 StringBuilder.AppendLine("(");
             using (StringBuilder.CreateIndentScope())
             {
-                if (token.Columns.Count == 1)
-                    FormatColumn(token.Columns[0], token.IncludeDefinition);
+                if (token.Values.Count == 1)
+                    FormatColumn(token.Values[0], token.IncludeDefinition);
                 else
                 {
-                    for (int i = 0; i < token.Columns.Count; i++)
+                    for (int i = 0; i < token.Values.Count; i++)
                     {
                         if (i == 0)
                             StringBuilder.Append(" ");
                         else
                             StringBuilder.Append(",");
 
-                        FormatColumn(token.Columns[i], token.IncludeDefinition);
+                        FormatColumn(token.Values[i], token.IncludeDefinition);
 
-                        if (i < token.Columns.Count - 1)
+                        if (i < token.Values.Count - 1)
                             StringBuilder.SetNewLine();
                     }
                 }
@@ -47,18 +48,17 @@ namespace Curds.Persistence.Query.Formatters.Implementation
                 StringBuilder.Append(")");
             }
         }
-        private void FormatColumn(Column column, bool includeDefinition)
+        private void FormatColumn(IValueModel value, bool includeDefinition)
         {
-            new ObjectNameSqlQueryToken(column.Name)
+            new ObjectNameSqlQueryToken(value.Name)
                 .AcceptFormatVisitor(this);
 
             if (includeDefinition)
-                StringBuilder.Append($" {TypeMap[column.SqlType]} NOT NULL");
+                StringBuilder.Append($" {TypeMap[value.SqlType]} NOT NULL");
         }
 
         public override void VisitValueEntities(ValueEntitiesSqlQueryToken token)
         {
-            StringBuilder.SetNewLine();
             if (token.Entities.Count == 1)
                 token.Entities[0].AcceptFormatVisitor(this);
             else
@@ -71,6 +71,7 @@ namespace Curds.Persistence.Query.Formatters.Implementation
                         StringBuilder.AppendLine(",");
                 }
             }
+            StringBuilder.SetNewLine();
         }
 
         public override void VisitValueEntity(ValueEntitySqlQueryToken token)

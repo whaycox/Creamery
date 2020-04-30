@@ -28,16 +28,16 @@ namespace Curds.Persistence.Model.Implementation
             return Expression.Call(entityParameter, valueProperty.SetMethod, readStringExpression);
         }
 
-        public ProjectEntityDelegate<IEntity> BuildProjectEntityDelegate(Type entityType, IEnumerable<PropertyInfo> valueProperties)
+        public ProjectEntityDelegate BuildProjectEntityDelegate(IEntityModel entityModel)
         {
             ParameterExpression queryReaderParameter = Expression.Parameter(typeof(ISqlQueryReader), nameof(queryReaderParameter));
-            ParameterExpression entityParameter = Expression.Parameter(entityType, nameof(entityParameter));
+            ParameterExpression entityParameter = Expression.Parameter(entityModel.EntityType, nameof(entityParameter));
             List<ParameterExpression> projectionExpressionParameters = new List<ParameterExpression>
             {
                 entityParameter,
             };
 
-            ConstructorInfo entityConstructor = entityType.GetConstructor(new Type[0]);
+            ConstructorInfo entityConstructor = entityModel.EntityType.GetConstructor(new Type[0]);
             if (entityConstructor == null)
                 throw new Exception();
 
@@ -45,21 +45,18 @@ namespace Curds.Persistence.Model.Implementation
             {
                 Expression.Assign(entityParameter, Expression.New(entityConstructor)),
             };
-            foreach (PropertyInfo valueProperty in valueProperties)
-                projectionExpressions.Add(PopulateValueFromReader(entityParameter, valueProperty, queryReaderParameter));
+            foreach (IValueModel value in entityModel.Values)
+                projectionExpressions.Add(PopulateValueFromReader(entityParameter, value, queryReaderParameter));
 
-            LabelTarget returnLabel = Expression.Label(entityType);
+            LabelTarget returnLabel = Expression.Label(entityModel.EntityType);
             projectionExpressions.Add(Expression.Return(returnLabel, entityParameter));
             projectionExpressions.Add(Expression.Label(returnLabel, entityParameter));
 
             BlockExpression projectionBlock = Expression.Block(projectionExpressionParameters, projectionExpressions);
 
-            Type delegateType = typeof(ProjectEntityDelegate<>);
-            delegateType = delegateType.MakeGenericType(entityType);
-            Delegate projection = Expression
-                .Lambda(delegateType, projectionBlock, queryReaderParameter)
+            return Expression
+                .Lambda<ProjectEntityDelegate>(projectionBlock, queryReaderParameter)
                 .Compile();
-            return projection as ProjectEntityDelegate<IEntity>;
         }
     }
 }

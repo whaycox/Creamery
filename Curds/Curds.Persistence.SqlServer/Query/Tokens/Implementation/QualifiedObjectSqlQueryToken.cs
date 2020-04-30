@@ -4,7 +4,8 @@ using System.Linq;
 namespace Curds.Persistence.Query.Tokens.Implementation
 {
     using Query.Abstraction;
-    using Model.Domain;
+    using Model.Abstraction;
+    using Persistence.Abstraction;
 
     public class QualifiedObjectSqlQueryToken : BaseSqlQueryToken
     {
@@ -12,10 +13,10 @@ namespace Curds.Persistence.Query.Tokens.Implementation
 
         public List<ObjectNameSqlQueryToken> Names { get; }
 
-        public QualifiedObjectSqlQueryToken(Table table)
+        public QualifiedObjectSqlQueryToken(IEntityModel entityModel)
             : this(
-                  new ObjectNameSqlQueryToken(table.Schema),
-                  new ObjectNameSqlQueryToken(table.Name))
+                  new ObjectNameSqlQueryToken(entityModel.Schema),
+                  new ObjectNameSqlQueryToken(entityModel.Table))
         { }
 
         public QualifiedObjectSqlQueryToken(params ObjectNameSqlQueryToken[] names)

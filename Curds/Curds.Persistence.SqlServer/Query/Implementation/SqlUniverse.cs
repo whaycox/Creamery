@@ -12,7 +12,7 @@ namespace Curds.Persistence.Query.Implementation
     internal class SqlUniverse<TEntity> : ISqlUniverse<TEntity>
         where TEntity : IEntity
     {
-        public IEntityModel<TEntity> Model { get; set; }
+        public IEntityModel Model { get; set; }
 
         public ISqlQuery<TEntity> ProjectEntity() => new ProjectEntityQuery<TEntity> { Model = Model };
     }

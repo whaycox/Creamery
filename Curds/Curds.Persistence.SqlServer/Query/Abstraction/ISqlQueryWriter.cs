@@ -6,20 +6,21 @@ using System.Data.SqlClient;
 namespace Curds.Persistence.Query.Abstraction
 {
     using Domain;
-    using Model.Domain;
+    using Model.Abstraction;
+    using Persistence.Abstraction;
 
     public interface ISqlQueryWriter
     {
-        void CreateTemporaryIdentityTable(Table table);
-        void OutputIdentitiesToTemporaryTable(Table table);
-        void SelectTemporaryIdentityTable(Table table);
-        void DropTemporaryIdentityTable(Table table);
+        void CreateTemporaryIdentityTable(IEntityModel entityModel);
+        void OutputIdentitiesToTemporaryTable(IEntityModel entityModel);
+        void SelectTemporaryIdentityTable(IEntityModel entityModel);
+        void DropTemporaryIdentityTable(IEntityModel entityModel);
 
-        void Insert(Table table);
+        void Insert(IEntityModel entityModel);
         void ValueEntities(IEnumerable<ValueEntity> entities);
-        void Select(List<Column> columns);
+        void Select(List<IValueModel> values);
 
-        void From(Table table);
+        void From(IEntityModel entityModel);
 
         SqlCommand Flush();
     }

@@ -15,7 +15,7 @@ namespace Curds.Persistence.Model.Implementation
 
     internal class ModelBuilder : IModelBuilder
     {
-        private static readonly Dictionary<Type, SqlDbType> ColumnTypeMap = new Dictionary<Type, SqlDbType>
+        private static Dictionary<Type, SqlDbType> ColumnTypeMap { get; } = new Dictionary<Type, SqlDbType>
         {
             { typeof(string), SqlDbType.NVarChar },
             { typeof(bool), SqlDbType.Bit },
@@ -52,76 +52,45 @@ namespace Curds.Persistence.Model.Implementation
             DelegateMapper = delegateMapper;
         }
 
-        private Table BuildTable<TModel>(Type entityType)
+        public IEnumerable<IEntityModel> BuildEntityModels<TModel>() 
             where TModel : IDataModel
         {
-            CompiledConfiguration<TModel> configuration = ConfigurationFactory.Build<TModel>(entityType);
-            Table table = new Table
-            {
-                Schema = configuration.Schema,
-                Name = configuration.Table,
-            };
-            foreach (PropertyInfo propertyInfo in TypeMapper.ValueTypes(entityType))
-            {
-                Column valueColumn = BuildDefaultColumn(propertyInfo);
-
-                if (configuration.Columns.TryGetValue(propertyInfo.Name, out CompiledColumnConfiguration<TModel> configuredColumn))
-                {
-                    valueColumn.Name = configuredColumn.Name ?? valueColumn.Name;
-                    valueColumn.IsIdentity = configuredColumn.IsIdentity;
-                }
-                table.Columns.Add(valueColumn);
-            }
-            return table;
-        }
-
-        public Column BuildDefaultColumn(PropertyInfo propertyInfo) => new Column 
-        { 
-            Name = propertyInfo.Name,
-            SqlType = ColumnTypeMap[propertyInfo.PropertyType],
-        };
-
-        public Dictionary<Type, Table> TablesByType<TModel>()
-            where TModel : IDataModel
-        {
-            Dictionary<Type, Table> tables = new Dictionary<Type, Table>();
             foreach (Type entityType in TypeMapper.EntityTypes<TModel>())
-                tables.Add(entityType, BuildTable<TModel>(entityType));
-            return tables;
+                yield return BuildEntityModel<TModel>(entityType);
         }
-
-        public Dictionary<Type, ValueEntityDelegate> ValueEntityDelegatesByType<TModel>()
-            where TModel : IDataModel
-        {
-            Dictionary<Type, ValueEntityDelegate> valueEntityDelegates = new Dictionary<Type, ValueEntityDelegate>();
-            foreach (Type entityType in TypeMapper.EntityTypes<TModel>())
-                valueEntityDelegates.Add(entityType, DelegateMapper.MapValueEntityDelegate<TModel>(entityType));
-            return valueEntityDelegates;
-        }
-
-        public Dictionary<Type, AssignIdentityDelegate> AssignIdentityDelegatesByType<TModel>() 
-            where TModel : IDataModel
-        {
-            Dictionary<Type, AssignIdentityDelegate> assignIdentityDelegates = new Dictionary<Type, AssignIdentityDelegate>();
-            foreach (Type entityType in TypeMapper.EntityTypes<TModel>())
-                if (TypeHasIdentityColumn<TModel>(entityType))
-                    assignIdentityDelegates.Add(entityType, DelegateMapper.MapAssignIdentityDelegate<TModel>(entityType));
-            return assignIdentityDelegates;
-        }
-        private bool TypeHasIdentityColumn<TModel>(Type entityType)
+        private IEntityModel BuildEntityModel<TModel>(Type entityType)
             where TModel : IDataModel
         {
             CompiledConfiguration<TModel> entityConfiguration = ConfigurationFactory.Build<TModel>(entityType);
-            return entityConfiguration.Columns.Any(column => column.Value.IsIdentity);
+            EntityModel entityModel = new EntityModel(entityType)
+            {
+                Schema = entityConfiguration.Schema,
+                Table = entityConfiguration.Table,
+            };
+            foreach (PropertyInfo propertyInfo in TypeMapper.ValueTypes(entityType))
+            {
+                ValueModel valueConfiguration = BuildDefaultColumn(propertyInfo);
+
+                if (entityConfiguration.Columns.TryGetValue(propertyInfo.Name, out CompiledColumnConfiguration<TModel> configuredColumn))
+                {
+                    valueConfiguration.Name = configuredColumn.Name ?? valueConfiguration.Name;
+                    valueConfiguration.IsIdentity = configuredColumn.IsIdentity;
+                }
+                entityModel.ValueModels.Add(valueConfiguration);
+            }
+
+            entityModel.ValueEntity = DelegateMapper.MapValueEntityDelegate(entityModel);
+            entityModel.AssignIdentity = DelegateMapper.MapAssignIdentityDelegate(entityModel);
+            entityModel.ProjectEntity = DelegateMapper.MapProjectEntityDelegate(entityModel);
+
+            return entityModel;
         }
 
-        public Dictionary<Type, ProjectEntityDelegate<IEntity>> ProjectEntityDelegatesByType<TModel>() 
-            where TModel : IDataModel
+        private ValueModel BuildDefaultColumn(PropertyInfo propertyInfo) => new ValueModel
         {
-            Dictionary<Type, ProjectEntityDelegate<IEntity>> projectEntityDelegates = new Dictionary<Type, ProjectEntityDelegate<IEntity>>();
-            foreach (Type entityType in TypeMapper.EntityTypes<TModel>())
-                projectEntityDelegates.Add(entityType, DelegateMapper.MapProjectEntityDelegate<TModel>(entityType));
-            return projectEntityDelegates;
-        }
+            Name = propertyInfo.Name,
+            Property = propertyInfo,
+            SqlType = ColumnTypeMap[propertyInfo.PropertyType],
+        };
     }
 }

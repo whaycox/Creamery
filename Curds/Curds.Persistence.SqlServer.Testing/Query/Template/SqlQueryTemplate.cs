@@ -14,17 +14,18 @@ namespace Curds.Persistence.Query.Template
 
     public class SqlQueryTemplate
     {
-        protected Table TestTable = new Table();
-        protected string TestSchema = nameof(TestSchema);
-        protected string TestTableName = nameof(TestTableName);
-        protected Column TestColumnOne = new Column { Name = nameof(TestColumnOne) };
-        protected Column TestColumnTwo = new Column { Name = nameof(TestColumnTwo) };
+        //protected Table TestTable = new Table();
+        //protected string TestSchema = nameof(TestSchema);
+        //protected string TestTableName = nameof(TestTableName);
+        //protected Column TestColumnOne = new Column { Name = nameof(TestColumnOne) };
+        //protected Column TestColumnTwo = new Column { Name = nameof(TestColumnTwo) };
 
         [TestInitialize]
         public void SetupSqlQueryTemplate()
         {
-            TestTable.Schema = TestSchema;
-            TestTable.Name = TestTableName;
+            Assert.Fail();
+            //TestTable.Schema = TestSchema;
+            //TestTable.Name = TestTableName;
         }
     }
 }

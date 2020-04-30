@@ -19,53 +19,21 @@ namespace Curds.Persistence.Model.Implementation
         private IValueExpressionBuilder ValueExpressionBuilder { get; }
         private IAssignIdentityExpressionBuilder AssignIdentityExpressionBuilder { get; }
         private IProjectEntityExpressionBuilder ProjectEntityExpressionBuilder { get; }
-        private ITypeMapper TypeMapper { get; }
-        private IModelConfigurationFactory ConfigurationFactory { get; }
 
         public DelegateMapper(
             IValueExpressionBuilder valueExpressionBuilder,
             IAssignIdentityExpressionBuilder assignIdentityExpressionBuilder,
-            IProjectEntityExpressionBuilder projectEntityExpressionBuilder,
-            ITypeMapper typeMapper,
-            IModelConfigurationFactory configurationFactory)
+            IProjectEntityExpressionBuilder projectEntityExpressionBuilder)
         {
             ValueExpressionBuilder = valueExpressionBuilder;
             AssignIdentityExpressionBuilder = assignIdentityExpressionBuilder;
             ProjectEntityExpressionBuilder = projectEntityExpressionBuilder;
-            TypeMapper = typeMapper;
-            ConfigurationFactory = configurationFactory;
         }
 
-        public ValueEntityDelegate MapValueEntityDelegate<TModel>(Type entityType)
-            where TModel : IDataModel
-        {
-            IEnumerable<PropertyInfo> valueProperties = TypeMapper
-                .ValueTypes(entityType);
+        public ValueEntityDelegate MapValueEntityDelegate(IEntityModel entityModel) => ValueExpressionBuilder.BuildValueEntityDelegate(entityModel);
 
-            CompiledConfiguration<TModel> entityConfiguration = ConfigurationFactory.Build<TModel>(entityType);
-            foreach (CompiledColumnConfiguration<TModel> configuredColumn in entityConfiguration.Columns.Values)
-                if (configuredColumn.IsIdentity)
-                    valueProperties = valueProperties.Where(property => property.Name != configuredColumn.ValueName);
+        public AssignIdentityDelegate MapAssignIdentityDelegate(IEntityModel entityModel) => AssignIdentityExpressionBuilder.BuildAssignIdentityDelegate(entityModel);
 
-            return ValueExpressionBuilder.BuildValueEntityDelegate(entityType, valueProperties);
-        }
-
-        public AssignIdentityDelegate MapAssignIdentityDelegate<TModel>(Type entityType)
-            where TModel : IDataModel
-        {
-            CompiledConfiguration<TModel> entityConfiguration = ConfigurationFactory.Build<TModel>(entityType);
-            CompiledColumnConfiguration<TModel> identityConfiguration = entityConfiguration.Columns.First(column => column.Value.IsIdentity).Value;
-            PropertyInfo identityProperty = TypeMapper.ValueTypes(entityType).Where(property => property.Name == identityConfiguration.ValueName).First();
-            return AssignIdentityExpressionBuilder.BuildAssignIdentityDelegate(entityType, identityProperty);
-        }
-
-        public ProjectEntityDelegate<IEntity> MapProjectEntityDelegate<TModel>(Type entityType)
-            where TModel : IDataModel
-        {
-            IEnumerable<PropertyInfo> valueProperties = TypeMapper
-                .ValueTypes(entityType);
-
-            return ProjectEntityExpressionBuilder.BuildProjectEntityDelegate(entityType, valueProperties);
-        }
+        public ProjectEntityDelegate MapProjectEntityDelegate(IEntityModel entityModel) => ProjectEntityExpressionBuilder.BuildProjectEntityDelegate(entityModel);
     }
 }

@@ -7,8 +7,9 @@ namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
     using Domain;
-    using Model.Domain;
+    using Model.Abstraction;
     using Tokens.Implementation;
+    using Persistence.Abstraction;
 
     internal class SqlQueryWriter : ISqlQueryWriter
     {
@@ -36,43 +37,43 @@ namespace Curds.Persistence.Query.Implementation
             return query;
         }
 
-        public void CreateTemporaryIdentityTable(Table table) => Tokens.Add(
+        public void CreateTemporaryIdentityTable(IEntityModel entityModel) => Tokens.Add(
             TokenFactory.Phrase(
                 TokenFactory.Keyword(SqlQueryKeyword.CREATE),
                 TokenFactory.Keyword(SqlQueryKeyword.TABLE),
-                TokenFactory.TemporaryIdentityName(table),
-                TokenFactory.ColumnList(table.IdentityColumns, true)));
+                TokenFactory.TemporaryIdentityName(entityModel),
+                TokenFactory.ColumnList(new[] { entityModel.Identity }, true)));
 
-        public void OutputIdentitiesToTemporaryTable(Table table) => Tokens.Add(
+        public void OutputIdentitiesToTemporaryTable(IEntityModel entityModel) => Tokens.Add(
             TokenFactory.Phrase(
                 TokenFactory.Keyword(SqlQueryKeyword.OUTPUT),
-                TokenFactory.InsertedIdentityName(table),
+                TokenFactory.InsertedIdentityName(entityModel),
                 TokenFactory.Keyword(SqlQueryKeyword.INTO),
-                TokenFactory.TemporaryIdentityName(table)));
+                TokenFactory.TemporaryIdentityName(entityModel)));
 
-        public void SelectTemporaryIdentityTable(Table table)
+        public void SelectTemporaryIdentityTable(IEntityModel entityModel)
         {
             Tokens.Add(
                 TokenFactory.Phrase(
                     TokenFactory.Keyword(SqlQueryKeyword.SELECT),
-                    TokenFactory.ColumnList(table.IdentityColumns, false)));
+                    TokenFactory.ColumnList(new[] { entityModel.Identity }, false)));
             Tokens.Add(
                 TokenFactory.Phrase(
                     TokenFactory.Keyword(SqlQueryKeyword.FROM),
-                    TokenFactory.TemporaryIdentityName(table)));
+                    TokenFactory.TemporaryIdentityName(entityModel)));
         }
 
-        public void DropTemporaryIdentityTable(Table table) => Tokens.Add(
+        public void DropTemporaryIdentityTable(IEntityModel entityModel) => Tokens.Add(
             TokenFactory.Phrase(
                 TokenFactory.Keyword(SqlQueryKeyword.DROP),
                 TokenFactory.Keyword(SqlQueryKeyword.TABLE),
-                TokenFactory.TemporaryIdentityName(table)));
+                TokenFactory.TemporaryIdentityName(entityModel)));
 
-        public void Insert(Table table) => Tokens.Add(
+        public void Insert(IEntityModel entityModel) => Tokens.Add(
             TokenFactory.Phrase(
                 TokenFactory.Keyword(SqlQueryKeyword.INSERT),
-                TokenFactory.QualifiedObjectName(table),
-                TokenFactory.ColumnList(table.NotIdentityColumns, false)));
+                TokenFactory.QualifiedObjectName(entityModel),
+                TokenFactory.ColumnList(entityModel.NonIdentities, false)));
 
         public void ValueEntities(IEnumerable<ValueEntity> entities)
         {
@@ -80,14 +81,14 @@ namespace Curds.Persistence.Query.Implementation
             Tokens.Add(TokenFactory.ValueEntities(entities));
         }
 
-        public void Select(List<Column> columns) => Tokens.Add(
+        public void Select(List<IValueModel> values) => Tokens.Add(
             TokenFactory.Phrase(
                 TokenFactory.Keyword(SqlQueryKeyword.SELECT),
-                TokenFactory.SelectList(columns)));
+                TokenFactory.SelectList(values)));
 
-        public void From(Table table) => Tokens.Add(
+        public void From(IEntityModel entityModel) => Tokens.Add(
             TokenFactory.Phrase(
                 TokenFactory.Keyword(SqlQueryKeyword.FROM),
-                TokenFactory.QualifiedObjectName(table)));
+                TokenFactory.QualifiedObjectName(entityModel)));
     }
 }

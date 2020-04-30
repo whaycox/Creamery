@@ -10,15 +10,7 @@ namespace Curds.Persistence.Model.Abstraction
 
     public interface IModelBuilder
     {
-        Column BuildDefaultColumn(PropertyInfo propertyInfo);
-        
-        Dictionary<Type, Table> TablesByType<TModel>()
-            where TModel : IDataModel;
-        Dictionary<Type, ValueEntityDelegate> ValueEntityDelegatesByType<TModel>()
-            where TModel : IDataModel;
-        Dictionary<Type, AssignIdentityDelegate> AssignIdentityDelegatesByType<TModel>()
-            where TModel : IDataModel;
-        Dictionary<Type, ProjectEntityDelegate<IEntity>> ProjectEntityDelegatesByType<TModel>()
+        IEnumerable<IEntityModel> BuildEntityModels<TModel>()
             where TModel : IDataModel;
     }
 }

@@ -11,7 +11,7 @@ namespace Curds.Persistence.Model.Abstraction
     public interface IModelMap<TModel>
         where TModel : IDataModel
     {
-        IEntityModel<TEntity> Entity<TEntity>()
+        IEntityModel Entity<TEntity>()
             where TEntity : IEntity;
     }
 }

@@ -14,6 +14,9 @@ namespace Curds.Persistence.Model.Tests
     {
         private TypeMapper TestObject = new TypeMapper();
 
+        [TestInitialize]
+        public void Revisit() => Assert.Fail();
+
         [TestMethod]
         public void MapsTableTypes()
         {

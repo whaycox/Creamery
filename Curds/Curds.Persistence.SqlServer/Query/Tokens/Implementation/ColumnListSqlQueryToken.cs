@@ -4,17 +4,17 @@ using System.Linq;
 namespace Curds.Persistence.Query.Tokens.Implementation
 {
     using Abstraction;
-    using Model.Domain;
+    using Model.Abstraction;
 
     public class ColumnListSqlQueryToken : BaseSqlQueryToken
     {
-        public List<Column> Columns { get; }
+        public List<IValueModel> Values { get; }
         public bool IncludeGrouping { get; set; }
         public bool IncludeDefinition { get; set; }
 
-        public ColumnListSqlQueryToken(IEnumerable<Column> columns)
+        public ColumnListSqlQueryToken(IEnumerable<IValueModel> values)
         {
-            Columns = columns.ToList();
+            Values = values.ToList();
         }
 
         public override void AcceptFormatVisitor(ISqlQueryFormatVisitor visitor) => visitor.VisitColumnList(this);

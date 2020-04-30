@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Data;
+using System.Reflection;
 
 namespace Curds.Persistence.Model.Abstraction
 {
-    using Persistence.Abstraction;
-
-    public interface IValueModel<TEntity>
-        where TEntity : IEntity
+    public interface IValueModel
     {
+        string Name { get; }
+
+        PropertyInfo Property { get; }
+        SqlDbType SqlType { get; }
+
+        bool IsIdentity { get; }
     }
 }

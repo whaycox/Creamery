@@ -68,10 +68,10 @@ namespace Curds.Persistence.Model.Implementation
             };
         }
 
-        public ValueEntityDelegate BuildValueEntityDelegate(Type entityType, IEnumerable<PropertyInfo> valueProperties)
+        public ValueEntityDelegate BuildValueEntityDelegate(IEntityModel entityModel)
         {
             ParameterExpression iEntityParameter = Expression.Parameter(typeof(IEntity), nameof(iEntityParameter));
-            ParameterExpression entityParameter = Expression.Parameter(entityType, nameof(entityParameter));
+            ParameterExpression entityParameter = Expression.Parameter(entityModel.EntityType, nameof(entityParameter));
             ParameterExpression valueEntityParameter = Expression.Parameter(typeof(ValueEntity), nameof(valueEntityParameter));
             List<ParameterExpression> builderExpressionParameters = new List<ParameterExpression>
             {
@@ -82,12 +82,12 @@ namespace Curds.Persistence.Model.Implementation
             ConstructorInfo valueEntityConstructor = typeof(ValueEntity).GetConstructor(new Type[0]);
             List<Expression> builderExpressions = new List<Expression>
             {
-                Expression.Assign(entityParameter, Expression.Convert(iEntityParameter, entityType)),
+                Expression.Assign(entityParameter, Expression.Convert(iEntityParameter, entityModel.EntityType)),
                 Expression.Assign(valueEntityParameter, Expression.New(valueEntityConstructor)),
             };
 
-            foreach (PropertyInfo valueProperty in valueProperties)
-                builderExpressions.Add(AddValueExpression(valueProperty, entityParameter, valueEntityParameter));
+            foreach (IValueModel value in entityModel.NonIdentities)
+                builderExpressions.Add(AddValueExpression(value.Property, entityParameter, valueEntityParameter));
 
             LabelTarget returnLabel = Expression.Label(typeof(ValueEntity));
             builderExpressions.Add(Expression.Return(returnLabel, valueEntityParameter));

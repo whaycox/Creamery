@@ -224,5 +224,22 @@ namespace Curds.Persistence.Tests
                 Assert.IsFalse(entities.Any(entity => entity.ID == 0));
             }
         }
+
+        [TestMethod]
+        public async Task CanSelectAllEntitiesWithCustomNames()
+        {
+            RegisterServices();
+            ConfigureCustomTestEntity();
+            BuildServiceProvider();
+
+            using (IServiceScope testScope = TestServiceProvider.CreateScope())
+            {
+                IRepository<ITestDataModel, TestEntity> testRepository = testScope.ServiceProvider.GetRequiredService<IRepository<ITestDataModel, TestEntity>>();
+                List<TestEntity> entities = await testRepository.FetchAll();
+
+                Assert.AreNotEqual(0, entities.Count);
+                Assert.IsFalse(entities.Any(entity => entity.ID == 0));
+            }
+        }
     }
 }

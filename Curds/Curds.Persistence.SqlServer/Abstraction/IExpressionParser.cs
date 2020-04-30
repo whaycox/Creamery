@@ -7,9 +7,8 @@ namespace Curds.Persistence.Abstraction
 
     internal interface IExpressionParser
     {
-        Type ParseModelEntitySelection<TModel, TEntity>(Expression<Func<TModel, IEntityModel<TEntity>>> entitySelectionExpression)
-            where TModel : IDataModel
-            where TEntity : IEntity;
+        Type ParseModelEntitySelection<TModel>(Expression<Func<TModel, IEntityModel>> entitySelectionExpression)
+            where TModel : IDataModel;
 
         string ParseEntityValueSelection<TEntity, TValue>(Expression<Func<TEntity, TValue>> valueSelectionExpression)
             where TEntity : IEntity;
