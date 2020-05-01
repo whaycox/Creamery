@@ -1,160 +1,89 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 
 namespace Curds.Persistence.Model.Tests
 {
     using Abstraction;
-    using Configuration.Abstraction;
     using Implementation;
-    using Persistence.Abstraction;
-    using Persistence.Domain;
-    using Configuration.Domain;
 
     [TestClass]
     public class DelegateMapperTest
     {
-        private TestEntity TestInputEntity = new TestEntity();
-        private int TestID = 124;
-        private string TestName = nameof(TestName);
-        private List<PropertyInfo> TestValueTypes = new List<PropertyInfo>();
-        private PropertyInfo TestIDProperty = typeof(TestEntity).GetProperty(nameof(TestEntity.ID));
-        private PropertyInfo TestNameProperty = typeof(TestEntity).GetProperty(nameof(TestEntity.Name));
-        private CompiledConfiguration<ITestDataModel> TestCompiledConfiguration = new CompiledConfiguration<ITestDataModel>(typeof(TestEntity));
-        private CompiledColumnConfiguration<ITestDataModel> TestIdentityColumnConfiguration = null;
-
         private Mock<IValueExpressionBuilder> MockValueExpressionBuilder = new Mock<IValueExpressionBuilder>();
         private Mock<IAssignIdentityExpressionBuilder> MockAssignIdentityExpressionBuilder = new Mock<IAssignIdentityExpressionBuilder>();
         private Mock<IProjectEntityExpressionBuilder> MockProjectEntityExpressionBuilder = new Mock<IProjectEntityExpressionBuilder>();
-        private Mock<ITypeMapper> MockTypeMapper = new Mock<ITypeMapper>();
-        private Mock<IModelConfigurationFactory> MockConfigurationFactory = new Mock<IModelConfigurationFactory>();
+        private Mock<IEntityModel> MockEntityModel = new Mock<IEntityModel>();
         private Mock<ValueEntityDelegate> MockValueEntityDelegate = new Mock<ValueEntityDelegate>();
         private Mock<AssignIdentityDelegate> MockAssignIdentityDelegate = new Mock<AssignIdentityDelegate>();
+        private Mock<ProjectEntityDelegate> MockProjectEntityDelegate = new Mock<ProjectEntityDelegate>();
 
         private DelegateMapper TestObject = null;
 
         [TestInitialize]
         public void Init()
         {
-            throw new NotImplementedException();
-            //TestInputEntity.ID = TestID;
-            //TestInputEntity.Name = TestName;
-            //TestValueTypes.Add(TestIDProperty);
-            //TestValueTypes.Add(TestNameProperty);
-            //TestIdentityColumnConfiguration = new CompiledColumnConfiguration<ITestDataModel>(TestIDProperty.Name) { IsIdentity = true };
+            MockValueExpressionBuilder
+                .Setup(builder => builder.BuildValueEntityDelegate(It.IsAny<IEntityModel>()))
+                .Returns(MockValueEntityDelegate.Object);
+            MockAssignIdentityExpressionBuilder
+                .Setup(builder => builder.BuildAssignIdentityDelegate(It.IsAny<IEntityModel>()))
+                .Returns(MockAssignIdentityDelegate.Object);
+            MockProjectEntityExpressionBuilder
+                .Setup(builder => builder.BuildProjectEntityDelegate(It.IsAny<IEntityModel>()))
+                .Returns(MockProjectEntityDelegate.Object);
 
-            //MockTypeMapper
-            //    .Setup(mapper => mapper.ValueTypes(It.IsAny<Type>()))
-            //    .Returns(TestValueTypes);
-            //MockConfigurationFactory
-            //    .Setup(factory => factory.Build<ITestDataModel>(It.IsAny<Type>()))
-            //    .Returns(TestCompiledConfiguration);
-            //MockValueExpressionBuilder
-            //    .Setup(builder => builder.BuildValueEntityDelegate(It.IsAny<Type>(), It.IsAny<IEnumerable<PropertyInfo>>()))
-            //    .Returns(MockValueEntityDelegate.Object);
-            //MockAssignIdentityExpressionBuilder
-            //    .Setup(builder => builder.BuildAssignIdentityDelegate(It.IsAny<Type>(), It.IsAny<PropertyInfo>()))
-            //    .Returns(MockAssignIdentityDelegate.Object);
-
-            //TestObject = new DelegateMapper(
-            //    MockValueExpressionBuilder.Object,
-            //    MockAssignIdentityExpressionBuilder.Object,
-            //    MockProjectEntityExpressionBuilder.Object,
-            //    MockTypeMapper.Object,
-            //    MockConfigurationFactory.Object);
+            TestObject = new DelegateMapper(
+                MockValueExpressionBuilder.Object,
+                MockAssignIdentityExpressionBuilder.Object,
+                MockProjectEntityExpressionBuilder.Object);
         }
 
         [TestMethod]
-        public void ValueEntityDelegateRetrievesConfigForEntity()
+        public void ValueEntityDelegatePassesEntityModelToBuilder()
         {
-            throw new NotImplementedException();
-            //TestObject.MapValueEntityDelegate<ITestDataModel>(typeof(TestEntity));
+            TestObject.MapValueEntityDelegate(MockEntityModel.Object);
 
-            //MockConfigurationFactory.Verify(factory => factory.Build<ITestDataModel>(typeof(TestEntity)), Times.Once);
-        }
-
-        [TestMethod]
-        public void ValueEntityDelegateRetrievesValueTypesFromMapper()
-        {
-            throw new NotImplementedException();
-            //TestObject.MapValueEntityDelegate<ITestDataModel>(typeof(TestEntity));
-
-            //MockTypeMapper.Verify(factory => factory.ValueTypes(typeof(TestEntity)), Times.Once);
-        }
-
-        [TestMethod]
-        public void ValueEntityDelegateGetsFromExpressionBuilder()
-        {
-            throw new NotImplementedException();
-            //TestObject.MapValueEntityDelegate<ITestDataModel>(typeof(TestEntity));
-
-            //MockValueExpressionBuilder.Verify(builder => builder.BuildValueEntityDelegate(typeof(TestEntity), TestValueTypes), Times.Once);
-        }
-
-        [TestMethod]
-        public void ValueEntityDelegateDoesntIncludeIdentityValue()
-        {
-            throw new NotImplementedException();
-            //CompiledColumnConfiguration<ITestDataModel> identityColumn = new CompiledColumnConfiguration<ITestDataModel>(nameof(TestEntity.ID)) { IsIdentity = true };
-            //TestCompiledConfiguration.Columns.Add(nameof(TestEntity.ID), identityColumn);
-
-            //TestObject.MapValueEntityDelegate<ITestDataModel>(typeof(TestEntity));
-
-            //MockValueExpressionBuilder
-            //    .Verify(builder => builder.BuildValueEntityDelegate(typeof(TestEntity), It.Is<IEnumerable<PropertyInfo>>(properties => properties.Count() == 1)));
+            MockValueExpressionBuilder.Verify(builder => builder.BuildValueEntityDelegate(MockEntityModel.Object), Times.Once);
         }
 
         [TestMethod]
         public void ValueEntityDelegateReturnsFromExpressionBuilder()
         {
-            throw new NotImplementedException();
-            //ValueEntityDelegate actual = TestObject.MapValueEntityDelegate<ITestDataModel>(typeof(TestEntity));
+            ValueEntityDelegate actual = TestObject.MapValueEntityDelegate(MockEntityModel.Object);
 
-            //Assert.AreSame(MockValueEntityDelegate.Object, actual);
+            Assert.AreSame(MockValueEntityDelegate.Object, actual);
         }
 
         [TestMethod]
-        public void AssignIdentityDelegateRetrievesConfigForEntity()
+        public void AssignIdentityDelegatePassesEntityModelToBuilder()
         {
-            throw new NotImplementedException();
-            //TestCompiledConfiguration.Columns.Add(TestIdentityColumnConfiguration.ValueName, TestIdentityColumnConfiguration);
+            TestObject.MapAssignIdentityDelegate(MockEntityModel.Object);
 
-            //TestObject.MapAssignIdentityDelegate<ITestDataModel>(typeof(TestEntity));
-
-            //MockConfigurationFactory.Verify(factory => factory.Build<ITestDataModel>(typeof(TestEntity)), Times.Once);
-        }
-
-        [TestMethod]
-        public void AssignIdentityDelegatePassesIdentityPropertyToBuilder()
-        {
-            throw new NotImplementedException();
-            //TestCompiledConfiguration.Columns.Add(TestIdentityColumnConfiguration.ValueName, TestIdentityColumnConfiguration);
-
-            //TestObject.MapAssignIdentityDelegate<ITestDataModel>(typeof(TestEntity));
-
-            //MockAssignIdentityExpressionBuilder.Verify(builder => builder.BuildAssignIdentityDelegate(typeof(TestEntity), TestIDProperty), Times.Once);
+            MockAssignIdentityExpressionBuilder.Verify(builder => builder.BuildAssignIdentityDelegate(MockEntityModel.Object), Times.Once);
         }
 
         [TestMethod]
         public void AssignIdentityDelegateReturnsFromExpressionBuilder()
         {
-            throw new NotImplementedException();
-            //TestCompiledConfiguration.Columns.Add(TestIdentityColumnConfiguration.ValueName, TestIdentityColumnConfiguration);
+            AssignIdentityDelegate actual = TestObject.MapAssignIdentityDelegate(MockEntityModel.Object);
 
-            //AssignIdentityDelegate actual = TestObject.MapAssignIdentityDelegate<ITestDataModel>(typeof(TestEntity));
-
-            //Assert.AreSame(MockAssignIdentityDelegate.Object, actual);
+            Assert.AreSame(MockAssignIdentityDelegate.Object, actual);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void AssignIdentityDelegateThrowsWhenNone()
+        public void ProjectEntityDelegatePassesEntityModelToBuilder()
         {
-            throw new NotImplementedException();
-            //TestObject.MapAssignIdentityDelegate<ITestDataModel>(typeof(TestEntity));
+            TestObject.MapProjectEntityDelegate(MockEntityModel.Object);
+
+            MockProjectEntityExpressionBuilder.Verify(builder => builder.BuildProjectEntityDelegate(MockEntityModel.Object), Times.Once);
+        }
+
+        [TestMethod]
+        public void ProjectEntityDelegateReturnsFromExpressionBuilder()
+        {
+            ProjectEntityDelegate actual = TestObject.MapProjectEntityDelegate(MockEntityModel.Object);
+
+            Assert.AreSame(MockProjectEntityDelegate.Object, actual);
         }
     }
 }

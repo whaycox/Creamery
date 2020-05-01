@@ -30,59 +30,83 @@ namespace Curds.Persistence.Model.Tests
         private PropertyInfo TestLongProperty = typeof(OtherEntity).GetProperty(nameof(OtherEntity.LongValue));
 
         private Mock<ISqlQueryReader> MockQueryReader = new Mock<ISqlQueryReader>();
+        private Mock<IEntityModel> MockEntityModel = new Mock<IEntityModel>();
+        private Mock<IValueModel> MockValueModel = new Mock<IValueModel>();
 
         private AssignIdentityExpressionBuilder TestObject = new AssignIdentityExpressionBuilder();
+
+        [TestInitialize]
+        public void Init()
+        {
+            MockEntityModel
+                .Setup(model => model.EntityType)
+                .Returns(typeof(OtherEntity));
+            MockEntityModel
+                .Setup(model => model.Identity)
+                .Returns(MockValueModel.Object);
+        }
+
+        private void SetModelToIdentityProperty(PropertyInfo identityProperty)
+        {
+            MockValueModel
+                .Setup(model => model.Property)
+                .Returns(identityProperty);
+        }
 
         [TestMethod]
         public void BuiltDelegateAssignsByteIdentity()
         {
-            throw new NotImplementedException();
-            //MockQueryReader
-            //    .Setup(reader => reader.ReadByte(It.IsAny<string>()))
-            //    .Returns(TestByteIdentity);
-            //AssignIdentityDelegate actual = TestObject.BuildAssignIdentityDelegate(typeof(OtherEntity), TestByteProperty);
-            //actual(MockQueryReader.Object, TestEntity);
+            SetModelToIdentityProperty(TestByteProperty);
+            MockQueryReader
+                .Setup(reader => reader.ReadByte(It.IsAny<string>()))
+                .Returns(TestByteIdentity);
 
-            //Assert.AreEqual(TestByteIdentity, TestEntity.ByteValue);
+            AssignIdentityDelegate actual = TestObject.BuildAssignIdentityDelegate(MockEntityModel.Object);
+            actual(MockQueryReader.Object, TestEntity);
+
+            Assert.AreEqual(TestByteIdentity, TestEntity.ByteValue);
         }
 
         [TestMethod]
         public void BuiltDelegateAssignsShortIdentity()
         {
-            throw new NotImplementedException();
-            //MockQueryReader
-            //    .Setup(reader => reader.ReadShort(It.IsAny<string>()))
-            //    .Returns(TestShortIdentity);
-            //AssignIdentityDelegate actual = TestObject.BuildAssignIdentityDelegate(typeof(OtherEntity), TestShortProperty);
-            //actual(MockQueryReader.Object, TestEntity);
+            SetModelToIdentityProperty(TestShortProperty);
+            MockQueryReader
+                .Setup(reader => reader.ReadShort(It.IsAny<string>()))
+                .Returns(TestShortIdentity);
 
-            //Assert.AreEqual(TestShortIdentity, TestEntity.ShortValue);
+            AssignIdentityDelegate actual = TestObject.BuildAssignIdentityDelegate(MockEntityModel.Object);
+            actual(MockQueryReader.Object, TestEntity);
+
+            Assert.AreEqual(TestShortIdentity, TestEntity.ShortValue);
         }
 
         [TestMethod]
         public void BuiltDelegateAssignsIntIdentity()
         {
-            throw new NotImplementedException();
-            //MockQueryReader
-            //    .Setup(reader => reader.ReadInt(It.IsAny<string>()))
-            //    .Returns(TestIntIdentity);
-            //AssignIdentityDelegate actual = TestObject.BuildAssignIdentityDelegate(typeof(OtherEntity), TestIntProperty);
-            //actual(MockQueryReader.Object, TestEntity);
+            SetModelToIdentityProperty(TestIntProperty);
+            MockQueryReader
+                .Setup(reader => reader.ReadInt(It.IsAny<string>()))
+                .Returns(TestIntIdentity);
 
-            //Assert.AreEqual(TestIntIdentity, TestEntity.IntValue);
+            AssignIdentityDelegate actual = TestObject.BuildAssignIdentityDelegate(MockEntityModel.Object);
+            actual(MockQueryReader.Object, TestEntity);
+
+            Assert.AreEqual(TestIntIdentity, TestEntity.IntValue);
         }
 
         [TestMethod]
         public void BuiltDelegateAssignsLongIdentity()
         {
-            throw new NotImplementedException();
-            //MockQueryReader
-            //    .Setup(reader => reader.ReadLong(It.IsAny<string>()))
-            //    .Returns(TestLongIdentity);
-            //AssignIdentityDelegate actual = TestObject.BuildAssignIdentityDelegate(typeof(OtherEntity), TestLongProperty);
-            //actual(MockQueryReader.Object, TestEntity);
+            SetModelToIdentityProperty(TestLongProperty);
+            MockQueryReader
+                .Setup(reader => reader.ReadLong(It.IsAny<string>()))
+                .Returns(TestLongIdentity);
 
-            //Assert.AreEqual(TestLongIdentity, TestEntity.LongValue);
+            AssignIdentityDelegate actual = TestObject.BuildAssignIdentityDelegate(MockEntityModel.Object);
+            actual(MockQueryReader.Object, TestEntity);
+
+            Assert.AreEqual(TestLongIdentity, TestEntity.LongValue);
         }
     }
 }

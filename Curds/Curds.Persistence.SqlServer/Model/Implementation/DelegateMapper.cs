@@ -1,18 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Linq;
-
-namespace Curds.Persistence.Model.Implementation
+﻿namespace Curds.Persistence.Model.Implementation
 {
     using Abstraction;
-    using Configuration.Abstraction;
-    using Domain;
-    using Persistence.Abstraction;
-    using Persistence.Domain;
-    using Query.Domain;
-    using Configuration.Domain;
 
     internal class DelegateMapper : IDelegateMapper
     {
@@ -31,9 +19,7 @@ namespace Curds.Persistence.Model.Implementation
         }
 
         public ValueEntityDelegate MapValueEntityDelegate(IEntityModel entityModel) => ValueExpressionBuilder.BuildValueEntityDelegate(entityModel);
-
         public AssignIdentityDelegate MapAssignIdentityDelegate(IEntityModel entityModel) => AssignIdentityExpressionBuilder.BuildAssignIdentityDelegate(entityModel);
-
         public ProjectEntityDelegate MapProjectEntityDelegate(IEntityModel entityModel) => ProjectEntityExpressionBuilder.BuildProjectEntityDelegate(entityModel);
     }
 }

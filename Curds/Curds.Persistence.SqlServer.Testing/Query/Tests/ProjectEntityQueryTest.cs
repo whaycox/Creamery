@@ -19,65 +19,58 @@ namespace Curds.Persistence.Query.Tests
     [TestClass]
     public class ProjectEntityQueryTest
     {
-        //private Table TestTable = new Table();
-        //private List<Column> TestColumns = new List<Column>();
-        //private Column TestColumnOne = new Column();
-        //private Column TestColumnTwo = new Column();
-        //private TestEntity TestEntity = new TestEntity();
+        private List<IValueModel> TestValueModels = new List<IValueModel>();
+        private TestEntity TestEntity = new TestEntity();
 
-        //private Mock<ISqlQueryWriter> MockQueryWriter = new Mock<ISqlQueryWriter>();
-        //private Mock<ISqlQueryReader> MockQueryReader = new Mock<ISqlQueryReader>();
-        //private Mock<IEntityModel<TestEntity>> MockEntityModel = new Mock<IEntityModel<TestEntity>>();
-        //private Mock<ProjectEntityDelegate<TestEntity>> MockProjectEntityDelegate = new Mock<ProjectEntityDelegate<TestEntity>>();
+        private Mock<ISqlQueryWriter> MockQueryWriter = new Mock<ISqlQueryWriter>();
+        private Mock<ISqlQueryReader> MockQueryReader = new Mock<ISqlQueryReader>();
+        private Mock<IEntityModel> MockEntityModel = new Mock<IEntityModel>();
+        private Mock<IValueModel> MockValueModel = new Mock<IValueModel>();
+        private Mock<ProjectEntityDelegate> MockProjectEntityDelegate = new Mock<ProjectEntityDelegate>();
 
         private ProjectEntityQuery<TestEntity> TestObject = new ProjectEntityQuery<TestEntity>();
 
         [TestInitialize]
         public void Init()
         {
-            throw new NotImplementedException();
-            //TestColumns.Add(TestColumnOne);
-            //TestColumns.Add(TestColumnTwo);
-            //TestTable.Columns = TestColumns;
+            TestValueModels.Add(MockValueModel.Object);
 
-            //MockEntityModel
-            //    .Setup(model => model.Table())
-            //    .Returns(TestTable);
-            //MockEntityModel
-            //    .Setup(model => model.ProjectEntity)
-            //    .Returns(MockProjectEntityDelegate.Object);
-            //MockProjectEntityDelegate
-            //    .Setup(del => del(It.IsAny<ISqlQueryReader>()))
-            //    .Returns(TestEntity);
+            MockEntityModel
+                .Setup(model => model.Values)
+                .Returns(TestValueModels);
+            MockEntityModel
+                .Setup(model => model.ProjectEntity)
+                .Returns(MockProjectEntityDelegate.Object);
+            MockProjectEntityDelegate
+                .Setup(del => del(It.IsAny<ISqlQueryReader>()))
+                .Returns(TestEntity);
 
-            //TestObject.Model = MockEntityModel.Object;
+            TestObject.Model = MockEntityModel.Object;
         }
 
         [TestMethod]
         public void WriteCallsWriterCorrectly()
         {
-            throw new NotImplementedException();
-            //int callOrder = 0;
-            //MockQueryWriter
-            //    .Setup(writer => writer.Select(It.IsAny<List<Column>>()))
-            //    .Callback(() => Assert.AreEqual(callOrder++, 0));
-            //MockQueryWriter
-            //    .Setup(writer => writer.From(It.IsAny<Table>()))
-            //    .Callback(() => Assert.AreEqual(callOrder++, 1));
+            int callOrder = 0;
+            MockQueryWriter
+                .Setup(writer => writer.Select(It.IsAny<List<IValueModel>>()))
+                .Callback(() => Assert.AreEqual(callOrder++, 0));
+            MockQueryWriter
+                .Setup(writer => writer.From(It.IsAny<IEntityModel>()))
+                .Callback(() => Assert.AreEqual(callOrder++, 1));
 
-            //TestObject.Write(MockQueryWriter.Object);
+            TestObject.Write(MockQueryWriter.Object);
 
-            //MockQueryWriter.Verify(writer => writer.Select(TestColumns), Times.Once);
-            //MockQueryWriter.Verify(writer => writer.From(TestTable), Times.Once);
+            MockQueryWriter.Verify(writer => writer.Select(TestValueModels), Times.Once);
+            MockQueryWriter.Verify(writer => writer.From(MockEntityModel.Object), Times.Once);
         }
 
         private void SetupReaderForNEntities(int entities)
         {
-            throw new NotImplementedException();
-            //var sequenceSetup = MockQueryReader.SetupSequence(reader => reader.Advance());
-            //for (int i = 0; i < entities; i++)
-            //    sequenceSetup.ReturnsAsync(true);
-            //sequenceSetup.ReturnsAsync(false);
+            var sequenceSetup = MockQueryReader.SetupSequence(reader => reader.Advance());
+            for (int i = 0; i < entities; i++)
+                sequenceSetup.ReturnsAsync(true);
+            sequenceSetup.ReturnsAsync(false);
         }
 
         [DataTestMethod]
@@ -89,12 +82,11 @@ namespace Curds.Persistence.Query.Tests
         [DataRow(20)]
         public async Task ProcessResultsProjectsEachReturnedEntity(int entities)
         {
-            throw new NotImplementedException();
-            //SetupReaderForNEntities(entities);
+            SetupReaderForNEntities(entities);
 
-            //await TestObject.ProcessResult(MockQueryReader.Object);
+            await TestObject.ProcessResult(MockQueryReader.Object);
 
-            //MockProjectEntityDelegate.Verify(del => del(MockQueryReader.Object), Times.Exactly(entities));
+            MockProjectEntityDelegate.Verify(del => del(MockQueryReader.Object), Times.Exactly(entities));
         }
 
         [DataTestMethod]
@@ -106,14 +98,13 @@ namespace Curds.Persistence.Query.Tests
         [DataRow(20)]
         public async Task ProcessResultsAddsEachProjectionToResults(int entities)
         {
-            throw new NotImplementedException();
-            //SetupReaderForNEntities(entities);
+            SetupReaderForNEntities(entities);
 
-            //await TestObject.ProcessResult(MockQueryReader.Object);
+            await TestObject.ProcessResult(MockQueryReader.Object);
 
-            //Assert.AreEqual(entities, TestObject.Results.Count);
-            //foreach (TestEntity entity in TestObject.Results)
-            //    Assert.AreSame(TestEntity, entity);
+            Assert.AreEqual(entities, TestObject.Results.Count);
+            foreach (TestEntity entity in TestObject.Results)
+                Assert.AreSame(TestEntity, entity);
         }
     }
 }

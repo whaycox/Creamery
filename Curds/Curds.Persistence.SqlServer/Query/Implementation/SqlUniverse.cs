@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Curds.Persistence.Query.Implementation
+﻿namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
-    using Model.Domain;
-    using Persistence.Abstraction;
     using Model.Abstraction;
+    using Persistence.Abstraction;
 
     internal class SqlUniverse<TEntity> : ISqlUniverse<TEntity>
         where TEntity : IEntity

@@ -11,8 +11,6 @@ namespace Curds.Persistence.Model.Implementation
 
     internal class TypeMapper : ITypeMapper
     {
-        private const string InvalidModelPropertiesMessage = "All model properties must be IEntity types";
-
         public IEnumerable<Type> EntityTypes<TModel>()
             where TModel : IDataModel => ModelProperties(typeof(TModel))
                 .Select(property => ParseModelPropertyToTableType(property))
@@ -27,7 +25,7 @@ namespace Curds.Persistence.Model.Implementation
         {
             Type propertyType = propertyInfo.PropertyType;
             if (!typeof(IEntity).IsAssignableFrom(propertyType))
-                throw new ModelException(InvalidModelPropertiesMessage);
+                throw new ModelException($"{propertyInfo.Name} ({propertyInfo.PropertyType.FullName}) is not an IEntity");
 
             return propertyType;
         }

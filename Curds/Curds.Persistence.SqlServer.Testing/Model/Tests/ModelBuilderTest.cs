@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Data;
+using System.Linq;
 
 namespace Curds.Persistence.Model.Tests
 {
@@ -18,12 +19,10 @@ namespace Curds.Persistence.Model.Tests
     [TestClass]
     public class ModelBuilderTest
     {
-        private List<Type> TestTableTypes = new List<Type>();
+        private List<Type> TestEntityTypes = new List<Type>();
         private Type TestEntityType = typeof(TestEntity);
         private Type OtherEntityType = typeof(OtherEntity);
         private PropertyInfo TestEntityIDProperty = typeof(TestEntity).GetProperty(nameof(TestEntity.ID));
-        private PropertyInfo TestEntityNameProperty = typeof(TestEntity).GetProperty(nameof(TestEntity.Name));
-        private List<PropertyInfo> TestEntityProperties = new List<PropertyInfo>();
         private string TestSchema = nameof(TestSchema);
         private string TestTable = nameof(TestTable);
         private CompiledConfiguration<ITestDataModel> TestCompiledConfiguration = new CompiledConfiguration<ITestDataModel>(typeof(TestEntity));
@@ -40,221 +39,200 @@ namespace Curds.Persistence.Model.Tests
         [TestInitialize]
         public void Init()
         {
-            throw new NotImplementedException();
-            //TestTableTypes.Add(TestEntityType);
-            //TestTableTypes.Add(OtherEntityType);
-            //TestEntityProperties.Add(TestEntityIDProperty);
-            //TestEntityProperties.Add(TestEntityNameProperty);
-            //TestCompiledConfiguration.Schema = TestSchema;
-            //TestCompiledConfiguration.Table = TestTable;
+            TestEntityTypes.Add(TestEntityType);
+            TestCompiledConfiguration.Schema = TestSchema;
+            TestCompiledConfiguration.Table = TestTable;
+            TestCompiledConfiguration.Columns.Add(nameof(TestEntity.ID), TestCompiledColumnConfiguration);
 
-            //MockConfigurationFactory
-            //    .Setup(factory => factory.Build<ITestDataModel>(It.IsAny<Type>()))
-            //    .Returns(TestCompiledConfiguration);
-            //MockTypeMapper
-            //    .Setup(mapper => mapper.EntityTypes<ITestDataModel>())
-            //    .Returns(TestTableTypes);
-            //MockTypeMapper
-            //    .Setup(mapper => mapper.ValueTypes(It.IsAny<Type>()))
-            //    .Returns(TestEntityProperties);
-            //MockDelegateMapper
-            //    .Setup(mapper => mapper.MapValueEntityDelegate<ITestDataModel>(It.IsAny<Type>()))
-            //    .Returns(MockValueEntityDelegate.Object);
-            //MockDelegateMapper
-            //    .Setup(mapper => mapper.MapAssignIdentityDelegate<ITestDataModel>(It.IsAny<Type>()))
-            //    .Returns(MockAssignIdentityDelegate.Object);
+            MockConfigurationFactory
+                .Setup(factory => factory.Build<ITestDataModel>(It.IsAny<Type>()))
+                .Returns(TestCompiledConfiguration);
+            MockTypeMapper
+                .Setup(mapper => mapper.EntityTypes<ITestDataModel>())
+                .Returns(TestEntityTypes);
 
-            //TestObject = new ModelBuilder(
-            //    MockConfigurationFactory.Object,
-            //    MockTypeMapper.Object,
-            //    MockDelegateMapper.Object);
+            TestObject = new ModelBuilder(
+                MockConfigurationFactory.Object,
+                MockTypeMapper.Object,
+                MockDelegateMapper.Object);
+        }
+
+        private void SetupMapperForProperty(PropertyInfo property)
+        {
+            MockTypeMapper
+                .Setup(mapper => mapper.ValueTypes(It.IsAny<Type>()))
+                .Returns(new[] { property });
         }
 
         [TestMethod]
-        public void RevisitTests()
+        public void GetsTypesFromMapper()
         {
-            Assert.Fail();
+            TestObject.BuildEntityModels<ITestDataModel>();
+
+            MockTypeMapper.Verify(mapper => mapper.EntityTypes<ITestDataModel>(), Times.Once);
         }
 
-        //[TestMethod]
-        //public void BuildDefaultColumnIsExpected()
-        //{
-        //    Column actual = TestObject.BuildDefaultColumn(TestEntityIDProperty);
+        [TestMethod]
+        public void GetsValueTypesFromMapperForEachEntityType()
+        {
+            TestEntityTypes.Add(OtherEntityType);
 
-        //    Assert.AreEqual(TestEntityIDProperty.Name, actual.Name);
-        //    Assert.AreEqual(SqlDbType.Int, actual.SqlType);
-        //    Assert.IsFalse(actual.IsIdentity);
-        //}
+            TestObject.BuildEntityModels<ITestDataModel>();
 
-        //[DataTestMethod]
-        //[DataRow(nameof(OtherEntity.Name), SqlDbType.NVarChar)]
-        //[DataRow(nameof(OtherEntity.BoolValue), SqlDbType.Bit)]
-        //[DataRow(nameof(OtherEntity.NullableBoolValue), SqlDbType.Bit)]
-        //[DataRow(nameof(OtherEntity.ByteValue), SqlDbType.TinyInt)]
-        //[DataRow(nameof(OtherEntity.NullableByteValue), SqlDbType.TinyInt)]
-        //[DataRow(nameof(OtherEntity.ShortValue), SqlDbType.SmallInt)]
-        //[DataRow(nameof(OtherEntity.NullableShortValue), SqlDbType.SmallInt)]
-        //[DataRow(nameof(OtherEntity.IntValue), SqlDbType.Int)]
-        //[DataRow(nameof(OtherEntity.NullableIntValue), SqlDbType.Int)]
-        //[DataRow(nameof(OtherEntity.LongValue), SqlDbType.BigInt)]
-        //[DataRow(nameof(OtherEntity.NullableLongValue), SqlDbType.BigInt)]
-        //[DataRow(nameof(OtherEntity.DateTimeValue), SqlDbType.DateTime)]
-        //[DataRow(nameof(OtherEntity.NullableDateTimeValue), SqlDbType.DateTime)]
-        //[DataRow(nameof(OtherEntity.DateTimeOffsetValue), SqlDbType.DateTimeOffset)]
-        //[DataRow(nameof(OtherEntity.NullableDateTimeOffsetValue), SqlDbType.DateTimeOffset)]
-        //[DataRow(nameof(OtherEntity.DecimalValue), SqlDbType.Decimal)]
-        //[DataRow(nameof(OtherEntity.NullableDecimalValue), SqlDbType.Decimal)]
-        //[DataRow(nameof(OtherEntity.DoubleValue), SqlDbType.Float)]
-        //[DataRow(nameof(OtherEntity.NullableDoubleValue), SqlDbType.Float)]
-        //public void BuildDefaultColumnMapsSqlTypeCorrectly(string propertyName, SqlDbType expectedType)
-        //{
-        //    PropertyInfo testProperty = typeof(OtherEntity).GetProperty(propertyName);
+            MockTypeMapper.Verify(mapper => mapper.ValueTypes(TestEntityType), Times.Once);
+            MockTypeMapper.Verify(mapper => mapper.ValueTypes(OtherEntityType), Times.Once);
+        }
 
-        //    Column actual = TestObject.BuildDefaultColumn(testProperty);
+        [TestMethod]
+        public void GetsCompiledConfigurationsForEachType()
+        {
+            TestEntityTypes.Add(OtherEntityType);
 
-        //    Assert.AreEqual(expectedType, actual.SqlType);
-        //}
+            TestObject.BuildEntityModels<ITestDataModel>();
 
-        //[TestMethod]
-        //public void TablesByTypeFetchesTableTypesFromMapper()
-        //{
-        //    TestObject.TablesByType<ITestDataModel>();
+            MockConfigurationFactory.Verify(factory => factory.Build<ITestDataModel>(TestEntityType), Times.Once);
+            MockConfigurationFactory.Verify(factory => factory.Build<ITestDataModel>(OtherEntityType), Times.Once);
+        }
 
-        //    MockTypeMapper.Verify(mapper => mapper.EntityTypes<ITestDataModel>(), Times.Once);
-        //}
+        private IEntityModel VerifySuppliedModelHasTestName(Type expectedEntityType) => It.Is<IEntityModel>(model => 
+            model.Schema == TestSchema && 
+            model.Table == TestTable &&
+            model.EntityType == expectedEntityType);
 
-        //[TestMethod]
-        //public void TablesByTypeFetchesConfigurationForMappedType()
-        //{
-        //    Dictionary<Type, Table> actual = TestObject.TablesByType<ITestDataModel>();
+        [TestMethod]
+        public void MapsValueEntityDelegateForEachType()
+        {
+            TestEntityTypes.Add(OtherEntityType);
 
-        //    Assert.AreEqual(2, actual.Count);
-        //    MockConfigurationFactory.Verify(factory => factory.Build<ITestDataModel>(TestEntityType), Times.Once);
-        //    MockConfigurationFactory.Verify(factory => factory.Build<ITestDataModel>(OtherEntityType), Times.Once);
-        //}
+            TestObject.BuildEntityModels<ITestDataModel>();
 
-        //[TestMethod]
-        //public void TablesByTypeBuildsCorrectTable()
-        //{
-        //    Dictionary<Type, Table> actual = TestObject.TablesByType<ITestDataModel>();
+            MockDelegateMapper.Verify(mapper => mapper.MapValueEntityDelegate(VerifySuppliedModelHasTestName(TestEntityType)), Times.Once);
+            MockDelegateMapper.Verify(mapper => mapper.MapValueEntityDelegate(VerifySuppliedModelHasTestName(OtherEntityType)), Times.Once);
+        }
 
-        //    Table actualTable = actual[TestEntityType];
-        //    Assert.AreEqual(TestSchema, actualTable.Schema);
-        //    Assert.AreEqual(TestTable, actualTable.Name);
-        //}
+        [TestMethod]
+        public void MapsAssignIdentityDelegateForEachType()
+        {
+            TestEntityTypes.Add(OtherEntityType);
 
-        //[TestMethod]
-        //public void TablesByTypeAddsDefaultColumns()
-        //{
-        //    Dictionary<Type, Table> actual = TestObject.TablesByType<ITestDataModel>();
+            TestObject.BuildEntityModels<ITestDataModel>();
 
-        //    Table actualTable = actual[TestEntityType];
-        //    Assert.AreEqual(2, actualTable.Columns.Count);
-        //    Column idColumn = actualTable.Columns[0];
-        //    Assert.AreEqual(TestEntityIDProperty.Name, idColumn.Name);
-        //    Assert.IsFalse(idColumn.IsIdentity);
-        //    Assert.AreEqual(SqlDbType.Int, idColumn.SqlType);
-        //    Column nameColumn = actualTable.Columns[1];
-        //    Assert.AreEqual(TestEntityNameProperty.Name, nameColumn.Name);
-        //    Assert.IsFalse(nameColumn.IsIdentity);
-        //    Assert.AreEqual(SqlDbType.NVarChar, nameColumn.SqlType);
-        //}
+            MockDelegateMapper.Verify(mapper => mapper.MapAssignIdentityDelegate(VerifySuppliedModelHasTestName(TestEntityType)), Times.Once);
+            MockDelegateMapper.Verify(mapper => mapper.MapAssignIdentityDelegate(VerifySuppliedModelHasTestName(OtherEntityType)), Times.Once);
+        }
 
-        //[TestMethod]
-        //public void TablesByTypeCanConfigureColumn()
-        //{
-        //    TestCompiledColumnConfiguration.Name = nameof(TablesByTypeCanConfigureColumn);
-        //    TestCompiledColumnConfiguration.IsIdentity = true;
-        //    TestCompiledConfiguration.Columns.Add(TestEntityIDProperty.Name, TestCompiledColumnConfiguration);
+        [TestMethod]
+        public void MapsProjectEntityDelegateForEachType()
+        {
+            TestEntityTypes.Add(OtherEntityType);
 
-        //    Dictionary<Type, Table> actual = TestObject.TablesByType<ITestDataModel>();
+            TestObject.BuildEntityModels<ITestDataModel>();
 
-        //    Table actualTable = actual[TestEntityType];
-        //    Column idColumn = actualTable.Columns[0];
-        //    Assert.AreEqual(nameof(TablesByTypeCanConfigureColumn), idColumn.Name);
-        //    Assert.AreEqual(true, idColumn.IsIdentity);
-        //}
+            MockDelegateMapper.Verify(mapper => mapper.MapProjectEntityDelegate(VerifySuppliedModelHasTestName(TestEntityType)), Times.Once);
+            MockDelegateMapper.Verify(mapper => mapper.MapProjectEntityDelegate(VerifySuppliedModelHasTestName(OtherEntityType)), Times.Once);
+        }
 
-        //[TestMethod]
-        //public void ValueEntityDelegatesByTypeFetchesTableTypesFromMapper()
-        //{
-        //    TestObject.ValueEntityDelegatesByType<ITestDataModel>();
+        [TestMethod]
+        public void ReturnedModelIsExpectedType()
+        {
+            IEnumerable<IEntityModel> actual = TestObject.BuildEntityModels<ITestDataModel>();
 
-        //    MockTypeMapper.Verify(mapper => mapper.EntityTypes<ITestDataModel>(), Times.Once);
-        //}
+            Assert.AreEqual(1, actual.Count());
+            IEntityModel actualEntity = actual.First();
+            Assert.IsInstanceOfType(actualEntity, typeof(EntityModel));
+        }
 
-        //[TestMethod]
-        //public void ValueEntityDelegatesByTypeFetchesFromMapper()
-        //{
-        //    Dictionary<Type, ValueEntityDelegate> actual = TestObject.ValueEntityDelegatesByType<ITestDataModel>();
+        [TestMethod]
+        public void ReturnedSchemaIsFromConfiguration()
+        {
+            TestCompiledConfiguration.Schema = nameof(ReturnedSchemaIsFromConfiguration);
 
-        //    Assert.AreEqual(2, actual.Count);
-        //    MockDelegateMapper.Verify(mapper => mapper.MapValueEntityDelegate<ITestDataModel>(TestEntityType), Times.Once);
-        //    MockDelegateMapper.Verify(mapper => mapper.MapValueEntityDelegate<ITestDataModel>(OtherEntityType), Times.Once);
-        //}
+            IEnumerable<IEntityModel> actual = TestObject.BuildEntityModels<ITestDataModel>();
 
-        //[TestMethod]
-        //public void ValueEntityDelegatesByTypeReturnsMappedDelegate()
-        //{
-        //    Dictionary<Type, ValueEntityDelegate> actual = TestObject.ValueEntityDelegatesByType<ITestDataModel>();
+            Assert.AreEqual(1, actual.Count());
+            IEntityModel actualEntity = actual.First();
+            Assert.AreEqual(nameof(ReturnedSchemaIsFromConfiguration), actualEntity.Schema);
+        }
 
-        //    Assert.AreSame(MockValueEntityDelegate.Object, actual[TestEntityType]);
-        //}
+        [TestMethod]
+        public void ReturnedTableIsFromConfiguration()
+        {
+            TestCompiledConfiguration.Table = nameof(ReturnedTableIsFromConfiguration);
 
-        //[TestMethod]
-        //public void AssignIdentityDelegatesByTypeFetchesTableTypesFromMapper()
-        //{
-        //    TestObject.AssignIdentityDelegatesByType<ITestDataModel>();
+            IEnumerable<IEntityModel> actual = TestObject.BuildEntityModels<ITestDataModel>();
 
-        //    MockTypeMapper.Verify(mapper => mapper.EntityTypes<ITestDataModel>(), Times.Once);
-        //}
+            Assert.AreEqual(1, actual.Count());
+            IEntityModel actualEntity = actual.First();
+            Assert.AreEqual(nameof(ReturnedTableIsFromConfiguration), actualEntity.Table);
+        }
 
-        //[TestMethod]
-        //public void AssignIdentityDelegatesByTypeBuildsConfigurationForEachTableType()
-        //{
-        //    TestObject.AssignIdentityDelegatesByType<ITestDataModel>();
+        [DataTestMethod]
+        [DynamicData(nameof(ExpectedColumnTypes))]
+        public void BuildsExpectedColumnForProperty(PropertyInfo testProperty, SqlDbType expectedColumnType)
+        {
+            SetupMapperForProperty(testProperty);
 
-        //    MockConfigurationFactory.Verify(factory => factory.Build<ITestDataModel>(TestEntityType), Times.Once);
-        //    MockConfigurationFactory.Verify(factory => factory.Build<ITestDataModel>(OtherEntityType), Times.Once);
-        //}
+            IEnumerable<IEntityModel> actual = TestObject.BuildEntityModels<ITestDataModel>();
 
-        //[TestMethod]
-        //public void AssignIdentityDelegatesByTypeFetchesFromMapper()
-        //{
-        //    TestCompiledColumnConfiguration.IsIdentity = true;
-        //    TestCompiledConfiguration.Columns.Add(TestEntityIDProperty.Name, TestCompiledColumnConfiguration);
+            Assert.AreEqual(1, actual.Count());
+            IEntityModel actualEntity = actual.First();
+            Assert.AreEqual(1, actualEntity.Values.Count());
+            IValueModel actualValue = actualEntity.Values.First();
+            Assert.AreEqual(testProperty.Name, actualValue.Name);
+            Assert.IsFalse(actualValue.IsIdentity);
+            Assert.AreEqual(expectedColumnType, actualValue.SqlType);
+        }
+        private static IEnumerable<object[]> ExpectedColumnTypes => new List<object[]>
+        {
+            new object[] { typeof(OtherEntity).GetProperty(nameof(OtherEntity.Name)), SqlDbType.NVarChar },
+            new object[] { typeof(OtherEntity).GetProperty(nameof(OtherEntity.BoolValue)), SqlDbType.Bit },
+            new object[] { typeof(OtherEntity).GetProperty(nameof(OtherEntity.NullableBoolValue)), SqlDbType.Bit },
+            new object[] { typeof(OtherEntity).GetProperty(nameof(OtherEntity.ByteValue)), SqlDbType.TinyInt },
+            new object[] { typeof(OtherEntity).GetProperty(nameof(OtherEntity.NullableByteValue)), SqlDbType.TinyInt },
+            new object[] { typeof(OtherEntity).GetProperty(nameof(OtherEntity.ShortValue)), SqlDbType.SmallInt },
+            new object[] { typeof(OtherEntity).GetProperty(nameof(OtherEntity.NullableShortValue)), SqlDbType.SmallInt },
+            new object[] { typeof(OtherEntity).GetProperty(nameof(OtherEntity.IntValue)), SqlDbType.Int },
+            new object[] { typeof(OtherEntity).GetProperty(nameof(OtherEntity.NullableIntValue)), SqlDbType.Int },
+            new object[] { typeof(OtherEntity).GetProperty(nameof(OtherEntity.LongValue)), SqlDbType.BigInt },
+            new object[] { typeof(OtherEntity).GetProperty(nameof(OtherEntity.NullableLongValue)), SqlDbType.BigInt },
+            new object[] { typeof(OtherEntity).GetProperty(nameof(OtherEntity.DateTimeValue)), SqlDbType.DateTime },
+            new object[] { typeof(OtherEntity).GetProperty(nameof(OtherEntity.NullableDateTimeValue)), SqlDbType.DateTime },
+            new object[] { typeof(OtherEntity).GetProperty(nameof(OtherEntity.DateTimeOffsetValue)), SqlDbType.DateTimeOffset },
+            new object[] { typeof(OtherEntity).GetProperty(nameof(OtherEntity.NullableDateTimeOffsetValue)), SqlDbType.DateTimeOffset },
+            new object[] { typeof(OtherEntity).GetProperty(nameof(OtherEntity.DecimalValue)), SqlDbType.Decimal },
+            new object[] { typeof(OtherEntity).GetProperty(nameof(OtherEntity.NullableDecimalValue)), SqlDbType.Decimal },
+            new object[] { typeof(OtherEntity).GetProperty(nameof(OtherEntity.DoubleValue)), SqlDbType.Float },
+            new object[] { typeof(OtherEntity).GetProperty(nameof(OtherEntity.NullableDoubleValue)), SqlDbType.Float },
+        };
 
-        //    Dictionary<Type, AssignIdentityDelegate> actual = TestObject.AssignIdentityDelegatesByType<ITestDataModel>();
+        [TestMethod]
+        public void CanConfigureIdentityOnColumn()
+        {
+            TestCompiledColumnConfiguration.IsIdentity = true;
+            SetupMapperForProperty(TestEntityIDProperty);
 
-        //    Assert.AreEqual(2, actual.Count);
-        //    MockDelegateMapper.Verify(mapper => mapper.MapAssignIdentityDelegate<ITestDataModel>(TestEntityType), Times.Once);
-        //    MockDelegateMapper.Verify(mapper => mapper.MapAssignIdentityDelegate<ITestDataModel>(OtherEntityType), Times.Once);
-        //}
+            IEnumerable<IEntityModel> actual = TestObject.BuildEntityModels<ITestDataModel>();
 
-        //[TestMethod]
-        //public void AssignIdentityDelegatesByTypeFetchesOnlyForTypesWithIdentity()
-        //{
-        //    TestCompiledColumnConfiguration.IsIdentity = true;
-        //    TestCompiledConfiguration.Columns.Add(TestEntityIDProperty.Name, TestCompiledColumnConfiguration);
-        //    MockConfigurationFactory
-        //        .Setup(factory => factory.Build<ITestDataModel>(OtherEntityType))
-        //        .Returns(new CompiledConfiguration<ITestDataModel>(OtherEntityType));
+            Assert.AreEqual(1, actual.Count());
+            IEntityModel actualEntity = actual.First();
+            Assert.AreEqual(1, actualEntity.Values.Count());
+            IValueModel actualValue = actualEntity.Values.First();
+            Assert.IsTrue(actualValue.IsIdentity);
+        }
 
-        //    Dictionary<Type, AssignIdentityDelegate> actual = TestObject.AssignIdentityDelegatesByType<ITestDataModel>();
+        [TestMethod]
+        public void CanConfigureNameOnColumn()
+        {
+            TestCompiledColumnConfiguration.Name = nameof(CanConfigureNameOnColumn);
+            SetupMapperForProperty(TestEntityIDProperty);
 
-        //    Assert.AreEqual(1, actual.Count);
-        //    MockDelegateMapper.Verify(mapper => mapper.MapAssignIdentityDelegate<ITestDataModel>(TestEntityType), Times.Once);
-        //}
+            IEnumerable<IEntityModel> actual = TestObject.BuildEntityModels<ITestDataModel>();
 
-        //[TestMethod]
-        //public void AssignIdentityDelegatesByTypeReturnsMappedDelegate()
-        //{
-        //    TestCompiledColumnConfiguration.IsIdentity = true;
-        //    TestCompiledConfiguration.Columns.Add(TestEntityIDProperty.Name, TestCompiledColumnConfiguration);
-
-        //    Dictionary<Type, AssignIdentityDelegate> actual = TestObject.AssignIdentityDelegatesByType<ITestDataModel>();
-
-        //    Assert.AreSame(MockAssignIdentityDelegate.Object, actual[TestEntityType]);
-        //}
+            Assert.AreEqual(1, actual.Count());
+            IEntityModel actualEntity = actual.First();
+            Assert.AreEqual(1, actualEntity.Values.Count());
+            IValueModel actualValue = actualEntity.Values.First();
+            Assert.AreEqual(nameof(CanConfigureNameOnColumn), actualValue.Name);
+        }
     }
 }

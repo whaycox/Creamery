@@ -2,9 +2,8 @@
 
 namespace Curds.Persistence.Model.Domain
 {
-    using Curds.Persistence.Abstraction;
-    using Curds.Persistence.Domain;
-    using Model.Abstraction;
+    using Persistence.Abstraction;
+    using Persistence.Domain;
 
     public class NotAnInterfaceModel : IDataModel
     {

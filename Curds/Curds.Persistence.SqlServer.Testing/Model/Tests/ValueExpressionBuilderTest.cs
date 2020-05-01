@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Moq;
 
 namespace Curds.Persistence.Model.Tests
 {
@@ -12,6 +13,7 @@ namespace Curds.Persistence.Model.Tests
     using Persistence.Domain;
     using Query.Domain;
     using Query.Values.Domain;
+    using Model.Domain;
 
     [TestClass]
     public class ValueExpressionBuilderTest
@@ -193,9 +195,11 @@ namespace Curds.Persistence.Model.Tests
 
         private OtherEntity TestOtherEntity = new OtherEntity();
         private ParameterExpression OtherEntityParameter = Expression.Parameter(typeof(OtherEntity), nameof(OtherEntityParameter));
-        private List<PropertyInfo> OtherEntityProperties = null;
+        private List<ValueModel> OtherEntityModels = null;
         private ValueEntity TestValueEntity = new ValueEntity();
         private ParameterExpression ValueEntityParameter = Expression.Parameter(typeof(ValueEntity), nameof(ValueEntityParameter));
+
+        private Mock<IEntityModel> MockEntityModel = new Mock<IEntityModel>();
 
         private ValueExpressionBuilder TestObject = new ValueExpressionBuilder();
 
@@ -204,80 +208,60 @@ namespace Curds.Persistence.Model.Tests
         [TestInitialize]
         public void Init()
         {
-            OtherEntityProperties = typeof(OtherEntity)
+            OtherEntityModels = typeof(OtherEntity)
                 .GetProperties()
-                .Where(property => property.CanRead && property.CanWrite)
+                .Where(property => property.Name != nameof(OtherEntity.Keys))
                 .OrderBy(property => property.Name)
+                .Select(property => new ValueModel { Name = property.Name, Property = property })
                 .ToList();
+
+            MockEntityModel
+                .Setup(model => model.EntityType)
+                .Returns(typeof(OtherEntity));
+            MockEntityModel
+                .Setup(model => model.NonIdentities)
+                .Returns(OtherEntityModels);
         }
 
         [TestMethod]
         public void ValueEntityDelegateReturnsEmptyValueEntity()
         {
-            throw new NotImplementedException();
-            //OtherEntityProperties.Clear();
-            //ValueEntityDelegate valueEntityDelegate = TestObject.BuildValueEntityDelegate(typeof(OtherEntity), OtherEntityProperties);
+            OtherEntityModels.Clear();
+            ValueEntityDelegate valueEntityDelegate = TestObject.BuildValueEntityDelegate(MockEntityModel.Object);
 
-            //ValueEntity actual = valueEntityDelegate(TestOtherEntity);
+            ValueEntity actual = valueEntityDelegate(TestOtherEntity);
 
-            //Assert.AreEqual(0, actual.Values.Count);
-        }
-
-        [TestMethod]
-        public void ValueEntityDelegateAddsProvidedValues()
-        {
-            throw new NotImplementedException();
-            //ValueEntityDelegate valueEntityDelegate = TestObject.BuildValueEntityDelegate(typeof(OtherEntity), OtherEntityProperties);
-
-            //ValueEntity actual = valueEntityDelegate(TestOtherEntity);
-
-            //Assert.AreEqual(20, actual.Values.Count);
-        }
-
-        [DataTestMethod]
-        [DataRow(false)]
-        [DataRow(true)]
-        public void ValueEntityDelegateAddsProvidedExpressionsInOrder(bool sortAscending)
-        {
-            throw new NotImplementedException();
-            //if (!sortAscending)
-            //    OtherEntityProperties = OtherEntityProperties.OrderByDescending(property => property.Name).ToList();
-            //ValueEntityDelegate valueEntityDelegate = TestObject.BuildValueEntityDelegate(typeof(OtherEntity), OtherEntityProperties);
-
-            //ValueEntity actual = valueEntityDelegate(TestOtherEntity);
-
-            //for (int i = 0; i < OtherEntityProperties.Count; i++)
-            //    Assert.AreEqual(OtherEntityProperties[i].Name, actual.Values[i].Name);
+            Assert.AreEqual(0, actual.Values.Count);
         }
 
         [TestMethod]
         public void ValueEntityDelegatePopulatesValues()
         {
-            throw new NotImplementedException();
-            //ValueEntityDelegate valueEntityDelegate = TestObject.BuildValueEntityDelegate(typeof(OtherEntity), OtherEntityProperties);
+            ValueEntityDelegate valueEntityDelegate = TestObject.BuildValueEntityDelegate(MockEntityModel.Object);
 
-            //ValueEntity actual = valueEntityDelegate(TestOtherEntity);
+            ValueEntity actual = valueEntityDelegate(TestOtherEntity);
 
-            //Assert.AreEqual(TestOtherEntity.BoolValue, actual.Values[0].Content);
-            //Assert.AreEqual(TestOtherEntity.ByteValue, actual.Values[1].Content);
-            //Assert.AreEqual(TestOtherEntity.DateTimeOffsetValue, actual.Values[2].Content);
-            //Assert.AreEqual(TestOtherEntity.DateTimeValue, actual.Values[3].Content);
-            //Assert.AreEqual(TestOtherEntity.DecimalValue, actual.Values[4].Content);
-            //Assert.AreEqual(TestOtherEntity.DoubleValue, actual.Values[5].Content);
-            //Assert.AreEqual(TestOtherEntity.ID, actual.Values[6].Content);
-            //Assert.AreEqual(TestOtherEntity.IntValue, actual.Values[7].Content);
-            //Assert.AreEqual(TestOtherEntity.LongValue, actual.Values[8].Content);
-            //Assert.AreEqual(TestOtherEntity.Name, actual.Values[9].Content);
-            //Assert.AreEqual(TestOtherEntity.NullableBoolValue, actual.Values[10].Content);
-            //Assert.AreEqual(TestOtherEntity.NullableByteValue, actual.Values[11].Content);
-            //Assert.AreEqual(TestOtherEntity.NullableDateTimeOffsetValue, actual.Values[12].Content);
-            //Assert.AreEqual(TestOtherEntity.NullableDateTimeValue, actual.Values[13].Content);
-            //Assert.AreEqual(TestOtherEntity.NullableDecimalValue, actual.Values[14].Content);
-            //Assert.AreEqual(TestOtherEntity.NullableDoubleValue, actual.Values[15].Content);
-            //Assert.AreEqual(TestOtherEntity.NullableIntValue, actual.Values[16].Content);
-            //Assert.AreEqual(TestOtherEntity.NullableLongValue, actual.Values[17].Content);
-            //Assert.AreEqual(TestOtherEntity.NullableShortValue, actual.Values[18].Content);
-            //Assert.AreEqual(TestOtherEntity.ShortValue, actual.Values[19].Content);
+            Assert.AreEqual(20, actual.Values.Count);
+            Assert.AreEqual(TestOtherEntity.BoolValue, actual.Values[0].Content);
+            Assert.AreEqual(TestOtherEntity.ByteValue, actual.Values[1].Content);
+            Assert.AreEqual(TestOtherEntity.DateTimeOffsetValue, actual.Values[2].Content);
+            Assert.AreEqual(TestOtherEntity.DateTimeValue, actual.Values[3].Content);
+            Assert.AreEqual(TestOtherEntity.DecimalValue, actual.Values[4].Content);
+            Assert.AreEqual(TestOtherEntity.DoubleValue, actual.Values[5].Content);
+            Assert.AreEqual(TestOtherEntity.ID, actual.Values[6].Content);
+            Assert.AreEqual(TestOtherEntity.IntValue, actual.Values[7].Content);
+            Assert.AreEqual(TestOtherEntity.LongValue, actual.Values[8].Content);
+            Assert.AreEqual(TestOtherEntity.Name, actual.Values[9].Content);
+            Assert.AreEqual(TestOtherEntity.NullableBoolValue, actual.Values[10].Content);
+            Assert.AreEqual(TestOtherEntity.NullableByteValue, actual.Values[11].Content);
+            Assert.AreEqual(TestOtherEntity.NullableDateTimeOffsetValue, actual.Values[12].Content);
+            Assert.AreEqual(TestOtherEntity.NullableDateTimeValue, actual.Values[13].Content);
+            Assert.AreEqual(TestOtherEntity.NullableDecimalValue, actual.Values[14].Content);
+            Assert.AreEqual(TestOtherEntity.NullableDoubleValue, actual.Values[15].Content);
+            Assert.AreEqual(TestOtherEntity.NullableIntValue, actual.Values[16].Content);
+            Assert.AreEqual(TestOtherEntity.NullableLongValue, actual.Values[17].Content);
+            Assert.AreEqual(TestOtherEntity.NullableShortValue, actual.Values[18].Content);
+            Assert.AreEqual(TestOtherEntity.ShortValue, actual.Values[19].Content);
         }
 
         private void TestAddValueExpression(string propertyName, object expectedValue)

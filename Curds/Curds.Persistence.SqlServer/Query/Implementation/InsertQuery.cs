@@ -1,14 +1,12 @@
-﻿using System.Collections.Generic;
-using System;
-using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
     using Domain;
-    using Persistence.Domain;
-    using Model.Domain;
     using Model.Abstraction;
     using Persistence.Abstraction;
 

@@ -7,10 +7,9 @@ namespace Curds.Persistence.Model.Implementation
 {
     using Abstraction;
     using Domain;
-    using Persistence.Domain;
+    using Persistence.Abstraction;
     using Query.Domain;
     using Query.Values.Domain;
-    using Persistence.Abstraction;
 
     internal delegate Expression AssignValueDelegate(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter);
     internal delegate IEnumerable<Expression> AddValueExpressionsDelegate(ParameterExpression entityParameter, ParameterExpression valueEntityParameter);

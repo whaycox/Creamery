@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
 using System.Data;
+using System.Reflection;
 
 namespace Curds.Persistence.Model.Implementation
 {
     using Abstraction;
-    using Persistence.Abstraction;
-    using Query.Domain;
     using Configuration.Abstraction;
-    using Domain;
     using Configuration.Domain;
+    using Domain;
+    using Persistence.Abstraction;
 
     internal class ModelBuilder : IModelBuilder
     {
@@ -52,11 +50,13 @@ namespace Curds.Persistence.Model.Implementation
             DelegateMapper = delegateMapper;
         }
 
-        public IEnumerable<IEntityModel> BuildEntityModels<TModel>() 
+        public IEnumerable<IEntityModel> BuildEntityModels<TModel>()
             where TModel : IDataModel
         {
+            List<IEntityModel> entityModels = new List<IEntityModel>();
             foreach (Type entityType in TypeMapper.EntityTypes<TModel>())
-                yield return BuildEntityModel<TModel>(entityType);
+                entityModels.Add(BuildEntityModel<TModel>(entityType));
+            return entityModels;
         }
         private IEntityModel BuildEntityModel<TModel>(Type entityType)
             where TModel : IDataModel

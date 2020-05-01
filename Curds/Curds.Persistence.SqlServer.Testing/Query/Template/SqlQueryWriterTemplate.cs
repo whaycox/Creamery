@@ -10,7 +10,7 @@ namespace Curds.Persistence.Query.Template
     using Abstraction;
     using Domain;
 
-    public class SqlQueryWriterTemplate : SqlQueryTemplate
+    public class SqlQueryWriterTemplate
     {
         protected Mock<ISqlQueryTokenFactory> MockTokenFactory = new Mock<ISqlQueryTokenFactory>();
         protected Mock<ISqlQueryToken> MockPhraseToken = new Mock<ISqlQueryToken>();

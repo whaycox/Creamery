@@ -5,7 +5,6 @@ using System.Linq;
 namespace Curds.Persistence.Model.Implementation
 {
     using Abstraction;
-    using Domain;
     using Persistence.Abstraction;
 
     internal class ModelMap<TModel> : IModelMap<TModel>

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Linq.Expressions;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
-    using Curds.Persistence.Domain;
     using Model.Abstraction;
     using Persistence.Abstraction;
 
@@ -19,7 +16,7 @@ namespace Curds.Persistence.Query.Implementation
             ModelMap = modelMap;
         }
 
-        public ISqlQuery Insert<TEntity>(IEnumerable<TEntity> entities) 
+        public ISqlQuery Insert<TEntity>(IEnumerable<TEntity> entities)
             where TEntity : IEntity
         {
             InsertQuery<TEntity> query = new InsertQuery<TEntity>();
@@ -28,7 +25,7 @@ namespace Curds.Persistence.Query.Implementation
             return query;
         }
 
-        public ISqlUniverse<TEntity> From<TEntity>() 
+        public ISqlUniverse<TEntity> From<TEntity>()
             where TEntity : IEntity
         {
             SqlUniverse<TEntity> universe = new SqlUniverse<TEntity>();
