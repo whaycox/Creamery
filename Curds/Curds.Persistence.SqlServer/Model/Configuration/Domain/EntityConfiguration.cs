@@ -15,7 +15,8 @@ namespace Curds.Persistence.Model.Configuration.Domain
 
         public string Schema { get; set; }
         public string Table { get; set; }
-        public List<IColumnConfiguration> Columns { get; set; } = new List<IColumnConfiguration>();
+        public IList<IColumnConfiguration> Columns { get; set; } = new List<IColumnConfiguration>();
+        public IList<string> Keys { get; set; } = new List<string>();
 
         public IServiceCollection ServiceCollection { get; set; }
     }

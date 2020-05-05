@@ -13,10 +13,10 @@ namespace Curds.Persistence.Query.Implementation
     {
         private Dictionary<string, SqlParameter> ParameterLookup { get; } = new Dictionary<string, SqlParameter>();
 
-        public string RegisterNewParamater(Value value)
+        public string RegisterNewParamater(string name, object value)
         {
-            string paramName = GenerateParameterName(value.Name);
-            ParameterLookup.Add(paramName, new SqlParameter(paramName, value.Content ?? DBNull.Value));
+            string paramName = GenerateParameterName(name);
+            ParameterLookup.Add(paramName, new SqlParameter(paramName, value ?? DBNull.Value));
             return paramName;
         }
         private string GenerateParameterName(string valueName)

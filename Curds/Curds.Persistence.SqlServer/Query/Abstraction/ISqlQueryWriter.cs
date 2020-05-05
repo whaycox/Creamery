@@ -11,16 +11,16 @@ namespace Curds.Persistence.Query.Abstraction
 
     public interface ISqlQueryWriter
     {
-        void CreateTemporaryIdentityTable(IEntityModel entityModel);
-        void OutputIdentitiesToTemporaryTable(IEntityModel entityModel);
-        void SelectTemporaryIdentityTable(IEntityModel entityModel);
-        void DropTemporaryIdentityTable(IEntityModel entityModel);
+        void CreateTemporaryIdentityTable(ISqlTable table);
+        void OutputIdentitiesToTemporaryTable(ISqlTable table);
+        void SelectTemporaryIdentityTable(ISqlTable table);
+        void DropTemporaryIdentityTable(ISqlTable table);
 
-        void Insert(IEntityModel entityModel);
+        void Insert(ISqlTable table);
         void ValueEntities(IEnumerable<ValueEntity> entities);
-        void Select(List<IValueModel> values);
+        void Select(IList<ISqlColumn> values);
 
-        void From(IEntityModel entityModel);
+        void From(ISqlUniverse universe);
 
         SqlCommand Flush();
     }

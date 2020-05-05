@@ -13,10 +13,15 @@ namespace Curds.Persistence.Query.Tokens.Implementation
 
         public List<ObjectNameSqlQueryToken> Names { get; }
 
-        public QualifiedObjectSqlQueryToken(IEntityModel entityModel)
-            : this(
-                  new ObjectNameSqlQueryToken(entityModel.Schema),
-                  new ObjectNameSqlQueryToken(entityModel.Table))
+        public QualifiedObjectSqlQueryToken(ISqlTable table)
+            : this(new ObjectNameSqlQueryToken(table.Schema),
+                  new ObjectNameSqlQueryToken(table.Name))
+        { }
+
+        public QualifiedObjectSqlQueryToken(ISqlColumn column)
+            : this(new ObjectNameSqlQueryToken(column.Table.Schema),
+                  new ObjectNameSqlQueryToken(column.Table.Name),
+                  new ObjectNameSqlQueryToken(column.Name))
         { }
 
         public QualifiedObjectSqlQueryToken(params ObjectNameSqlQueryToken[] names)

@@ -10,6 +10,7 @@ namespace Curds.Persistence.Model.Configuration.Abstraction
         Type EntityType { get; }
 
         string Table { get; }
-        List<IColumnConfiguration> Columns { get; }
+        IList<IColumnConfiguration> Columns { get; }
+        IList<string> Keys { get; }
     }
 }

@@ -26,6 +26,7 @@ namespace Curds.Persistence
             .AddScoped<ISqlConnectionContext, SqlConnectionContext>()
             .AddTransient(typeof(IRepository<,>), typeof(SqlRepository<,>))
             .ConfigureEntity<SimpleEntity>()
+            .HasKey(entity => entity.ID)
                 .ConfigureColumn(column => column.ID)
                 .IsIdentity()
                 .RegisterColumn()
@@ -96,6 +97,20 @@ namespace Curds.Persistence
         {
             configuration.Table = tableName;
             return configuration;
+        }
+
+        public static EntityConfiguration<TEntity> HasKey<TEntity, TValue>(this EntityConfiguration<TEntity> configuration, Expression<Func<TEntity, TValue>> valueSelectionExpression)
+            where TEntity : IEntity
+        {
+            configuration.Keys.Add(ExpressionParser.ParseEntityValueSelection(valueSelectionExpression));
+            return configuration;
+        }
+
+        public static ModelEntityConfiguration<TModel, TEntity> HasKey<TModel, TEntity, TValue>(this ModelEntityConfiguration<TModel, TEntity> configuration, Expression<Func<TEntity, TValue>> valueSelectionExpression)
+            where TModel : IDataModel
+            where TEntity : IEntity
+        {
+            throw new NotImplementedException();
         }
 
         public static IServiceCollection RegisterEntity<TEntity>(this EntityConfiguration<TEntity> configuration)

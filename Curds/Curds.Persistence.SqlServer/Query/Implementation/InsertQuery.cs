@@ -13,20 +13,20 @@ namespace Curds.Persistence.Query.Implementation
     internal class InsertQuery<TEntity> : ISqlQuery
         where TEntity : IEntity
     {
-        public IEntityModel Model { get; set; }
+        public ISqlTable Table { get; set; }
         public List<TEntity> Entities { get; set; } = new List<TEntity>();
         private List<ValueEntity> ValueEntities => Entities
-            .Select(entity => Model.ValueEntity(entity))
+            .Select(entity => Table.BuildValueEntity(entity))
             .ToList();
 
         public void Write(ISqlQueryWriter queryWriter)
         {
-            queryWriter.CreateTemporaryIdentityTable(Model);
-            queryWriter.Insert(Model);
-            queryWriter.OutputIdentitiesToTemporaryTable(Model);
+            queryWriter.CreateTemporaryIdentityTable(Table);
+            queryWriter.Insert(Table);
+            queryWriter.OutputIdentitiesToTemporaryTable(Table);
             queryWriter.ValueEntities(ValueEntities);
-            queryWriter.SelectTemporaryIdentityTable(Model);
-            queryWriter.DropTemporaryIdentityTable(Model);
+            queryWriter.SelectTemporaryIdentityTable(Table);
+            queryWriter.DropTemporaryIdentityTable(Table);
         }
 
         public async Task ProcessResult(ISqlQueryReader queryReader)
@@ -40,7 +40,7 @@ namespace Curds.Persistence.Query.Implementation
         {
             if (!await queryReader.Advance())
                 throw new InvalidOperationException("There were less new identities than inserted entities");
-            Model.AssignIdentity(queryReader, entity);
+            Table.AssignIdentities(queryReader, entity);
         }
     }
 }

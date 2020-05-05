@@ -45,24 +45,26 @@ namespace Curds.Persistence.Query.Tests
                 .Setup(del => del(It.IsAny<ISqlQueryReader>()))
                 .Returns(TestEntity);
 
-            TestObject.Model = MockEntityModel.Object;
+            throw new NotImplementedException();
+            //TestObject.Model = MockEntityModel.Object;
         }
 
         [TestMethod]
         public void WriteCallsWriterCorrectly()
         {
-            int callOrder = 0;
-            MockQueryWriter
-                .Setup(writer => writer.Select(It.IsAny<List<IValueModel>>()))
-                .Callback(() => Assert.AreEqual(callOrder++, 0));
-            MockQueryWriter
-                .Setup(writer => writer.From(It.IsAny<IEntityModel>()))
-                .Callback(() => Assert.AreEqual(callOrder++, 1));
+            throw new NotImplementedException();
+            //int callOrder = 0;
+            //MockQueryWriter
+            //    .Setup(writer => writer.Select(It.IsAny<List<IValueModel>>()))
+            //    .Callback(() => Assert.AreEqual(callOrder++, 0));
+            //MockQueryWriter
+            //    .Setup(writer => writer.From(It.IsAny<IEntityModel>()))
+            //    .Callback(() => Assert.AreEqual(callOrder++, 1));
 
-            TestObject.Write(MockQueryWriter.Object);
+            //TestObject.Write(MockQueryWriter.Object);
 
-            MockQueryWriter.Verify(writer => writer.Select(TestValueModels), Times.Once);
-            MockQueryWriter.Verify(writer => writer.From(MockEntityModel.Object), Times.Once);
+            //MockQueryWriter.Verify(writer => writer.Select(TestValueModels), Times.Once);
+            //MockQueryWriter.Verify(writer => writer.From(MockEntityModel.Object), Times.Once);
         }
 
         private void SetupReaderForNEntities(int entities)

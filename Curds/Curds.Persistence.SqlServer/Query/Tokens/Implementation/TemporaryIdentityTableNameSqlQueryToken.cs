@@ -2,15 +2,16 @@
 {
     using Model.Abstraction;
     using Persistence.Abstraction;
+    using Query.Abstraction;
 
     public class TemporaryIdentityTableNameSqlQueryToken : ObjectNameSqlQueryToken
     {
         public string BaseTableName { get; }
 
-        public TemporaryIdentityTableNameSqlQueryToken(IEntityModel entityModel)
-            : base(FormatName(entityModel.Table))
+        public TemporaryIdentityTableNameSqlQueryToken(ISqlTable table)
+            : base(FormatName(table.Name))
         {
-            BaseTableName = entityModel.Table;
+            BaseTableName = table.Name;
         }
         public static string FormatName(string baseTableName) => $"#{baseTableName}_Identities";
     }

@@ -37,43 +37,43 @@ namespace Curds.Persistence.Query.Implementation
             return query;
         }
 
-        public void CreateTemporaryIdentityTable(IEntityModel entityModel) => Tokens.Add(
+        public void CreateTemporaryIdentityTable(ISqlTable table) => Tokens.Add(
             TokenFactory.Phrase(
                 TokenFactory.Keyword(SqlQueryKeyword.CREATE),
                 TokenFactory.Keyword(SqlQueryKeyword.TABLE),
-                TokenFactory.TemporaryIdentityName(entityModel),
-                TokenFactory.ColumnList(new[] { entityModel.Identity }, true)));
+                TokenFactory.TemporaryIdentityName(table),
+                TokenFactory.ColumnList(new[] { table.Identity }, true)));
 
-        public void OutputIdentitiesToTemporaryTable(IEntityModel entityModel) => Tokens.Add(
+        public void OutputIdentitiesToTemporaryTable(ISqlTable table) => Tokens.Add(
             TokenFactory.Phrase(
                 TokenFactory.Keyword(SqlQueryKeyword.OUTPUT),
-                TokenFactory.InsertedIdentityName(entityModel),
+                TokenFactory.InsertedIdentityName(table),
                 TokenFactory.Keyword(SqlQueryKeyword.INTO),
-                TokenFactory.TemporaryIdentityName(entityModel)));
+                TokenFactory.TemporaryIdentityName(table)));
 
-        public void SelectTemporaryIdentityTable(IEntityModel entityModel)
+        public void SelectTemporaryIdentityTable(ISqlTable table)
         {
             Tokens.Add(
                 TokenFactory.Phrase(
                     TokenFactory.Keyword(SqlQueryKeyword.SELECT),
-                    TokenFactory.ColumnList(new[] { entityModel.Identity }, false)));
+                    TokenFactory.ColumnList(new[] { table.Identity }, false)));
             Tokens.Add(
                 TokenFactory.Phrase(
                     TokenFactory.Keyword(SqlQueryKeyword.FROM),
-                    TokenFactory.TemporaryIdentityName(entityModel)));
+                    TokenFactory.TemporaryIdentityName(table)));
         }
 
-        public void DropTemporaryIdentityTable(IEntityModel entityModel) => Tokens.Add(
+        public void DropTemporaryIdentityTable(ISqlTable table) => Tokens.Add(
             TokenFactory.Phrase(
                 TokenFactory.Keyword(SqlQueryKeyword.DROP),
                 TokenFactory.Keyword(SqlQueryKeyword.TABLE),
-                TokenFactory.TemporaryIdentityName(entityModel)));
+                TokenFactory.TemporaryIdentityName(table)));
 
-        public void Insert(IEntityModel entityModel) => Tokens.Add(
+        public void Insert(ISqlTable table) => Tokens.Add(
             TokenFactory.Phrase(
                 TokenFactory.Keyword(SqlQueryKeyword.INSERT),
-                TokenFactory.QualifiedObjectName(entityModel),
-                TokenFactory.ColumnList(entityModel.NonIdentities, false)));
+                TokenFactory.QualifiedObjectName(table),
+                TokenFactory.ColumnList(table.NonIdentities, false)));
 
         public void ValueEntities(IEnumerable<ValueEntity> entities)
         {
@@ -81,14 +81,22 @@ namespace Curds.Persistence.Query.Implementation
             Tokens.Add(TokenFactory.ValueEntities(entities));
         }
 
-        public void Select(List<IValueModel> values) => Tokens.Add(
+        public void Select(IList<ISqlColumn> columns) => Tokens.Add(
             TokenFactory.Phrase(
                 TokenFactory.Keyword(SqlQueryKeyword.SELECT),
-                TokenFactory.SelectList(values)));
+                TokenFactory.SelectList(columns)));
 
-        public void From(IEntityModel entityModel) => Tokens.Add(
-            TokenFactory.Phrase(
-                TokenFactory.Keyword(SqlQueryKeyword.FROM),
-                TokenFactory.QualifiedObjectName(entityModel)));
+        public void From(ISqlUniverse universe)
+        {
+            foreach(ISqlTable table in universe.Tables)
+                Tokens.Add(TokenFactory.Phrase(
+                    TokenFactory.Keyword(SqlQueryKeyword.FROM),
+                    TokenFactory.QualifiedObjectName(table)));
+
+            foreach (ISqlUniverseFilter filter in universe.Filters)
+                Tokens.Add(TokenFactory.Phrase(
+                    TokenFactory.Keyword(SqlQueryKeyword.WHERE),
+                    TokenFactory.UniverseFilter(filter)));
+        }
     }
 }

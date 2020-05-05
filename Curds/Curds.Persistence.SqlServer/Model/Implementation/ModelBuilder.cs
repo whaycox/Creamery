@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
+using System.Linq;
 
 namespace Curds.Persistence.Model.Implementation
 {
@@ -78,6 +79,10 @@ namespace Curds.Persistence.Model.Implementation
                 }
                 entityModel.ValueModels.Add(valueConfiguration);
             }
+            foreach (string key in entityConfiguration.Keys)
+                entityModel.KeyDefinition.Add(
+                    entityModel.ValueModels
+                    .First(model => model.Property.Name == key));
 
             entityModel.ValueEntity = DelegateMapper.MapValueEntityDelegate(entityModel);
             entityModel.AssignIdentity = DelegateMapper.MapAssignIdentityDelegate(entityModel);

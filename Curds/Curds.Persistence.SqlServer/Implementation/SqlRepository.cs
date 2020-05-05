@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace Curds.Persistence.Implementation
 {
@@ -27,16 +28,25 @@ namespace Curds.Persistence.Implementation
 
         public Task Insert(TEntity entity) => Insert(new List<TEntity> { entity });
 
-        public Task Insert(IEnumerable<TEntity> entities) => 
-            ConnectionContext.ExecuteWithResult(
-                QueryBuilder.Insert(entities));
+        public Task Insert(IEnumerable<TEntity> entities) => ConnectionContext.ExecuteWithResult(InsertQuery(entities));
+        private ISqlQuery InsertQuery(IEnumerable<TEntity> entities) => QueryBuilder.Insert(entities);
 
-        public Task<TEntity> Fetch(params object[] keys) => throw new NotImplementedException();
+        public async Task<TEntity> Fetch(params object[] keys)
+        {
+            IList<TEntity> entities = await ConnectionContext.ExecuteWithResult(FetchQuery(keys));
+            if (entities.Count != 1)
+                throw new Exception();
+            return entities.First();
+        }
+        private ISqlQuery<TEntity> FetchQuery(object[] keys) => QueryBuilder
+            .From<TEntity>()
+            .Where(entity => entity.Keys == keys)
+            .ProjectEntity();
 
-        public Task<List<TEntity>> FetchAll() =>
-            ConnectionContext.ExecuteWithResult(
-                QueryBuilder.From<TEntity>()
-                .ProjectEntity());
+        public Task<IList<TEntity>> FetchAll() => ConnectionContext.ExecuteWithResult(FetchAllQuery);
+        private ISqlQuery<TEntity> FetchAllQuery => QueryBuilder
+            .From<TEntity>()
+            .ProjectEntity();
 
         public Task Update(Action<TEntity> modifier, params object[] keys)
         {

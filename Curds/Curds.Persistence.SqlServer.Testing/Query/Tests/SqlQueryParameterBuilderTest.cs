@@ -29,21 +29,24 @@ namespace Curds.Persistence.Query.Tests
         [TestMethod]
         public void CanRegisterNewIntValue()
         {
-            TestObject.RegisterNewParamater(TestIntValue);
+            throw new NotImplementedException();
+            //TestObject.RegisterNewParamater(TestIntValue);
         }
 
         [TestMethod]
         public void CanRegisterNewStringValue()
         {
-            TestObject.RegisterNewParamater(TestStringValue);
+            throw new NotImplementedException();
+            //TestObject.RegisterNewParamater(TestStringValue);
         }
 
         [TestMethod]
         public void RegisterNewValueReturnsValueName()
         {
-            string actual = TestObject.RegisterNewParamater(TestIntValue);
+            throw new NotImplementedException();
+            //string actual = TestObject.RegisterNewParamater(TestIntValue);
 
-            Assert.AreEqual(nameof(TestIntValue), actual);
+            //Assert.AreEqual(nameof(TestIntValue), actual);
         }
 
         [DataTestMethod]
@@ -53,54 +56,59 @@ namespace Curds.Persistence.Query.Tests
         [DataRow(10)]
         public void RegisteringValueWithSameNameGetsDifferentParameterName(int parameters)
         {
-            List<string> parameterNames = new List<string>();
-            for (int i = 0; i < parameters; i++)
-                parameterNames.Add(TestObject.RegisterNewParamater(TestIntValue));
+            throw new NotImplementedException();
+            //List<string> parameterNames = new List<string>();
+            //for (int i = 0; i < parameters; i++)
+            //    parameterNames.Add(TestObject.RegisterNewParamater(TestIntValue));
 
-            Assert.AreEqual(parameters, parameterNames.Count);
-            Assert.AreEqual(parameters, parameterNames.GroupBy(name => name).Count());
+            //Assert.AreEqual(parameters, parameterNames.Count);
+            //Assert.AreEqual(parameters, parameterNames.GroupBy(name => name).Count());
         }
 
         [TestMethod]
         public void FlushReturnsRegisteredParameters()
         {
-            TestObject.RegisterNewParamater(TestIntValue);
-            TestObject.RegisterNewParamater(TestStringValue);
+            throw new NotImplementedException();
+            //TestObject.RegisterNewParamater(TestIntValue);
+            //TestObject.RegisterNewParamater(TestStringValue);
 
-            SqlParameter[] actual = TestObject.Flush();
+            //SqlParameter[] actual = TestObject.Flush();
 
-            Assert.AreEqual(2, actual.Length);
+            //Assert.AreEqual(2, actual.Length);
         }
 
         [TestMethod]
         public void FlushedParameterHasRegisteredName()
         {
-            TestObject.RegisterNewParamater(TestIntValue);
+            throw new NotImplementedException();
+            //TestObject.RegisterNewParamater(TestIntValue);
 
-            SqlParameter[] actual = TestObject.Flush();
+            //SqlParameter[] actual = TestObject.Flush();
 
-            Assert.AreEqual(nameof(TestIntValue), actual[0].ParameterName);
+            //Assert.AreEqual(nameof(TestIntValue), actual[0].ParameterName);
         }
 
         [TestMethod]
         public void FlushedParameterHasRegisteredValue()
         {
-            TestObject.RegisterNewParamater(TestIntValue);
+            throw new NotImplementedException();
+            //TestObject.RegisterNewParamater(TestIntValue);
 
-            SqlParameter[] actual = TestObject.Flush();
+            //SqlParameter[] actual = TestObject.Flush();
 
-            Assert.AreEqual(TestInt, actual[0].Value);
+            //Assert.AreEqual(TestInt, actual[0].Value);
         }
 
         [TestMethod]
         public void FlushedParametersWithNullValueAreDBNull()
         {
-            TestStringValue.String = null;
-            TestObject.RegisterNewParamater(TestStringValue);
+            throw new NotImplementedException();
+            //TestStringValue.String = null;
+            //TestObject.RegisterNewParamater(TestStringValue);
 
-            SqlParameter[] actual = TestObject.Flush();
+            //SqlParameter[] actual = TestObject.Flush();
 
-            Assert.AreEqual(DBNull.Value, actual[0].Value);
+            //Assert.AreEqual(DBNull.Value, actual[0].Value);
         }
     }
 }

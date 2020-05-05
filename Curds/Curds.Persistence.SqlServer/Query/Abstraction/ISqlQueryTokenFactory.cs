@@ -13,11 +13,14 @@ namespace Curds.Persistence.Query.Abstraction
     {
         ISqlQueryToken Keyword(SqlQueryKeyword keyword);
         ISqlQueryToken Phrase(params ISqlQueryToken[] tokens);
-        ISqlQueryToken TemporaryIdentityName(IEntityModel entityModel);
-        ISqlQueryToken InsertedIdentityName(IEntityModel entityModel);
-        ISqlQueryToken QualifiedObjectName(IEntityModel entityModel);
-        ISqlQueryToken ColumnList(IEnumerable<IValueModel> values, bool includeDefinition);
-        ISqlQueryToken SelectList(IEnumerable<IValueModel> values);
+        ISqlQueryToken TemporaryIdentityName(ISqlTable table);
+        ISqlQueryToken InsertedIdentityName(ISqlTable table);
+        ISqlQueryToken QualifiedObjectName(ISqlTable table);
+        ISqlQueryToken QualifiedObjectName(ISqlColumn column);
+        ISqlQueryToken ColumnList(IEnumerable<ISqlColumn> columns, bool includeDefinition);
+        ISqlQueryToken SelectList(IEnumerable<ISqlColumn> columns);
+        ISqlQueryToken Parameter(string name, object value);
         ISqlQueryToken ValueEntities(IEnumerable<ValueEntity> valueEntities);
+        ISqlQueryToken UniverseFilter(ISqlUniverseFilter filter);
     }
 }

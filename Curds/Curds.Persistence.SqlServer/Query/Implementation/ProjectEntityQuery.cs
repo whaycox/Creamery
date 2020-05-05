@@ -15,21 +15,22 @@ namespace Curds.Persistence.Query.Implementation
     internal class ProjectEntityQuery<TEntity> : ISqlQuery<TEntity>
         where TEntity : IEntity
     {
-        public IEntityModel Model { get; set; }
+        public ISqlTable ProjectedTable { get; set; }
+        public ISqlUniverse<TEntity> Source { get; set; }
 
-        public List<TEntity> Results { get; private set; }
+        public IList<TEntity> Results { get; private set; }
 
         public void Write(ISqlQueryWriter queryWriter)
         {
-            queryWriter.Select(Model.Values.ToList());
-            queryWriter.From(Model);
+            queryWriter.Select(ProjectedTable.Values);
+            queryWriter.From(Source);
         }
 
         public async Task ProcessResult(ISqlQueryReader queryReader)
         {
             List<TEntity> results = new List<TEntity>();
             while (await queryReader.Advance())
-                results.Add((TEntity)Model.ProjectEntity(queryReader));
+                results.Add((TEntity)ProjectedTable.ProjectEntity(queryReader));
             Results = results;
         }
     }

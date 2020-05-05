@@ -15,6 +15,6 @@ namespace Curds.Persistence.Query.Abstraction
     public interface ISqlQuery<TEntity> : ISqlQuery
         where TEntity : IEntity
     {
-        List<TEntity> Results { get; }
+        IList<TEntity> Results { get; }
     }
 }

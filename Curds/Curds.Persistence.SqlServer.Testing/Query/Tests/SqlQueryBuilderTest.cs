@@ -2,6 +2,7 @@
 using Moq;
 using System.Collections.Generic;
 using Whey;
+using System;
 
 namespace Curds.Persistence.Query.Tests
 {
@@ -51,10 +52,11 @@ namespace Curds.Persistence.Query.Tests
         [TestMethod]
         public void InsertSetsModelToBuiltResult()
         {
-            ISqlQuery actual = TestObject.Insert(TestEntities);
+            throw new NotImplementedException();
+            //ISqlQuery actual = TestObject.Insert(TestEntities);
 
-            InsertQuery<TestEntity> testQuery = actual.VerifyIsActually<InsertQuery<TestEntity>>();
-            Assert.AreSame(MockEntityModel.Object, testQuery.Model);
+            //InsertQuery<TestEntity> testQuery = actual.VerifyIsActually<InsertQuery<TestEntity>>();
+            //Assert.AreSame(MockEntityModel.Object, testQuery.Model);
         }
 
         private void PopulateNEntities(int entities)
@@ -84,7 +86,8 @@ namespace Curds.Persistence.Query.Tests
         {
             ISqlUniverse<TestEntity> actual = TestObject.From<TestEntity>();
 
-            Assert.IsInstanceOfType(actual, typeof(SqlUniverse<TestEntity>));
+            throw new NotImplementedException();
+            //Assert.IsInstanceOfType(actual, typeof(SqlUniverse<TestEntity>));
         }
 
         [TestMethod]
@@ -100,8 +103,9 @@ namespace Curds.Persistence.Query.Tests
         {
             ISqlUniverse<TestEntity> actual = TestObject.From<TestEntity>();
 
-            SqlUniverse<TestEntity> universe = actual.VerifyIsActually<SqlUniverse<TestEntity>>();
-            Assert.AreSame(MockEntityModel.Object, universe.Model);
+            throw new NotImplementedException();
+            //SqlUniverse<TestEntity> universe = actual.VerifyIsActually<SqlUniverse<TestEntity>>();
+            //Assert.AreSame(MockEntityModel.Object, universe.Model);
         }
     }
 }

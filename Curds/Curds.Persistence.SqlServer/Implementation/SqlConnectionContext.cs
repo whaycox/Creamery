@@ -84,7 +84,7 @@ namespace Curds.Persistence.Implementation
                 await query.ProcessResult(queryReader);
         }
 
-        public async Task<List<TEntity>> ExecuteWithResult<TEntity>(ISqlQuery<TEntity> query)
+        public async Task<IList<TEntity>> ExecuteWithResult<TEntity>(ISqlQuery<TEntity> query)
             where TEntity : IEntity
         {
             SqlCommand command = await BuildCommand(query);

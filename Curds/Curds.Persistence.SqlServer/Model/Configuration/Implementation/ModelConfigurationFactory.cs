@@ -67,6 +67,8 @@ namespace Curds.Persistence.Model.Configuration.Implementation
         {
             compiledConfig.Schema = suppliedConfig.Schema ?? compiledConfig.Schema;
             compiledConfig.Table = suppliedConfig.Table ?? compiledConfig.Table;
+            compiledConfig.Keys.AddRange(suppliedConfig.Keys);
+
             foreach (IColumnConfiguration suppliedColumnConfig in suppliedConfig.Columns)
             {
                 if (compiledConfig.Columns.TryGetValue(suppliedColumnConfig.ValueName, out CompiledColumnConfiguration<TModel> compiledColumnConfig))

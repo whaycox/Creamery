@@ -24,20 +24,20 @@ namespace Curds.Persistence.Query.Formatters.Implementation
                 StringBuilder.AppendLine("(");
             using (StringBuilder.CreateIndentScope())
             {
-                if (token.Values.Count == 1)
-                    FormatColumn(token.Values[0], token.IncludeDefinition);
+                if (token.Columns.Count == 1)
+                    FormatColumn(token.Columns[0], token.IncludeDefinition);
                 else
                 {
-                    for (int i = 0; i < token.Values.Count; i++)
+                    for (int i = 0; i < token.Columns.Count; i++)
                     {
                         if (i == 0)
                             StringBuilder.Append(" ");
                         else
                             StringBuilder.Append(",");
 
-                        FormatColumn(token.Values[i], token.IncludeDefinition);
+                        FormatColumn(token.Columns[i], token.IncludeDefinition);
 
-                        if (i < token.Values.Count - 1)
+                        if (i < token.Columns.Count - 1)
                             StringBuilder.SetNewLine();
                     }
                 }
@@ -48,13 +48,13 @@ namespace Curds.Persistence.Query.Formatters.Implementation
                 StringBuilder.Append(")");
             }
         }
-        private void FormatColumn(IValueModel value, bool includeDefinition)
+        private void FormatColumn(ISqlColumn column, bool includeDefinition)
         {
-            new ObjectNameSqlQueryToken(value.Name)
+            new ObjectNameSqlQueryToken(column.Name)
                 .AcceptFormatVisitor(this);
 
             if (includeDefinition)
-                StringBuilder.Append($" {TypeMap[value.SqlType]} NOT NULL");
+                StringBuilder.Append($" {TypeMap[column.Type]} NOT NULL");
         }
 
         public override void VisitValueEntities(ValueEntitiesSqlQueryToken token)
@@ -85,6 +85,11 @@ namespace Curds.Persistence.Query.Formatters.Implementation
                     StringBuilder.Append(", ");
             }
             StringBuilder.Append(")");
+        }
+
+        public override void VisitBoolean(BooleanSqlQueryToken token)
+        {
+            throw new NotImplementedException();
         }
     }
 }

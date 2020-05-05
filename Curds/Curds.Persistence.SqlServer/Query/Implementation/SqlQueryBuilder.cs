@@ -20,17 +20,12 @@ namespace Curds.Persistence.Query.Implementation
             where TEntity : IEntity
         {
             InsertQuery<TEntity> query = new InsertQuery<TEntity>();
-            query.Model = ModelMap.Entity<TEntity>();
+            query.Table = new SqlTable { Model = ModelMap.Entity<TEntity>() };
             query.Entities.AddRange(entities);
             return query;
         }
 
         public ISqlUniverse<TEntity> From<TEntity>()
-            where TEntity : IEntity
-        {
-            SqlUniverse<TEntity> universe = new SqlUniverse<TEntity>();
-            universe.Model = ModelMap.Entity<TEntity>();
-            return universe;
-        }
+            where TEntity : IEntity => new SqlUniverse<TEntity>(ModelMap);
     }
 }

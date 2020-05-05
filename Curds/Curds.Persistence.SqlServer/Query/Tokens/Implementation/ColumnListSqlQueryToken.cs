@@ -8,13 +8,13 @@ namespace Curds.Persistence.Query.Tokens.Implementation
 
     public class ColumnListSqlQueryToken : BaseSqlQueryToken
     {
-        public List<IValueModel> Values { get; }
+        public IList<ISqlColumn> Columns { get; }
         public bool IncludeGrouping { get; set; }
         public bool IncludeDefinition { get; set; }
 
-        public ColumnListSqlQueryToken(IEnumerable<IValueModel> values)
+        public ColumnListSqlQueryToken(IEnumerable<ISqlColumn> columns)
         {
-            Values = values.ToList();
+            Columns = columns.ToList();
         }
 
         public override void AcceptFormatVisitor(ISqlQueryFormatVisitor visitor) => visitor.VisitColumnList(this);

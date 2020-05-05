@@ -6,10 +6,11 @@ namespace Curds.Persistence.Query.Tokens.Implementation
 {
     using Model.Abstraction;
     using Query.Domain;
+    using Query.Abstraction;
 
     public class InsertedIdentityColumnSqlQueryToken : QualifiedObjectSqlQueryToken
     {
-        public InsertedIdentityColumnSqlQueryToken(IValueModel identity)
+        public InsertedIdentityColumnSqlQueryToken(ISqlColumn identity)
             : base(
                 new ObjectNameSqlQueryToken(nameof(SqlQueryKeyword.inserted)),
                 new ObjectNameSqlQueryToken(identity.Name))

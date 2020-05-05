@@ -11,6 +11,7 @@
         VALUES,
         SELECT,
         FROM,
+        WHERE,
 
         inserted,
     }

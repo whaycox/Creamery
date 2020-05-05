@@ -18,8 +18,10 @@ namespace Curds.Persistence.Model.Domain
         public string Table { get; set; }
 
         public List<IValueModel> ValueModels { get; set; } = new List<IValueModel>();
+        public List<IValueModel> KeyDefinition { get; set; } = new List<IValueModel>();
 
         public IEnumerable<IValueModel> Values => ValueModels;
+        public IList<IValueModel> Keys => KeyDefinition.ToList();
         public IValueModel Identity => ValueModels.FirstOrDefault(value => value.IsIdentity);
         public IEnumerable<IValueModel> NonIdentities => ValueModels.Where(value => !value.IsIdentity);
 

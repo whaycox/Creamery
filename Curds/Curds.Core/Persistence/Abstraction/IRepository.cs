@@ -12,7 +12,7 @@ namespace Curds.Persistence.Abstraction
         Task Insert(IEnumerable<TEntity> entities);
 
         Task<TEntity> Fetch(params object[] keys);
-        Task<List<TEntity>> FetchAll();
+        Task<IList<TEntity>> FetchAll();
 
         Task Update(Action<TEntity> modifier, params object[] keys);
 

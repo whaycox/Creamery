@@ -218,7 +218,7 @@ namespace Curds.Persistence.Tests
             using (IServiceScope testScope = TestServiceProvider.CreateScope())
             {
                 IRepository<ITestDataModel, OtherEntity> testRepository = testScope.ServiceProvider.GetRequiredService<IRepository<ITestDataModel, OtherEntity>>();
-                List<OtherEntity> entities = await testRepository.FetchAll();
+                IList<OtherEntity> entities = await testRepository.FetchAll();
 
                 Assert.AreNotEqual(0, entities.Count);
                 Assert.IsFalse(entities.Any(entity => entity.ID == 0));
@@ -235,11 +235,34 @@ namespace Curds.Persistence.Tests
             using (IServiceScope testScope = TestServiceProvider.CreateScope())
             {
                 IRepository<ITestDataModel, TestEntity> testRepository = testScope.ServiceProvider.GetRequiredService<IRepository<ITestDataModel, TestEntity>>();
-                List<TestEntity> entities = await testRepository.FetchAll();
+                IList<TestEntity> entities = await testRepository.FetchAll();
 
                 Assert.AreNotEqual(0, entities.Count);
                 Assert.IsFalse(entities.Any(entity => entity.ID == 0));
             }
+        }
+
+        [TestMethod]
+        public async Task CanSelectSingleEntity()
+        {
+            RegisterServices();
+            ConfigureCustomTestEntity();
+            BuildServiceProvider();
+
+            using (IServiceScope testScope = TestServiceProvider.CreateScope())
+            {
+                IRepository<ITestDataModel, TestEntity> testRepository = testScope.ServiceProvider.GetRequiredService<IRepository<ITestDataModel, TestEntity>>();
+                TestEntity.Name = nameof(CanSelectSingleEntity);
+                await testRepository.Insert(TestEntity);
+
+                TestEntity actual = await testRepository.Fetch(TestEntity.ID);
+
+                Assert.AreNotEqual(0, actual.ID);
+                Assert.AreNotSame(TestEntity, actual);
+                Assert.AreEqual(TestEntity.ID, actual.ID);
+                Assert.AreEqual(nameof(CanSelectSingleEntity), actual.Name);
+            }
+
         }
     }
 }
