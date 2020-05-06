@@ -22,62 +22,52 @@ namespace Curds.Persistence.Query.Tests
 
         private Mock<ISqlQueryWriter> MockQueryWriter = new Mock<ISqlQueryWriter>();
         private Mock<ISqlQueryReader> MockQueryReader = new Mock<ISqlQueryReader>();
-        private Mock<IEntityModel> MockEntityModel = new Mock<IEntityModel>();
-        private Mock<ValueEntityDelegate> MockValueEntityDelegate = new Mock<ValueEntityDelegate>();
-        private Mock<AssignIdentityDelegate> MockAssignIdentityDelegate = new Mock<AssignIdentityDelegate>();
+        private Mock<ISqlTable> MockTable = new Mock<ISqlTable>();
 
         private InsertQuery<TestEntity> TestObject = new InsertQuery<TestEntity>();
 
         [TestInitialize]
         public void Init()
         {
-            throw new NotImplementedException();
-            //MockEntityModel
-            //    .Setup(model => model.ValueEntity)
-            //    .Returns(MockValueEntityDelegate.Object);
-            //MockValueEntityDelegate
-            //    .Setup(del => del(It.IsAny<IEntity>()))
-            //    .Returns(TestValueEntity);
-            //MockEntityModel
-            //    .Setup(model => model.AssignIdentity)
-            //    .Returns(MockAssignIdentityDelegate.Object);
+            MockTable
+                .Setup(model => model.BuildValueEntity(It.IsAny<IEntity>()))
+                .Returns(TestValueEntity);
 
-            //TestObject.Model = MockEntityModel.Object;
-            //TestObject.Entities.Add(TestEntity);
+            TestObject.Table = MockTable.Object;
+            TestObject.Entities.Add(TestEntity);
         }
 
         [TestMethod]
         public void WriteCallsWriterCorrectly()
         {
-            throw new NotImplementedException();
-            //int callOrder = 0;
-            //MockQueryWriter
-            //    .Setup(writer => writer.CreateTemporaryIdentityTable(It.IsAny<IEntityModel>()))
-            //    .Callback(() => Assert.AreEqual(callOrder++, 0));
-            //MockQueryWriter
-            //    .Setup(writer => writer.Insert(It.IsAny<IEntityModel>()))
-            //    .Callback(() => Assert.AreEqual(callOrder++, 1));
-            //MockQueryWriter
-            //    .Setup(writer => writer.OutputIdentitiesToTemporaryTable(It.IsAny<IEntityModel>()))
-            //    .Callback(() => Assert.AreEqual(callOrder++, 2));
-            //MockQueryWriter
-            //    .Setup(writer => writer.ValueEntities(It.IsAny<IEnumerable<ValueEntity>>()))
-            //    .Callback(() => Assert.AreEqual(callOrder++, 3));
-            //MockQueryWriter
-            //    .Setup(writer => writer.SelectTemporaryIdentityTable(It.IsAny<IEntityModel>()))
-            //    .Callback(() => Assert.AreEqual(callOrder++, 4));
-            //MockQueryWriter
-            //    .Setup(writer => writer.DropTemporaryIdentityTable(It.IsAny<IEntityModel>()))
-            //    .Callback(() => Assert.AreEqual(callOrder++, 5));
+            int callOrder = 0;
+            MockQueryWriter
+                .Setup(writer => writer.CreateTemporaryIdentityTable(It.IsAny<ISqlTable>()))
+                .Callback(() => Assert.AreEqual(callOrder++, 0));
+            MockQueryWriter
+                .Setup(writer => writer.Insert(It.IsAny<ISqlTable>()))
+                .Callback(() => Assert.AreEqual(callOrder++, 1));
+            MockQueryWriter
+                .Setup(writer => writer.OutputIdentitiesToTemporaryTable(It.IsAny<ISqlTable>()))
+                .Callback(() => Assert.AreEqual(callOrder++, 2));
+            MockQueryWriter
+                .Setup(writer => writer.ValueEntities(It.IsAny<IEnumerable<ValueEntity>>()))
+                .Callback(() => Assert.AreEqual(callOrder++, 3));
+            MockQueryWriter
+                .Setup(writer => writer.SelectTemporaryIdentityTable(It.IsAny<ISqlTable>()))
+                .Callback(() => Assert.AreEqual(callOrder++, 4));
+            MockQueryWriter
+                .Setup(writer => writer.DropTemporaryIdentityTable(It.IsAny<ISqlTable>()))
+                .Callback(() => Assert.AreEqual(callOrder++, 5));
 
-            //TestObject.Write(MockQueryWriter.Object);
+            TestObject.Write(MockQueryWriter.Object);
 
-            //MockQueryWriter.Verify(writer => writer.CreateTemporaryIdentityTable(MockEntityModel.Object), Times.Once);
-            //MockQueryWriter.Verify(writer => writer.Insert(MockEntityModel.Object), Times.Once);
-            //MockQueryWriter.Verify(writer => writer.OutputIdentitiesToTemporaryTable(MockEntityModel.Object), Times.Once);
-            //MockQueryWriter.Verify(writer => writer.ValueEntities(It.Is<IEnumerable<ValueEntity>>(arg => arg.Count() == 1)), Times.Once);
-            //MockQueryWriter.Verify(writer => writer.SelectTemporaryIdentityTable(MockEntityModel.Object), Times.Once);
-            //MockQueryWriter.Verify(writer => writer.DropTemporaryIdentityTable(MockEntityModel.Object), Times.Once);
+            MockQueryWriter.Verify(writer => writer.CreateTemporaryIdentityTable(MockTable.Object), Times.Once);
+            MockQueryWriter.Verify(writer => writer.Insert(MockTable.Object), Times.Once);
+            MockQueryWriter.Verify(writer => writer.OutputIdentitiesToTemporaryTable(MockTable.Object), Times.Once);
+            MockQueryWriter.Verify(writer => writer.ValueEntities(It.Is<IEnumerable<ValueEntity>>(arg => arg.Count() == 1)), Times.Once);
+            MockQueryWriter.Verify(writer => writer.SelectTemporaryIdentityTable(MockTable.Object), Times.Once);
+            MockQueryWriter.Verify(writer => writer.DropTemporaryIdentityTable(MockTable.Object), Times.Once);
         }
 
         [DataTestMethod]
@@ -95,7 +85,7 @@ namespace Curds.Persistence.Query.Tests
 
             TestObject.Write(MockQueryWriter.Object);
 
-            MockValueEntityDelegate.Verify(del => del(TestEntity), Times.Exactly(entities));
+            MockTable.Verify(table => table.BuildValueEntity(TestEntity), Times.Exactly(entities));
         }
 
         [DataTestMethod]
@@ -118,7 +108,7 @@ namespace Curds.Persistence.Query.Tests
 
             await TestObject.ProcessResult(MockQueryReader.Object);
 
-            MockAssignIdentityDelegate.Verify(del => del(MockQueryReader.Object, TestEntity), Times.Exactly(entities));
+            MockTable.Verify(table => table.AssignIdentities(MockQueryReader.Object, TestEntity), Times.Exactly(entities));
         }
     }
 }

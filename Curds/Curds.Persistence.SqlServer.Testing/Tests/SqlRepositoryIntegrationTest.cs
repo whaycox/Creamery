@@ -1,29 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.DependencyInjection;
+using Whey.Domain;
 
 namespace Curds.Persistence.Tests
 {
-    using Implementation;
     using Abstraction;
     using Domain;
-    using Model.Abstraction;
-    using Query.Implementation;
-    using Model.Implementation;
-    using Model.Configuration.Implementation;
-    using Model.Configuration.Abstraction;
-    using Model.Configuration.Domain;
     using Template;
 
     [TestClass]
+    [TestCategory(nameof(TestType.Integration))]
     public class SqlRepositoryIntegrationTest : SqlTemplate
     {
         private TestEntity TestEntity = new TestEntity();

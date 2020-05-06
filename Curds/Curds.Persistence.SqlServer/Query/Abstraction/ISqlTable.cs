@@ -13,7 +13,7 @@ namespace Curds.Persistence.Query.Abstraction
         string Schema { get; }
         string Name { get; }
 
-        IList<ISqlColumn> Values { get; }
+        IList<ISqlColumn> Columns { get; }
         IList<ISqlColumn> Keys { get; }
         ISqlColumn Identity { get; }
         IEnumerable<ISqlColumn> NonIdentities { get; }

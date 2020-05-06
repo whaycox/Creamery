@@ -19,52 +19,48 @@ namespace Curds.Persistence.Query.Tests
     [TestClass]
     public class ProjectEntityQueryTest
     {
-        private List<IValueModel> TestValueModels = new List<IValueModel>();
+        private List<ISqlColumn> TestColumns = new List<ISqlColumn>();
         private TestEntity TestEntity = new TestEntity();
 
         private Mock<ISqlQueryWriter> MockQueryWriter = new Mock<ISqlQueryWriter>();
         private Mock<ISqlQueryReader> MockQueryReader = new Mock<ISqlQueryReader>();
-        private Mock<IEntityModel> MockEntityModel = new Mock<IEntityModel>();
-        private Mock<IValueModel> MockValueModel = new Mock<IValueModel>();
-        private Mock<ProjectEntityDelegate> MockProjectEntityDelegate = new Mock<ProjectEntityDelegate>();
+        private Mock<ISqlTable> MockTable = new Mock<ISqlTable>();
+        private Mock<ISqlColumn> MockColumn = new Mock<ISqlColumn>();
+        private Mock<ISqlUniverse<TestEntity>> MockUniverse = new Mock<ISqlUniverse<TestEntity>>();
 
         private ProjectEntityQuery<TestEntity> TestObject = new ProjectEntityQuery<TestEntity>();
 
         [TestInitialize]
         public void Init()
         {
-            TestValueModels.Add(MockValueModel.Object);
+            TestColumns.Add(MockColumn.Object);
 
-            MockEntityModel
-                .Setup(model => model.Values)
-                .Returns(TestValueModels);
-            MockEntityModel
-                .Setup(model => model.ProjectEntity)
-                .Returns(MockProjectEntityDelegate.Object);
-            MockProjectEntityDelegate
-                .Setup(del => del(It.IsAny<ISqlQueryReader>()))
+            MockTable
+                .Setup(table => table.Columns)
+                .Returns(TestColumns);
+            MockTable
+                .Setup(table => table.ProjectEntity(It.IsAny<ISqlQueryReader>()))
                 .Returns(TestEntity);
 
-            throw new NotImplementedException();
-            //TestObject.Model = MockEntityModel.Object;
+            TestObject.ProjectedTable = MockTable.Object;
+            TestObject.Source = MockUniverse.Object;
         }
 
         [TestMethod]
         public void WriteCallsWriterCorrectly()
         {
-            throw new NotImplementedException();
-            //int callOrder = 0;
-            //MockQueryWriter
-            //    .Setup(writer => writer.Select(It.IsAny<List<IValueModel>>()))
-            //    .Callback(() => Assert.AreEqual(callOrder++, 0));
-            //MockQueryWriter
-            //    .Setup(writer => writer.From(It.IsAny<IEntityModel>()))
-            //    .Callback(() => Assert.AreEqual(callOrder++, 1));
+            int callOrder = 0;
+            MockQueryWriter
+                .Setup(writer => writer.Select(It.IsAny<List<ISqlColumn>>()))
+                .Callback(() => Assert.AreEqual(callOrder++, 0));
+            MockQueryWriter
+                .Setup(writer => writer.From(It.IsAny<ISqlUniverse>()))
+                .Callback(() => Assert.AreEqual(callOrder++, 1));
 
-            //TestObject.Write(MockQueryWriter.Object);
+            TestObject.Write(MockQueryWriter.Object);
 
-            //MockQueryWriter.Verify(writer => writer.Select(TestValueModels), Times.Once);
-            //MockQueryWriter.Verify(writer => writer.From(MockEntityModel.Object), Times.Once);
+            MockQueryWriter.Verify(writer => writer.Select(TestColumns), Times.Once);
+            MockQueryWriter.Verify(writer => writer.From(MockUniverse.Object), Times.Once);
         }
 
         private void SetupReaderForNEntities(int entities)
@@ -88,7 +84,7 @@ namespace Curds.Persistence.Query.Tests
 
             await TestObject.ProcessResult(MockQueryReader.Object);
 
-            MockProjectEntityDelegate.Verify(del => del(MockQueryReader.Object), Times.Exactly(entities));
+            MockTable.Verify(table => table.ProjectEntity(MockQueryReader.Object), Times.Exactly(entities));
         }
 
         [DataTestMethod]

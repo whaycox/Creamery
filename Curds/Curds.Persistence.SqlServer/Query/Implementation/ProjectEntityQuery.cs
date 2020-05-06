@@ -22,7 +22,7 @@ namespace Curds.Persistence.Query.Implementation
 
         public void Write(ISqlQueryWriter queryWriter)
         {
-            queryWriter.Select(ProjectedTable.Values);
+            queryWriter.Select(ProjectedTable.Columns);
             queryWriter.From(Source);
         }
 

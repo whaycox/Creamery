@@ -8,7 +8,7 @@ namespace Curds.Persistence.Query.Tokens.Implementation
 
     public class ColumnListSqlQueryToken : BaseSqlQueryToken
     {
-        public IList<ISqlColumn> Columns { get; }
+        public List<ISqlColumn> Columns { get; }
         public bool IncludeGrouping { get; set; }
         public bool IncludeDefinition { get; set; }
 

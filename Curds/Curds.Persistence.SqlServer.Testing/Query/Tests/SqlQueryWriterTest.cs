@@ -24,12 +24,14 @@ namespace Curds.Persistence.Query.Tests
         private int TestInt = 10;
         private string TestFormattedTokens = nameof(TestFormattedTokens);
         private string TestParameterName = nameof(TestParameterName);
-        private List<IValueModel> TestValueModels = new List<IValueModel>();
+        private List<ISqlColumn> TestColumns = new List<ISqlColumn>();
 
         private Mock<ISqlQueryFormatter> MockFormatter = new Mock<ISqlQueryFormatter>();
         private Mock<ISqlQueryParameterBuilder> MockParameterBuilder = new Mock<ISqlQueryParameterBuilder>();
-        private Mock<IEntityModel> MockEntityModel = new Mock<IEntityModel>();
-        private Mock<IValueModel> MockValueModel = new Mock<IValueModel>();
+        private Mock<ISqlTable> MockTable = new Mock<ISqlTable>();
+        private Mock<ISqlColumn> MockColumn = new Mock<ISqlColumn>();
+        private Mock<ISqlUniverse> MockUniverse = new Mock<ISqlUniverse>();
+        private Mock<ISqlUniverseFilter> MockUniverseFilter = new Mock<ISqlUniverseFilter>();
 
         private SqlQueryWriter TestObject = null;
 
@@ -40,7 +42,7 @@ namespace Curds.Persistence.Query.Tests
         {
             TestValueEntities.Add(TestValueEntity);
             TestIntValue.Int = TestInt;
-            TestValueModels.Add(MockValueModel.Object);
+            TestColumns.Add(MockColumn.Object);
 
             MockFormatter
                 .Setup(formatter => formatter.FormatTokens(It.IsAny<IEnumerable<ISqlQueryToken>>()))
@@ -56,13 +58,12 @@ namespace Curds.Persistence.Query.Tests
         [TestMethod]
         public void FlushFormatsStoredTokens()
         {
-            throw new NotImplementedException();
-            //TestObject.From(MockEntityModel.Object);
+            TestObject.Insert(MockTable.Object);
 
-            //TestObject.Flush();
+            TestObject.Flush();
 
-            //MockFormatter.Verify(formatter => formatter.FormatTokens(It.IsAny<IEnumerable<ISqlQueryToken>>()), Times.Once);
-            //Assert.AreEqual(1, FormattedTokens.Count);
+            MockFormatter.Verify(formatter => formatter.FormatTokens(It.IsAny<IEnumerable<ISqlQueryToken>>()), Times.Once);
+            Assert.AreEqual(1, FormattedTokens.Count);
         }
 
         [TestMethod]
@@ -76,12 +77,11 @@ namespace Curds.Persistence.Query.Tests
         [TestMethod]
         public void FlushClearsTokens()
         {
-            throw new NotImplementedException();
-            //TestObject.From(MockEntityModel.Object);
+            TestObject.Insert(MockTable.Object);
 
-            //TestObject.Flush();
+            TestObject.Flush();
 
-            //Assert.AreEqual(0, TestObject.Tokens.Count);
+            Assert.AreEqual(0, TestObject.Tokens.Count);
         }
 
         [TestMethod]
@@ -133,339 +133,309 @@ namespace Curds.Persistence.Query.Tests
         [TestMethod]
         public void CreateTemporaryIdentityTableAddsPhraseToTokens()
         {
-            throw new NotImplementedException();
-            //TestObject.CreateTemporaryIdentityTable(MockEntityModel.Object);
+            TestObject.CreateTemporaryIdentityTable(MockTable.Object);
 
-            //Assert.AreEqual(1, TestObject.Tokens.Count);
-            //Assert.AreSame(MockPhraseToken.Object, TestObject.Tokens[0]);
+            Assert.AreEqual(1, TestObject.Tokens.Count);
+            Assert.AreSame(MockPhraseToken.Object, TestObject.Tokens[0]);
         }
 
         [TestMethod]
         public void CreateTemporaryIdentityTableBuildsACreateKeywordToken()
         {
-            throw new NotImplementedException();
-            //TestObject.CreateTemporaryIdentityTable(MockEntityModel.Object);
+            TestObject.CreateTemporaryIdentityTable(MockTable.Object);
 
-            //MockTokenFactory.Verify(factory => factory.Keyword(SqlQueryKeyword.CREATE), Times.Once);
+            MockTokenFactory.Verify(factory => factory.Keyword(SqlQueryKeyword.CREATE), Times.Once);
         }
 
         [TestMethod]
         public void CreateTemporaryIdentityTableBuildsATableKeywordToken()
         {
-            throw new NotImplementedException();
-            //TestObject.CreateTemporaryIdentityTable(MockEntityModel.Object);
+            TestObject.CreateTemporaryIdentityTable(MockTable.Object);
 
-            //MockTokenFactory.Verify(factory => factory.Keyword(SqlQueryKeyword.TABLE), Times.Once);
+            MockTokenFactory.Verify(factory => factory.Keyword(SqlQueryKeyword.TABLE), Times.Once);
         }
 
         [TestMethod]
         public void CreateTemporaryIdentityTableBuildsATemporaryIdentityNameToken()
         {
-            throw new NotImplementedException();
-            //TestObject.CreateTemporaryIdentityTable(MockEntityModel.Object);
+            TestObject.CreateTemporaryIdentityTable(MockTable.Object);
 
-            //MockTokenFactory.Verify(factory => factory.TemporaryIdentityName(MockEntityModel.Object), Times.Once);
+            MockTokenFactory.Verify(factory => factory.TemporaryIdentityName(MockTable.Object), Times.Once);
         }
 
         [TestMethod]
         public void CreateTemporaryIdentityTableBuildsAColumnListToken()
         {
-            throw new NotImplementedException();
-            //MockEntityModel
-            //    .Setup(model => model.Identity)
-            //    .Returns(MockValueModel.Object);
+            MockTable
+                .Setup(table => table.Identity)
+                .Returns(MockColumn.Object);
 
-            //TestObject.CreateTemporaryIdentityTable(MockEntityModel.Object);
+            TestObject.CreateTemporaryIdentityTable(MockTable.Object);
 
-            //MockTokenFactory.Verify(factory => factory.ColumnList(new[] { MockValueModel.Object }, true), Times.Once);
+            MockTokenFactory.Verify(factory => factory.ColumnList(new[] { MockColumn.Object }, true), Times.Once);
         }
 
         [TestMethod]
         public void CreateTemporaryIdentityTableAddsExpectedPhrase()
         {
-            throw new NotImplementedException();
-            //ISqlQueryToken createKeyword = SetupFactoryForKeyword(SqlQueryKeyword.CREATE);
-            //ISqlQueryToken tableKeyword = SetupFactoryForKeyword(SqlQueryKeyword.TABLE);
-            //ISqlQueryToken temporaryIdentityName = SetupFactory(factory => factory.TemporaryIdentityName(It.IsAny<IEntityModel>()));
-            //ISqlQueryToken columnList = SetupFactory(factory => factory.ColumnList(It.IsAny<IEnumerable<IValueModel>>(), It.IsAny<bool>()));
+            ISqlQueryToken createKeyword = SetupFactoryForKeyword(SqlQueryKeyword.CREATE);
+            ISqlQueryToken tableKeyword = SetupFactoryForKeyword(SqlQueryKeyword.TABLE);
+            ISqlQueryToken temporaryIdentityName = SetupFactory(factory => factory.TemporaryIdentityName(It.IsAny<ISqlTable>()));
+            ISqlQueryToken columnList = SetupFactory(factory => factory.ColumnList(It.IsAny<IEnumerable<ISqlColumn>>(), It.IsAny<bool>()));
 
-            //TestObject.CreateTemporaryIdentityTable(MockEntityModel.Object);
+            TestObject.CreateTemporaryIdentityTable(MockTable.Object);
 
-            //Assert.AreEqual(1, SuppliedPhraseTokens.Count);
-            //ISqlQueryToken[] phraseTokens = SuppliedPhraseTokens[0];
-            //Assert.AreEqual(4, phraseTokens.Length);
-            //Assert.AreSame(createKeyword, phraseTokens[0]);
-            //Assert.AreSame(tableKeyword, phraseTokens[1]);
-            //Assert.AreSame(temporaryIdentityName, phraseTokens[2]);
-            //Assert.AreSame(columnList, phraseTokens[3]);
+            Assert.AreEqual(1, SuppliedPhraseTokens.Count);
+            ISqlQueryToken[] phraseTokens = SuppliedPhraseTokens[0];
+            Assert.AreEqual(4, phraseTokens.Length);
+            Assert.AreSame(createKeyword, phraseTokens[0]);
+            Assert.AreSame(tableKeyword, phraseTokens[1]);
+            Assert.AreSame(temporaryIdentityName, phraseTokens[2]);
+            Assert.AreSame(columnList, phraseTokens[3]);
         }
 
         [TestMethod]
         public void OutputIdentitiesToTemporaryTableAddsPhraseToTokens()
         {
-            throw new NotImplementedException();
-            //TestObject.OutputIdentitiesToTemporaryTable(MockEntityModel.Object);
+            TestObject.OutputIdentitiesToTemporaryTable(MockTable.Object);
 
-            //Assert.AreEqual(1, TestObject.Tokens.Count);
-            //Assert.AreSame(MockPhraseToken.Object, TestObject.Tokens[0]);
+            Assert.AreEqual(1, TestObject.Tokens.Count);
+            Assert.AreSame(MockPhraseToken.Object, TestObject.Tokens[0]);
         }
 
         [TestMethod]
         public void OutputIdentitiesToTemporaryTableBuildsAnOutputKeywordToken()
         {
-            throw new NotImplementedException();
-            //TestObject.OutputIdentitiesToTemporaryTable(MockEntityModel.Object);
+            TestObject.OutputIdentitiesToTemporaryTable(MockTable.Object);
 
-            //MockTokenFactory.Verify(factory => factory.Keyword(SqlQueryKeyword.OUTPUT), Times.Once);
+            MockTokenFactory.Verify(factory => factory.Keyword(SqlQueryKeyword.OUTPUT), Times.Once);
         }
 
         [TestMethod]
         public void OutputIdentitiesToTemporaryTableBuildsAnInsertedIdentityNameToken()
         {
-            throw new NotImplementedException();
-            //TestObject.OutputIdentitiesToTemporaryTable(MockEntityModel.Object);
+            TestObject.OutputIdentitiesToTemporaryTable(MockTable.Object);
 
-            //MockTokenFactory.Verify(factory => factory.InsertedIdentityName(MockEntityModel.Object), Times.Once);
+            MockTokenFactory.Verify(factory => factory.InsertedIdentityName(MockTable.Object), Times.Once);
         }
 
         [TestMethod]
         public void OutputIdentitiesToTemporaryTableBuildsAnIntoKeywordToken()
         {
-            throw new NotImplementedException();
-            //TestObject.OutputIdentitiesToTemporaryTable(MockEntityModel.Object);
+            TestObject.OutputIdentitiesToTemporaryTable(MockTable.Object);
 
-            //MockTokenFactory.Verify(factory => factory.Keyword(SqlQueryKeyword.INTO), Times.Once);
+            MockTokenFactory.Verify(factory => factory.Keyword(SqlQueryKeyword.INTO), Times.Once);
         }
 
         [TestMethod]
         public void OutputIdentitiesToTemporaryTableBuildsATemporaryIdentityNameToken()
         {
-            throw new NotImplementedException();
-            //TestObject.OutputIdentitiesToTemporaryTable(MockEntityModel.Object);
+            TestObject.OutputIdentitiesToTemporaryTable(MockTable.Object);
 
-            //MockTokenFactory.Verify(factory => factory.TemporaryIdentityName(MockEntityModel.Object), Times.Once);
+            MockTokenFactory.Verify(factory => factory.TemporaryIdentityName(MockTable.Object), Times.Once);
         }
 
         [TestMethod]
         public void OutputIdentitiesToTemporaryTableAddsExpectedPhrase()
         {
-            throw new NotImplementedException();
-            //ISqlQueryToken outputToken = SetupFactoryForKeyword(SqlQueryKeyword.OUTPUT);
-            //ISqlQueryToken insertedIdentity = SetupFactory(factory => factory.InsertedIdentityName(It.IsAny<IEntityModel>()));
-            //ISqlQueryToken intoKeyword = SetupFactoryForKeyword(SqlQueryKeyword.INTO);
-            //ISqlQueryToken temporaryIdentityName = SetupFactory(factory => factory.TemporaryIdentityName(It.IsAny<IEntityModel>()));
+            ISqlQueryToken outputToken = SetupFactoryForKeyword(SqlQueryKeyword.OUTPUT);
+            ISqlQueryToken insertedIdentity = SetupFactory(factory => factory.InsertedIdentityName(It.IsAny<ISqlTable>()));
+            ISqlQueryToken intoKeyword = SetupFactoryForKeyword(SqlQueryKeyword.INTO);
+            ISqlQueryToken temporaryIdentityName = SetupFactory(factory => factory.TemporaryIdentityName(It.IsAny<ISqlTable>()));
 
-            //TestObject.OutputIdentitiesToTemporaryTable(MockEntityModel.Object);
+            TestObject.OutputIdentitiesToTemporaryTable(MockTable.Object);
 
-            //Assert.AreEqual(1, SuppliedPhraseTokens.Count);
-            //ISqlQueryToken[] phraseTokens = SuppliedPhraseTokens[0];
-            //Assert.AreEqual(4, phraseTokens.Length);
-            //Assert.AreSame(outputToken, phraseTokens[0]);
-            //Assert.AreSame(insertedIdentity, phraseTokens[1]);
-            //Assert.AreSame(intoKeyword, phraseTokens[2]);
-            //Assert.AreSame(temporaryIdentityName, phraseTokens[3]);
+            Assert.AreEqual(1, SuppliedPhraseTokens.Count);
+            ISqlQueryToken[] phraseTokens = SuppliedPhraseTokens[0];
+            Assert.AreEqual(4, phraseTokens.Length);
+            Assert.AreSame(outputToken, phraseTokens[0]);
+            Assert.AreSame(insertedIdentity, phraseTokens[1]);
+            Assert.AreSame(intoKeyword, phraseTokens[2]);
+            Assert.AreSame(temporaryIdentityName, phraseTokens[3]);
         }
 
         [TestMethod]
         public void SelectTemporaryIdentityTableBuildsTwoPhrases()
         {
-            throw new NotImplementedException();
-            //TestObject.SelectTemporaryIdentityTable(MockEntityModel.Object);
+            TestObject.SelectTemporaryIdentityTable(MockTable.Object);
 
-            //MockTokenFactory.Verify(factory => factory.Phrase(It.IsAny<ISqlQueryToken[]>()), Times.Exactly(2));
+            MockTokenFactory.Verify(factory => factory.Phrase(It.IsAny<ISqlQueryToken[]>()), Times.Exactly(2));
         }
 
         [TestMethod]
         public void SelectTemporaryIdentityTableBuildsASelectKeywordToken()
         {
-            throw new NotImplementedException();
-            //TestObject.SelectTemporaryIdentityTable(MockEntityModel.Object);
+            TestObject.SelectTemporaryIdentityTable(MockTable.Object);
 
-            //MockTokenFactory.Verify(factory => factory.Keyword(SqlQueryKeyword.SELECT), Times.Once);
+            MockTokenFactory.Verify(factory => factory.Keyword(SqlQueryKeyword.SELECT), Times.Once);
         }
 
         [TestMethod]
         public void SelectTemporaryIdentityTableBuildsAColumnListToken()
         {
-            throw new NotImplementedException();
-            //MockEntityModel
-            //    .Setup(model => model.Identity)
-            //    .Returns(MockValueModel.Object);
+            MockTable
+                .Setup(model => model.Identity)
+                .Returns(MockColumn.Object);
 
-            //TestObject.SelectTemporaryIdentityTable(MockEntityModel.Object);
+            TestObject.SelectTemporaryIdentityTable(MockTable.Object);
 
-            //MockTokenFactory.Verify(factory => factory.ColumnList(new[] { MockValueModel.Object }, false), Times.Once);
+            MockTokenFactory.Verify(factory => factory.ColumnList(new[] { MockColumn.Object }, false), Times.Once);
         }
 
         [TestMethod]
         public void SelectTemporaryIdentityTableBuildsAFromKeywordToken()
         {
-            throw new NotImplementedException();
-            //TestObject.SelectTemporaryIdentityTable(MockEntityModel.Object);
+            TestObject.SelectTemporaryIdentityTable(MockTable.Object);
 
-            //MockTokenFactory.Verify(factory => factory.Keyword(SqlQueryKeyword.FROM), Times.Once);
+            MockTokenFactory.Verify(factory => factory.Keyword(SqlQueryKeyword.FROM), Times.Once);
         }
 
         [TestMethod]
         public void SelectTemporaryIdentityTableBuildsATemporaryIdentityNameToken()
         {
-            throw new NotImplementedException();
-            //TestObject.SelectTemporaryIdentityTable(MockEntityModel.Object);
+            TestObject.SelectTemporaryIdentityTable(MockTable.Object);
 
-            //MockTokenFactory.Verify(factory => factory.TemporaryIdentityName(MockEntityModel.Object), Times.Once);
+            MockTokenFactory.Verify(factory => factory.TemporaryIdentityName(MockTable.Object), Times.Once);
         }
 
         [TestMethod]
         public void SelectTemporaryIdentityTableAddsTwoPhrasesToTokens()
         {
-            throw new NotImplementedException();
-            //TestObject.SelectTemporaryIdentityTable(MockEntityModel.Object);
+            TestObject.SelectTemporaryIdentityTable(MockTable.Object);
 
-            //Assert.AreEqual(2, TestObject.Tokens.Count);
-            //Assert.AreSame(MockPhraseToken.Object, TestObject.Tokens[0]);
-            //Assert.AreSame(MockPhraseToken.Object, TestObject.Tokens[1]);
+            Assert.AreEqual(2, TestObject.Tokens.Count);
+            Assert.AreSame(MockPhraseToken.Object, TestObject.Tokens[0]);
+            Assert.AreSame(MockPhraseToken.Object, TestObject.Tokens[1]);
         }
 
         [TestMethod]
         public void SelectTemporaryIdentityTableAddsExpectedFirstPhrase()
         {
-            throw new NotImplementedException();
-            //ISqlQueryToken selectKeyword = SetupFactoryForKeyword(SqlQueryKeyword.SELECT);
-            //ISqlQueryToken columnList = SetupFactory(factory => factory.ColumnList(It.IsAny<IEnumerable<IValueModel>>(), It.IsAny<bool>()));
+            ISqlQueryToken selectKeyword = SetupFactoryForKeyword(SqlQueryKeyword.SELECT);
+            ISqlQueryToken columnList = SetupFactory(factory => factory.ColumnList(It.IsAny<IEnumerable<ISqlColumn>>(), It.IsAny<bool>()));
 
-            //TestObject.SelectTemporaryIdentityTable(MockEntityModel.Object);
+            TestObject.SelectTemporaryIdentityTable(MockTable.Object);
 
-            //Assert.AreEqual(2, SuppliedPhraseTokens[0].Length);
-            //Assert.AreSame(selectKeyword, SuppliedPhraseTokens[0][0]);
-            //Assert.AreSame(columnList, SuppliedPhraseTokens[0][1]);
+            Assert.AreEqual(2, SuppliedPhraseTokens[0].Length);
+            Assert.AreSame(selectKeyword, SuppliedPhraseTokens[0][0]);
+            Assert.AreSame(columnList, SuppliedPhraseTokens[0][1]);
         }
 
         [TestMethod]
         public void SelectTemporaryIdentityTableAddsExpectedSecondPhrase()
         {
-            throw new NotImplementedException();
-            //ISqlQueryToken fromKeyword = SetupFactoryForKeyword(SqlQueryKeyword.FROM);
-            //ISqlQueryToken temporaryIdentityName = SetupFactory(factory => factory.TemporaryIdentityName(MockEntityModel.Object));
+            ISqlQueryToken fromKeyword = SetupFactoryForKeyword(SqlQueryKeyword.FROM);
+            ISqlQueryToken temporaryIdentityName = SetupFactory(factory => factory.TemporaryIdentityName(MockTable.Object));
 
-            //TestObject.SelectTemporaryIdentityTable(MockEntityModel.Object);
+            TestObject.SelectTemporaryIdentityTable(MockTable.Object);
 
-            //Assert.AreEqual(2, SuppliedPhraseTokens[1].Length);
-            //Assert.AreSame(fromKeyword, SuppliedPhraseTokens[1][0]);
-            //Assert.AreSame(temporaryIdentityName, SuppliedPhraseTokens[1][1]);
+            Assert.AreEqual(2, SuppliedPhraseTokens[1].Length);
+            Assert.AreSame(fromKeyword, SuppliedPhraseTokens[1][0]);
+            Assert.AreSame(temporaryIdentityName, SuppliedPhraseTokens[1][1]);
         }
 
         [TestMethod]
         public void DropTemporaryIdentityTableAddsPhraseToTokens()
         {
-            throw new NotImplementedException();
-            //TestObject.DropTemporaryIdentityTable(MockEntityModel.Object);
+            TestObject.DropTemporaryIdentityTable(MockTable.Object);
 
-            //Assert.AreEqual(1, TestObject.Tokens.Count);
-            //Assert.AreSame(MockPhraseToken.Object, TestObject.Tokens[0]);
+            Assert.AreEqual(1, TestObject.Tokens.Count);
+            Assert.AreSame(MockPhraseToken.Object, TestObject.Tokens[0]);
         }
 
         [TestMethod]
         public void DropTemporaryIdentityTableBuildsADropKeyword()
         {
-            throw new NotImplementedException();
-            //TestObject.DropTemporaryIdentityTable(MockEntityModel.Object);
+            TestObject.DropTemporaryIdentityTable(MockTable.Object);
 
-            //MockTokenFactory.Verify(factory => factory.Keyword(SqlQueryKeyword.DROP), Times.Once);
+            MockTokenFactory.Verify(factory => factory.Keyword(SqlQueryKeyword.DROP), Times.Once);
         }
 
         [TestMethod]
         public void DropTemporaryIdentityTableBuildsATableKeyword()
         {
-            throw new NotImplementedException();
-            //TestObject.DropTemporaryIdentityTable(MockEntityModel.Object);
+            TestObject.DropTemporaryIdentityTable(MockTable.Object);
 
-            //MockTokenFactory.Verify(factory => factory.Keyword(SqlQueryKeyword.TABLE), Times.Once);
+            MockTokenFactory.Verify(factory => factory.Keyword(SqlQueryKeyword.TABLE), Times.Once);
         }
 
         [TestMethod]
         public void DropTemporaryIdentityTableBuildsATemporaryIdentityNameToken()
         {
-            throw new NotImplementedException();
-            //TestObject.DropTemporaryIdentityTable(MockEntityModel.Object);
+            TestObject.DropTemporaryIdentityTable(MockTable.Object);
 
-            //MockTokenFactory.Verify(factory => factory.TemporaryIdentityName(MockEntityModel.Object), Times.Once);
+            MockTokenFactory.Verify(factory => factory.TemporaryIdentityName(MockTable.Object), Times.Once);
         }
 
         [TestMethod]
         public void DropTemprorayIdentityTableAddsExpectedPhrase()
         {
-            throw new NotImplementedException();
-            //ISqlQueryToken dropKeyword = SetupFactoryForKeyword(SqlQueryKeyword.DROP);
-            //ISqlQueryToken tableKeyword = SetupFactoryForKeyword(SqlQueryKeyword.TABLE);
-            //ISqlQueryToken temporaryIdentityName = SetupFactory(factory => factory.TemporaryIdentityName(It.IsAny<IEntityModel>()));
+            ISqlQueryToken dropKeyword = SetupFactoryForKeyword(SqlQueryKeyword.DROP);
+            ISqlQueryToken tableKeyword = SetupFactoryForKeyword(SqlQueryKeyword.TABLE);
+            ISqlQueryToken temporaryIdentityName = SetupFactory(factory => factory.TemporaryIdentityName(It.IsAny<ISqlTable>()));
 
-            //TestObject.DropTemporaryIdentityTable(MockEntityModel.Object);
+            TestObject.DropTemporaryIdentityTable(MockTable.Object);
 
-            //Assert.AreEqual(1, SuppliedPhraseTokens.Count);
-            //ISqlQueryToken[] phraseTokens = SuppliedPhraseTokens[0];
-            //Assert.AreEqual(3, phraseTokens.Length);
-            //Assert.AreSame(dropKeyword, phraseTokens[0]);
-            //Assert.AreSame(tableKeyword, phraseTokens[1]);
-            //Assert.AreSame(temporaryIdentityName, phraseTokens[2]);
+            Assert.AreEqual(1, SuppliedPhraseTokens.Count);
+            ISqlQueryToken[] phraseTokens = SuppliedPhraseTokens[0];
+            Assert.AreEqual(3, phraseTokens.Length);
+            Assert.AreSame(dropKeyword, phraseTokens[0]);
+            Assert.AreSame(tableKeyword, phraseTokens[1]);
+            Assert.AreSame(temporaryIdentityName, phraseTokens[2]);
         }
 
         [TestMethod]
         public void InsertAddsPhraseToTokens()
         {
-            throw new NotImplementedException();
-            //TestObject.Insert(MockEntityModel.Object);
+            TestObject.Insert(MockTable.Object);
 
-            //Assert.AreEqual(1, TestObject.Tokens.Count);
-            //Assert.AreSame(MockPhraseToken.Object, TestObject.Tokens[0]);
+            Assert.AreEqual(1, TestObject.Tokens.Count);
+            Assert.AreSame(MockPhraseToken.Object, TestObject.Tokens[0]);
         }
 
         [TestMethod]
         public void InsertBuildsInsertKeyword()
         {
-            throw new NotImplementedException();
-            //TestObject.Insert(MockEntityModel.Object);
+            TestObject.Insert(MockTable.Object);
 
-            //MockTokenFactory.Verify(factory => factory.Keyword(SqlQueryKeyword.INSERT), Times.Once);
+            MockTokenFactory.Verify(factory => factory.Keyword(SqlQueryKeyword.INSERT), Times.Once);
         }
 
         [TestMethod]
         public void InsertBuildsQualifiedObjectNameForTable()
         {
-            throw new NotImplementedException();
-            //TestObject.Insert(MockEntityModel.Object);
+            TestObject.Insert(MockTable.Object);
 
-            //MockTokenFactory.Verify(factory => factory.QualifiedObjectName(MockEntityModel.Object), Times.Once);
+            MockTokenFactory.Verify(factory => factory.QualifiedObjectName(MockTable.Object), Times.Once);
         }
 
         [TestMethod]
         public void InsertBuildsColumnListWithoutDefinitions()
         {
-            throw new NotImplementedException();
-            //MockEntityModel
-            //    .Setup(model => model.NonIdentities)
-            //    .Returns(new[] { MockValueModel.Object });
+            MockTable
+                .Setup(model => model.NonIdentities)
+                .Returns(new[] { MockColumn.Object });
 
-            //TestObject.Insert(MockEntityModel.Object);
+            TestObject.Insert(MockTable.Object);
 
-            //MockTokenFactory.Verify(factory => factory.ColumnList(new[] { MockValueModel.Object }, false));
+            MockTokenFactory.Verify(factory => factory.ColumnList(new[] { MockColumn.Object }, false));
         }
 
         [TestMethod]
         public void InsertBuildsExpectedPhrase()
         {
-            throw new NotImplementedException();
-            //ISqlQueryToken insertKeyword = SetupFactoryForKeyword(SqlQueryKeyword.INSERT);
-            //ISqlQueryToken tableName = SetupFactory(factory => factory.QualifiedObjectName(It.IsAny<IEntityModel>()));
-            //ISqlQueryToken columnList = SetupFactory(factory => factory.ColumnList(It.IsAny<IEnumerable<IValueModel>>(), It.IsAny<bool>()));
+            ISqlQueryToken insertKeyword = SetupFactoryForKeyword(SqlQueryKeyword.INSERT);
+            ISqlQueryToken tableName = SetupFactory(factory => factory.QualifiedObjectName(It.IsAny<ISqlTable>()));
+            ISqlQueryToken columnList = SetupFactory(factory => factory.ColumnList(It.IsAny<IEnumerable<ISqlColumn>>(), It.IsAny<bool>()));
 
-            //TestObject.Insert(MockEntityModel.Object);
+            TestObject.Insert(MockTable.Object);
 
-            //Assert.AreEqual(1, SuppliedPhraseTokens.Count);
-            //ISqlQueryToken[] phraseTokens = SuppliedPhraseTokens[0];
-            //Assert.AreEqual(3, phraseTokens.Length);
-            //Assert.AreSame(insertKeyword, phraseTokens[0]);
-            //Assert.AreSame(tableName, phraseTokens[1]);
-            //Assert.AreSame(columnList, phraseTokens[2]);
+            Assert.AreEqual(1, SuppliedPhraseTokens.Count);
+            ISqlQueryToken[] phraseTokens = SuppliedPhraseTokens[0];
+            Assert.AreEqual(3, phraseTokens.Length);
+            Assert.AreSame(insertKeyword, phraseTokens[0]);
+            Assert.AreSame(tableName, phraseTokens[1]);
+            Assert.AreSame(columnList, phraseTokens[2]);
         }
 
         [TestMethod]
@@ -500,89 +470,198 @@ namespace Curds.Persistence.Query.Tests
         [TestMethod]
         public void SelectAddsPhraseToTokens()
         {
-            throw new NotImplementedException();
-            //TestObject.Select(TestValueModels);
+            TestObject.Select(TestColumns);
 
-            //Assert.AreEqual(1, TestObject.Tokens.Count);
-            //Assert.AreSame(MockPhraseToken.Object, TestObject.Tokens[0]);
+            Assert.AreEqual(1, TestObject.Tokens.Count);
+            Assert.AreSame(MockPhraseToken.Object, TestObject.Tokens[0]);
         }
 
         [TestMethod]
         public void SelectBuildsSelectKeyword()
         {
-            throw new NotImplementedException();
-            //TestObject.Select(TestValueModels);
+            TestObject.Select(TestColumns);
 
-            //MockTokenFactory.Verify(factory => factory.Keyword(SqlQueryKeyword.SELECT), Times.Once);
+            MockTokenFactory.Verify(factory => factory.Keyword(SqlQueryKeyword.SELECT), Times.Once);
         }
 
         [TestMethod]
         public void SelectBuildsColumnListToken()
         {
-            throw new NotImplementedException();
-            //TestObject.Select(TestValueModels);
+            TestObject.Select(TestColumns);
 
-            //MockTokenFactory.Verify(factory => factory.SelectList(TestValueModels), Times.Once);
+            MockTokenFactory.Verify(factory => factory.SelectList(TestColumns), Times.Once);
         }
 
         [TestMethod]
         public void SelectBuildsExpectedPhrase()
         {
-            throw new NotImplementedException();
-            //ISqlQueryToken selectKeyword = SetupFactoryForKeyword(SqlQueryKeyword.SELECT);
-            //ISqlQueryToken selectList = SetupFactory(factory => factory.SelectList(It.IsAny<IEnumerable<IValueModel>>()));
+            ISqlQueryToken selectKeyword = SetupFactoryForKeyword(SqlQueryKeyword.SELECT);
+            ISqlQueryToken selectList = SetupFactory(factory => factory.SelectList(It.IsAny<IEnumerable<ISqlColumn>>()));
 
-            //TestObject.Select(TestValueModels);
+            TestObject.Select(TestColumns);
 
-            //Assert.AreEqual(1, SuppliedPhraseTokens.Count);
-            //ISqlQueryToken[] phraseTokens = SuppliedPhraseTokens[0];
-            //Assert.AreEqual(2, phraseTokens.Length);
-            //Assert.AreSame(selectKeyword, phraseTokens[0]);
-            //Assert.AreSame(selectList, phraseTokens[1]);
+            Assert.AreEqual(1, SuppliedPhraseTokens.Count);
+            ISqlQueryToken[] phraseTokens = SuppliedPhraseTokens[0];
+            Assert.AreEqual(2, phraseTokens.Length);
+            Assert.AreSame(selectKeyword, phraseTokens[0]);
+            Assert.AreSame(selectList, phraseTokens[1]);
+        }
+
+        private void SetupNTables(int tables)
+        {
+            List<ISqlTable> testTables = new List<ISqlTable>();
+            for (int i = 0; i < tables; i++)
+                testTables.Add(MockTable.Object);
+            MockUniverse
+                .Setup(universe => universe.Tables)
+                .Returns(testTables);
+        }
+
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(5)]
+        [DataRow(10)]
+        [DataRow(15)]
+        public void FromAddsPhraseForEachTableToTokens(int tables)
+        {
+            SetupNTables(tables);
+
+            TestObject.From(MockUniverse.Object);
+
+            Assert.AreEqual(tables, TestObject.Tokens.Count);
+            foreach (ISqlQueryToken token in TestObject.Tokens)
+                Assert.AreSame(MockPhraseToken.Object, token);
+        }
+
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(5)]
+        [DataRow(10)]
+        [DataRow(15)]
+        public void FromBuildsFromKeywordForEachTable(int tables)
+        {
+            SetupNTables(tables);
+
+            TestObject.From(MockUniverse.Object);
+
+            MockTokenFactory.Verify(factory => factory.Keyword(SqlQueryKeyword.FROM), Times.Exactly(tables));
+        }
+
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(5)]
+        [DataRow(10)]
+        [DataRow(15)]
+        public void FromBuildsQualifiedObjectNameTokenForEachTable(int tables)
+        {
+            SetupNTables(tables);
+
+            TestObject.From(MockUniverse.Object);
+
+            MockTokenFactory.Verify(factory => factory.QualifiedObjectName(MockTable.Object), Times.Exactly(tables));
         }
 
         [TestMethod]
-        public void FromAddsPhraseToTokens()
+        public void FromBuildsExpectedTablePhrase()
         {
-            throw new NotImplementedException();
-            //TestObject.From(MockEntityModel.Object);
+            SetupNTables(1);
+            ISqlQueryToken fromKeyword = SetupFactoryForKeyword(SqlQueryKeyword.FROM);
+            ISqlQueryToken tableName = SetupFactory(factory => factory.QualifiedObjectName(It.IsAny<ISqlTable>()));
 
-            //Assert.AreEqual(1, TestObject.Tokens.Count);
-            //Assert.AreSame(MockPhraseToken.Object, TestObject.Tokens[0]);
+            TestObject.From(MockUniverse.Object);
+
+            Assert.AreEqual(1, SuppliedPhraseTokens.Count);
+            ISqlQueryToken[] phraseTokens = SuppliedPhraseTokens[0];
+            Assert.AreEqual(2, phraseTokens.Length);
+            Assert.AreSame(fromKeyword, phraseTokens[0]);
+            Assert.AreSame(tableName, phraseTokens[1]);
+        }
+
+        private void SetupNFilters(int filters)
+        {
+            List<ISqlUniverseFilter> testFilters = new List<ISqlUniverseFilter>();
+            for (int i = 0; i < filters; i++)
+                testFilters.Add(MockUniverseFilter.Object);
+            MockUniverse
+                .Setup(universe => universe.Filters)
+                .Returns(testFilters);
+        }
+
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(5)]
+        [DataRow(10)]
+        [DataRow(15)]
+        public void FromAddsPhraseForEachFilterToTokens(int filters)
+        {
+            SetupNFilters(filters);
+
+            TestObject.From(MockUniverse.Object);
+
+            Assert.AreEqual(filters, TestObject.Tokens.Count);
+            foreach (ISqlQueryToken token in TestObject.Tokens)
+                Assert.AreSame(MockPhraseToken.Object, token);
+        }
+
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(5)]
+        [DataRow(10)]
+        [DataRow(15)]
+        public void FromBuildsWhereKeywordForEachFilter(int filters)
+        {
+            SetupNFilters(filters);
+
+            TestObject.From(MockUniverse.Object);
+
+            MockTokenFactory.Verify(factory => factory.Keyword(SqlQueryKeyword.WHERE), Times.Exactly(filters));
+        }
+
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(5)]
+        [DataRow(10)]
+        [DataRow(15)]
+        public void FromBuildsUniverseFilterForEachFilter(int filters)
+        {
+            SetupNFilters(filters);
+
+            TestObject.From(MockUniverse.Object);
+
+            MockTokenFactory.Verify(factory => factory.UniverseFilter(MockUniverseFilter.Object), Times.Exactly(filters));
         }
 
         [TestMethod]
-        public void FromBuildsFromKeyword()
+        public void FromBuildsExpectedFilterPhrase()
         {
-            throw new NotImplementedException();
-            //TestObject.From(MockEntityModel.Object);
+            SetupNFilters(1);
+            ISqlQueryToken whereKeyword = SetupFactoryForKeyword(SqlQueryKeyword.WHERE);
+            ISqlQueryToken universeFilter = SetupFactory(factory => factory.UniverseFilter(It.IsAny<ISqlUniverseFilter>()));
 
-            //MockTokenFactory.Verify(factory => factory.Keyword(SqlQueryKeyword.FROM), Times.Once);
+            TestObject.From(MockUniverse.Object);
+
+            Assert.AreEqual(1, SuppliedPhraseTokens.Count);
+            ISqlQueryToken[] phraseTokens = SuppliedPhraseTokens[0];
+            Assert.AreEqual(2, phraseTokens.Length);
+            Assert.AreSame(whereKeyword, phraseTokens[0]);
+            Assert.AreSame(universeFilter, phraseTokens[1]);
         }
 
         [TestMethod]
-        public void FromBuildsQualifiedObjectNameToken()
+        public void FromBuildsTablesBeforeFilters()
         {
-            throw new NotImplementedException();
-            //TestObject.From(MockEntityModel.Object);
+            int callOrder = 0;
+            MockUniverse
+                .Setup(universe => universe.Tables)
+                .Callback(() => Assert.AreEqual(callOrder++, 0));
+            MockUniverse
+                .Setup(universe => universe.Filters)
+                .Callback(() => Assert.AreEqual(callOrder++, 1));
 
-            //MockTokenFactory.Verify(factory => factory.QualifiedObjectName(MockEntityModel.Object), Times.Once);
-        }
+            TestObject.From(MockUniverse.Object);
 
-        [TestMethod]
-        public void FromBuildsExpectedPhrase()
-        {
-            throw new NotImplementedException();
-            //ISqlQueryToken fromKeyword = SetupFactoryForKeyword(SqlQueryKeyword.FROM);
-            //ISqlQueryToken tableName = SetupFactory(factory => factory.QualifiedObjectName(It.IsAny<IEntityModel>()));
-
-            //TestObject.From(MockEntityModel.Object);
-
-            //Assert.AreEqual(1, SuppliedPhraseTokens.Count);
-            //ISqlQueryToken[] phraseTokens = SuppliedPhraseTokens[0];
-            //Assert.AreEqual(2, phraseTokens.Length);
-            //Assert.AreSame(fromKeyword, phraseTokens[0]);
-            //Assert.AreSame(tableName, phraseTokens[1]);
+            MockUniverse.Verify(universe => universe.Tables, Times.Once);
+            MockUniverse.Verify(universe => universe.Filters, Times.Once);
         }
     }
 }

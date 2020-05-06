@@ -3,6 +3,7 @@ using Moq;
 using System.Collections.Generic;
 using Whey;
 using System;
+using System.Linq;
 
 namespace Curds.Persistence.Query.Tests
 {
@@ -50,13 +51,13 @@ namespace Curds.Persistence.Query.Tests
         }
 
         [TestMethod]
-        public void InsertSetsModelToBuiltResult()
+        public void InsertSetsTableModelToBuiltResult()
         {
-            throw new NotImplementedException();
-            //ISqlQuery actual = TestObject.Insert(TestEntities);
+            ISqlQuery actual = TestObject.Insert(TestEntities);
 
-            //InsertQuery<TestEntity> testQuery = actual.VerifyIsActually<InsertQuery<TestEntity>>();
-            //Assert.AreSame(MockEntityModel.Object, testQuery.Model);
+            InsertQuery<TestEntity> testQuery = actual.VerifyIsActually<InsertQuery<TestEntity>>();
+            SqlTable actualTable = testQuery.Table.VerifyIsActually<SqlTable>();
+            Assert.AreSame(MockEntityModel.Object, actualTable.Model);
         }
 
         private void PopulateNEntities(int entities)
@@ -86,8 +87,7 @@ namespace Curds.Persistence.Query.Tests
         {
             ISqlUniverse<TestEntity> actual = TestObject.From<TestEntity>();
 
-            throw new NotImplementedException();
-            //Assert.IsInstanceOfType(actual, typeof(SqlUniverse<TestEntity>));
+            Assert.IsInstanceOfType(actual, typeof(SqlUniverse<TestEntity>));
         }
 
         [TestMethod]
@@ -96,16 +96,6 @@ namespace Curds.Persistence.Query.Tests
             TestObject.From<TestEntity>();
 
             MockModelMap.Verify(map => map.Entity<TestEntity>(), Times.Once);
-        }
-
-        [TestMethod]
-        public void FromSetsModelToBuiltResult()
-        {
-            ISqlUniverse<TestEntity> actual = TestObject.From<TestEntity>();
-
-            throw new NotImplementedException();
-            //SqlUniverse<TestEntity> universe = actual.VerifyIsActually<SqlUniverse<TestEntity>>();
-            //Assert.AreSame(MockEntityModel.Object, universe.Model);
         }
     }
 }
