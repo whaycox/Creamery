@@ -3,6 +3,7 @@
     public enum SqlBooleanOperation
     {
         Equals,
+        NotEquals,
         GreaterThan,
         GreaterThanOrEquals,
         LessThan,

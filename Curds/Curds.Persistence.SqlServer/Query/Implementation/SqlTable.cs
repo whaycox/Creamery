@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
+    using Domain;
     using Model.Abstraction;
     using Persistence.Abstraction;
-    using Domain;
 
     internal class SqlTable : ISqlTable
     {

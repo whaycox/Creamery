@@ -4,7 +4,6 @@ using System.Linq;
 namespace Curds.Persistence.Query.Tokens.Implementation
 {
     using Abstraction;
-    using Model.Abstraction;
 
     public class ColumnListSqlQueryToken : BaseSqlQueryToken
     {

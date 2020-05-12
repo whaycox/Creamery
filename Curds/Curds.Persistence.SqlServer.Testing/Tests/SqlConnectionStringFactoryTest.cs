@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using System.Threading.Tasks;
 
 namespace Curds.Persistence.Tests
 {
-    using Implementation;
     using Domain;
+    using Implementation;
 
     [TestClass]
     public class SqlConnectionStringFactoryTest
@@ -34,6 +27,15 @@ namespace Curds.Persistence.Tests
         }
 
         [TestMethod]
+        public void BuildsFullConnectionWhenUserAndPass()
+        {
+            string actual = TestObject.Build(TestConnectionInformation);
+
+            Assert.AreEqual(ExpectedFullConnectionString, actual);
+        }
+        private string ExpectedFullConnectionString => $"Server={TestServer};Database={TestDatabase};User Id={TestUserName};Password={TestPassword}";
+
+        [TestMethod]
         public void BuildsTrustedConnectionWhenNoUserOrPass()
         {
             TestConnectionInformation.UserName = null;
@@ -45,6 +47,22 @@ namespace Curds.Persistence.Tests
         }
         private string ExpectedTrustedConnectionString => $"Server={TestServer};Database={TestDatabase};Trusted_Connection=True;";
 
+        [TestMethod]
+        [ExpectedException(typeof(FormatException))]
+        public void ThrowsWhenNoUser()
+        {
+            TestConnectionInformation.UserName = null;
 
+            TestObject.Build(TestConnectionInformation);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(FormatException))]
+        public void ThrowsWhenNoPass()
+        {
+            TestConnectionInformation.Password = null;
+
+            TestObject.Build(TestConnectionInformation);
+        }
     }
 }

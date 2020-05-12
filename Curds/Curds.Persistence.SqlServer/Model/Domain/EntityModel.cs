@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 
 namespace Curds.Persistence.Model.Domain
 {
     using Abstraction;
-    using Domain;
-    using Query.Domain;
-    using Persistence.Abstraction;
 
     public class EntityModel : IEntityModel
     {
@@ -17,8 +13,8 @@ namespace Curds.Persistence.Model.Domain
         public string Schema { get; set; }
         public string Table { get; set; }
 
-        public List<IValueModel> ValueModels { get; set; } = new List<IValueModel>();
-        public List<IValueModel> KeyDefinition { get; set; } = new List<IValueModel>();
+        public List<IValueModel> ValueModels { get; } = new List<IValueModel>();
+        public List<IValueModel> KeyDefinition { get; } = new List<IValueModel>();
 
         public IEnumerable<IValueModel> Values => ValueModels;
         public IList<IValueModel> Keys => KeyDefinition.ToList();
@@ -33,6 +29,5 @@ namespace Curds.Persistence.Model.Domain
         {
             EntityType = entityType;
         }
-
     }
 }

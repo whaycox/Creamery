@@ -8,6 +8,7 @@ namespace Curds.Persistence.Model.Implementation
 {
     using Query.Abstraction;
     using Abstraction;
+    using Domain;
 
     internal delegate Expression PopulateValueDelegate(ParameterExpression entityParameter, IValueModel value, ParameterExpression queryReaderParameter);
 
@@ -44,7 +45,7 @@ namespace Curds.Persistence.Model.Implementation
         protected Expression PopulateValueFromReader(ParameterExpression entityParameter, IValueModel value, ParameterExpression queryReaderParameter)
         {
             if (!PopulateTypeMap.TryGetValue(value.Property.PropertyType, out PopulateValueDelegate populateDelegate))
-                throw new ArgumentException($"Unsupported type for {value.Name}, {value.Property.PropertyType}");
+                throw new ModelException($"Unsupported type for {value.Name}, {value.Property.PropertyType}");
             return populateDelegate(entityParameter, value, queryReaderParameter);
         }
 

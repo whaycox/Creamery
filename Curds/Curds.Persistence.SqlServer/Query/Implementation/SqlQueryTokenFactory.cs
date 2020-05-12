@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
-    using Model.Abstraction;
     using Domain;
     using Tokens.Implementation;
-    using Persistence.Abstraction;
 
     internal class SqlQueryTokenFactory : ISqlQueryTokenFactory
     {
@@ -21,8 +17,8 @@ namespace Curds.Persistence.Query.Implementation
         }
 
         public ISqlQueryToken ColumnList(IEnumerable<ISqlColumn> columns, bool includeDefinition) =>
-            new ColumnListSqlQueryToken(columns) 
-            { 
+            new ColumnListSqlQueryToken(columns)
+            {
                 IncludeDefinition = includeDefinition,
                 IncludeGrouping = true,
             };
@@ -52,8 +48,8 @@ namespace Curds.Persistence.Query.Implementation
         public ISqlQueryToken TemporaryIdentityName(ISqlTable table) =>
             new TemporaryIdentityTableNameSqlQueryToken(table);
 
-        public ISqlQueryToken Parameter(string name, object value) => BuildParameterToken(name, value);            
-        private ParameterSqlQueryToken BuildParameterToken(string name, object value) => 
+        public ISqlQueryToken Parameter(string name, object value) => BuildParameterToken(name, value);
+        private ParameterSqlQueryToken BuildParameterToken(string name, object value) =>
             new ParameterSqlQueryToken(ParameterBuilder.RegisterNewParamater(name, value));
 
         public ISqlQueryToken ValueEntities(IEnumerable<ValueEntity> valueEntities) =>

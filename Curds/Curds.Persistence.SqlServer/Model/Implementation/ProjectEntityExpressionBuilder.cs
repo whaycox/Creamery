@@ -6,6 +6,7 @@ using System.Reflection;
 namespace Curds.Persistence.Model.Implementation
 {
     using Abstraction;
+    using Domain;
     using Query.Abstraction;
 
     internal class ProjectEntityExpressionBuilder : BaseQueryReaderExpressionBuilder, IProjectEntityExpressionBuilder
@@ -21,7 +22,7 @@ namespace Curds.Persistence.Model.Implementation
 
             ConstructorInfo entityConstructor = entityModel.EntityType.GetConstructor(new Type[0]);
             if (entityConstructor == null)
-                throw new Exception();
+                throw new ModelException($"No parameterless constructor found for {entityModel.EntityType.FullName}");
 
             List<Expression> projectionExpressions = new List<Expression>
             {

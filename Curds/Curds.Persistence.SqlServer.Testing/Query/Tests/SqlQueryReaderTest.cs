@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using System.Threading.Tasks;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace Curds.Persistence.Query.Tests
 {
-    using Abstraction;
-    using Implementation;
     using Domain;
+    using Implementation;
     using Persistence.Template;
 
     [TestClass]
@@ -66,6 +59,15 @@ namespace Curds.Persistence.Query.Tests
             TestObject?.Dispose();
             TestCommand?.Dispose();
             TestConnection?.Dispose();
+        }
+
+        [TestMethod]
+        public void CanDisposeWithNullReader()
+        {
+            Dispose();
+            TestObject = new SqlQueryReader(null);
+
+            TestObject.Dispose();
         }
 
         private void SetupNullColumn()

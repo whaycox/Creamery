@@ -1,16 +1,15 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System;
 
 namespace Curds.Persistence.Query.Tests
 {
     using Abstraction;
     using Domain;
     using Implementation;
-    using Model.Abstraction;
     using Persistence.Abstraction;
     using Persistence.Domain;
 
@@ -109,6 +108,29 @@ namespace Curds.Persistence.Query.Tests
             await TestObject.ProcessResult(MockQueryReader.Object);
 
             MockTable.Verify(table => table.AssignIdentities(MockQueryReader.Object, TestEntity), Times.Exactly(entities));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public async Task LessIdentitiesThanEntitiesThrows()
+        {
+            MockQueryReader
+                .Setup(reader => reader.Advance())
+                .ReturnsAsync(false);
+
+            await TestObject.ProcessResult(MockQueryReader.Object);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public async Task MoreIdentitiesThanEntitiesThrows()
+        {
+            MockQueryReader
+                .SetupSequence(reader => reader.Advance())
+                .ReturnsAsync(true)
+                .ReturnsAsync(true);
+
+            await TestObject.ProcessResult(MockQueryReader.Object);
         }
     }
 }

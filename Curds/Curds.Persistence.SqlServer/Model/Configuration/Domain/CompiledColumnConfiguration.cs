@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Curds.Persistence.Model.Configuration.Domain
+﻿namespace Curds.Persistence.Model.Configuration.Domain
 {
     using Abstraction;
     using Persistence.Abstraction;
-    using Model.Abstraction;
 
     public class CompiledColumnConfiguration<TModel> : IColumnConfiguration
         where TModel : IDataModel

@@ -1,8 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System;
+using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
-using System;
 
 namespace Curds.Persistence.Tests
 {
@@ -16,6 +17,7 @@ namespace Curds.Persistence.Tests
     {
         private SqlConnectionInformation TestConnectionInfo = new SqlConnectionInformation();
         private SqlCommand TestCommand = new SqlCommand("SELECT 1");
+        private SqlCommand TestInsertCommand = new SqlCommand("INSERT dbo.TestEntity VALUES ('Test') SELECT SCOPE_IDENTITY()");
 
         private Mock<IServiceProvider> MockServiceProvider = new Mock<IServiceProvider>();
         private Mock<ISqlQueryWriter> MockQueryWriter = new Mock<ISqlQueryWriter>();
@@ -25,6 +27,20 @@ namespace Curds.Persistence.Tests
         private Mock<ISqlQuery<TestEntity>> MockReturnQuery = new Mock<ISqlQuery<TestEntity>>();
 
         private SqlConnectionContext TestObject = null;
+
+        private SqlCommand BuildVerificationCommand(decimal expectedID)
+        {
+            SqlCommand verify = new SqlCommand($"SELECT * FROM dbo.TestEntity y WHERE y.ID = {expectedID}");
+            SetConnectionAndTransaction(verify);
+
+            return verify;
+        }
+
+        private void SetConnectionAndTransaction(SqlCommand command)
+        {
+            command.Connection = TestObject.Connection;
+            command.Transaction = TestObject.Transaction;
+        }
 
         [TestInitialize]
         public void Init()
@@ -72,11 +88,100 @@ namespace Curds.Persistence.Tests
         }
 
         [TestMethod]
+        public async Task BeginTransactionOpensConnection()
+        {
+            await TestObject.BeginTransaction();
+
+            Assert.IsNotNull(TestObject.Connection);
+            Assert.AreEqual(ConnectionState.Open, TestObject.Connection.State);
+        }
+
+        [TestMethod]
+        public async Task BeginTransactionSetsTransaction()
+        {
+            await TestObject.BeginTransaction();
+
+            Assert.IsNotNull(TestObject.Transaction);
+        }
+
+        [TestMethod]
+        public async Task RollbackTransactionRollsBackCommands()
+        {
+            await TestObject.BeginTransaction();
+            SetConnectionAndTransaction(TestInsertCommand);
+            decimal insertedID = (decimal)TestInsertCommand.ExecuteScalar();
+
+            TestObject.RollbackTransaction();
+
+            SqlCommand verificationCommand = BuildVerificationCommand(insertedID);
+            Assert.IsNull(verificationCommand.ExecuteScalar());
+        }
+
+        [TestMethod]
+        public async Task RollbackTransactionNullsTransaction()
+        {
+            await TestObject.BeginTransaction();
+
+            TestObject.RollbackTransaction();
+
+            Assert.IsNotNull(TestObject.Connection);
+            Assert.IsNull(TestObject.Transaction);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public async Task RollbackTransactionThrowsWithoutTransaction()
+        {
+            TestObject.RollbackTransaction();
+        }
+
+        [TestMethod]
+        public async Task CommitTransactionCommitsCommands()
+        {
+            await TestObject.BeginTransaction();
+            SetConnectionAndTransaction(TestInsertCommand);
+            decimal insertedID = (decimal)TestInsertCommand.ExecuteScalar();
+
+            await TestObject.CommitTransaction();
+
+            SqlCommand verificationCommand = BuildVerificationCommand(insertedID);
+            Assert.AreEqual((int)insertedID, verificationCommand.ExecuteScalar());
+        }
+
+        [TestMethod]
+        public async Task CommitTransactionNullsTransaction()
+        {
+            await TestObject.BeginTransaction();
+
+            await TestObject.CommitTransaction();
+
+            Assert.IsNotNull(TestObject.Connection);
+            Assert.IsNull(TestObject.Transaction);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public async Task CommitTransactionThrowsWithoutTransaction()
+        {
+            await TestObject.CommitTransaction();
+        }
+
+        [TestMethod]
         public async Task ExecuteBuildsCommand()
         {
             await TestObject.Execute(MockQuery.Object);
 
             VerifyCommandWasBuiltWithQuery();
+        }
+
+        [TestMethod]
+        public async Task ExecuteAfterTransactionSetsTransaction()
+        {
+            await TestObject.BeginTransaction();
+            await TestObject.Execute(MockQuery.Object);
+
+            Assert.IsNotNull(TestCommand.Connection);
+            Assert.IsNotNull(TestCommand.Transaction);
         }
 
         [TestMethod]

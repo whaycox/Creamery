@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Curds.Persistence.Query.Tokens.Implementation
+﻿namespace Curds.Persistence.Query.Tokens.Implementation
 {
     using Query.Abstraction;
 

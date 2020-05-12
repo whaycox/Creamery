@@ -19,8 +19,8 @@ namespace Curds.Persistence.Implementation
         private SqlConnectionInformation ConnectionInformation { get; }
         private ISqlQueryReaderFactory QueryReaderFactory { get; }
 
-        private SqlConnection Connection { get; set; }
-        private SqlTransaction Transaction { get; set; }
+        public SqlConnection Connection { get; set; }
+        public SqlTransaction Transaction { get; set; }
 
         public SqlConnectionContext(
             IServiceProvider serviceProvider,
@@ -42,19 +42,27 @@ namespace Curds.Persistence.Implementation
                 await Connection.OpenAsync();
         }
 
-        public Task BeginTransaction()
+        public async Task BeginTransaction()
         {
-            throw new NotImplementedException();
+            await CheckConnectionIsOpen();
+            Transaction = Connection.BeginTransaction();
         }
 
-        public Task RollbackTransaction()
+        public void RollbackTransaction()
         {
-            throw new NotImplementedException();
+            if (Transaction == null)
+                throw new InvalidOperationException("Must begin a transaction before rolling it back");
+            Transaction.Rollback();
+            Transaction = null;
         }
 
-        public Task CommitTransaction()
+        public Task CommitTransaction() => Task.Run(() => CommitTransactionInternal());
+        private void CommitTransactionInternal()
         {
-            throw new NotImplementedException();
+            if (Transaction == null)
+                throw new InvalidOperationException("Must begin a transaction before committing it");
+            Transaction.Commit();
+            Transaction = null;
         }
 
         private async Task<SqlCommand> BuildCommand(ISqlQuery query)

@@ -7,7 +7,6 @@ namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
     using Domain;
-    using Model.Abstraction;
     using Persistence.Abstraction;
 
     internal class InsertQuery<TEntity> : ISqlQuery

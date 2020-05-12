@@ -1,19 +1,19 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Moq;
 
 namespace Curds.Persistence.Model.Tests
 {
     using Abstraction;
     using Implementation;
+    using Model.Domain;
     using Persistence.Domain;
     using Query.Domain;
     using Query.Values.Domain;
-    using Model.Domain;
 
     [TestClass]
     public class ValueExpressionBuilderTest
@@ -634,6 +634,20 @@ namespace Curds.Persistence.Model.Tests
             NullableDoubleValue actual = TestAssignValueDelegate<NullableDoubleValue>(typeof(OtherEntity).GetProperty(nameof(TestOtherEntity.NullableDoubleValue)));
 
             Assert.AreEqual(testDouble, actual.Double);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ModelException))]
+        public void InvalidValueTypeTypeThrows()
+        {
+            TestObject.ValueType(typeof(ValueExpressionBuilderTest));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ModelException))]
+        public void InvalidAssignValueTypeThrows()
+        {
+            TestObject.AssignValue(typeof(ValueExpressionBuilderTest));
         }
     }
 }

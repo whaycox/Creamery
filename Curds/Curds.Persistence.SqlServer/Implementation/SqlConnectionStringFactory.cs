@@ -14,7 +14,7 @@ namespace Curds.Persistence.Implementation
                 if (!UserNameAndPasswordSupplied(connectionInformation))
                     throw new FormatException($"Both {nameof(SqlConnectionInformation.UserName)} and {nameof(SqlConnectionInformation.Password)} must be supplied if either is supplied");
 
-                throw new NotImplementedException();
+                return $"Server={connectionInformation.Server};Database={connectionInformation.Database};User Id={connectionInformation.UserName};Password={connectionInformation.Password}";
             }
             else
                 return $"Server={connectionInformation.Server};Database={connectionInformation.Database};Trusted_Connection=True;";

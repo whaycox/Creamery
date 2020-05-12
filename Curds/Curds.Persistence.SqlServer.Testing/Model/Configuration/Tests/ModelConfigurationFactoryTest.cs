@@ -84,6 +84,19 @@ namespace Curds.Persistence.Model.Configuration.Tests
         }
 
         [TestMethod]
+        public void GlobalConfigurationIgnoresNullSchema()
+        {
+            TestGlobalConfigurations.Add(TestGlobalConfiguration);
+            OtherGlobalConfiguration.Schema = null;
+            TestGlobalConfigurations.Add(OtherGlobalConfiguration);
+            BuildTestObject();
+
+            CompiledConfiguration<ITestDataModel> configuration = TestObject.Build<ITestDataModel>(typeof(TestEntity));
+
+            Assert.AreEqual(nameof(TestGlobalConfiguration), configuration.Schema);
+        }
+
+        [TestMethod]
         public void EntityConfigurationOverwritesGlobals()
         {
             TestGlobalConfigurations.Add(TestGlobalConfiguration);
@@ -136,6 +149,39 @@ namespace Curds.Persistence.Model.Configuration.Tests
             CompiledConfiguration<ITestDataModel> configuration = TestObject.Build<ITestDataModel>(typeof(TestEntity));
 
             Assert.AreEqual(2, configuration.Columns.Count);
+        }
+
+        [TestMethod]
+        public void EntityConfigurationIgnoresNullColumnName()
+        {
+            TestEntityConfiguration.Columns.Add(BaseEntityColumnConfiguration);
+            TestEntityColumnConfiguration.Name = null;
+            TestEntityConfiguration.Columns.Add(TestEntityColumnConfiguration);
+            TestEntityConfigurations.Add(TestEntityConfiguration);
+            BuildTestObject();
+
+            CompiledConfiguration<ITestDataModel> configuration = TestObject.Build<ITestDataModel>(typeof(TestEntity));
+
+            Assert.AreEqual(1, configuration.Columns.Count);
+            CompiledColumnConfiguration<ITestDataModel> actualColumn = configuration.Columns[TestEntityColumnConfiguration.ValueName];
+            Assert.AreEqual(BaseEntityColumnConfiguration.Name, actualColumn.Name);
+        }
+
+        [TestMethod]
+        public void EntityConfigurationIgnoresNullColumnIdentity()
+        {
+            TestEntityConfiguration.Columns.Add(BaseEntityColumnConfiguration);
+            ColumnConfiguration<SimpleEntity, string> testConfiguration = new ColumnConfiguration<SimpleEntity, string>(nameof(TestEntityColumnConfiguration)) { IsIdentity = true };
+            TestEntityConfiguration.Columns.Add(testConfiguration);
+            TestEntityConfiguration.Columns.Add(TestEntityColumnConfiguration);
+            TestEntityConfigurations.Add(TestEntityConfiguration);
+            BuildTestObject();
+
+            CompiledConfiguration<ITestDataModel> configuration = TestObject.Build<ITestDataModel>(typeof(TestEntity));
+
+            Assert.AreEqual(1, configuration.Columns.Count);
+            CompiledColumnConfiguration<ITestDataModel> actualColumn = configuration.Columns[TestEntityColumnConfiguration.ValueName];
+            Assert.IsTrue(actualColumn.IsIdentity);
         }
 
         [TestMethod]
@@ -193,6 +239,19 @@ namespace Curds.Persistence.Model.Configuration.Tests
             CompiledConfiguration<ITestDataModel> configuration = TestObject.Build<ITestDataModel>(typeof(TestEntity));
 
             Assert.AreEqual(nameof(OtherModelConfiguration), configuration.Schema);
+        }
+
+        [TestMethod]
+        public void ModelConfigurationIgnoresNullSchema()
+        {
+            TestModelConfigurations.Add(TestModelConfiguration);
+            OtherModelConfiguration.Schema = null;
+            TestModelConfigurations.Add(OtherModelConfiguration);
+            BuildTestObject();
+
+            CompiledConfiguration<ITestDataModel> configuration = TestObject.Build<ITestDataModel>(typeof(TestEntity));
+
+            Assert.AreEqual(nameof(TestModelConfiguration), configuration.Schema);
         }
 
         [TestMethod]

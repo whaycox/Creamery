@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Curds.Persistence.Query.Tokens.Implementation
 {
     using Query.Abstraction;
-    using Query.Domain;
 
     public class ValueEntitySqlQueryToken : BaseSqlQueryToken
     {

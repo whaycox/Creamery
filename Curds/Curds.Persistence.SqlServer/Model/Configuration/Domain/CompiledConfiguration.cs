@@ -5,9 +5,7 @@ using System.Linq;
 namespace Curds.Persistence.Model.Configuration.Domain
 {
     using Abstraction;
-    using Model.Domain;
     using Persistence.Abstraction;
-    using Model.Abstraction;
 
     internal class CompiledConfiguration<TModel> : IModelEntityConfiguration
         where TModel : IDataModel
@@ -18,7 +16,7 @@ namespace Curds.Persistence.Model.Configuration.Domain
         public string Schema { get; set; }
         public string Table { get; set; }
 
-        public Dictionary<string, CompiledColumnConfiguration<TModel>> Columns { get; set; } = new Dictionary<string, CompiledColumnConfiguration<TModel>>();
+        public Dictionary<string, CompiledColumnConfiguration<TModel>> Columns { get; } = new Dictionary<string, CompiledColumnConfiguration<TModel>>();
         IList<IColumnConfiguration> IEntityConfiguration.Columns => Columns.Values
             .Cast<IColumnConfiguration>()
             .ToList();

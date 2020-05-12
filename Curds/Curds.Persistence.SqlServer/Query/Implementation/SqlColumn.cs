@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Curds.Persistence.Query.Implementation
+﻿namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
     using Model.Abstraction;
@@ -10,9 +6,8 @@ namespace Curds.Persistence.Query.Implementation
 
     public class SqlColumn : ISqlColumn
     {
-        private IValueModel ValueModel { get; }
-
         public ISqlTable Table { get; }
+        public IValueModel ValueModel { get; }
 
         public string Name => ValueModel.Name;
         public SqlDbType Type => ValueModel.SqlType;

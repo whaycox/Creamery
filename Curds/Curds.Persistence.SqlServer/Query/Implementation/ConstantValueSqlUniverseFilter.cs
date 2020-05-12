@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Curds.Persistence.Query.Implementation
+﻿namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
-    using Model.Abstraction;
     using Domain;
 
     internal class ConstantValueSqlUniverseFilter : BaseSqlUniverseFilter
@@ -15,7 +10,7 @@ namespace Curds.Persistence.Query.Implementation
 
         public ConstantValueSqlUniverseFilter(
             SqlBooleanOperation operation,
-            ISqlColumn column, 
+            ISqlColumn column,
             object value)
             : base(operation)
         {

@@ -2,12 +2,12 @@
 {
     public class ConstantSqlQueryToken : LiteralSqlQueryToken
     {
-        private string _constant;
-        public override string Literal => _constant;
+        private string Constant { get; }
+        public override string Literal => Constant;
 
         public ConstantSqlQueryToken(string constant)
         {
-            _constant = constant;
+            Constant = constant;
         }
     }
 }

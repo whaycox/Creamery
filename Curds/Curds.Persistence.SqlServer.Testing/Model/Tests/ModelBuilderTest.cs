@@ -2,9 +2,10 @@
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Data;
 using System.Linq;
+using System.Reflection;
+using Whey;
 
 namespace Curds.Persistence.Model.Tests
 {
@@ -94,8 +95,8 @@ namespace Curds.Persistence.Model.Tests
             MockConfigurationFactory.Verify(factory => factory.Build<ITestDataModel>(OtherEntityType), Times.Once);
         }
 
-        private IEntityModel VerifySuppliedModelHasTestName(Type expectedEntityType) => It.Is<IEntityModel>(model => 
-            model.Schema == TestSchema && 
+        private IEntityModel VerifySuppliedModelHasTestName(Type expectedEntityType) => It.Is<IEntityModel>(model =>
+            model.Schema == TestSchema &&
             model.Table == TestTable &&
             model.EntityType == expectedEntityType);
 
@@ -233,6 +234,30 @@ namespace Curds.Persistence.Model.Tests
             Assert.AreEqual(1, actualEntity.Values.Count());
             IValueModel actualValue = actualEntity.Values.First();
             Assert.AreEqual(nameof(CanConfigureNameOnColumn), actualValue.Name);
+        }
+
+        [TestMethod]
+        public void PopulatesKeysFromConfiguration()
+        {
+            TestCompiledConfiguration.Keys.Add(TestEntityIDProperty.Name);
+            SetupMapperForProperty(TestEntityIDProperty);
+
+            IEnumerable<IEntityModel> actual = TestObject.BuildEntityModels<ITestDataModel>();
+
+            Assert.AreEqual(1, actual.Count());
+            EntityModel actualEntity = actual.First().VerifyIsActually<EntityModel>();
+            Assert.AreEqual(1, actualEntity.KeyDefinition.Count);
+            IValueModel key = actualEntity.KeyDefinition.First();
+            Assert.AreEqual(TestEntityIDProperty.Name, key.Name);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void KeyForMissingPropertyThrows()
+        {
+            TestCompiledConfiguration.Keys.Add(TestEntityIDProperty.Name);
+
+            TestObject.BuildEntityModels<ITestDataModel>();
         }
     }
 }

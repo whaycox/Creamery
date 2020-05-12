@@ -1,7 +1,5 @@
 ﻿using Curds.Persistence.Query.Abstraction;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Curds.Persistence.Query.Tokens.Implementation
 {
@@ -9,7 +7,12 @@ namespace Curds.Persistence.Query.Tokens.Implementation
 
     public class BooleanSqlQueryToken : BaseSqlQueryToken
     {
-        private static ConstantSqlQueryToken Equals { get; } = new ConstantSqlQueryToken("=");
+        private static ConstantSqlQueryToken EqualsToken { get; } = new ConstantSqlQueryToken("=");
+        private static ConstantSqlQueryToken NotEqualsToken { get; } = new ConstantSqlQueryToken("<>");
+        private static ConstantSqlQueryToken GreaterThanToken { get; } = new ConstantSqlQueryToken(">");
+        private static ConstantSqlQueryToken GreaterThanOrEqualsToken { get; } = new ConstantSqlQueryToken(">=");
+        private static ConstantSqlQueryToken LessThanToken { get; } = new ConstantSqlQueryToken("<");
+        private static ConstantSqlQueryToken LessThanOrEqualsToken { get; } = new ConstantSqlQueryToken("<=");
 
         public ISqlQueryToken Left { get; }
         public ISqlQueryToken Operation { get; }
@@ -29,7 +32,17 @@ namespace Curds.Persistence.Query.Tokens.Implementation
             switch (operation)
             {
                 case SqlBooleanOperation.Equals:
-                    return Equals;
+                    return EqualsToken;
+                case SqlBooleanOperation.NotEquals:
+                    return NotEqualsToken;
+                case SqlBooleanOperation.GreaterThan:
+                    return GreaterThanToken;
+                case SqlBooleanOperation.GreaterThanOrEquals:
+                    return GreaterThanOrEqualsToken;
+                case SqlBooleanOperation.LessThan:
+                    return LessThanToken;
+                case SqlBooleanOperation.LessThanOrEquals:
+                    return LessThanOrEqualsToken;
                 default:
                     throw new ArgumentException($"Unsupported operation {operation}");
             }

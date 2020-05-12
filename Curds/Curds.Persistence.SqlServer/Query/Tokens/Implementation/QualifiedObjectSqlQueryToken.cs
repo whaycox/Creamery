@@ -4,8 +4,6 @@ using System.Linq;
 namespace Curds.Persistence.Query.Tokens.Implementation
 {
     using Query.Abstraction;
-    using Model.Abstraction;
-    using Persistence.Abstraction;
 
     public class QualifiedObjectSqlQueryToken : BaseSqlQueryToken
     {

@@ -23,12 +23,7 @@ namespace Curds.Persistence.Implementation
             if (!disposedValue)
             {
                 if (disposing)
-                {
-                    ConnectionContext?
-                        .RollbackTransaction()
-                        .GetAwaiter()
-                        .GetResult();
-                }
+                    ConnectionContext?.RollbackTransaction();
                 disposedValue = true;
             }
         }

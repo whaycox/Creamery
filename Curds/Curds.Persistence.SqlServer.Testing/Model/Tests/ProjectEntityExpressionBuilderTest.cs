@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using System.Threading.Tasks;
 using System.Reflection;
 
 namespace Curds.Persistence.Model.Tests
 {
-    using Implementation;
-    using Persistence.Domain;
-    using Persistence.Abstraction;
     using Abstraction;
+    using Domain;
+    using Implementation;
+    using Persistence.Abstraction;
+    using Persistence.Domain;
     using Query.Abstraction;
 
     [TestClass]
@@ -245,5 +241,40 @@ namespace Curds.Persistence.Model.Tests
             new object[] { typeof(OtherEntity).GetProperty(nameof(OtherEntity.DoubleValue)) },
             new object[] { typeof(OtherEntity).GetProperty(nameof(OtherEntity.NullableDoubleValue)) },
         };
+
+        [TestMethod]
+        [ExpectedException(typeof(ModelException))]
+        public void ProjectInvalidTypeThrows()
+        {
+            PropertyInfo invalidTypeProperty = typeof(ProjectEntityExpressionBuilderTest).GetProperty(nameof(InvalidPropertyType));
+            MockValueModel
+                .Setup(model => model.Property)
+                .Returns(invalidTypeProperty);
+
+            TestObject.BuildProjectEntityDelegate(MockEntityModel.Object);
+        }
+        public ProjectEntityExpressionBuilderTest InvalidPropertyType => throw new NotImplementedException();
+
+        [TestMethod]
+        [ExpectedException(typeof(ModelException))]
+        public void ConstructorlessEntityThrows()
+        {
+            MockEntityModel
+                .Setup(model => model.EntityType)
+                .Returns(typeof(ConstructorlessEntity));
+
+            TestObject.BuildProjectEntityDelegate(MockEntityModel.Object);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ModelException))]
+        public void NoEmptyConstructorEntityThrows()
+        {
+            MockEntityModel
+                .Setup(model => model.EntityType)
+                .Returns(typeof(NoEmptyConstructorEntity));
+
+            TestObject.BuildProjectEntityDelegate(MockEntityModel.Object);
+        }
     }
 }

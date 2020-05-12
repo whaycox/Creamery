@@ -10,7 +10,7 @@ namespace Curds.Persistence.Abstraction
     public interface ISqlConnectionContext : IDisposable
     {
         Task BeginTransaction();
-        Task RollbackTransaction();
+        void RollbackTransaction();
         Task CommitTransaction();
 
         Task Execute(ISqlQuery query);
