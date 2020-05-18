@@ -8,7 +8,7 @@ namespace Curds.Persistence.Query.Abstraction
 
     public interface ISqlQuery
     {
-        void Write(ISqlQueryWriter queryWriter);
+        SqlCommand GenerateCommand();
         Task ProcessResult(ISqlQueryReader queryReader);
     }
 

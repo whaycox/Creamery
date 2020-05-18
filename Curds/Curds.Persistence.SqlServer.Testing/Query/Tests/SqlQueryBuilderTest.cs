@@ -12,6 +12,7 @@ namespace Curds.Persistence.Query.Tests
     using Model.Abstraction;
     using Persistence.Abstraction;
     using Persistence.Domain;
+    using Queries.Implementation;
 
     [TestClass]
     public class SqlQueryBuilderTest
@@ -19,7 +20,7 @@ namespace Curds.Persistence.Query.Tests
         private List<TestEntity> TestEntities = new List<TestEntity>();
         private TestEntity TestEntity = new TestEntity();
 
-        private Mock<IModelMap<ITestDataModel>> MockModelMap = new Mock<IModelMap<ITestDataModel>>();
+        private Mock<IServiceProvider> MockServiceProvider = new Mock<IServiceProvider>();
         private Mock<IEntityModel> MockEntityModel = new Mock<IEntityModel>();
 
         private SqlQueryBuilder<ITestDataModel> TestObject = null;
@@ -27,11 +28,7 @@ namespace Curds.Persistence.Query.Tests
         [TestInitialize]
         public void Init()
         {
-            MockModelMap
-                .Setup(map => map.Entity<TestEntity>())
-                .Returns(MockEntityModel.Object);
-
-            TestObject = new SqlQueryBuilder<ITestDataModel>(MockModelMap.Object);
+            TestObject = new SqlQueryBuilder<ITestDataModel>(MockServiceProvider.Object);
         }
 
         [TestMethod]
@@ -39,7 +36,7 @@ namespace Curds.Persistence.Query.Tests
         {
             ISqlQuery actual = TestObject.Insert(TestEntities);
 
-            Assert.IsInstanceOfType(actual, typeof(InsertQuery<TestEntity>));
+            Assert.IsInstanceOfType(actual, typeof(InsertQuery<ITestDataModel, TestEntity>));
         }
 
         [TestMethod]
@@ -47,17 +44,19 @@ namespace Curds.Persistence.Query.Tests
         {
             TestObject.Insert(TestEntities);
 
-            MockModelMap.Verify(map => map.Entity<TestEntity>(), Times.Once);
+            throw new NotImplementedException();
+            //MockModelMap.Verify(map => map.Entity<TestEntity>(), Times.Once);
         }
 
         [TestMethod]
         public void InsertSetsTableModelToBuiltResult()
         {
-            ISqlQuery actual = TestObject.Insert(TestEntities);
+            throw new NotImplementedException();
+            //ISqlQuery actual = TestObject.Insert(TestEntities);
 
-            InsertQuery<TestEntity> testQuery = actual.VerifyIsActually<InsertQuery<TestEntity>>();
-            SqlTable actualTable = testQuery.Table.VerifyIsActually<SqlTable>();
-            Assert.AreSame(MockEntityModel.Object, actualTable.Model);
+            //InsertQuery<TestEntity> testQuery = actual.VerifyIsActually<InsertQuery<TestEntity>>();
+            //SqlTable actualTable = testQuery.Table.VerifyIsActually<SqlTable>();
+            //Assert.AreSame(MockEntityModel.Object, actualTable.Model);
         }
 
         private void PopulateNEntities(int entities)
@@ -78,7 +77,7 @@ namespace Curds.Persistence.Query.Tests
 
             ISqlQuery actual = TestObject.Insert(TestEntities);
 
-            InsertQuery<TestEntity> testQuery = actual.VerifyIsActually<InsertQuery<TestEntity>>();
+            InsertQuery<ITestDataModel, TestEntity> testQuery = actual.VerifyIsActually<InsertQuery<ITestDataModel, TestEntity>>();
             CollectionAssert.AreEqual(TestEntities, testQuery.Entities);
         }
 
@@ -87,7 +86,7 @@ namespace Curds.Persistence.Query.Tests
         {
             ISqlUniverse<TestEntity> actual = TestObject.From<TestEntity>();
 
-            Assert.IsInstanceOfType(actual, typeof(SqlUniverse<TestEntity>));
+            Assert.IsInstanceOfType(actual, typeof(SqlUniverse<ITestDataModel, TestEntity>));
         }
 
         [TestMethod]
@@ -95,7 +94,8 @@ namespace Curds.Persistence.Query.Tests
         {
             TestObject.From<TestEntity>();
 
-            MockModelMap.Verify(map => map.Entity<TestEntity>(), Times.Once);
+            throw new NotImplementedException();
+            //MockModelMap.Verify(map => map.Entity<TestEntity>(), Times.Once);
         }
     }
 }

@@ -67,10 +67,7 @@ namespace Curds.Persistence.Implementation
 
         private async Task<SqlCommand> BuildCommand(ISqlQuery query)
         {
-            ISqlQueryWriter writer = ServiceProvider.GetRequiredService<ISqlQueryWriter>();
-            query.Write(writer);
-
-            SqlCommand command = writer.Flush();
+            SqlCommand command = query.GenerateCommand();
             await CheckConnectionIsOpen();
             command.Connection = Connection;
             if (Transaction != null)

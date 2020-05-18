@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Data;
+﻿using System.Data;
 
 namespace Curds.Persistence.Query.Abstraction
 {
@@ -9,6 +6,7 @@ namespace Curds.Persistence.Query.Abstraction
     {
         ISqlTable Table { get; }
 
+        string ValueName { get; }
         string Name { get; }
         SqlDbType Type { get; }
     }

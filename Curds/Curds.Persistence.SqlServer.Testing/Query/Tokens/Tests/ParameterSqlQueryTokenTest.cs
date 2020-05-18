@@ -15,7 +15,8 @@ namespace Curds.Persistence.Query.Tokens.Tests
         [TestInitialize]
         public void Init()
         {
-            TestObject = new ParameterSqlQueryToken(TestName);
+            throw new System.NotImplementedException();
+            //TestObject = new ParameterSqlQueryToken(TestName);
         }
 
         [TestMethod]

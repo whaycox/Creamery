@@ -6,6 +6,7 @@ namespace Curds.Persistence.Query.Abstraction
 
     public interface ISqlQueryParameterBuilder
     {
+        object UnregisterParameter(string registeredName);
         string RegisterNewParamater(string name, object value);
         SqlParameter[] Flush();
     }

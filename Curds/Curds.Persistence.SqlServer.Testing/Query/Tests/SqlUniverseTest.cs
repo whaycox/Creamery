@@ -9,6 +9,8 @@ namespace Curds.Persistence.Query.Tests
     using Implementation;
     using Model.Abstraction;
     using Persistence.Domain;
+    using Queries.Implementation;
+    using Persistence.Abstraction;
 
     [TestClass]
     public class SqlUniverseTest
@@ -16,7 +18,7 @@ namespace Curds.Persistence.Query.Tests
         private Mock<IModelMap> MockModelMap = new Mock<IModelMap>();
         private Mock<IEntityModel> MockEntityModel = new Mock<IEntityModel>();
 
-        private SqlUniverse<TestEntity> TestObject = null;
+        private SqlUniverse<ITestDataModel, TestEntity> TestObject = null;
 
         [TestInitialize]
         public void Init()
@@ -25,7 +27,10 @@ namespace Curds.Persistence.Query.Tests
                 .Setup(map => map.Entity<TestEntity>())
                 .Returns(MockEntityModel.Object);
 
-            TestObject = new SqlUniverse<TestEntity>(MockModelMap.Object);
+            throw new NotImplementedException();
+            //TestObject = new SqlUniverse<TestEntity>(
+            //    MockModelMap.Object,
+            //    MockExpressionParser.Object);
         }
 
         [TestMethod]
@@ -39,7 +44,7 @@ namespace Curds.Persistence.Query.Tests
         {
             ISqlQuery<TestEntity> actual = TestObject.ProjectEntity();
 
-            Assert.IsInstanceOfType(actual, typeof(ProjectEntityQuery<TestEntity>));
+            Assert.IsInstanceOfType(actual, typeof(ProjectEntityQuery<ITestDataModel, TestEntity>));
         }
 
         [TestMethod]
@@ -47,7 +52,7 @@ namespace Curds.Persistence.Query.Tests
         {
             ISqlQuery actual = TestObject.ProjectEntity();
 
-            ProjectEntityQuery<TestEntity> query = actual.VerifyIsActually<ProjectEntityQuery<TestEntity>>();
+            ProjectEntityQuery<ITestDataModel, TestEntity> query = actual.VerifyIsActually<ProjectEntityQuery<ITestDataModel, TestEntity>>();
             Assert.AreSame(TestObject, query.Source);
         }
 
@@ -56,7 +61,7 @@ namespace Curds.Persistence.Query.Tests
         {
             ISqlQuery actual = TestObject.ProjectEntity();
 
-            ProjectEntityQuery<TestEntity> query = actual.VerifyIsActually<ProjectEntityQuery<TestEntity>>();
+            ProjectEntityQuery<ITestDataModel, TestEntity> query = actual.VerifyIsActually<ProjectEntityQuery<ITestDataModel, TestEntity>>();
             Assert.IsInstanceOfType(query.ProjectedTable, typeof(SqlTable));
         }
 
@@ -65,7 +70,7 @@ namespace Curds.Persistence.Query.Tests
         {
             ISqlQuery actual = TestObject.ProjectEntity();
 
-            ProjectEntityQuery<TestEntity> query = actual.VerifyIsActually<ProjectEntityQuery<TestEntity>>();
+            ProjectEntityQuery<ITestDataModel, TestEntity> query = actual.VerifyIsActually<ProjectEntityQuery<ITestDataModel, TestEntity>>();
             SqlTable table = query.ProjectedTable.VerifyIsActually<SqlTable>();
             Assert.AreSame(MockEntityModel.Object, table.Model);
         }

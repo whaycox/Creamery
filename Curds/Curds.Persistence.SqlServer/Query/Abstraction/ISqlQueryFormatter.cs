@@ -7,7 +7,7 @@ namespace Curds.Persistence.Query.Abstraction
 {
     using Text.Abstraction;
 
-    public interface ISqlQueryFormatter
+    internal interface ISqlQueryFormatter
     {
         string FormatTokens(IEnumerable<ISqlQueryToken> tokens);
     }

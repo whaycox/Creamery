@@ -5,6 +5,7 @@ using System.Linq;
 namespace Curds.Persistence.Model.Domain
 {
     using Abstraction;
+    using Persistence.Abstraction;
 
     public class EntityModel : IEntityModel
     {
@@ -18,6 +19,7 @@ namespace Curds.Persistence.Model.Domain
 
         public IEnumerable<IValueModel> Values => ValueModels;
         public IList<IValueModel> Keys => KeyDefinition.ToList();
+        public IValueModel KeyValue { get; } = CreateKeyValue();
         public IValueModel Identity => ValueModels.FirstOrDefault(value => value.IsIdentity);
         public IEnumerable<IValueModel> NonIdentities => ValueModels.Where(value => !value.IsIdentity);
 
@@ -29,5 +31,11 @@ namespace Curds.Persistence.Model.Domain
         {
             EntityType = entityType;
         }
+
+        private static IValueModel CreateKeyValue() => new ValueModel
+        {
+            Name = nameof(IEntity.Keys),
+            Property = typeof(IEntity).GetProperty(nameof(IEntity.Keys)),
+        };
     }
 }

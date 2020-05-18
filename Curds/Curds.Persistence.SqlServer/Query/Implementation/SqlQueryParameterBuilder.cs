@@ -35,5 +35,12 @@ namespace Curds.Persistence.Query.Implementation
             ParameterLookup.Clear();
             return parameters;
         }
+
+        public object UnregisterParameter(string registeredName)
+        {
+            SqlParameter registered = ParameterLookup[registeredName];
+            ParameterLookup.Remove(registeredName);
+            return registered.Value;
+        }
     }
 }

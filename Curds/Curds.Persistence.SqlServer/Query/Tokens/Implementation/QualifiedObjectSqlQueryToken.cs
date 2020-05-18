@@ -10,17 +10,23 @@ namespace Curds.Persistence.Query.Tokens.Implementation
         private static ConstantSqlQueryToken QualifierToken { get; } = new ConstantSqlQueryToken(".");
 
         public List<ObjectNameSqlQueryToken> Names { get; }
+        public ISqlTable Table { get; }
+        public ISqlColumn Column { get; }
 
         public QualifiedObjectSqlQueryToken(ISqlTable table)
             : this(new ObjectNameSqlQueryToken(table.Schema),
                   new ObjectNameSqlQueryToken(table.Name))
-        { }
+        {
+            Table = table;
+        }
 
         public QualifiedObjectSqlQueryToken(ISqlColumn column)
             : this(new ObjectNameSqlQueryToken(column.Table.Schema),
                   new ObjectNameSqlQueryToken(column.Table.Name),
                   new ObjectNameSqlQueryToken(column.Name))
-        { }
+        {
+            Column = column;
+        }
 
         public QualifiedObjectSqlQueryToken(params ObjectNameSqlQueryToken[] names)
         {

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,14 +13,10 @@ namespace Curds.Persistence.Tests
 
     [TestClass]
     [TestCategory(nameof(TestType.Integration))]
-    public class SqlRepositoryIntegrationTest : SqlTemplate
+    public class SqlRepositoryIntegrationTest : SqlIntegrationTemplate
     {
         private TestEntity TestEntity = new TestEntity();
         private OtherEntity OtherEntity = new OtherEntity();
-        private string TestSchema = nameof(TestSchema);
-
-        private IServiceCollection TestServiceCollection = new ServiceCollection();
-        private IServiceProvider TestServiceProvider = null;
 
         private void FullyPopulateOtherEntity()
         {
@@ -34,27 +29,6 @@ namespace Curds.Persistence.Tests
             OtherEntity.NullableDateTimeOffsetValue = OtherEntity.DateTimeOffsetValue;
             OtherEntity.NullableDecimalValue = OtherEntity.DecimalValue;
             OtherEntity.NullableDoubleValue = OtherEntity.DoubleValue;
-        }
-
-        [TestInitialize]
-        public void Init()
-        {
-            TestServiceCollection.Configure<SqlConnectionInformation>(info =>
-            {
-                info.Server = TestServer;
-                info.Database = TestDatabase;
-            });
-        }
-
-        private void RegisterServices()
-        {
-            TestServiceCollection
-                .AddCurdsPersistence();
-        }
-
-        private void BuildServiceProvider()
-        {
-            TestServiceProvider = TestServiceCollection.BuildServiceProvider();
         }
 
         [TestMethod]
@@ -95,21 +69,6 @@ namespace Curds.Persistence.Tests
                 IRepository<ITestDataModel, OtherEntity> testRepository = testScope.ServiceProvider.GetRequiredService<IRepository<ITestDataModel, OtherEntity>>();
                 await testRepository.Insert(OtherEntity);
             }
-        }
-
-        private void ConfigureCustomTestEntity()
-        {
-            TestServiceCollection
-                .ConfigureDefaultSchema(TestSchema)
-                .ConfigureEntity<TestEntity>()
-                    .WithTableName("TestCustomEntity")
-                    .ConfigureColumn(entity => entity.ID)
-                        .WithColumnName("CustomIdentityField")
-                        .RegisterColumn()
-                    .ConfigureColumn(entity => entity.Name)
-                        .WithColumnName("SomeOtherName")
-                        .RegisterColumn()
-                    .RegisterEntity();
         }
 
         [TestMethod]

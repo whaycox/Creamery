@@ -36,6 +36,7 @@ namespace Curds.Persistence
             .AddSingleton<ISqlConnectionStringFactory, SqlConnectionStringFactory>()
             .AddSingleton<ISqlQueryReaderFactory, SqlQueryReaderFactory>()
             .AddSingleton<IModelConfigurationFactory, ModelConfigurationFactory>()
+            .AddSingleton<IExpressionNodeFactory, ExpressionNodeFactory>()
             .AddScoped<ISqlQueryTokenFactory, SqlQueryTokenFactory>();
 
         private static IServiceCollection AddModelConstruction(this IServiceCollection services) => services
@@ -48,10 +49,12 @@ namespace Curds.Persistence
             .AddSingleton(typeof(IModelMap<>), typeof(ModelMap<>));
 
         private static IServiceCollection AddQueryConstruction(this IServiceCollection services) => services
-            .AddTransient(typeof(ISqlQueryBuilder<>), typeof(SqlQueryBuilder<>))
-            .AddTransient<ISqlQueryWriter, SqlQueryWriter>()
+            .AddTransient<ISqlQueryParameterBuilder, SqlQueryParameterBuilder>()
             .AddTransient<ISqlQueryFormatter, ProperSqlQueryFormatter>()
-            .AddScoped<ISqlQueryParameterBuilder, SqlQueryParameterBuilder>();
+            .AddTransient(typeof(ISqlQueryContext<>), typeof(SqlQueryContext<>))
+            .AddTransient(typeof(ISqlQueryBuilder<>), typeof(SqlQueryBuilder<>))
+            .AddTransient(typeof(ISqlQueryTokenVisitor<>), typeof(TokenExpressionVisitor<>))
+            .AddTransient(typeof(ISqlTableVisitor<>), typeof(TableExpressionVisitor<>));
 
         private static readonly IExpressionParser ExpressionParser = new ExpressionParser();
 

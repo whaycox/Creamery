@@ -1,31 +1,34 @@
 ﻿using System.Collections.Generic;
+using System;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
     using Model.Abstraction;
     using Persistence.Abstraction;
+    using Queries.Implementation;
 
     internal class SqlQueryBuilder<TModel> : ISqlQueryBuilder<TModel>
         where TModel : IDataModel
     {
-        private IModelMap<TModel> ModelMap { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private ISqlQueryContext<TModel> FreshContext => ServiceProvider.GetRequiredService<ISqlQueryContext<TModel>>();
 
-        public SqlQueryBuilder(IModelMap<TModel> modelMap)
+        public SqlQueryBuilder(IServiceProvider serviceProvider)
         {
-            ModelMap = modelMap;
+            ServiceProvider = serviceProvider;
         }
 
         public ISqlQuery Insert<TEntity>(IEnumerable<TEntity> entities)
             where TEntity : IEntity
         {
-            InsertQuery<TEntity> query = new InsertQuery<TEntity>();
-            query.Table = new SqlTable { Model = ModelMap.Entity<TEntity>() };
+            InsertQuery<TModel, TEntity> query = new InsertQuery<TModel, TEntity>(FreshContext);
             query.Entities.AddRange(entities);
             return query;
         }
 
         public ISqlUniverse<TEntity> From<TEntity>()
-            where TEntity : IEntity => new SqlUniverse<TEntity>(ModelMap);
+            where TEntity : IEntity => new SqlUniverse<TModel, TEntity>(FreshContext);
     }
 }

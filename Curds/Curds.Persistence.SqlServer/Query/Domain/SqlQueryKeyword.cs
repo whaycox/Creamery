@@ -13,6 +13,9 @@
         FROM,
         WHERE,
 
+        AND,
+        OR,
+
         inserted,
     }
 }

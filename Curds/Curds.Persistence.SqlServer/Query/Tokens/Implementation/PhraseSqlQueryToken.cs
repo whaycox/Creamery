@@ -5,7 +5,7 @@ namespace Curds.Persistence.Query.Tokens.Implementation
 {
     using Query.Abstraction;
 
-    public class PhraseSqlQueryToken : BaseSqlQueryToken
+    internal class PhraseSqlQueryToken : BaseSqlQueryToken
     {
         private static ConstantSqlQueryToken SpaceToken { get; } = new ConstantSqlQueryToken(" ");
 

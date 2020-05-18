@@ -18,17 +18,17 @@ namespace Curds.Persistence.Query.Tokens.Tests
     [TestClass]
     public class BooleanSqlQueryTokenTest : BaseSqlQueryTokenTemplate
     {
-        private SqlBooleanOperation TestOperation = SqlBooleanOperation.Equals;
+        private BooleanComparison TestOperation = BooleanComparison.Equals;
 
         private Mock<ISqlQueryToken> MockLeftToken = new Mock<ISqlQueryToken>();
         private Mock<ISqlQueryToken> MockRightToken = new Mock<ISqlQueryToken>();
 
-        private BooleanSqlQueryToken TestObject = null;
+        private BooleanComparisonSqlQueryToken TestObject = null;
 
         [TestInitialize]
         public void Init()
         {
-            TestObject = new BooleanSqlQueryToken(
+            TestObject = new BooleanComparisonSqlQueryToken(
                 TestOperation,
                 MockLeftToken.Object,
                 MockRightToken.Object);
@@ -51,15 +51,15 @@ namespace Curds.Persistence.Query.Tokens.Tests
         }
 
         [DataTestMethod]
-        [DataRow(SqlBooleanOperation.Equals, "=")]
-        [DataRow(SqlBooleanOperation.NotEquals, "<>")]
-        [DataRow(SqlBooleanOperation.GreaterThan, ">")]
-        [DataRow(SqlBooleanOperation.GreaterThanOrEquals, ">=")]
-        [DataRow(SqlBooleanOperation.LessThan, "<")]
-        [DataRow(SqlBooleanOperation.LessThanOrEquals, "<=")]
-        public void AcceptFormatVisitorVisitsExpectedOperation(SqlBooleanOperation testOperation, string expectedLiteral)
+        [DataRow(BooleanComparison.Equals, "=")]
+        [DataRow(BooleanComparison.NotEquals, "<>")]
+        [DataRow(BooleanComparison.GreaterThan, ">")]
+        [DataRow(BooleanComparison.GreaterThanOrEqual, ">=")]
+        [DataRow(BooleanComparison.LessThan, "<")]
+        [DataRow(BooleanComparison.LessThanOrEqual, "<=")]
+        public void AcceptFormatVisitorVisitsExpectedOperation(BooleanComparison testOperation, string expectedLiteral)
         {
-            TestObject = new BooleanSqlQueryToken(
+            TestObject = new BooleanComparisonSqlQueryToken(
                 testOperation,
                 MockLeftToken.Object,
                 MockRightToken.Object);
@@ -73,8 +73,8 @@ namespace Curds.Persistence.Query.Tokens.Tests
         [ExpectedException(typeof(ArgumentException))]
         public void InvalidOperationThrows()
         {
-            TestObject = new BooleanSqlQueryToken(
-                (SqlBooleanOperation)99,
+            TestObject = new BooleanComparisonSqlQueryToken(
+                (BooleanComparison)99,
                 MockLeftToken.Object,
                 MockRightToken.Object);
         }

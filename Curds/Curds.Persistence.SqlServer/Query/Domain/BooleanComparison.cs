@@ -1,12 +1,12 @@
 ﻿namespace Curds.Persistence.Query.Domain
 {
-    public enum SqlBooleanOperation
+    public enum BooleanComparison
     {
         Equals,
         NotEquals,
         GreaterThan,
-        GreaterThanOrEquals,
+        GreaterThanOrEqual,
         LessThan,
-        LessThanOrEquals,
+        LessThanOrEqual,
     }
 }

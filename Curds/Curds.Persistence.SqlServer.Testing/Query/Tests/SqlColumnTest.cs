@@ -48,5 +48,11 @@ namespace Curds.Persistence.Query.Tests
 
             Assert.AreEqual(testType, TestObject.Type);
         }
+
+        [TestMethod]
+        public void ValueName()
+        {
+            Assert.Fail();
+        }
     }
 }

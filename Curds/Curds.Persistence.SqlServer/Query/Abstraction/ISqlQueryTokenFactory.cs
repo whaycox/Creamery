@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Curds.Persistence.Query.Abstraction
 {
     using Domain;
-    using Model.Domain;
-    using Model.Abstraction;
-    using Persistence.Abstraction;
 
     public interface ISqlQueryTokenFactory
     {
@@ -19,8 +14,10 @@ namespace Curds.Persistence.Query.Abstraction
         ISqlQueryToken QualifiedObjectName(ISqlColumn column);
         ISqlQueryToken ColumnList(IEnumerable<ISqlColumn> columns, bool includeDefinition);
         ISqlQueryToken SelectList(IEnumerable<ISqlColumn> columns);
-        ISqlQueryToken Parameter(string name, object value);
-        ISqlQueryToken ValueEntities(IEnumerable<ValueEntity> valueEntities);
-        ISqlQueryToken UniverseFilter(ISqlUniverseFilter filter);
+        ISqlQueryToken Parameter(ISqlQueryParameterBuilder parameterBuilder, string name, object value);
+        ISqlQueryToken ValueEntities(ISqlQueryParameterBuilder parameterBuilder, IEnumerable<ValueEntity> valueEntities);
+        ISqlQueryToken BooleanCombination(BooleanCombination combination, IEnumerable<ISqlQueryToken> elements);
+        ISqlQueryToken BooleanComparison(BooleanComparison comparison, ISqlQueryToken left, ISqlQueryToken right);
+        ISqlQueryToken ArithmeticOperation(ArithmeticOperation operation, ISqlQueryToken left, ISqlQueryToken right);
     }
 }

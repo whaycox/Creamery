@@ -11,7 +11,7 @@ namespace Curds.Persistence.Query.Abstraction
     public interface ISqlUniverse
     {
         IEnumerable<ISqlTable> Tables { get; }
-        IEnumerable<ISqlUniverseFilter> Filters { get; }
+        IEnumerable<ISqlQueryToken> Filters { get; }
     }
 
     public interface ISqlUniverse<TEntity> : ISqlUniverse

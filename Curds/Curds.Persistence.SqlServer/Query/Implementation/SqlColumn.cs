@@ -9,6 +9,7 @@
         public ISqlTable Table { get; }
         public IValueModel ValueModel { get; }
 
+        public string ValueName => ValueModel.Property.Name;
         public string Name => ValueModel.Name;
         public SqlDbType Type => ValueModel.SqlType;
 

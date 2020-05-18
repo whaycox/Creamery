@@ -8,13 +8,14 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Threading.Tasks;
 
-namespace Curds.Persistence.Query.Tests
+namespace Curds.Persistence.Query.Queries.Tests
 {
     using Implementation;
     using Persistence.Domain;
     using Model.Domain;
     using Abstraction;
     using Model.Abstraction;
+    using Persistence.Abstraction;
 
     [TestClass]
     public class ProjectEntityQueryTest
@@ -22,13 +23,12 @@ namespace Curds.Persistence.Query.Tests
         private List<ISqlColumn> TestColumns = new List<ISqlColumn>();
         private TestEntity TestEntity = new TestEntity();
 
-        private Mock<ISqlQueryWriter> MockQueryWriter = new Mock<ISqlQueryWriter>();
         private Mock<ISqlQueryReader> MockQueryReader = new Mock<ISqlQueryReader>();
         private Mock<ISqlTable> MockTable = new Mock<ISqlTable>();
         private Mock<ISqlColumn> MockColumn = new Mock<ISqlColumn>();
         private Mock<ISqlUniverse<TestEntity>> MockUniverse = new Mock<ISqlUniverse<TestEntity>>();
 
-        private ProjectEntityQuery<TestEntity> TestObject = new ProjectEntityQuery<TestEntity>();
+        private ProjectEntityQuery<ITestDataModel, TestEntity> TestObject = null;
 
         [TestInitialize]
         public void Init()
@@ -49,18 +49,19 @@ namespace Curds.Persistence.Query.Tests
         [TestMethod]
         public void WriteCallsWriterCorrectly()
         {
-            int callOrder = 0;
-            MockQueryWriter
-                .Setup(writer => writer.Select(It.IsAny<List<ISqlColumn>>()))
-                .Callback(() => Assert.AreEqual(callOrder++, 0));
-            MockQueryWriter
-                .Setup(writer => writer.From(It.IsAny<ISqlUniverse>()))
-                .Callback(() => Assert.AreEqual(callOrder++, 1));
+            throw new NotImplementedException();
+            //int callOrder = 0;
+            //MockQueryWriter
+            //    .Setup(writer => writer.Select(It.IsAny<List<ISqlColumn>>()))
+            //    .Callback(() => Assert.AreEqual(callOrder++, 0));
+            //MockQueryWriter
+            //    .Setup(writer => writer.From(It.IsAny<ISqlUniverse>()))
+            //    .Callback(() => Assert.AreEqual(callOrder++, 1));
 
-            TestObject.Write(MockQueryWriter.Object);
+            //TestObject.Write(MockQueryWriter.Object);
 
-            MockQueryWriter.Verify(writer => writer.Select(TestColumns), Times.Once);
-            MockQueryWriter.Verify(writer => writer.From(MockUniverse.Object), Times.Once);
+            //MockQueryWriter.Verify(writer => writer.Select(TestColumns), Times.Once);
+            //MockQueryWriter.Verify(writer => writer.From(MockUniverse.Object), Times.Once);
         }
 
         private void SetupReaderForNEntities(int entities)

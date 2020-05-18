@@ -87,9 +87,31 @@ namespace Curds.Persistence.Query.Formatters.Implementation
             StringBuilder.Append(")");
         }
 
-        public override void VisitBoolean(BooleanSqlQueryToken token)
+        public override void VisitBooleanCombination(BooleanCombinationSqlQueryToken token)
         {
-            throw new NotImplementedException();
+            if (token.Elements.Count == 1)
+            {
+                StringBuilder.Append("(");
+                token.Elements[0].AcceptFormatVisitor(this);
+                StringBuilder.Append(")");
+            }
+            else
+            {
+                StringBuilder.AppendLine("(");
+                using (StringBuilder.CreateIndentScope())
+                    for (int i = 0; i < token.Elements.Count; i++)
+                    {
+                        if (i > 0)
+                        {
+                            token.Operation.AcceptFormatVisitor(this);
+                            StringBuilder.SetNewLine();
+                        }
+
+                        token.Elements[i].AcceptFormatVisitor(this);
+                        StringBuilder.SetNewLine();
+                    }
+                StringBuilder.AppendLine(")");
+            }
         }
     }
 }

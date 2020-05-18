@@ -22,7 +22,6 @@ namespace Curds.Persistence.Query.Tests
         private Mock<ISqlTable> MockTable = new Mock<ISqlTable>();
         private Mock<ISqlColumn> MockColumn = new Mock<ISqlColumn>();
         private Mock<ISqlQueryParameterBuilder> MockParameterBuilder = new Mock<ISqlQueryParameterBuilder>();
-        private Mock<ISqlUniverseFilter> MockFilter = new Mock<ISqlUniverseFilter>();
 
         private SqlQueryTokenFactory TestObject = null;
 
@@ -43,8 +42,6 @@ namespace Curds.Persistence.Query.Tests
             MockColumn
                 .Setup(column => column.Name)
                 .Returns(TestColumnName);
-
-            TestObject = new SqlQueryTokenFactory(MockParameterBuilder.Object);
         }
 
         [TestMethod]
@@ -141,7 +138,7 @@ namespace Curds.Persistence.Query.Tests
                 .Setup(builder => builder.RegisterNewParamater(It.IsAny<string>(), It.IsAny<object>()))
                 .Returns(nameof(testObject));
 
-            ISqlQueryToken actual = TestObject.Parameter(nameof(testObject), testObject);
+            ISqlQueryToken actual = TestObject.Parameter(MockParameterBuilder.Object, nameof(testObject), testObject);
 
             ParameterSqlQueryToken actualToken = actual.VerifyIsActually<ParameterSqlQueryToken>();
             Assert.AreEqual(nameof(testObject), actualToken.Name);
@@ -152,7 +149,7 @@ namespace Curds.Persistence.Query.Tests
         {
             object testObject = new object();
 
-            ISqlQueryToken actual = TestObject.Parameter(nameof(testObject), testObject);
+            ISqlQueryToken actual = TestObject.Parameter(MockParameterBuilder.Object, nameof(testObject), testObject);
 
             MockParameterBuilder.Verify(builder => builder.RegisterNewParamater(nameof(testObject), testObject), Times.Once);
         }
@@ -185,7 +182,7 @@ namespace Curds.Persistence.Query.Tests
                 .Setup(builder => builder.RegisterNewParamater(nameof(testValue), testInt))
                 .Returns(nameof(ValueEntitiesBuildsExpectedToken));
 
-            ISqlQueryToken actual = TestObject.ValueEntities(testEntities);
+            ISqlQueryToken actual = TestObject.ValueEntities(MockParameterBuilder.Object, testEntities);
 
             Assert.IsInstanceOfType(actual, typeof(ValueEntitiesSqlQueryToken));
             ValueEntitiesSqlQueryToken valueEntities = (ValueEntitiesSqlQueryToken)actual;
@@ -194,30 +191,6 @@ namespace Curds.Persistence.Query.Tests
             Assert.AreEqual(1, valueEntity.Values.Count);
             ParameterSqlQueryToken value = valueEntity.Values[0];
             Assert.AreEqual(nameof(ValueEntitiesBuildsExpectedToken), value.Name);
-        }
-
-        [TestMethod]
-        public void UniverseBuildsExpectedToken()
-        {
-            ISqlQueryToken testLeftToken = Mock.Of<ISqlQueryToken>();
-            ISqlQueryToken testRightToken = Mock.Of<ISqlQueryToken>();
-            MockFilter
-                .Setup(filter => filter.Operation)
-                .Returns(SqlBooleanOperation.GreaterThanOrEquals);
-            MockFilter
-                .Setup(filter => filter.Left(It.IsAny<ISqlQueryTokenFactory>()))
-                .Returns(testLeftToken); -
-             MockFilter
-                 .Setup(filter => filter.Right(It.IsAny<ISqlQueryTokenFactory>()))
-                 .Returns(testRightToken);
-
-            ISqlQueryToken actual = TestObject.UniverseFilter(MockFilter.Object);
-
-            BooleanSqlQueryToken actualToken = actual.VerifyIsActually<BooleanSqlQueryToken>();
-            Assert.AreSame(testLeftToken, actualToken.Left);
-            MockFilter.Verify(filter => filter.Left(TestObject), Times.Once);
-            Assert.AreSame(testRightToken, actualToken.Right);
-            MockFilter.Verify(filter => filter.Right(TestObject), Times.Once);
         }
     }
 }

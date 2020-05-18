@@ -4,18 +4,12 @@ using System.Linq;
 namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
+    using Curds.Persistence.Query.Domain;
     using Domain;
     using Tokens.Implementation;
 
     internal class SqlQueryTokenFactory : ISqlQueryTokenFactory
     {
-        private ISqlQueryParameterBuilder ParameterBuilder { get; }
-
-        public SqlQueryTokenFactory(ISqlQueryParameterBuilder parameterBuilder)
-        {
-            ParameterBuilder = parameterBuilder;
-        }
-
         public ISqlQueryToken ColumnList(IEnumerable<ISqlColumn> columns, bool includeDefinition) =>
             new ColumnListSqlQueryToken(columns)
             {
@@ -48,16 +42,22 @@ namespace Curds.Persistence.Query.Implementation
         public ISqlQueryToken TemporaryIdentityName(ISqlTable table) =>
             new TemporaryIdentityTableNameSqlQueryToken(table);
 
-        public ISqlQueryToken Parameter(string name, object value) => BuildParameterToken(name, value);
-        private ParameterSqlQueryToken BuildParameterToken(string name, object value) =>
-            new ParameterSqlQueryToken(ParameterBuilder.RegisterNewParamater(name, value));
+        public ISqlQueryToken Parameter(ISqlQueryParameterBuilder parameterBuilder, string name, object value) => BuildParameterToken(parameterBuilder, name, value);
+        private ParameterSqlQueryToken BuildParameterToken(ISqlQueryParameterBuilder parameterBuilder, string name, object value) =>
+            new ParameterSqlQueryToken(parameterBuilder.RegisterNewParamater(name, value), value?.GetType());
 
-        public ISqlQueryToken ValueEntities(IEnumerable<ValueEntity> valueEntities) =>
-            new ValueEntitiesSqlQueryToken(valueEntities.Select(valueEntity => BuildValueEntityToken(valueEntity)));
-        private ValueEntitySqlQueryToken BuildValueEntityToken(ValueEntity valueEntity) =>
-            new ValueEntitySqlQueryToken(valueEntity.Values.Select(value => BuildParameterToken(value.Name, value.Content)));
+        public ISqlQueryToken ValueEntities(ISqlQueryParameterBuilder parameterBuilder, IEnumerable<ValueEntity> valueEntities) =>
+            new ValueEntitiesSqlQueryToken(valueEntities.Select(valueEntity => BuildValueEntityToken(parameterBuilder, valueEntity)));
+        private ValueEntitySqlQueryToken BuildValueEntityToken(ISqlQueryParameterBuilder parameterBuilder, ValueEntity valueEntity) =>
+            new ValueEntitySqlQueryToken(valueEntity.Values.Select(value => BuildParameterToken(parameterBuilder, value.Name, value.Content)));
 
-        public ISqlQueryToken UniverseFilter(ISqlUniverseFilter filter) =>
-            new BooleanSqlQueryToken(filter.Operation, filter.Left(this), filter.Right(this));
+        public ISqlQueryToken BooleanCombination(BooleanCombination combination, IEnumerable<ISqlQueryToken> elements) =>
+            new BooleanCombinationSqlQueryToken(combination, elements);
+
+        public ISqlQueryToken BooleanComparison(BooleanComparison comparison, ISqlQueryToken left, ISqlQueryToken right) =>
+            new BooleanComparisonSqlQueryToken(comparison, left, right);
+
+        public ISqlQueryToken ArithmeticOperation(ArithmeticOperation operation, ISqlQueryToken left, ISqlQueryToken right) =>
+            new ArithmeticOperationSqlQueryToken(operation, left, right);
     }
 }

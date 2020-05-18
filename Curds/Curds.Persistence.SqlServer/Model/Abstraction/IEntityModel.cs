@@ -17,6 +17,7 @@ namespace Curds.Persistence.Model.Abstraction
 
         IEnumerable<IValueModel> Values { get; }
         IList<IValueModel> Keys { get; }
+        IValueModel KeyValue { get; }
         IValueModel Identity { get; }
         IEnumerable<IValueModel> NonIdentities { get; }
 

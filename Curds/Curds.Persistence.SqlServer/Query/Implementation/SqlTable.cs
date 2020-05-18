@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace Curds.Persistence.Query.Implementation
 {
@@ -11,11 +12,14 @@ namespace Curds.Persistence.Query.Implementation
     internal class SqlTable : ISqlTable
     {
         public IEntityModel Model { get; set; }
+
+        public Type EntityType => Model.EntityType;
         public string Schema => Model.Schema;
         public string Name => Model.Table;
 
         public IList<ISqlColumn> Columns => Model.Values.Select(value => BuildColumn(value)).ToList();
         public IList<ISqlColumn> Keys => Model.Keys.Select(key => BuildColumn(key)).ToList();
+        public ISqlColumn KeyColumn => BuildColumn(Model.KeyValue);
         public ISqlColumn Identity => BuildColumn(Model.Identity);
         public IEnumerable<ISqlColumn> NonIdentities => Model.NonIdentities.Select(value => BuildColumn(value));
 

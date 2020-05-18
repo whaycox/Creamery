@@ -10,11 +10,13 @@ namespace Curds.Persistence.Query.Abstraction
 
     public interface ISqlTable
     {
+        Type EntityType { get; }
         string Schema { get; }
         string Name { get; }
 
         IList<ISqlColumn> Columns { get; }
         IList<ISqlColumn> Keys { get; }
+        ISqlColumn KeyColumn { get; }
         ISqlColumn Identity { get; }
         IEnumerable<ISqlColumn> NonIdentities { get; }
 
