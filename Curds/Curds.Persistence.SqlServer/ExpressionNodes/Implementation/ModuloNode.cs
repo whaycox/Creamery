@@ -4,12 +4,12 @@ namespace Curds.Persistence.ExpressionNodes.Implementation
 {
     using Persistence.Abstraction;
 
-    internal class ModuloNode<TReturn, TContext> : BaseBinaryExpressionNode<TReturn, TContext>
+    internal class ModuloNode<TReturn> : BaseBinaryExpressionNode<TReturn>
     {
         public ModuloNode(IExpressionNodeFactory nodeFactory, BinaryExpression moduloExpression)
             : base(nodeFactory, moduloExpression)
         { }
 
-        public override TReturn AcceptVisitor(IExpressionVisitor<TReturn, TContext> visitor, TContext context) => visitor.VisitModulo(context, this);
+        public override TReturn AcceptVisitor(IExpressionVisitor<TReturn> visitor) => visitor.VisitModulo(this);
     }
 }

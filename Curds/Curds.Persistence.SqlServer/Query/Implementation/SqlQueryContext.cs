@@ -15,8 +15,7 @@ namespace Curds.Persistence.Query.Implementation
     {
         private IModelMap<TModel> ModelMap { get; }
         private IExpressionNodeFactory ExpressionNodeFactory { get; }
-        private ISqlQueryTokenVisitor<TModel> TokenVisitor { get; }
-        private ISqlTableVisitor<TModel> TableVisitor { get; }
+        private ISqlQueryExpressionVisitorFactory ExpressionVisitorFactory { get; }
 
         public ISqlQueryTokenFactory TokenFactory { get; }
         public ISqlQueryFormatter Formatter { get; }
@@ -28,16 +27,14 @@ namespace Curds.Persistence.Query.Implementation
         public SqlQueryContext(
             IModelMap<TModel> modelMap,
             IExpressionNodeFactory experssionNodeFactory,
-            ISqlQueryTokenVisitor<TModel> tokenVisitor,
-            ISqlTableVisitor<TModel> tableVisitor,
+            ISqlQueryExpressionVisitorFactory expressionVisitorFactory,
             ISqlQueryTokenFactory tokenFactory,
             ISqlQueryFormatter formatter,
             ISqlQueryParameterBuilder parameterBuilder)
         {
             ModelMap = modelMap;
             ExpressionNodeFactory = experssionNodeFactory;
-            TokenVisitor = tokenVisitor;
-            TableVisitor = tableVisitor;
+            ExpressionVisitorFactory = expressionVisitorFactory;
 
             TokenFactory = tokenFactory;
             Formatter = formatter;
@@ -54,14 +51,14 @@ namespace Curds.Persistence.Query.Implementation
 
         public ISqlQueryToken ParseQueryExpression(Expression queryExpression)
         {
-            IExpressionNode<ISqlQueryToken, ISqlQueryContext<TModel>> rootNode = ExpressionNodeFactory.Build<ISqlQueryToken, ISqlQueryContext<TModel>>(queryExpression);
-            return rootNode.AcceptVisitor(TokenVisitor, this);
+            IExpressionNode<ISqlQueryToken> rootNode = ExpressionNodeFactory.Build<ISqlQueryToken>(queryExpression);
+            return rootNode.AcceptVisitor(ExpressionVisitorFactory.TokenVisitor(this));
         }
 
         public ISqlTable ParseTableExpression(Expression tableExpression)
         {
-            IExpressionNode<ISqlTable, ISqlQueryContext<TModel>> rootNode = ExpressionNodeFactory.Build<ISqlTable, ISqlQueryContext<TModel>>(tableExpression);
-            return rootNode.AcceptVisitor(TableVisitor, this);
+            IExpressionNode<ISqlTable> rootNode = ExpressionNodeFactory.Build<ISqlTable>(tableExpression);
+            return rootNode.AcceptVisitor(ExpressionVisitorFactory.TableVisitor(this));
         }
     }
 }

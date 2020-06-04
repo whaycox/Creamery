@@ -11,28 +11,28 @@ namespace Curds.Persistence.Implementation
 
     internal class ExpressionNodeFactory : IExpressionNodeFactory
     {
-        public IExpressionNode<TReturn, TContext> Build<TReturn, TContext>(Expression expression)
+        public IExpressionNode<TReturn> Build<TReturn>(Expression expression)
         {
             switch (expression.NodeType)
             {
                 case ExpressionType.Lambda:
-                    return new LambdaNode<TReturn, TContext>(this, (LambdaExpression)expression);
+                    return new LambdaNode<TReturn>(this, (LambdaExpression)expression);
                 case ExpressionType.Equal:
-                    return new EqualNode<TReturn, TContext>(this, (BinaryExpression)expression);
+                    return new EqualNode<TReturn>(this, (BinaryExpression)expression);
                 case ExpressionType.LessThan:
-                    return new LessThanNode<TReturn, TContext>(this, (BinaryExpression)expression);
+                    return new LessThanNode<TReturn>(this, (BinaryExpression)expression);
                 case ExpressionType.LessThanOrEqual:
-                    return new LessThanOrEqualNode<TReturn, TContext>(this, (BinaryExpression)expression);
+                    return new LessThanOrEqualNode<TReturn>(this, (BinaryExpression)expression);
                 case ExpressionType.MemberAccess:
-                    return new MemberAccessNode<TReturn, TContext>(this, (MemberExpression)expression);
+                    return new MemberAccessNode<TReturn>(this, (MemberExpression)expression);
                 case ExpressionType.Convert:
-                    return new ConvertNode<TReturn, TContext>(this, (UnaryExpression)expression);
+                    return new ConvertNode<TReturn>(this, (UnaryExpression)expression);
                 case ExpressionType.Parameter:
-                    return new ParameterNode<TReturn, TContext>(this, (ParameterExpression)expression);
+                    return new ParameterNode<TReturn>(this, (ParameterExpression)expression);
                 case ExpressionType.Constant:
-                    return new ConstantNode<TReturn, TContext>(this, (ConstantExpression)expression);
+                    return new ConstantNode<TReturn>(this, (ConstantExpression)expression);
                 case ExpressionType.Modulo:
-                    return new ModuloNode<TReturn, TContext>(this, (BinaryExpression)expression);
+                    return new ModuloNode<TReturn>(this, (BinaryExpression)expression);
                 default:
                     throw new InvalidExpressionException(expression, $"Unsupported node: {expression.NodeType}");
             }

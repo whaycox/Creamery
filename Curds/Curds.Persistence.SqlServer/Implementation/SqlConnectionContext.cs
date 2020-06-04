@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,7 +13,6 @@ namespace Curds.Persistence.Implementation
 
     internal class SqlConnectionContext : ISqlConnectionContext
     {
-        private IServiceProvider ServiceProvider { get; }
         private ISqlConnectionStringFactory ConnectionStringFactory { get; }
         private SqlConnectionInformation ConnectionInformation { get; }
         private ISqlQueryReaderFactory QueryReaderFactory { get; }
@@ -23,12 +21,10 @@ namespace Curds.Persistence.Implementation
         public SqlTransaction Transaction { get; set; }
 
         public SqlConnectionContext(
-            IServiceProvider serviceProvider,
             ISqlConnectionStringFactory connectionStringFactory,
             IOptions<SqlConnectionInformation> connectionInformation,
             ISqlQueryReaderFactory queryReaderFactory)
         {
-            ServiceProvider = serviceProvider;
             ConnectionStringFactory = connectionStringFactory;
             ConnectionInformation = connectionInformation.Value;
             QueryReaderFactory = queryReaderFactory;

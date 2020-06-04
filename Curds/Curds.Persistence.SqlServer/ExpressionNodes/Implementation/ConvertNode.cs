@@ -7,16 +7,16 @@ namespace Curds.Persistence.ExpressionNodes.Implementation
 {
     using Persistence.Abstraction;
 
-    internal class ConvertNode<TReturn, TContext> : BaseExpressionNode<UnaryExpression, TReturn, TContext>
+    internal class ConvertNode<TReturn> : BaseExpressionNode<UnaryExpression, TReturn>
     {
-        public IExpressionNode<TReturn, TContext> Operand { get; }
+        public IExpressionNode<TReturn> Operand { get; }
 
         public ConvertNode(IExpressionNodeFactory nodeFactory, UnaryExpression unaryExpression)
             : base(nodeFactory, unaryExpression)
         {
-            Operand = nodeFactory.Build<TReturn, TContext>(unaryExpression.Operand);
+            Operand = nodeFactory.Build<TReturn>(unaryExpression.Operand);
         }
 
-        public override TReturn AcceptVisitor(IExpressionVisitor<TReturn, TContext> visitor, TContext context) => visitor.VisitConvert(context, this);
+        public override TReturn AcceptVisitor(IExpressionVisitor<TReturn> visitor) => visitor.VisitConvert(this);
     }
 }

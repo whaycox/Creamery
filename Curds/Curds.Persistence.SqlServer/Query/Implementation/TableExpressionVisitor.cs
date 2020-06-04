@@ -10,10 +10,14 @@ namespace Curds.Persistence.Query.Implementation
     using ExpressionNodes.Implementation;
     using Persistence.Implementation;
 
-    internal class TableExpressionVisitor<TModel> : BaseExpressionVisitor<ISqlTable, ISqlQueryContext<TModel>>, ISqlTableVisitor<TModel>
+    internal class TableExpressionVisitor<TModel> : BaseQueryExpressionVisitor<TModel, ISqlTable>, ISqlTableVisitor<TModel>
         where TModel : IDataModel
     {
-        public override ISqlTable VisitParameter(ISqlQueryContext<TModel> context, ParameterNode<ISqlTable, ISqlQueryContext<TModel>> parameterNode) =>
-            context.Tables.First(table => table.EntityType == parameterNode.SourceExpression.Type);
+        public TableExpressionVisitor(ISqlQueryContext<TModel> queryContext)
+            : base(queryContext)
+        { }
+
+        public override ISqlTable VisitParameter(ParameterNode<ISqlTable> parameterNode) =>
+            Context.Tables.First(table => table.EntityType == parameterNode.SourceExpression.Type);
     }
 }

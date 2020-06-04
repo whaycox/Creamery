@@ -4,7 +4,7 @@ namespace Curds.Persistence.ExpressionNodes.Implementation
 {
     using Persistence.Abstraction;
 
-    internal abstract class BaseExpressionNode<TExpression, TReturn, TContext> : IExpressionNode<TReturn, TContext>
+    internal abstract class BaseExpressionNode<TExpression, TReturn> : IExpressionNode<TReturn>
         where TExpression : Expression
     {
         public TExpression SourceExpression { get; }
@@ -14,6 +14,6 @@ namespace Curds.Persistence.ExpressionNodes.Implementation
             SourceExpression = sourceExpression;
         }
 
-        public abstract TReturn AcceptVisitor(IExpressionVisitor<TReturn, TContext> visitor, TContext context);
+        public abstract TReturn AcceptVisitor(IExpressionVisitor<TReturn> visitor);
     }
 }

@@ -7,12 +7,12 @@ namespace Curds.Persistence.ExpressionNodes.Implementation
 {
     using Persistence.Abstraction;
 
-    internal class ParameterNode<TReturn, TContext> : BaseExpressionNode<ParameterExpression, TReturn, TContext>
+    internal class ParameterNode<TReturn> : BaseExpressionNode<ParameterExpression, TReturn>
     {
         public ParameterNode(IExpressionNodeFactory nodeFactory, ParameterExpression parameterExpression)
             : base(nodeFactory, parameterExpression)
         { }
 
-        public override TReturn AcceptVisitor(IExpressionVisitor<TReturn, TContext> visitor, TContext context) => visitor.VisitParameter(context, this);
+        public override TReturn AcceptVisitor(IExpressionVisitor<TReturn> visitor) => visitor.VisitParameter(this);
     }
 }

@@ -7,12 +7,12 @@ namespace Curds.Persistence.ExpressionNodes.Implementation
 {
     using Persistence.Abstraction;
 
-    internal class LessThanOrEqualNode<TReturn, TContext> : BaseBinaryExpressionNode<TReturn, TContext>
+    internal class LessThanOrEqualNode<TReturn> : BaseBinaryExpressionNode<TReturn>
     {
         public LessThanOrEqualNode(IExpressionNodeFactory nodeFactory, BinaryExpression lessThanExpression)
             : base(nodeFactory, lessThanExpression)
         { }
 
-        public override TReturn AcceptVisitor(IExpressionVisitor<TReturn, TContext> visitor, TContext context) => visitor.VisitLessThanOrEqual(context, this);
+        public override TReturn AcceptVisitor(IExpressionVisitor<TReturn> visitor) => visitor.VisitLessThanOrEqual(this);
     }
 }

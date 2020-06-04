@@ -7,12 +7,12 @@ namespace Curds.Persistence.ExpressionNodes.Implementation
 {
     using Persistence.Abstraction;
 
-    internal class ConstantNode<TReturn, TContext> : BaseExpressionNode<ConstantExpression, TReturn, TContext>
+    internal class ConstantNode<TReturn> : BaseExpressionNode<ConstantExpression, TReturn>
     {
         public ConstantNode(IExpressionNodeFactory nodeFactory, ConstantExpression constantExpression)
             : base(nodeFactory, constantExpression)
         { }
 
-        public override TReturn AcceptVisitor(IExpressionVisitor<TReturn, TContext> visitor, TContext context) => visitor.VisitConstant(context, this);
+        public override TReturn AcceptVisitor(IExpressionVisitor<TReturn> visitor) => visitor.VisitConstant(this);
     }
 }

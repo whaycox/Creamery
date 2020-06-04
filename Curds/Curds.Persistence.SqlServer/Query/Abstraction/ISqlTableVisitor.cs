@@ -6,7 +6,7 @@ namespace Curds.Persistence.Query.Abstraction
 {
     using Persistence.Abstraction;
 
-    internal interface ISqlTableVisitor<TModel> : IExpressionVisitor<ISqlTable, ISqlQueryContext<TModel>>
+    internal interface ISqlTableVisitor<TModel> : IExpressionVisitor<ISqlTable>
         where TModel : IDataModel
     {
     }
