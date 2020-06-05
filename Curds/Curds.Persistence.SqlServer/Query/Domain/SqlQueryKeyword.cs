@@ -10,6 +10,7 @@
         INTO,
         VALUES,
         SELECT,
+        DELETE,
         FROM,
         WHERE,
 

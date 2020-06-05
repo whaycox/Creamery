@@ -49,6 +49,12 @@ namespace Curds.Persistence.Query.Implementation
             Source = this,
         };
 
+        public ISqlQuery Delete() => new DeleteEntityQuery<TModel, TEntity>(QueryContext)
+        {
+            DeletedTable = Table,
+            Source = this,
+        };
+
         public ISqlUniverse<TEntity> Where(Expression<Func<TEntity, bool>> filterExpression)
         {
             AddFilter(QueryContext.ParseQueryExpression(filterExpression));

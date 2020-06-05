@@ -18,6 +18,7 @@ namespace Curds.Persistence.Query.Abstraction
         where TEntity : IEntity
     {
         ISqlQuery<TEntity> ProjectEntity();
+        ISqlQuery Delete();
 
         ISqlUniverse<TEntity> Where(Expression<Func<TEntity, bool>> filterExpression);
     }

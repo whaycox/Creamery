@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Curds.Persistence.Query.Queries.Implementation
 {
-    using Query.Abstraction;
     using Persistence.Abstraction;
-    using System.Data.SqlClient;
+    using Query.Abstraction;
     using Query.Domain;
+    using System.Data.SqlClient;
 
     internal abstract class BaseSqlQuery<TModel> : ISqlQuery
         where TModel : IDataModel
@@ -35,6 +33,10 @@ namespace Curds.Persistence.Query.Queries.Implementation
         protected ISqlQueryToken SelectColumnsToken(IEnumerable<ISqlColumn> columns) => TokenFactory.Phrase(
             TokenFactory.Keyword(SqlQueryKeyword.SELECT),
             TokenFactory.SelectList(columns));
+
+        protected ISqlQueryToken DeleteTableToken(ISqlTable table) => TokenFactory.Phrase(
+            TokenFactory.Keyword(SqlQueryKeyword.DELETE),
+            TokenFactory.QualifiedObjectName(table));
 
         protected IEnumerable<ISqlQueryToken> FromUniverseTokens(ISqlUniverse universe)
         {

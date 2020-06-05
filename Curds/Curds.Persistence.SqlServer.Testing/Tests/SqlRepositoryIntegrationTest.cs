@@ -211,7 +211,30 @@ namespace Curds.Persistence.Tests
                 Assert.AreEqual(TestEntity.ID, actual.ID);
                 Assert.AreEqual(nameof(CanSelectSingleEntity), actual.Name);
             }
+        }
 
+        [TestMethod]
+        public async Task CanDeleteSingleEntity()
+        {
+            RegisterServices();
+            BuildServiceProvider();
+
+            using (IServiceScope testScope = TestServiceProvider.CreateScope())
+            {
+                IRepository<ITestDataModel, TestEntity> testRepository = testScope.ServiceProvider.GetRequiredService<IRepository<ITestDataModel, TestEntity>>();
+                TestEntity.Name = nameof(CanDeleteSingleEntity);
+                await testRepository.Insert(TestEntity);
+
+                await testRepository.Delete(TestEntity.ID);
+
+                try
+                {
+                    await testRepository.Fetch(TestEntity.ID);
+                    Assert.Fail();
+                }
+                catch (KeyNotFoundException)
+                { }
+            }
         }
     }
 }

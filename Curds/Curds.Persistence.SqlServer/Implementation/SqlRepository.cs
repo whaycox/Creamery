@@ -34,6 +34,8 @@ namespace Curds.Persistence.Implementation
         public async Task<TEntity> Fetch(params object[] keys)
         {
             IList<TEntity> entities = await ConnectionContext.ExecuteWithResult(FetchQuery(keys));
+            if (entities.Count == 0)
+                throw new KeyNotFoundException();
             if (entities.Count != 1)
                 throw new Exception();
             return entities.First();
@@ -53,9 +55,10 @@ namespace Curds.Persistence.Implementation
             throw new NotImplementedException();
         }
 
-        public Task Delete(params object[] keys)
-        {
-            throw new NotImplementedException();
-        }
+        public Task Delete(params object[] keys) => ConnectionContext.Execute(DeleteQuery(keys));
+        private ISqlQuery DeleteQuery(object[] keys) => QueryBuilder
+            .From<TEntity>()
+            .Where(entity => entity.Keys == keys)
+            .Delete();
     }
 }
