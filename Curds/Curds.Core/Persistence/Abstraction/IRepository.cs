@@ -14,7 +14,7 @@ namespace Curds.Persistence.Abstraction
         Task<TEntity> Fetch(params object[] keys);
         Task<IList<TEntity>> FetchAll();
 
-        Task Update(Action<TEntity> modifier, params object[] keys);
+        IEntityUpdate<TEntity> Update(params object[] keys);
 
         Task Delete(params object[] keys);
     }

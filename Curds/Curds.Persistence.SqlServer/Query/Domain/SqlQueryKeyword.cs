@@ -11,6 +11,8 @@
         VALUES,
         SELECT,
         DELETE,
+        UPDATE,
+        SET,
         FROM,
         WHERE,
 

@@ -6,7 +6,7 @@ namespace Curds.Persistence.Query.Abstraction
 {
     using Persistence.Abstraction;
 
-    public interface ISqlQuery
+    public interface ISqlQuery : IExecutableObject
     {
         SqlCommand GenerateCommand();
         Task ProcessResult(ISqlQueryReader queryReader);

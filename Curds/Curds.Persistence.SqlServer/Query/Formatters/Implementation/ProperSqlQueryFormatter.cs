@@ -113,5 +113,30 @@ namespace Curds.Persistence.Query.Formatters.Implementation
                 StringBuilder.AppendLine(")");
             }
         }
+
+        public override void VisitSetValues(SetValuesSqlQueryToken token)
+        {
+
+            using (StringBuilder.CreateIndentScope())
+            {
+                if (token.SetValueTokens.Count == 1)
+                    token.SetValueTokens[0].AcceptFormatVisitor(this);
+                else
+                {
+                    for (int i = 0; i < token.SetValueTokens.Count; i++)
+                    {
+                        if (i == 0)
+                            StringBuilder.Append(" ");
+                        else
+                            StringBuilder.Append(",");
+
+                        token.SetValueTokens[i].AcceptFormatVisitor(this);
+
+                        if (i < token.SetValueTokens.Count - 1)
+                            StringBuilder.SetNewLine();
+                    }
+                }
+            }
+        }
     }
 }

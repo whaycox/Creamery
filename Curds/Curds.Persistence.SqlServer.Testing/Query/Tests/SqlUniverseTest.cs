@@ -42,7 +42,7 @@ namespace Curds.Persistence.Query.Tests
         [TestMethod]
         public void ProjectEntityIsExpectedType()
         {
-            ISqlQuery<TestEntity> actual = TestObject.ProjectEntity();
+            ISqlQuery<TestEntity> actual = TestObject.Project();
 
             Assert.IsInstanceOfType(actual, typeof(ProjectEntityQuery<ITestDataModel, TestEntity>));
         }
@@ -50,7 +50,7 @@ namespace Curds.Persistence.Query.Tests
         [TestMethod]
         public void ProjectEntityAttachesSource()
         {
-            ISqlQuery actual = TestObject.ProjectEntity();
+            ISqlQuery actual = TestObject.Project();
 
             ProjectEntityQuery<ITestDataModel, TestEntity> query = actual.VerifyIsActually<ProjectEntityQuery<ITestDataModel, TestEntity>>();
             Assert.AreSame(TestObject, query.Source);
@@ -59,7 +59,7 @@ namespace Curds.Persistence.Query.Tests
         [TestMethod]
         public void ProjectedTableIsExpectedType()
         {
-            ISqlQuery actual = TestObject.ProjectEntity();
+            ISqlQuery actual = TestObject.Project();
 
             ProjectEntityQuery<ITestDataModel, TestEntity> query = actual.VerifyIsActually<ProjectEntityQuery<ITestDataModel, TestEntity>>();
             Assert.IsInstanceOfType(query.ProjectedTable, typeof(SqlTable));
@@ -68,7 +68,7 @@ namespace Curds.Persistence.Query.Tests
         [TestMethod]
         public void ProjectedTableHasBuiltModel()
         {
-            ISqlQuery actual = TestObject.ProjectEntity();
+            ISqlQuery actual = TestObject.Project();
 
             ProjectEntityQuery<ITestDataModel, TestEntity> query = actual.VerifyIsActually<ProjectEntityQuery<ITestDataModel, TestEntity>>();
             SqlTable table = query.ProjectedTable.VerifyIsActually<SqlTable>();

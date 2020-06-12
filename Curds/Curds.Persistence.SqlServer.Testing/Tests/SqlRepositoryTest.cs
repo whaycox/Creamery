@@ -33,9 +33,7 @@ namespace Curds.Persistence.Tests
                 .Setup(builder => builder.Insert(It.IsAny<IEnumerable<TestEntity>>()))
                 .Returns(MockQuery.Object);
 
-            TestObject = new SqlRepository<ITestDataModel, TestEntity>(
-                MockConnectionContext.Object,
-                MockQueryBuilder.Object);
+            TestObject = new SqlRepository<ITestDataModel, TestEntity>(MockQueryBuilder.Object);
         }
 
         [TestMethod]
@@ -49,11 +47,11 @@ namespace Curds.Persistence.Tests
         }
 
         [TestMethod]
-        public async Task InsertExecutesWithResultBuiltQuery()
+        public async Task InsertExecutesBuiltQuery()
         {
             await TestObject.Insert(TestEntity);
 
-            MockConnectionContext.Verify(context => context.ExecuteWithResult(MockQuery.Object), Times.Once);
+            MockConnectionContext.Verify(context => context.Execute(MockQuery.Object), Times.Once);
         }
     }
 }

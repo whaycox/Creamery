@@ -19,6 +19,7 @@ namespace Curds.Persistence.Query.Implementation
 
         public ISqlQueryTokenFactory TokenFactory { get; }
         public ISqlQueryFormatter Formatter { get; }
+        public ISqlConnectionContext ConnectionContext { get; }
         public ISqlQueryParameterBuilder ParameterBuilder { get; }
 
         private List<ISqlTable> QueryTables { get; } = new List<ISqlTable>();
@@ -30,6 +31,7 @@ namespace Curds.Persistence.Query.Implementation
             ISqlQueryExpressionVisitorFactory expressionVisitorFactory,
             ISqlQueryTokenFactory tokenFactory,
             ISqlQueryFormatter formatter,
+            ISqlConnectionContext connectionContext,
             ISqlQueryParameterBuilder parameterBuilder)
         {
             ModelMap = modelMap;
@@ -38,6 +40,7 @@ namespace Curds.Persistence.Query.Implementation
 
             TokenFactory = tokenFactory;
             Formatter = formatter;
+            ConnectionContext = connectionContext;
             ParameterBuilder = parameterBuilder;
         }
 

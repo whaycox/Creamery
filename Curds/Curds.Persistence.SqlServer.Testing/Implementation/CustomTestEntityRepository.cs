@@ -9,16 +9,14 @@ namespace Curds.Persistence.Implementation
 
     public class CustomTestEntityRepository : SqlRepository<ITestDataModel, TestEntity>
     {
-        public CustomTestEntityRepository(
-            ISqlConnectionContext connectionContext,
-            ISqlQueryBuilder<ITestDataModel> queryBuilder)
-            : base(connectionContext, queryBuilder)
+        public CustomTestEntityRepository(ISqlQueryBuilder<ITestDataModel> queryBuilder)
+            : base(queryBuilder)
         { }
 
-        public Task<IList<TestEntity>> FetchEvensLessThan(int maxID) => ConnectionContext.ExecuteWithResult(
+        public Task<IList<TestEntity>> FetchEvensLessThan(int maxID) => FetchEntities(
             QueryBuilder.From<TestEntity>()
             .Where(entity => entity.ID <= maxID)
             .Where(entity => entity.ID % 2 == 0)
-            .ProjectEntity());
+            .Project());
     }
 }

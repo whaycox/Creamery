@@ -197,65 +197,25 @@ namespace Curds.Persistence.Tests
         }
 
         [TestMethod]
-        public async Task ExecuteWithResultBuildsCommand()
+        public async Task ExecuteBuildsReaderFromFactory()
         {
-            await TestObject.ExecuteWithResult(MockQuery.Object);
-
-            VerifyCommandWasBuiltWithQuery();
-        }
-
-        [TestMethod]
-        public async Task ExecuteWithResultBuildsReaderFromFactory()
-        {
-            await TestObject.ExecuteWithResult(MockQuery.Object);
+            await TestObject.Execute(MockQuery.Object);
 
             MockQueryReaderFactory.Verify(factory => factory.Create(TestCommand), Times.Once);
         }
 
         [TestMethod]
-        public async Task ExecuteWithResultPassesQueryReaderToQuery()
+        public async Task ExecutePassesQueryReaderToQuery()
         {
-            await TestObject.ExecuteWithResult(MockQuery.Object);
+            await TestObject.Execute(MockQuery.Object);
 
             MockQuery.Verify(query => query.ProcessResult(MockQueryReader.Object), Times.Once);
         }
 
         [TestMethod]
-        public async Task ExecuteWithResultDisposesOfReader()
+        public async Task ExecuteDisposesOfReader()
         {
-            await TestObject.ExecuteWithResult(MockQuery.Object);
-
-            MockQueryReader.Verify(reader => reader.Dispose(), Times.Once);
-        }
-
-        [TestMethod]
-        public async Task ExecuteWithResultGenericBuildsCommand()
-        {
-            await TestObject.ExecuteWithResult(MockReturnQuery.Object);
-
-            VerifyCommandWasBuiltWithReturnQuery();
-        }
-
-        [TestMethod]
-        public async Task ExecuteWithResultGenericBuildsReaderFromFactory()
-        {
-            await TestObject.ExecuteWithResult(MockReturnQuery.Object);
-
-            MockQueryReaderFactory.Verify(factory => factory.Create(TestCommand), Times.Once);
-        }
-
-        [TestMethod]
-        public async Task ExecuteWithResultGenericPassesQueryReaderToQuery()
-        {
-            await TestObject.ExecuteWithResult(MockReturnQuery.Object);
-
-            MockReturnQuery.Verify(query => query.ProcessResult(MockQueryReader.Object), Times.Once);
-        }
-
-        [TestMethod]
-        public async Task ExecuteWithResultGenericDisposesOfReader()
-        {
-            await TestObject.ExecuteWithResult(MockReturnQuery.Object);
+            await TestObject.Execute(MockQuery.Object);
 
             MockQueryReader.Verify(reader => reader.Dispose(), Times.Once);
         }

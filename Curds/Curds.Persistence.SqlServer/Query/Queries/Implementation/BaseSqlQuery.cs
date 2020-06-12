@@ -38,6 +38,11 @@ namespace Curds.Persistence.Query.Queries.Implementation
             TokenFactory.Keyword(SqlQueryKeyword.DELETE),
             TokenFactory.QualifiedObjectName(table));
 
+        protected ISqlQueryToken UpdateTableToken(ISqlTable table) => TokenFactory.Phrase(
+            TokenFactory.Keyword(SqlQueryKeyword.UPDATE),
+            TokenFactory.QualifiedObjectName(table),
+            TokenFactory.Keyword(SqlQueryKeyword.SET));
+
         protected IEnumerable<ISqlQueryToken> FromUniverseTokens(ISqlUniverse universe)
         {
             foreach (ISqlTable table in universe.Tables)
@@ -52,7 +57,11 @@ namespace Curds.Persistence.Query.Queries.Implementation
                     filter);
         }
 
-        public abstract Task ProcessResult(ISqlQueryReader queryReader);
+        public virtual Task ProcessResult(ISqlQueryReader queryReader) => Task.CompletedTask;
+
+        public Task Execute() => QueryContext
+            .ConnectionContext
+            .Execute(this);
     }
 
     internal abstract class BaseSqlQuery<TModel, TEntity> : BaseSqlQuery<TModel>, ISqlQuery<TEntity>

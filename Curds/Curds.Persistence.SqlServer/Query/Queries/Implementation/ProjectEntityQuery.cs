@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Linq;
 
 namespace Curds.Persistence.Query.Queries.Implementation
 {
     using Abstraction;
-    using Persistence.Domain;
-    using Model.Domain;
     using Persistence.Abstraction;
-    using Model.Abstraction;
 
     internal class ProjectEntityQuery<TModel, TEntity> : BaseSqlQuery<TModel, TEntity>
         where TModel : IDataModel

@@ -10,6 +10,7 @@ namespace Curds.Persistence.Query.Abstraction
     {
         void VisitLiteral(LiteralSqlQueryToken token);
         void VisitColumnList(ColumnListSqlQueryToken token);
+        void VisitSetValues(SetValuesSqlQueryToken token);
         void VisitValueEntities(ValueEntitiesSqlQueryToken token);
         void VisitValueEntity(ValueEntitySqlQueryToken token);
         void VisitBooleanCombination(BooleanCombinationSqlQueryToken token);

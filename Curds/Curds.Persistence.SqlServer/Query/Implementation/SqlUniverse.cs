@@ -43,7 +43,7 @@ namespace Curds.Persistence.Query.Implementation
             Table = queryContext.AddTable<TEntity>();
         }
 
-        public ISqlQuery<TEntity> ProjectEntity() => new ProjectEntityQuery<TModel, TEntity>(QueryContext)
+        public ISqlQuery<TEntity> Project() => new ProjectEntityQuery<TModel, TEntity>(QueryContext)
         {
             ProjectedTable = Table,
             Source = this,
@@ -60,5 +60,11 @@ namespace Curds.Persistence.Query.Implementation
             AddFilter(QueryContext.ParseQueryExpression(filterExpression));
             return this;
         }
+
+        public IEntityUpdate<TEntity> Update() => new EntityUpdateQuery<TModel, TEntity>(QueryContext)
+        {
+            UpdatedTable = Table,
+            Source = this,
+        };
     }
 }

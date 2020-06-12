@@ -10,6 +10,7 @@ namespace Curds.Persistence.Query.Tokens.Implementation
 
     public class ArithmeticOperationSqlQueryToken : BaseSqlQueryToken
     {
+        private static ISqlQueryToken EqualsToken { get; } = new ConstantSqlQueryToken(" = ");
         private static ISqlQueryToken ModuloToken { get; } = new ConstantSqlQueryToken(" % ");
 
         public ISqlQueryToken Left { get; }
@@ -29,6 +30,8 @@ namespace Curds.Persistence.Query.Tokens.Implementation
         {
             switch (operation)
             {
+                case ArithmeticOperation.Equals:
+                    return EqualsToken;
                 case ArithmeticOperation.Modulo:
                     return ModuloToken;
                 default:

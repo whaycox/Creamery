@@ -75,23 +75,8 @@ namespace Curds.Persistence.Implementation
         public async Task Execute(ISqlQuery query)
         {
             SqlCommand command = await BuildCommand(query);
-            await command.ExecuteNonQueryAsync();
-        }
-
-        public async Task ExecuteWithResult(ISqlQuery query)
-        {
-            SqlCommand command = await BuildCommand(query);
             using (ISqlQueryReader queryReader = await QueryReaderFactory.Create(command))
                 await query.ProcessResult(queryReader);
-        }
-
-        public async Task<IList<TEntity>> ExecuteWithResult<TEntity>(ISqlQuery<TEntity> query)
-            where TEntity : IEntity
-        {
-            SqlCommand command = await BuildCommand(query);
-            using (ISqlQueryReader queryReader = await QueryReaderFactory.Create(command))
-                await query.ProcessResult(queryReader);
-            return query.Results;
         }
 
         #region IDisposable Support

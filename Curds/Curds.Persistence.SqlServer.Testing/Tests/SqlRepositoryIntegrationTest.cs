@@ -36,12 +36,9 @@ namespace Curds.Persistence.Tests
         {
             RegisterServices();
             BuildServiceProvider();
+            IRepository<ITestDataModel, TestEntity> testRepository = TestServiceProvider.GetRequiredService<IRepository<ITestDataModel, TestEntity>>();
 
-            using (IServiceScope testScope = TestServiceProvider.CreateScope())
-            {
-                IRepository<ITestDataModel, TestEntity> testRepository = testScope.ServiceProvider.GetRequiredService<IRepository<ITestDataModel, TestEntity>>();
-                await testRepository.Insert(TestEntity);
-            }
+            await testRepository.Insert(TestEntity);
         }
 
         [TestMethod]
@@ -49,12 +46,9 @@ namespace Curds.Persistence.Tests
         {
             RegisterServices();
             BuildServiceProvider();
+            IRepository<ITestDataModel, OtherEntity> testRepository = TestServiceProvider.GetRequiredService<IRepository<ITestDataModel, OtherEntity>>();
 
-            using (IServiceScope testScope = TestServiceProvider.CreateScope())
-            {
-                IRepository<ITestDataModel, OtherEntity> testRepository = testScope.ServiceProvider.GetRequiredService<IRepository<ITestDataModel, OtherEntity>>();
-                await testRepository.Insert(OtherEntity);
-            }
+            await testRepository.Insert(OtherEntity);
         }
 
         [TestMethod]
@@ -63,12 +57,9 @@ namespace Curds.Persistence.Tests
             FullyPopulateOtherEntity();
             RegisterServices();
             BuildServiceProvider();
+            IRepository<ITestDataModel, OtherEntity> testRepository = TestServiceProvider.GetRequiredService<IRepository<ITestDataModel, OtherEntity>>();
 
-            using (IServiceScope testScope = TestServiceProvider.CreateScope())
-            {
-                IRepository<ITestDataModel, OtherEntity> testRepository = testScope.ServiceProvider.GetRequiredService<IRepository<ITestDataModel, OtherEntity>>();
-                await testRepository.Insert(OtherEntity);
-            }
+            await testRepository.Insert(OtherEntity);
         }
 
         [TestMethod]
@@ -77,12 +68,9 @@ namespace Curds.Persistence.Tests
             RegisterServices();
             ConfigureCustomTestEntity();
             BuildServiceProvider();
+            IRepository<ITestDataModel, TestEntity> testRepository = TestServiceProvider.GetRequiredService<IRepository<ITestDataModel, TestEntity>>();
 
-            using (IServiceScope testScope = TestServiceProvider.CreateScope())
-            {
-                IRepository<ITestDataModel, TestEntity> testRepository = testScope.ServiceProvider.GetRequiredService<IRepository<ITestDataModel, TestEntity>>();
-                await testRepository.Insert(TestEntity);
-            }
+            await testRepository.Insert(TestEntity);
         }
 
         [DataTestMethod]
@@ -96,12 +84,9 @@ namespace Curds.Persistence.Tests
                 otherEntities.Add(OtherEntity);
             RegisterServices();
             BuildServiceProvider();
+            IRepository<ITestDataModel, OtherEntity> testRepository = TestServiceProvider.GetRequiredService<IRepository<ITestDataModel, OtherEntity>>();
 
-            using (IServiceScope testScope = TestServiceProvider.CreateScope())
-            {
-                IRepository<ITestDataModel, OtherEntity> testRepository = testScope.ServiceProvider.GetRequiredService<IRepository<ITestDataModel, OtherEntity>>();
-                await testRepository.Insert(OtherEntity);
-            }
+            await testRepository.Insert(OtherEntity);
         }
 
         [TestMethod]
@@ -109,12 +94,9 @@ namespace Curds.Persistence.Tests
         {
             RegisterServices();
             BuildServiceProvider();
+            IRepository<ITestDataModel, OtherEntity> testRepository = TestServiceProvider.GetRequiredService<IRepository<ITestDataModel, OtherEntity>>();
 
-            using (IServiceScope testScope = TestServiceProvider.CreateScope())
-            {
-                IRepository<ITestDataModel, OtherEntity> testRepository = testScope.ServiceProvider.GetRequiredService<IRepository<ITestDataModel, OtherEntity>>();
-                await testRepository.Insert(OtherEntity);
-            }
+            await testRepository.Insert(OtherEntity);
 
             Assert.AreNotEqual(0, OtherEntity.ID);
         }
@@ -127,12 +109,9 @@ namespace Curds.Persistence.Tests
                 testEntities.Add(new TestEntity { Name = $"{nameof(InsertManyPopulatesNewIdentities)}{i}" });
             RegisterServices();
             BuildServiceProvider();
+            IRepository<ITestDataModel, TestEntity> testRepository = TestServiceProvider.GetRequiredService<IRepository<ITestDataModel, TestEntity>>();
 
-            using (IServiceScope testScope = TestServiceProvider.CreateScope())
-            {
-                IRepository<ITestDataModel, TestEntity> testRepository = testScope.ServiceProvider.GetRequiredService<IRepository<ITestDataModel, TestEntity>>();
-                await testRepository.Insert(testEntities);
-            }
+            await testRepository.Insert(testEntities);
 
             Assert.IsTrue(testEntities.All(entity => entity.ID != 0));
             Assert.AreEqual(5, testEntities.GroupBy(entity => entity.ID).Count());
@@ -147,12 +126,9 @@ namespace Curds.Persistence.Tests
             RegisterServices();
             ConfigureCustomTestEntity();
             BuildServiceProvider();
+            IRepository<ITestDataModel, TestEntity> testRepository = TestServiceProvider.GetRequiredService<IRepository<ITestDataModel, TestEntity>>();
 
-            using (IServiceScope testScope = TestServiceProvider.CreateScope())
-            {
-                IRepository<ITestDataModel, TestEntity> testRepository = testScope.ServiceProvider.GetRequiredService<IRepository<ITestDataModel, TestEntity>>();
-                await testRepository.Insert(testEntities.OrderByDescending(entity => entity.Name));
-            }
+            await testRepository.Insert(testEntities.OrderByDescending(entity => entity.Name));
 
             Assert.IsTrue(testEntities.All(entity => entity.ID != 0));
             Assert.AreEqual(5, testEntities.GroupBy(entity => entity.ID).Count());
@@ -163,15 +139,12 @@ namespace Curds.Persistence.Tests
         {
             RegisterServices();
             BuildServiceProvider();
+            IRepository<ITestDataModel, OtherEntity> testRepository = TestServiceProvider.GetRequiredService<IRepository<ITestDataModel, OtherEntity>>();
 
-            using (IServiceScope testScope = TestServiceProvider.CreateScope())
-            {
-                IRepository<ITestDataModel, OtherEntity> testRepository = testScope.ServiceProvider.GetRequiredService<IRepository<ITestDataModel, OtherEntity>>();
-                IList<OtherEntity> entities = await testRepository.FetchAll();
+            IList<OtherEntity> entities = await testRepository.FetchAll();
 
-                Assert.AreNotEqual(0, entities.Count);
-                Assert.IsFalse(entities.Any(entity => entity.ID == 0));
-            }
+            Assert.AreNotEqual(0, entities.Count);
+            Assert.IsFalse(entities.Any(entity => entity.ID == 0));
         }
 
         [TestMethod]
@@ -180,15 +153,12 @@ namespace Curds.Persistence.Tests
             RegisterServices();
             ConfigureCustomTestEntity();
             BuildServiceProvider();
+            IRepository<ITestDataModel, TestEntity> testRepository = TestServiceProvider.GetRequiredService<IRepository<ITestDataModel, TestEntity>>();
 
-            using (IServiceScope testScope = TestServiceProvider.CreateScope())
-            {
-                IRepository<ITestDataModel, TestEntity> testRepository = testScope.ServiceProvider.GetRequiredService<IRepository<ITestDataModel, TestEntity>>();
-                IList<TestEntity> entities = await testRepository.FetchAll();
+            IList<TestEntity> entities = await testRepository.FetchAll();
 
-                Assert.AreNotEqual(0, entities.Count);
-                Assert.IsFalse(entities.Any(entity => entity.ID == 0));
-            }
+            Assert.AreNotEqual(0, entities.Count);
+            Assert.IsFalse(entities.Any(entity => entity.ID == 0));
         }
 
         [TestMethod]
@@ -197,20 +167,16 @@ namespace Curds.Persistence.Tests
             RegisterServices();
             ConfigureCustomTestEntity();
             BuildServiceProvider();
+            IRepository<ITestDataModel, TestEntity> testRepository = TestServiceProvider.GetRequiredService<IRepository<ITestDataModel, TestEntity>>();
+            TestEntity.Name = nameof(CanSelectSingleEntity);
+            await testRepository.Insert(TestEntity);
 
-            using (IServiceScope testScope = TestServiceProvider.CreateScope())
-            {
-                IRepository<ITestDataModel, TestEntity> testRepository = testScope.ServiceProvider.GetRequiredService<IRepository<ITestDataModel, TestEntity>>();
-                TestEntity.Name = nameof(CanSelectSingleEntity);
-                await testRepository.Insert(TestEntity);
+            TestEntity actual = await testRepository.Fetch(TestEntity.ID);
 
-                TestEntity actual = await testRepository.Fetch(TestEntity.ID);
-
-                Assert.AreNotEqual(0, actual.ID);
-                Assert.AreNotSame(TestEntity, actual);
-                Assert.AreEqual(TestEntity.ID, actual.ID);
-                Assert.AreEqual(nameof(CanSelectSingleEntity), actual.Name);
-            }
+            Assert.AreNotEqual(0, actual.ID);
+            Assert.AreNotSame(TestEntity, actual);
+            Assert.AreEqual(TestEntity.ID, actual.ID);
+            Assert.AreEqual(nameof(CanSelectSingleEntity), actual.Name);
         }
 
         [TestMethod]
@@ -218,23 +184,38 @@ namespace Curds.Persistence.Tests
         {
             RegisterServices();
             BuildServiceProvider();
+            IRepository<ITestDataModel, TestEntity> testRepository = TestServiceProvider.GetRequiredService<IRepository<ITestDataModel, TestEntity>>();
+            TestEntity.Name = nameof(CanDeleteSingleEntity);
+            await testRepository.Insert(TestEntity);
 
-            using (IServiceScope testScope = TestServiceProvider.CreateScope())
+            await testRepository.Delete(TestEntity.ID);
+
+            try
             {
-                IRepository<ITestDataModel, TestEntity> testRepository = testScope.ServiceProvider.GetRequiredService<IRepository<ITestDataModel, TestEntity>>();
-                TestEntity.Name = nameof(CanDeleteSingleEntity);
-                await testRepository.Insert(TestEntity);
-
-                await testRepository.Delete(TestEntity.ID);
-
-                try
-                {
-                    await testRepository.Fetch(TestEntity.ID);
-                    Assert.Fail();
-                }
-                catch (KeyNotFoundException)
-                { }
+                await testRepository.Fetch(TestEntity.ID);
+                Assert.Fail();
             }
+            catch (KeyNotFoundException)
+            { }
+        }
+
+        [TestMethod]
+        public async Task CanUpdateWithConstantValues()
+        {
+            RegisterServices();
+            BuildServiceProvider();
+            IRepository<ITestDataModel, TestEntity> testRepository = TestServiceProvider.GetRequiredService<IRepository<ITestDataModel, TestEntity>>();
+            await testRepository.Insert(TestEntity);
+
+            await testRepository
+                .Update(TestEntity.ID)
+                .Set(entity => entity.Name, nameof(CanUpdateWithConstantValues))
+                .Execute();
+
+            TestEntity actual = await testRepository.Fetch(TestEntity.ID);
+            Assert.AreEqual(TestEntity.ID, actual.ID);
+            Assert.AreEqual(nameof(CanUpdateWithConstantValues), actual.Name);
+            Assert.AreNotSame(TestEntity, actual);
         }
     }
 }

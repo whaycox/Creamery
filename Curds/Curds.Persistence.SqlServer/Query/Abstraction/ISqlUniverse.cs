@@ -17,9 +17,11 @@ namespace Curds.Persistence.Query.Abstraction
     public interface ISqlUniverse<TEntity> : ISqlUniverse
         where TEntity : IEntity
     {
-        ISqlQuery<TEntity> ProjectEntity();
+        ISqlQuery<TEntity> Project();
         ISqlQuery Delete();
 
         ISqlUniverse<TEntity> Where(Expression<Func<TEntity, bool>> filterExpression);
+
+        IEntityUpdate<TEntity> Update();
     }
 }

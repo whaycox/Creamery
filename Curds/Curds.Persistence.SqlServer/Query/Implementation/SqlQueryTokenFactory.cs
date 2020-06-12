@@ -59,5 +59,8 @@ namespace Curds.Persistence.Query.Implementation
 
         public ISqlQueryToken ArithmeticOperation(ArithmeticOperation operation, ISqlQueryToken left, ISqlQueryToken right) =>
             new ArithmeticOperationSqlQueryToken(operation, left, right);
+
+        public ISqlQueryToken SetValues(IEnumerable<ISqlQueryToken> setValueTokens) =>
+            new SetValuesSqlQueryToken(setValueTokens);
     }
 }
