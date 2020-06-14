@@ -1,17 +1,17 @@
 ﻿namespace Curds.Persistence.Abstraction
 {
-    using ExpressionNodes.Implementation;
+    using ExpressionNodes.Domain;
 
-    internal interface IExpressionVisitor<TReturn>
+    public interface IExpressionVisitor<TReturn>
     {
-        TReturn VisitLambda(LambdaNode<TReturn> lambdaNode);
-        TReturn VisitEqual(EqualNode<TReturn> equalNode);
-        TReturn VisitLessThan(LessThanNode<TReturn> lessThanNode);
-        TReturn VisitLessThanOrEqual(LessThanOrEqualNode<TReturn> lessThanOrEqualNode);
-        TReturn VisitMemberAccess(MemberAccessNode<TReturn> memberAccessNode);
-        TReturn VisitConvert(ConvertNode<TReturn> convertNode);
-        TReturn VisitParameter(ParameterNode<TReturn> parameterNode);
-        TReturn VisitConstant(ConstantNode<TReturn> constantNode);
-        TReturn VisitModulo(ModuloNode<TReturn> moduloNode);
+        TReturn VisitLambda(LambdaNode lambdaNode);
+        TReturn VisitEqual(EqualNode equalNode);
+        TReturn VisitLessThan(LessThanNode lessThanNode);
+        TReturn VisitLessThanOrEqual(LessThanOrEqualNode lessThanOrEqualNode);
+        TReturn VisitMemberAccess(MemberAccessNode memberAccessNode);
+        TReturn VisitConvert(ConvertNode convertNode);
+        TReturn VisitParameter(ParameterNode parameterNode);
+        TReturn VisitConstant(ConstantNode constantNode);
+        TReturn VisitModulo(ModuloNode moduloNode);
     }
 }

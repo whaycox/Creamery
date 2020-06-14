@@ -1,7 +1,7 @@
 ﻿namespace Curds.Persistence.Abstraction
 {
-    internal interface IExpressionNode<TReturn>
+    public interface IExpressionNode
     {
-        TReturn AcceptVisitor(IExpressionVisitor<TReturn> visitor);
+        TReturn AcceptVisitor<TReturn>(IExpressionVisitor<TReturn> visitor);
     }
 }

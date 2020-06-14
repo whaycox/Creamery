@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Whey.Domain;
 
 namespace Curds.Persistence.Tests
 {
@@ -10,6 +11,7 @@ namespace Curds.Persistence.Tests
     using Template;
 
     [TestClass]
+    [TestCategory(nameof(TestType.Integration))]
     public class CustomTestEntityRepositoryIntegrationTest : SqlIntegrationTemplate
     {
         [TestMethod]

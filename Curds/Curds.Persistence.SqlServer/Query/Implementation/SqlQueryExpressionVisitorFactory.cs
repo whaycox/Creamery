@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Curds.Persistence.Query.Implementation
+﻿namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
     using Persistence.Abstraction;

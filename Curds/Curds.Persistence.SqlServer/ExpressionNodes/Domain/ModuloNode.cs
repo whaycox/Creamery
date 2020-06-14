@@ -1,15 +1,15 @@
 ﻿using System.Linq.Expressions;
 
-namespace Curds.Persistence.ExpressionNodes.Implementation
+namespace Curds.Persistence.ExpressionNodes.Domain
 {
     using Persistence.Abstraction;
 
-    internal class ModuloNode<TReturn> : BaseBinaryExpressionNode<TReturn>
+    public class ModuloNode : BaseBinaryExpressionNode
     {
         public ModuloNode(IExpressionNodeFactory nodeFactory, BinaryExpression moduloExpression)
             : base(nodeFactory, moduloExpression)
         { }
 
-        public override TReturn AcceptVisitor(IExpressionVisitor<TReturn> visitor) => visitor.VisitModulo(this);
+        public override TReturn AcceptVisitor<TReturn>(IExpressionVisitor<TReturn> visitor) => visitor.VisitModulo(this);
     }
 }

@@ -54,13 +54,13 @@ namespace Curds.Persistence.Query.Implementation
 
         public ISqlQueryToken ParseQueryExpression(Expression queryExpression)
         {
-            IExpressionNode<ISqlQueryToken> rootNode = ExpressionNodeFactory.Build<ISqlQueryToken>(queryExpression);
+            IExpressionNode rootNode = ExpressionNodeFactory.Build(queryExpression);
             return rootNode.AcceptVisitor(ExpressionVisitorFactory.TokenVisitor(this));
         }
 
         public ISqlTable ParseTableExpression(Expression tableExpression)
         {
-            IExpressionNode<ISqlTable> rootNode = ExpressionNodeFactory.Build<ISqlTable>(tableExpression);
+            IExpressionNode rootNode = ExpressionNodeFactory.Build(tableExpression);
             return rootNode.AcceptVisitor(ExpressionVisitorFactory.TableVisitor(this));
         }
     }

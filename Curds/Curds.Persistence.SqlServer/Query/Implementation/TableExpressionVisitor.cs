@@ -7,7 +7,7 @@ namespace Curds.Persistence.Query.Implementation
 {
     using Persistence.Abstraction;
     using Abstraction;
-    using ExpressionNodes.Implementation;
+    using ExpressionNodes.Domain;
     using Persistence.Implementation;
 
     internal class TableExpressionVisitor<TModel> : BaseQueryExpressionVisitor<TModel, ISqlTable>, ISqlTableVisitor<TModel>
@@ -17,7 +17,7 @@ namespace Curds.Persistence.Query.Implementation
             : base(queryContext)
         { }
 
-        public override ISqlTable VisitParameter(ParameterNode<ISqlTable> parameterNode) =>
+        public override ISqlTable VisitParameter(ParameterNode parameterNode) =>
             Context.Tables.First(table => table.EntityType == parameterNode.SourceExpression.Type);
     }
 }

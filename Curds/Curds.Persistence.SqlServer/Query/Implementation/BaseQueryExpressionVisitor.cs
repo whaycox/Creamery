@@ -11,7 +11,7 @@ namespace Curds.Persistence.Query.Implementation
     internal abstract class BaseQueryExpressionVisitor<TModel, TReturn> : BaseExpressionVisitor<TReturn>
         where TModel : IDataModel
     {
-        protected ISqlQueryContext<TModel> Context { get; }
+        public ISqlQueryContext<TModel> Context { get; }
 
         public BaseQueryExpressionVisitor(ISqlQueryContext<TModel> context)
         {

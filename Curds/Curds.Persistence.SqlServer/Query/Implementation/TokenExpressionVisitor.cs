@@ -7,7 +7,7 @@ namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
     using Domain;
-    using ExpressionNodes.Implementation;
+    using ExpressionNodes.Domain;
     using Persistence.Abstraction;
     using Tokens.Implementation;
 
@@ -20,7 +20,7 @@ namespace Curds.Persistence.Query.Implementation
             : base(queryContext)
         { }
 
-        public override ISqlQueryToken VisitConstant(ConstantNode<ISqlQueryToken> constantNode)
+        public override ISqlQueryToken VisitConstant(ConstantNode constantNode)
         {
             object value = constantNode.SourceExpression.Value;
 
@@ -35,10 +35,10 @@ namespace Curds.Persistence.Query.Implementation
             }
         }
 
-        public override ISqlQueryToken VisitConvert(ConvertNode<ISqlQueryToken> convertNode) =>
+        public override ISqlQueryToken VisitConvert(ConvertNode convertNode) =>
             convertNode.Operand.AcceptVisitor(this);
 
-        public override ISqlQueryToken VisitEqual(EqualNode<ISqlQueryToken> equalNode)
+        public override ISqlQueryToken VisitEqual(EqualNode equalNode)
         {
             ISqlQueryToken left = equalNode.Left.AcceptVisitor(this);
             ISqlQueryToken right = equalNode.Right.AcceptVisitor(this);
@@ -99,30 +99,30 @@ namespace Curds.Persistence.Query.Implementation
             return Context.TokenFactory.BooleanCombination(BooleanCombination.And, keyTokens);
         }
 
-        public override ISqlQueryToken VisitLessThan(LessThanNode<ISqlQueryToken> lessThanNode)
+        public override ISqlQueryToken VisitLessThan(LessThanNode lessThanNode)
         {
             ISqlQueryToken left = lessThanNode.Left.AcceptVisitor(this);
             ISqlQueryToken right = lessThanNode.Right.AcceptVisitor(this);
             return Context.TokenFactory.BooleanComparison(BooleanComparison.LessThan, left, right);
         }
 
-        public override ISqlQueryToken VisitLessThanOrEqual(LessThanOrEqualNode<ISqlQueryToken> lessThanOrEqualNode)
+        public override ISqlQueryToken VisitLessThanOrEqual(LessThanOrEqualNode lessThanOrEqualNode)
         {
             ISqlQueryToken left = lessThanOrEqualNode.Left.AcceptVisitor(this);
             ISqlQueryToken right = lessThanOrEqualNode.Right.AcceptVisitor(this);
             return Context.TokenFactory.BooleanComparison(BooleanComparison.LessThanOrEqual, left, right);
         }
 
-        public override ISqlQueryToken VisitLambda(LambdaNode<ISqlQueryToken> lambdaNode) =>
+        public override ISqlQueryToken VisitLambda(LambdaNode lambdaNode) =>
             lambdaNode.Body.AcceptVisitor(this);
 
-        public override ISqlQueryToken VisitMemberAccess(MemberAccessNode<ISqlQueryToken> memberAccessNode)
+        public override ISqlQueryToken VisitMemberAccess(MemberAccessNode memberAccessNode)
         {
             VisitationState.Push(memberAccessNode.SourceExpression.Member);
             return memberAccessNode.Expression.AcceptVisitor(this);
         }
 
-        public override ISqlQueryToken VisitParameter(ParameterNode<ISqlQueryToken> parameterNode)
+        public override ISqlQueryToken VisitParameter(ParameterNode parameterNode)
         {
             ISqlTable table = Context.ParseTableExpression(parameterNode.SourceExpression);
             PropertyInfo propertyInfo = VisitationState.Pop() as PropertyInfo;
@@ -135,7 +135,7 @@ namespace Curds.Persistence.Query.Implementation
             return Context.TokenFactory.QualifiedObjectName(column);
         }
 
-        public override ISqlQueryToken VisitModulo(ModuloNode<ISqlQueryToken> moduloNode)
+        public override ISqlQueryToken VisitModulo(ModuloNode moduloNode)
         {
             ISqlQueryToken left = moduloNode.Left.AcceptVisitor(this);
             ISqlQueryToken right = moduloNode.Right.AcceptVisitor(this);

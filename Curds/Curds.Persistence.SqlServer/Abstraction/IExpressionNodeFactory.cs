@@ -2,8 +2,8 @@
 
 namespace Curds.Persistence.Abstraction
 {
-    internal interface IExpressionNodeFactory
+    public interface IExpressionNodeFactory
     {
-        IExpressionNode<TReturn> Build<TReturn>(Expression expression);
+        IExpressionNode Build(Expression expression);
     }
 }

@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq.Expressions;
 
-namespace Curds.Persistence.ExpressionNodes.Implementation
+namespace Curds.Persistence.ExpressionNodes.Domain
 {
     using Persistence.Abstraction;
     using Abstraction;
 
-    internal class LessThanNode<TReturn> : BaseBinaryExpressionNode<TReturn>
+    public class LessThanNode : BaseBinaryExpressionNode
     {
         public LessThanNode(IExpressionNodeFactory nodeFactory, BinaryExpression lessThanExpression)
             : base(nodeFactory, lessThanExpression)
         { }
 
-        public override TReturn AcceptVisitor(IExpressionVisitor<TReturn> visitor) => visitor.VisitLessThan(this);
+        public override TReturn AcceptVisitor<TReturn>(IExpressionVisitor<TReturn> visitor) => visitor.VisitLessThan(this);
     }
 }

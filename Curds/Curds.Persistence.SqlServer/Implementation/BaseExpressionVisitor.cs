@@ -4,19 +4,19 @@ using System.Collections.Generic;
 namespace Curds.Persistence.Implementation
 {
     using Abstraction;
-    using Curds.Persistence.ExpressionNodes.Implementation;
-    using ExpressionNodes.Implementation;
+    using Curds.Persistence.ExpressionNodes.Domain;
+    using ExpressionNodes.Domain;
 
     internal abstract class BaseExpressionVisitor<TReturn> : IExpressionVisitor<TReturn>
     {
-        public virtual TReturn VisitConstant(ConstantNode<TReturn> constantNode) => throw new NotImplementedException();
-        public virtual TReturn VisitConvert(ConvertNode<TReturn> convertNode) => throw new NotImplementedException();
-        public virtual TReturn VisitEqual(EqualNode<TReturn> equalNode) => throw new NotImplementedException();
-        public virtual TReturn VisitLessThan(LessThanNode<TReturn> lessThanNode) => throw new NotImplementedException();
-        public virtual TReturn VisitLessThanOrEqual(LessThanOrEqualNode<TReturn> lessThanOrEqualNode) => throw new NotImplementedException();
-        public virtual TReturn VisitLambda(LambdaNode<TReturn> lambdaNode) => throw new NotImplementedException();
-        public virtual TReturn VisitMemberAccess(MemberAccessNode<TReturn> memberAccessNode) => throw new NotImplementedException();
-        public virtual TReturn VisitParameter(ParameterNode<TReturn> parameterNode) => throw new NotImplementedException();
-        public virtual TReturn VisitModulo(ModuloNode<TReturn> moduloNode) => throw new NotImplementedException();
+        public virtual TReturn VisitConstant(ConstantNode constantNode) => throw new NotImplementedException();
+        public virtual TReturn VisitConvert(ConvertNode convertNode) => throw new NotImplementedException();
+        public virtual TReturn VisitEqual(EqualNode equalNode) => throw new NotImplementedException();
+        public virtual TReturn VisitLessThan(LessThanNode lessThanNode) => throw new NotImplementedException();
+        public virtual TReturn VisitLessThanOrEqual(LessThanOrEqualNode lessThanOrEqualNode) => throw new NotImplementedException();
+        public virtual TReturn VisitLambda(LambdaNode lambdaNode) => throw new NotImplementedException();
+        public virtual TReturn VisitMemberAccess(MemberAccessNode memberAccessNode) => throw new NotImplementedException();
+        public virtual TReturn VisitParameter(ParameterNode parameterNode) => throw new NotImplementedException();
+        public virtual TReturn VisitModulo(ModuloNode moduloNode) => throw new NotImplementedException();
     }
 }
