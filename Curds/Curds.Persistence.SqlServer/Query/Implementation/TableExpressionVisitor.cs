@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Curds.Persistence.Query.Implementation
 {
-    using Persistence.Abstraction;
     using Abstraction;
     using ExpressionNodes.Domain;
-    using Persistence.Implementation;
+    using Persistence.Abstraction;
 
     internal class TableExpressionVisitor<TModel> : BaseQueryExpressionVisitor<TModel, ISqlTable>, ISqlTableVisitor<TModel>
         where TModel : IDataModel

@@ -1,21 +1,18 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Reflection;
-using System.Linq;
 
 namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
-    using Model.Abstraction;
     using Persistence.Abstraction;
-    using Persistence.Domain;
-    using Domain;
     using Queries.Implementation;
 
     internal abstract class SqlUniverse<TModel> : ISqlUniverse
         where TModel : IDataModel
     {
+        protected ISqlQueryTokenFactory TokenFactory { get; }
+        protected ISqlQueryPhraseBuilder PhraseBuilder { get; }
         protected ISqlQueryContext<TModel> QueryContext { get; }
 
         public IEnumerable<ISqlTable> Tables => QueryContext.Tables;
@@ -23,8 +20,13 @@ namespace Curds.Persistence.Query.Implementation
         public IEnumerable<ISqlQueryToken> Filters => FilterCollection;
         private List<ISqlQueryToken> FilterCollection { get; } = new List<ISqlQueryToken>();
 
-        public SqlUniverse(ISqlQueryContext<TModel> queryContext)
+        public SqlUniverse(
+            ISqlQueryTokenFactory tokenFactory,
+            ISqlQueryPhraseBuilder phraseBuilder,
+            ISqlQueryContext<TModel> queryContext)
         {
+            TokenFactory = tokenFactory;
+            PhraseBuilder = phraseBuilder;
             QueryContext = queryContext;
         }
 
@@ -37,23 +39,26 @@ namespace Curds.Persistence.Query.Implementation
     {
         private ISqlTable Table { get; }
 
-        public SqlUniverse(ISqlQueryContext<TModel> queryContext)
-            : base(queryContext)
+        public SqlUniverse(
+            ISqlQueryTokenFactory tokenFactory,
+            ISqlQueryPhraseBuilder phraseBuilder,
+            ISqlQueryContext<TModel> queryContext)
+            : base(tokenFactory, phraseBuilder, queryContext)
         {
             Table = queryContext.AddTable<TEntity>();
         }
 
-        public ISqlQuery<TEntity> Project() => new ProjectEntityQuery<TModel, TEntity>(QueryContext)
-        {
-            ProjectedTable = Table,
-            Source = this,
-        };
+        public ISqlQuery<TEntity> Project() => new ProjectEntityQuery<TModel, TEntity>(
+            QueryContext,
+            PhraseBuilder,
+            Table,
+            this);
 
-        public ISqlQuery Delete() => new DeleteEntityQuery<TModel, TEntity>(QueryContext)
-        {
-            DeletedTable = Table,
-            Source = this,
-        };
+        public ISqlQuery Delete() => new DeleteEntityQuery<TModel, TEntity>(
+            QueryContext,
+            PhraseBuilder,
+            Table,
+            this);
 
         public ISqlUniverse<TEntity> Where(Expression<Func<TEntity, bool>> filterExpression)
         {
@@ -61,10 +66,11 @@ namespace Curds.Persistence.Query.Implementation
             return this;
         }
 
-        public IEntityUpdate<TEntity> Update() => new EntityUpdateQuery<TModel, TEntity>(QueryContext)
-        {
-            UpdatedTable = Table,
-            Source = this,
-        };
+        public IEntityUpdate<TEntity> Update() => new EntityUpdateQuery<TModel, TEntity>(
+            QueryContext,
+            TokenFactory,
+            PhraseBuilder,
+            Table,
+            this);
     }
 }

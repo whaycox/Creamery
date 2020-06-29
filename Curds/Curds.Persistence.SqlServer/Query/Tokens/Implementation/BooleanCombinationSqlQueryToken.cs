@@ -1,7 +1,6 @@
 ﻿using Curds.Persistence.Query.Abstraction;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 
 namespace Curds.Persistence.Query.Tokens.Implementation

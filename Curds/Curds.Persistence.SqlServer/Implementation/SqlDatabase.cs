@@ -4,7 +4,7 @@ namespace Curds.Persistence.Implementation
 {
     using Abstraction;
 
-    public abstract class SqlDatabase : IDatabase
+    public class SqlDatabase : IDatabase
     {
         private ISqlConnectionContext ConnectionContext { get; }
 

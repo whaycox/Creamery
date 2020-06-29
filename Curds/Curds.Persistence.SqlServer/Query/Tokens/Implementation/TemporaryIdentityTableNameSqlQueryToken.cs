@@ -1,7 +1,5 @@
 ﻿namespace Curds.Persistence.Query.Tokens.Implementation
 {
-    using Model.Abstraction;
-    using Persistence.Abstraction;
     using Query.Abstraction;
 
     public class TemporaryIdentityTableNameSqlQueryToken : ObjectNameSqlQueryToken

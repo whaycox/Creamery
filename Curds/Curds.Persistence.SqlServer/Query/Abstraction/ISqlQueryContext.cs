@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace Curds.Persistence.Query.Abstraction
 {
     using Persistence.Abstraction;
 
-    internal interface ISqlQueryContext<TModel>
+    public interface ISqlQueryContext<TModel>
         where TModel : IDataModel
     {
-        ISqlQueryTokenFactory TokenFactory { get; }
         ISqlQueryFormatter Formatter { get; }
         ISqlConnectionContext ConnectionContext { get; }
         ISqlQueryParameterBuilder ParameterBuilder { get; }

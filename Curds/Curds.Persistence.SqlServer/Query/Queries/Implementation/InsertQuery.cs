@@ -5,67 +5,43 @@ using System.Threading.Tasks;
 
 namespace Curds.Persistence.Query.Queries.Implementation
 {
-    using Abstraction;
+    using Query.Abstraction;
     using Domain;
     using Persistence.Abstraction;
+    using Abstraction;
 
     internal class InsertQuery<TModel, TEntity> : BaseSqlQuery<TModel>
         where TModel : IDataModel
         where TEntity : IEntity
     {
+        private ISqlQueryPhraseBuilder PhraseBuilder { get; }
         private ISqlTable Table { get; }
 
-        public List<TEntity> Entities { get; set; } = new List<TEntity>(); 
+        public List<TEntity> Entities { get; } = new List<TEntity>(); 
         private IEnumerable<ValueEntity> ValueEntities => Entities
-            .Select(entity => Table.BuildValueEntity(entity));
+            .Select(entity => Table.BuildValueEntity(entity))
+            .ToList();
 
-        public InsertQuery(ISqlQueryContext<TModel> queryContext)
+        public InsertQuery(
+            ISqlQueryPhraseBuilder phraseBuilder,
+            ISqlQueryContext<TModel> queryContext)
             : base(queryContext)
         {
+            PhraseBuilder = phraseBuilder;
             Table = queryContext.AddTable<TEntity>();
         }
 
         protected override IEnumerable<ISqlQueryToken> GenerateTokens()
         {
-            yield return CreateTemporaryIdentityToken;
-            yield return InsertToTableToken;
-            yield return OutputToTemporaryIdentityToken;
-            foreach (ISqlQueryToken token in ValueEntitiesToken)
+            yield return PhraseBuilder.CreateTemporaryIdentityToken(Table);
+            yield return PhraseBuilder.InsertToTableToken(Table);
+            yield return PhraseBuilder.OutputToTemporaryIdentityToken(Table);
+            foreach (ISqlQueryToken token in PhraseBuilder.ValueEntitiesToken(ParameterBuilder, ValueEntities))
                 yield return token;
-            foreach (ISqlQueryToken token in SelectNewIdentitiesToken)
+            foreach (ISqlQueryToken token in PhraseBuilder.SelectNewIdentitiesToken(Table))
                 yield return token;
-            yield return DropTemporaryIdentityToken;
+            yield return PhraseBuilder.DropTemporaryIdentityToken(Table);
         }
-        private ISqlQueryToken CreateTemporaryIdentityToken => TokenFactory.Phrase(
-            TokenFactory.Keyword(SqlQueryKeyword.CREATE),
-            TokenFactory.Keyword(SqlQueryKeyword.TABLE),
-            TokenFactory.TemporaryIdentityName(Table),
-            TokenFactory.ColumnList(new[] { Table.Identity }, true));
-        private ISqlQueryToken InsertToTableToken => TokenFactory.Phrase(
-            TokenFactory.Keyword(SqlQueryKeyword.INSERT),
-            TokenFactory.QualifiedObjectName(Table),
-            TokenFactory.ColumnList(Table.NonIdentities, false));
-        private ISqlQueryToken OutputToTemporaryIdentityToken => TokenFactory.Phrase(
-            TokenFactory.Keyword(SqlQueryKeyword.OUTPUT),
-            TokenFactory.InsertedIdentityName(Table),
-            TokenFactory.Keyword(SqlQueryKeyword.INTO),
-            TokenFactory.TemporaryIdentityName(Table));
-        private IEnumerable<ISqlQueryToken> ValueEntitiesToken => new ISqlQueryToken[]
-        {
-            TokenFactory.Keyword(SqlQueryKeyword.VALUES),
-            TokenFactory.ValueEntities(ParameterBuilder, ValueEntities)
-        };
-        private IEnumerable<ISqlQueryToken> SelectNewIdentitiesToken => new ISqlQueryToken[]
-        {
-            SelectColumnsToken(new[]{ Table.Identity }),
-            TokenFactory.Phrase(
-                    TokenFactory.Keyword(SqlQueryKeyword.FROM),
-                    TokenFactory.TemporaryIdentityName(Table)),
-        };
-        private ISqlQueryToken DropTemporaryIdentityToken => TokenFactory.Phrase(
-            TokenFactory.Keyword(SqlQueryKeyword.DROP),
-            TokenFactory.Keyword(SqlQueryKeyword.TABLE),
-            TokenFactory.TemporaryIdentityName(Table));
 
         public override async Task ProcessResult(ISqlQueryReader queryReader)
         {

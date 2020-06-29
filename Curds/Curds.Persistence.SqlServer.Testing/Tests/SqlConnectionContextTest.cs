@@ -19,11 +19,9 @@ namespace Curds.Persistence.Tests
         private SqlCommand TestCommand = new SqlCommand("SELECT 1");
         private SqlCommand TestInsertCommand = new SqlCommand("INSERT dbo.TestEntity VALUES ('Test') SELECT SCOPE_IDENTITY()");
 
-        private Mock<IServiceProvider> MockServiceProvider = new Mock<IServiceProvider>();
         private Mock<ISqlQueryReaderFactory> MockQueryReaderFactory = new Mock<ISqlQueryReaderFactory>();
         private Mock<ISqlQueryReader> MockQueryReader = new Mock<ISqlQueryReader>();
         private Mock<ISqlQuery> MockQuery = new Mock<ISqlQuery>();
-        private Mock<ISqlQuery<TestEntity>> MockReturnQuery = new Mock<ISqlQuery<TestEntity>>();
 
         private SqlConnectionContext TestObject = null;
 
@@ -44,22 +42,17 @@ namespace Curds.Persistence.Tests
         [TestInitialize]
         public void Init()
         {
-            throw new NotImplementedException();
-            //MockServiceProvider
-            //    .Setup(provider => provider.GetService(typeof(ISqlQueryWriter)))
-            //    .Returns(MockQueryWriter.Object);
-            //MockQueryReaderFactory
-            //    .Setup(factory => factory.Create(It.IsAny<SqlCommand>()))
-            //    .ReturnsAsync(MockQueryReader.Object);
-            //MockQueryWriter
-            //    .Setup(writer => writer.Flush())
-            //    .Returns(TestCommand);
+            MockQueryReaderFactory
+                .Setup(factory => factory.Create(It.IsAny<SqlCommand>()))
+                .ReturnsAsync(MockQueryReader.Object);
+            MockQuery
+                .Setup(query => query.GenerateCommand())
+                .Returns(TestCommand);
 
-            //TestObject = new SqlConnectionContext(
-            //    MockServiceProvider.Object,
-            //    MockConnectionStringFactory.Object,
-            //    MockConnectionOptions.Object,
-            //    MockQueryReaderFactory.Object);
+            TestObject = new SqlConnectionContext(
+                MockConnectionStringFactory.Object,
+                MockConnectionOptions.Object,
+                MockQueryReaderFactory.Object);
         }
 
         [TestCleanup]
@@ -70,23 +63,13 @@ namespace Curds.Persistence.Tests
 
         private void VerifyCommandWasBuiltWithQuery()
         {
-            throw new NotImplementedException();
-            //MockQuery.Verify(query => query.Write(MockQueryWriter.Object), Times.Once);
-            //VerifyCommandWasBuiltCommon();
-        }
-        private void VerifyCommandWasBuiltWithReturnQuery()
-        {
-            throw new NotImplementedException();
-            //MockReturnQuery.Verify(query => query.Write(MockQueryWriter.Object), Times.Once);
-            //VerifyCommandWasBuiltCommon();
+            MockQuery.Verify(query => query.GenerateCommand(), Times.Once);
+            VerifyCommandWasBuiltCommon();
         }
         private void VerifyCommandWasBuiltCommon()
         {
-            throw new NotImplementedException();
-            //MockServiceProvider.Verify(provider => provider.GetService(typeof(ISqlQueryWriter)), Times.Once);
-            //MockQueryWriter.Verify(writer => writer.Flush(), Times.Once);
-            //Assert.IsNotNull(TestCommand.Connection);
-            //Assert.IsNull(TestCommand.Transaction);
+            Assert.IsNotNull(TestCommand.Connection);
+            Assert.IsNull(TestCommand.Transaction);
         }
 
         [TestMethod]
@@ -132,7 +115,7 @@ namespace Curds.Persistence.Tests
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public async Task RollbackTransactionThrowsWithoutTransaction()
+        public void RollbackTransactionThrowsWithoutTransaction()
         {
             TestObject.RollbackTransaction();
         }

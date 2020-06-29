@@ -1,15 +1,13 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System;
 using System.Collections.Generic;
 using Whey;
-using System;
-using System.Linq;
 
 namespace Curds.Persistence.Query.Tests
 {
     using Abstraction;
     using Implementation;
-    using Model.Abstraction;
     using Persistence.Abstraction;
     using Persistence.Domain;
     using Queries.Implementation;
@@ -21,14 +19,42 @@ namespace Curds.Persistence.Query.Tests
         private TestEntity TestEntity = new TestEntity();
 
         private Mock<IServiceProvider> MockServiceProvider = new Mock<IServiceProvider>();
-        private Mock<IEntityModel> MockEntityModel = new Mock<IEntityModel>();
+        private Mock<ISqlQueryTokenFactory> MockTokenFactory = new Mock<ISqlQueryTokenFactory>();
+        private Mock<ISqlQueryPhraseBuilder> MockPhraseBuilder = new Mock<ISqlQueryPhraseBuilder>();
+        private Mock<ISqlQueryContext<ITestDataModel>> MockQueryContext = new Mock<ISqlQueryContext<ITestDataModel>>();
 
         private SqlQueryBuilder<ITestDataModel> TestObject = null;
 
         [TestInitialize]
         public void Init()
         {
+            MockServiceProvider
+                .Setup(provider => provider.GetService(typeof(ISqlQueryTokenFactory)))
+                .Returns(MockTokenFactory.Object);
+            MockServiceProvider
+                .Setup(provider => provider.GetService(typeof(ISqlQueryPhraseBuilder)))
+                .Returns(MockPhraseBuilder.Object);
+            MockServiceProvider
+                .Setup(provider => provider.GetService(typeof(ISqlQueryContext<ITestDataModel>)))
+                .Returns(MockQueryContext.Object);
+
             TestObject = new SqlQueryBuilder<ITestDataModel>(MockServiceProvider.Object);
+        }
+
+        [TestMethod]
+        public void InsertRequestsPhraseBuilder()
+        {
+            TestObject.Insert(TestEntities);
+
+            MockServiceProvider.Verify(provider => provider.GetService(typeof(ISqlQueryPhraseBuilder)), Times.Once);
+        }
+
+        [TestMethod]
+        public void InsertRequestsQueryContext()
+        {
+            TestObject.Insert(TestEntities);
+
+            MockServiceProvider.Verify(provider => provider.GetService(typeof(ISqlQueryContext<ITestDataModel>)), Times.Once);
         }
 
         [TestMethod]
@@ -37,26 +63,6 @@ namespace Curds.Persistence.Query.Tests
             ISqlQuery actual = TestObject.Insert(TestEntities);
 
             Assert.IsInstanceOfType(actual, typeof(InsertQuery<ITestDataModel, TestEntity>));
-        }
-
-        [TestMethod]
-        public void InsertBuildsModel()
-        {
-            TestObject.Insert(TestEntities);
-
-            throw new NotImplementedException();
-            //MockModelMap.Verify(map => map.Entity<TestEntity>(), Times.Once);
-        }
-
-        [TestMethod]
-        public void InsertSetsTableModelToBuiltResult()
-        {
-            throw new NotImplementedException();
-            //ISqlQuery actual = TestObject.Insert(TestEntities);
-
-            //InsertQuery<TestEntity> testQuery = actual.VerifyIsActually<InsertQuery<TestEntity>>();
-            //SqlTable actualTable = testQuery.Table.VerifyIsActually<SqlTable>();
-            //Assert.AreSame(MockEntityModel.Object, actualTable.Model);
         }
 
         private void PopulateNEntities(int entities)
@@ -82,20 +88,35 @@ namespace Curds.Persistence.Query.Tests
         }
 
         [TestMethod]
+        public void FromRequestsPhraseBuilder()
+        {
+            TestObject.From<TestEntity>();
+
+            MockServiceProvider.Verify(provider => provider.GetService(typeof(ISqlQueryPhraseBuilder)), Times.Once);
+        }
+
+        [TestMethod]
+        public void FromRequestsTokenFactory()
+        {
+            TestObject.From<TestEntity>();
+
+            MockServiceProvider.Verify(provider => provider.GetService(typeof(ISqlQueryTokenFactory)), Times.Once);
+        }
+
+        [TestMethod]
+        public void FromRequestsQueryContext()
+        {
+            TestObject.From<TestEntity>();
+
+            MockServiceProvider.Verify(provider => provider.GetService(typeof(ISqlQueryContext<ITestDataModel>)), Times.Once);
+        }
+
+        [TestMethod]
         public void FromReturnsExpectedType()
         {
             ISqlUniverse<TestEntity> actual = TestObject.From<TestEntity>();
 
             Assert.IsInstanceOfType(actual, typeof(SqlUniverse<ITestDataModel, TestEntity>));
-        }
-
-        [TestMethod]
-        public void FromBuildsModel()
-        {
-            TestObject.From<TestEntity>();
-
-            throw new NotImplementedException();
-            //MockModelMap.Verify(map => map.Entity<TestEntity>(), Times.Once);
         }
     }
 }

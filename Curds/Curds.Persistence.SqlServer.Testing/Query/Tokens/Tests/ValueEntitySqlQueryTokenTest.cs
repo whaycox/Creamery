@@ -17,14 +17,13 @@ namespace Curds.Persistence.Query.Tokens.Tests
         [TestMethod]
         public void ValuesSuppliedInConstructor()
         {
-            throw new System.NotImplementedException();
-            //for (int i = 0; i < 5; i++)
-            //    TestValues.Add(new ParameterSqlQueryToken(null));
-            //TestObject = new ValueEntitySqlQueryToken(TestValues);
+            for (int i = 0; i < 5; i++)
+                TestValues.Add(new ParameterSqlQueryToken(i.ToString(), typeof(string)));
+            TestObject = new ValueEntitySqlQueryToken(TestValues);
 
-            //Assert.AreEqual(TestValues.Count, TestObject.Values.Count);
-            //for (int i = 0; i < TestValues.Count; i++)
-            //    Assert.AreSame(TestValues[i], TestObject.Values[i]);
+            Assert.AreEqual(TestValues.Count, TestObject.Values.Count);
+            for (int i = 0; i < TestValues.Count; i++)
+                Assert.AreSame(TestValues[i], TestObject.Values[i]);
         }
 
         [TestMethod]

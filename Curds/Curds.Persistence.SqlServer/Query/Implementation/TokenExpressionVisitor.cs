@@ -14,11 +14,17 @@ namespace Curds.Persistence.Query.Implementation
     internal class TokenExpressionVisitor<TModel> : BaseQueryExpressionVisitor<TModel, ISqlQueryToken>, ISqlQueryTokenVisitor<TModel>
         where TModel : IDataModel
     {
+        public ISqlQueryTokenFactory TokenFactory { get; }
+
         private Stack<object> VisitationState { get; } = new Stack<object>();
 
-        public TokenExpressionVisitor(ISqlQueryContext<TModel> queryContext)
+        public TokenExpressionVisitor(
+            ISqlQueryTokenFactory tokenFactory,
+            ISqlQueryContext<TModel> queryContext)
             : base(queryContext)
-        { }
+        {
+            TokenFactory = tokenFactory;
+        }
 
         public override ISqlQueryToken VisitConstant(ConstantNode constantNode)
         {
@@ -27,11 +33,11 @@ namespace Curds.Persistence.Query.Implementation
             if (VisitationState.Count > 0 && VisitationState.Peek() is FieldInfo)
             {
                 FieldInfo fieldInfo = VisitationState.Pop() as FieldInfo;
-                return Context.TokenFactory.Parameter(Context.ParameterBuilder, fieldInfo.Name, fieldInfo.GetValue(value));
+                return TokenFactory.Parameter(Context.ParameterBuilder, fieldInfo.Name, fieldInfo.GetValue(value));
             }
             else
             {
-                return Context.TokenFactory.Parameter(Context.ParameterBuilder, nameof(value), value);
+                return TokenFactory.Parameter(Context.ParameterBuilder, nameof(value), value);
             }
         }
 
@@ -46,7 +52,7 @@ namespace Curds.Persistence.Query.Implementation
             if (IsKeyEquality(left, right, out ISqlQueryToken property))
                 return ExpandKeyEquality(property, property == left ? right : left);
             else
-                return Context.TokenFactory.BooleanComparison(BooleanComparison.Equals, left, right);
+                return TokenFactory.BooleanComparison(BooleanComparison.Equals, left, right);
         }
         private bool IsKeyEquality(ISqlQueryToken left, ISqlQueryToken right, out ISqlQueryToken property)
         {
@@ -90,27 +96,27 @@ namespace Curds.Persistence.Query.Implementation
             List<ISqlQueryToken> keyTokens = new List<ISqlQueryToken>();
             for (int i = 0; i < keys.Count; i++)
             {
-                ISqlQueryToken keyQualifiedObject = Context.TokenFactory.QualifiedObjectName(keys[i]);
-                ISqlQueryToken keyValue = Context.TokenFactory.Parameter(Context.ParameterBuilder, keys[i].Name, keyValues[i]);
+                ISqlQueryToken keyQualifiedObject = TokenFactory.QualifiedObjectName(keys[i]);
+                ISqlQueryToken keyValue = TokenFactory.Parameter(Context.ParameterBuilder, keys[i].Name, keyValues[i]);
 
-                keyTokens.Add(Context.TokenFactory.BooleanComparison(BooleanComparison.Equals, keyQualifiedObject, keyValue));
+                keyTokens.Add(TokenFactory.BooleanComparison(BooleanComparison.Equals, keyQualifiedObject, keyValue));
             }
 
-            return Context.TokenFactory.BooleanCombination(BooleanCombination.And, keyTokens);
+            return TokenFactory.BooleanCombination(BooleanCombination.And, keyTokens);
         }
 
         public override ISqlQueryToken VisitLessThan(LessThanNode lessThanNode)
         {
             ISqlQueryToken left = lessThanNode.Left.AcceptVisitor(this);
             ISqlQueryToken right = lessThanNode.Right.AcceptVisitor(this);
-            return Context.TokenFactory.BooleanComparison(BooleanComparison.LessThan, left, right);
+            return TokenFactory.BooleanComparison(BooleanComparison.LessThan, left, right);
         }
 
         public override ISqlQueryToken VisitLessThanOrEqual(LessThanOrEqualNode lessThanOrEqualNode)
         {
             ISqlQueryToken left = lessThanOrEqualNode.Left.AcceptVisitor(this);
             ISqlQueryToken right = lessThanOrEqualNode.Right.AcceptVisitor(this);
-            return Context.TokenFactory.BooleanComparison(BooleanComparison.LessThanOrEqual, left, right);
+            return TokenFactory.BooleanComparison(BooleanComparison.LessThanOrEqual, left, right);
         }
 
         public override ISqlQueryToken VisitLambda(LambdaNode lambdaNode) =>
@@ -132,14 +138,14 @@ namespace Curds.Persistence.Query.Implementation
                 column = table.KeyColumn;
             else
                 column = table.Columns.First(col => col.ValueName == propertyInfo.Name);
-            return Context.TokenFactory.QualifiedObjectName(column);
+            return TokenFactory.QualifiedObjectName(column);
         }
 
         public override ISqlQueryToken VisitModulo(ModuloNode moduloNode)
         {
             ISqlQueryToken left = moduloNode.Left.AcceptVisitor(this);
             ISqlQueryToken right = moduloNode.Right.AcceptVisitor(this);
-            return Context.TokenFactory.ArithmeticOperation(ArithmeticOperation.Modulo, left, right);
+            return TokenFactory.ArithmeticOperation(ArithmeticOperation.Modulo, left, right);
         }
     }
 }

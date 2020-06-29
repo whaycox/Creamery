@@ -23,7 +23,7 @@ namespace Curds.Persistence.Query.Tests
         private Mock<ISqlColumn> MockColumn = new Mock<ISqlColumn>();
         private Mock<ISqlQueryParameterBuilder> MockParameterBuilder = new Mock<ISqlQueryParameterBuilder>();
 
-        private SqlQueryTokenFactory TestObject = null;
+        private SqlQueryTokenFactory TestObject = new SqlQueryTokenFactory();
 
         [TestInitialize]
         public void Init()
@@ -155,6 +155,15 @@ namespace Curds.Persistence.Query.Tests
         }
 
         [TestMethod]
+        public void ParameterWithNullValueHasNullType()
+        {
+            ISqlQueryToken actual = TestObject.Parameter(MockParameterBuilder.Object, nameof(ParameterWithNullValueHasNullType), null);
+
+            ParameterSqlQueryToken actualToken = actual.VerifyIsActually<ParameterSqlQueryToken>();
+            Assert.IsNull(actualToken.Type);
+        }
+
+        [TestMethod]
         public void InsertedIdentityNameBuildsExpectedToken()
         {
             MockTable
@@ -191,6 +200,75 @@ namespace Curds.Persistence.Query.Tests
             Assert.AreEqual(1, valueEntity.Values.Count);
             ParameterSqlQueryToken value = valueEntity.Values[0];
             Assert.AreEqual(nameof(ValueEntitiesBuildsExpectedToken), value.Name);
+        }
+
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(5)]
+        [DataRow(7)]
+        [DataRow(14)]
+        public void BooleanCombinationBuildsExpectedToken(int elementsToAdd)
+        {
+            BooleanCombination testCombination = BooleanCombination.Or;
+            List<ISqlQueryToken> testElements = new List<ISqlQueryToken>();
+            for (int i = 0; i < elementsToAdd; i++)
+                testElements.Add(Mock.Of<ISqlQueryToken>());
+
+            ISqlQueryToken actual = TestObject.BooleanCombination(testCombination, testElements);
+
+            BooleanCombinationSqlQueryToken actualToken = actual.VerifyIsActually<BooleanCombinationSqlQueryToken>();
+            KeywordSqlQueryToken operationToken = actualToken.Operation.VerifyIsActually<KeywordSqlQueryToken>();
+            Assert.AreEqual(SqlQueryKeyword.OR, operationToken.Keyword);
+            CollectionAssert.AreEqual(testElements, actualToken.Elements);
+        }
+
+        [TestMethod]
+        public void BooleanComparisonBuildsExpectedToken()
+        {
+            BooleanComparison testComparison = BooleanComparison.GreaterThanOrEqual;
+            ISqlQueryToken testLeftToken = Mock.Of<ISqlQueryToken>();
+            ISqlQueryToken testRightToken = Mock.Of<ISqlQueryToken>();
+
+            ISqlQueryToken actual = TestObject.BooleanComparison(testComparison, testLeftToken, testRightToken);
+
+            BooleanComparisonSqlQueryToken actualToken = actual.VerifyIsActually<BooleanComparisonSqlQueryToken>();
+            ConstantSqlQueryToken operationToken = actualToken.Operation.VerifyIsActually<ConstantSqlQueryToken>();
+            Assert.AreEqual(" >= ", operationToken.Literal);
+            Assert.AreSame(testLeftToken, actualToken.Left);
+            Assert.AreSame(testRightToken, actualToken.Right);
+        }
+
+        [TestMethod]
+        public void ArithmeticOperationBuildsExpectedToken()
+        {
+            ArithmeticOperation testOperation = ArithmeticOperation.Modulo;
+            ISqlQueryToken testLeftToken = Mock.Of<ISqlQueryToken>();
+            ISqlQueryToken testRightToken = Mock.Of<ISqlQueryToken>();
+
+            ISqlQueryToken actual = TestObject.ArithmeticOperation(testOperation, testLeftToken, testRightToken);
+
+            ArithmeticOperationSqlQueryToken actualToken = actual.VerifyIsActually<ArithmeticOperationSqlQueryToken>();
+            ConstantSqlQueryToken operationToken = actualToken.Operation.VerifyIsActually<ConstantSqlQueryToken>();
+            Assert.AreEqual(" % ", operationToken.Literal);
+            Assert.AreSame(testLeftToken, actualToken.Left);
+            Assert.AreSame(testRightToken, actualToken.Right);
+        }
+
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(5)]
+        [DataRow(10)]
+        [DataRow(15)]
+        public void SetValuesBuildsExpectedToken(int valuesToSet)
+        {
+            List<ISqlQueryToken> testValueTokens = new List<ISqlQueryToken>();
+            for (int i = 0; i < valuesToSet; i++)
+                testValueTokens.Add(Mock.Of<ISqlQueryToken>());
+
+            ISqlQueryToken actual = TestObject.SetValues(testValueTokens);
+
+            SetValuesSqlQueryToken actualToken = actual.VerifyIsActually<SetValuesSqlQueryToken>();
+            CollectionAssert.AreEqual(testValueTokens, actualToken.SetValueTokens);
         }
     }
 }

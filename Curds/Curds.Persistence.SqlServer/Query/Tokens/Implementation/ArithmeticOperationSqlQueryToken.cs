@@ -1,11 +1,8 @@
 ﻿using Curds.Persistence.Query.Abstraction;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Curds.Persistence.Query.Tokens.Implementation
 {
-    using Persistence.Abstraction;
     using Query.Domain;
 
     public class ArithmeticOperationSqlQueryToken : BaseSqlQueryToken

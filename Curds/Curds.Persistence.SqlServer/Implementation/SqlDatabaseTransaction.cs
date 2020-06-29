@@ -6,7 +6,7 @@ namespace Curds.Persistence.Implementation
 
     internal class SqlDatabaseTransaction : IDatabaseTransaction
     {
-        private ISqlConnectionContext ConnectionContext { get; }
+        public ISqlConnectionContext ConnectionContext { get; }
 
         public SqlDatabaseTransaction(ISqlConnectionContext connectionContext)
         {

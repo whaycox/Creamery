@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace Curds.Persistence.Query.Tokens.Tests
 {
@@ -9,14 +10,26 @@ namespace Curds.Persistence.Query.Tokens.Tests
     public class ParameterSqlQueryTokenTest : LiteralSqlQueryTokenTemplate
     {
         private string TestName = nameof(TestName);
+        private Type TestType = typeof(string);
 
         private ParameterSqlQueryToken TestObject = null;
 
         [TestInitialize]
         public void Init()
         {
-            throw new System.NotImplementedException();
-            //TestObject = new ParameterSqlQueryToken(TestName);
+            TestObject = new ParameterSqlQueryToken(TestName, TestType);
+        }
+
+        [TestMethod]
+        public void SetsNameFromConstructor()
+        {
+            Assert.AreEqual(TestName, TestObject.Name);
+        }
+
+        [TestMethod]
+        public void SetsTypeFromConstructor()
+        {
+            Assert.AreEqual(TestType, TestObject.Type);
         }
 
         [TestMethod]

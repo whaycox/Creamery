@@ -25,6 +25,30 @@ namespace Curds.Persistence.Query.Tokens.Tests
             CollectionAssert.AreEqual(TestColumns, TestObject.Columns);
         }
 
+        [DataTestMethod]
+        [DataRow(false)]
+        [DataRow(true)]
+        public void CanSetIncludeGrouping(bool testBool)
+        {
+            TestObject = new ColumnListSqlQueryToken(TestColumns);
+
+            TestObject.IncludeGrouping = testBool;
+
+            Assert.AreEqual(testBool, TestObject.IncludeGrouping);
+        }
+
+        [DataTestMethod]
+        [DataRow(false)]
+        [DataRow(true)]
+        public void CanSetIncludeDefinition(bool testBool)
+        {
+            TestObject = new ColumnListSqlQueryToken(TestColumns);
+
+            TestObject.IncludeDefinition = testBool;
+
+            Assert.AreEqual(testBool, TestObject.IncludeDefinition);
+        }
+
         [TestMethod]
         public void VisitsFormatterAsColumnList()
         {

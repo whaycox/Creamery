@@ -93,5 +93,34 @@ namespace Curds.Persistence.Query.Tests
 
             Assert.AreEqual(DBNull.Value, actual[0].Value);
         }
+
+        [TestMethod]
+        public void UnregisterParameterRemovesFromFlush()
+        {
+            TestObject.RegisterNewParamater(TestName, TestInt);
+
+            TestObject.UnregisterParameter(TestName);
+
+            Assert.AreEqual(0, TestObject.Flush().Length);
+        }
+
+        [TestMethod]
+        public void UnregisterAllowsNameToBeReused()
+        {
+            string first = TestObject.RegisterNewParamater(TestName, TestInt);
+            string second = TestObject.RegisterNewParamater(TestName, TestInt);
+            string third = TestObject.RegisterNewParamater(TestName, TestInt);
+            TestObject.UnregisterParameter(second);
+
+            Assert.AreEqual(second, TestObject.RegisterNewParamater(TestName, TestInt));
+        }
+
+        [TestMethod]
+        public void UnregisterReturnsRegisteredValue()
+        {
+            TestObject.RegisterNewParamater(TestName, TestInt);
+
+            Assert.AreEqual(TestInt, TestObject.UnregisterParameter(TestName));
+        }
     }
 }

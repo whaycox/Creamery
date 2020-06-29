@@ -61,6 +61,15 @@ namespace Curds.Persistence.Query.Tokens.Tests
         }
 
         [TestMethod]
+        public void ConstructingWithTablePopulatesTable()
+        {
+            TestObject = new QualifiedObjectSqlQueryToken(MockTable.Object);
+
+            Assert.AreSame(MockTable.Object, TestObject.Table);
+            Assert.IsNull(TestObject.Column);
+        }
+
+        [TestMethod]
         public void ConstructingWithColumnUsesSchemaAndBothNames()
         {
             TestObject = new QualifiedObjectSqlQueryToken(MockColumn.Object);
@@ -69,6 +78,15 @@ namespace Curds.Persistence.Query.Tokens.Tests
             Assert.AreEqual(TestSchema, TestObject.Names[0].Name);
             Assert.AreEqual(TestName, TestObject.Names[1].Name);
             Assert.AreEqual(TestColumnName, TestObject.Names[2].Name);
+        }
+
+        [TestMethod]
+        public void ConstructingWithColumnPopulatesColumn()
+        {
+            TestObject = new QualifiedObjectSqlQueryToken(MockColumn.Object);
+
+            Assert.AreSame(MockColumn.Object, TestObject.Column);
+            Assert.IsNull(TestObject.Table);
         }
 
         [TestMethod]

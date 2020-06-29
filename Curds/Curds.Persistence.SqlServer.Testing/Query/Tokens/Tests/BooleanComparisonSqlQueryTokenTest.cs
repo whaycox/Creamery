@@ -1,22 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Threading.Tasks;
+using System;
 
 namespace Curds.Persistence.Query.Tokens.Tests
 {
-    using Implementation;
     using Domain;
+    using Implementation;
     using Query.Abstraction;
     using Template;
 
     [TestClass]
-    public class BooleanSqlQueryTokenTest : BaseSqlQueryTokenTemplate
+    public class BooleanComparisonSqlQueryTokenTest : BaseSqlQueryTokenTemplate
     {
         private BooleanComparison TestOperation = BooleanComparison.Equals;
 
@@ -51,12 +45,12 @@ namespace Curds.Persistence.Query.Tokens.Tests
         }
 
         [DataTestMethod]
-        [DataRow(BooleanComparison.Equals, "=")]
-        [DataRow(BooleanComparison.NotEquals, "<>")]
-        [DataRow(BooleanComparison.GreaterThan, ">")]
-        [DataRow(BooleanComparison.GreaterThanOrEqual, ">=")]
-        [DataRow(BooleanComparison.LessThan, "<")]
-        [DataRow(BooleanComparison.LessThanOrEqual, "<=")]
+        [DataRow(BooleanComparison.Equals, " = ")]
+        [DataRow(BooleanComparison.NotEquals, " <> ")]
+        [DataRow(BooleanComparison.GreaterThan, " > ")]
+        [DataRow(BooleanComparison.GreaterThanOrEqual, " >= ")]
+        [DataRow(BooleanComparison.LessThan, " < ")]
+        [DataRow(BooleanComparison.LessThanOrEqual, " <= ")]
         public void AcceptFormatVisitorVisitsExpectedOperation(BooleanComparison testOperation, string expectedLiteral)
         {
             TestObject = new BooleanComparisonSqlQueryToken(
@@ -78,6 +72,5 @@ namespace Curds.Persistence.Query.Tokens.Tests
                 MockLeftToken.Object,
                 MockRightToken.Object);
         }
-
     }
 }

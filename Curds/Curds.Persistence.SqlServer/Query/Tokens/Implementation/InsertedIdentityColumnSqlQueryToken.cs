@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Curds.Persistence.Query.Tokens.Implementation
+﻿namespace Curds.Persistence.Query.Tokens.Implementation
 {
-    using Model.Abstraction;
-    using Query.Domain;
     using Query.Abstraction;
+    using Query.Domain;
 
     public class InsertedIdentityColumnSqlQueryToken : QualifiedObjectSqlQueryToken
     {

@@ -64,6 +64,16 @@ namespace Curds.Persistence.Query.Tests
         }
 
         [TestMethod]
+        public void EntityTypeComesFromModel()
+        {
+            MockEntityModel
+                .Setup(model => model.EntityType)
+                .Returns(typeof(string));
+
+            Assert.AreEqual(typeof(string), TestObject.EntityType);
+        }
+
+        [TestMethod]
         public void SchemaComesFromModel()
         {
             MockEntityModel
@@ -163,6 +173,20 @@ namespace Curds.Persistence.Query.Tests
                 Assert.AreSame(TestObject, actualColumn.Table);
                 Assert.AreSame(TestKeys[i], actualColumn.ValueModel);
             }
+        }
+
+        [TestMethod]
+        public void KeyColumnComesFromModelKeyValue()
+        {
+            IValueModel testKeyValue = Mock.Of<IValueModel>();
+            MockEntityModel
+                .Setup(model => model.KeyValue)
+                .Returns(testKeyValue);
+
+            ISqlColumn actual = TestObject.KeyColumn;
+            SqlColumn actualColumn = actual.VerifyIsActually<SqlColumn>();
+            Assert.AreSame(TestObject, actualColumn.Table);
+            Assert.AreSame(testKeyValue, actualColumn.ValueModel);
         }
 
         [TestMethod]

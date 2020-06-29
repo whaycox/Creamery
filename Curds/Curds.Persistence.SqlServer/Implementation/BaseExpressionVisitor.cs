@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Curds.Persistence.Implementation
 {
     using Abstraction;
-    using Curds.Persistence.ExpressionNodes.Domain;
     using ExpressionNodes.Domain;
 
     internal abstract class BaseExpressionVisitor<TReturn> : IExpressionVisitor<TReturn>

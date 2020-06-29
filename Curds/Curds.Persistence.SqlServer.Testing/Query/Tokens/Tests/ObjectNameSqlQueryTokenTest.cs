@@ -6,7 +6,7 @@ namespace Curds.Persistence.Query.Tokens.Tests
     using Template;
 
     [TestClass]
-    public class ObjectNameSqlQueryTokenTest : LiteralSqlQueryTokenTemplate
+    public class ObjectNameSqlQueryTokenTest : ObjectNameSqlQueryTokenTemplate
     {
         private string TestName = nameof(TestName);
 
@@ -19,10 +19,7 @@ namespace Curds.Persistence.Query.Tokens.Tests
         }
 
         [TestMethod]
-        public void LiteralWrapsNameInIdentifiers()
-        {
-            Assert.AreEqual($"[{TestName}]", TestObject.Literal);
-        }
+        public void LiteralWrapsNameInIdentifiers() => VerifyLiteralWrapsNameInIdentifiers(TestObject);
 
         [TestMethod]
         public void VisitsFormatterAsLiteral() => VerifyTokenAcceptsLiteralToken(TestObject);

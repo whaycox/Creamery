@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
 namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
-    using Persistence.Abstraction;
     using Model.Abstraction;
+    using Persistence.Abstraction;
 
     internal class SqlQueryContext<TModel> : ISqlQueryContext<TModel>
         where TModel : IDataModel
@@ -17,7 +15,6 @@ namespace Curds.Persistence.Query.Implementation
         private IExpressionNodeFactory ExpressionNodeFactory { get; }
         private ISqlQueryExpressionVisitorFactory ExpressionVisitorFactory { get; }
 
-        public ISqlQueryTokenFactory TokenFactory { get; }
         public ISqlQueryFormatter Formatter { get; }
         public ISqlConnectionContext ConnectionContext { get; }
         public ISqlQueryParameterBuilder ParameterBuilder { get; }
@@ -29,7 +26,6 @@ namespace Curds.Persistence.Query.Implementation
             IModelMap<TModel> modelMap,
             IExpressionNodeFactory experssionNodeFactory,
             ISqlQueryExpressionVisitorFactory expressionVisitorFactory,
-            ISqlQueryTokenFactory tokenFactory,
             ISqlQueryFormatter formatter,
             ISqlConnectionContext connectionContext,
             ISqlQueryParameterBuilder parameterBuilder)
@@ -38,13 +34,12 @@ namespace Curds.Persistence.Query.Implementation
             ExpressionNodeFactory = experssionNodeFactory;
             ExpressionVisitorFactory = expressionVisitorFactory;
 
-            TokenFactory = tokenFactory;
             Formatter = formatter;
             ConnectionContext = connectionContext;
             ParameterBuilder = parameterBuilder;
         }
 
-        public ISqlTable AddTable<TEntity>() 
+        public ISqlTable AddTable<TEntity>()
             where TEntity : IEntity
         {
             SqlTable table = new SqlTable { Model = ModelMap.Entity<TEntity>() };

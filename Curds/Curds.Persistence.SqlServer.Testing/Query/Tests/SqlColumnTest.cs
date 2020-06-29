@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System;
 using System.Data;
 
 namespace Curds.Persistence.Query.Tests
@@ -50,9 +51,14 @@ namespace Curds.Persistence.Query.Tests
         }
 
         [TestMethod]
-        public void ValueName()
+        public void ValueNameIsPropertyName()
         {
-            Assert.Fail();
+            MockValueModel
+                .Setup(model => model.Property)
+                .Returns(typeof(SqlColumnTest).GetProperty(nameof(TestProperty)));
+
+            Assert.AreEqual(nameof(TestProperty), TestObject.ValueName);
         }
+        public string TestProperty => throw new NotImplementedException();
     }
 }

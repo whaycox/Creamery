@@ -1,42 +1,55 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Whey;
 using System;
+using System.Linq;
+using System.Linq.Expressions;
+using Whey;
 
 namespace Curds.Persistence.Query.Tests
 {
     using Abstraction;
     using Implementation;
-    using Model.Abstraction;
+    using Persistence.Abstraction;
     using Persistence.Domain;
     using Queries.Implementation;
-    using Persistence.Abstraction;
 
     [TestClass]
     public class SqlUniverseTest
     {
-        private Mock<IModelMap> MockModelMap = new Mock<IModelMap>();
-        private Mock<IEntityModel> MockEntityModel = new Mock<IEntityModel>();
+        private Mock<ISqlQueryTokenFactory> MockTokenFactory = new Mock<ISqlQueryTokenFactory>();
+        private Mock<ISqlQueryPhraseBuilder> MockPhraseBuilder = new Mock<ISqlQueryPhraseBuilder>();
+        private Mock<ISqlQueryContext<ITestDataModel>> MockQueryContext = new Mock<ISqlQueryContext<ITestDataModel>>();
+        private Mock<ISqlTable> MockTable = new Mock<ISqlTable>();
 
         private SqlUniverse<ITestDataModel, TestEntity> TestObject = null;
 
         [TestInitialize]
         public void Init()
         {
-            MockModelMap
-                .Setup(map => map.Entity<TestEntity>())
-                .Returns(MockEntityModel.Object);
+            MockQueryContext
+                .Setup(context => context.AddTable<TestEntity>())
+                .Returns(MockTable.Object);
 
-            throw new NotImplementedException();
-            //TestObject = new SqlUniverse<TestEntity>(
-            //    MockModelMap.Object,
-            //    MockExpressionParser.Object);
+            TestObject = new SqlUniverse<ITestDataModel, TestEntity>(
+                MockTokenFactory.Object,
+                MockPhraseBuilder.Object,
+                MockQueryContext.Object);
         }
 
         [TestMethod]
-        public void BuildingUniverseBuildsModelForEntity()
+        public void BuildingUniverseAddsTableForEntity()
         {
-            MockModelMap.Verify(map => map.Entity<TestEntity>(), Times.Once);
+            MockQueryContext.Verify(context => context.AddTable<TestEntity>());
+        }
+
+        [TestMethod]
+        public void TablesReturnsFromQueryContext()
+        {
+            MockQueryContext
+                .Setup(context => context.Tables)
+                .Returns(new[] { MockTable.Object });
+
+            CollectionAssert.AreEqual(new[] { MockTable.Object }, TestObject.Tables.ToList());
         }
 
         [TestMethod]
@@ -57,22 +70,98 @@ namespace Curds.Persistence.Query.Tests
         }
 
         [TestMethod]
-        public void ProjectedTableIsExpectedType()
+        public void ProjectedTableIsAddedFromContext()
         {
             ISqlQuery actual = TestObject.Project();
 
             ProjectEntityQuery<ITestDataModel, TestEntity> query = actual.VerifyIsActually<ProjectEntityQuery<ITestDataModel, TestEntity>>();
-            Assert.IsInstanceOfType(query.ProjectedTable, typeof(SqlTable));
+            Assert.AreSame(MockTable.Object, query.ProjectedTable);
         }
 
         [TestMethod]
-        public void ProjectedTableHasBuiltModel()
+        public void DeleteIsExpectedType()
+        {
+            ISqlQuery actual = TestObject.Delete();
+
+            Assert.IsInstanceOfType(actual, typeof(DeleteEntityQuery<ITestDataModel, TestEntity>));
+        }
+
+        [TestMethod]
+        public void DeleteAttachesSource()
+        {
+            ISqlQuery actual = TestObject.Delete();
+
+            DeleteEntityQuery<ITestDataModel, TestEntity> query = actual.VerifyIsActually<DeleteEntityQuery<ITestDataModel, TestEntity>>();
+            Assert.AreSame(TestObject, query.Source);
+        }
+
+        [TestMethod]
+        public void DeletedTableIsAddedFromContext()
         {
             ISqlQuery actual = TestObject.Project();
 
             ProjectEntityQuery<ITestDataModel, TestEntity> query = actual.VerifyIsActually<ProjectEntityQuery<ITestDataModel, TestEntity>>();
-            SqlTable table = query.ProjectedTable.VerifyIsActually<SqlTable>();
-            Assert.AreSame(MockEntityModel.Object, table.Model);
+            Assert.AreSame(MockTable.Object, query.ProjectedTable);
+        }
+
+        private Expression<Func<TestEntity, bool>> TestWhereExpression => entity => true;
+
+        [TestMethod]
+        public void WhereReturnsSameObject()
+        {
+            ISqlUniverse<TestEntity> actual = TestObject.Where(TestWhereExpression);
+
+            Assert.AreSame(TestObject, actual);
+        }
+
+        [TestMethod]
+        public void WhereParsesExpression()
+        {
+            var testExpression = TestWhereExpression;
+
+            TestObject.Where(testExpression);
+
+            MockQueryContext.Verify(context => context.ParseQueryExpression(testExpression), Times.Once);
+        }
+
+        [TestMethod]
+        public void WhereAddsParsedTokenToFilters()
+        {
+            var testExpression = TestWhereExpression;
+            ISqlQueryToken testFilterToken = Mock.Of<ISqlQueryToken>();
+            MockQueryContext
+                .Setup(context => context.ParseQueryExpression(It.IsAny<Expression>()))
+                .Returns(testFilterToken);
+
+            TestObject.Where(testExpression);
+
+            CollectionAssert.AreEqual(new[] { testFilterToken }, TestObject.Filters.ToList());
+        }
+
+        [TestMethod]
+        public void UpdateIsExpectedType()
+        {
+            IEntityUpdate<TestEntity> actual = TestObject.Update();
+
+            Assert.IsInstanceOfType(actual, typeof(EntityUpdateQuery<ITestDataModel, TestEntity>));
+        }
+
+        [TestMethod]
+        public void UpdateAttachesSource()
+        {
+            IEntityUpdate<TestEntity> actual = TestObject.Update();
+
+            EntityUpdateQuery<ITestDataModel, TestEntity> query = actual.VerifyIsActually<EntityUpdateQuery<ITestDataModel, TestEntity>>();
+            Assert.AreSame(TestObject, query.Source);
+        }
+
+        [TestMethod]
+        public void UpdatedTableIsAddedFromContext()
+        {
+            IEntityUpdate<TestEntity> actual = TestObject.Update();
+
+            EntityUpdateQuery<ITestDataModel, TestEntity> query = actual.VerifyIsActually<EntityUpdateQuery<ITestDataModel, TestEntity>>();
+            Assert.AreSame(MockTable.Object, query.UpdatedTable);
         }
     }
 }

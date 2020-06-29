@@ -5,7 +5,6 @@ namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
     using Curds.Persistence.Query.Domain;
-    using Domain;
     using Tokens.Implementation;
 
     internal class SqlQueryTokenFactory : ISqlQueryTokenFactory

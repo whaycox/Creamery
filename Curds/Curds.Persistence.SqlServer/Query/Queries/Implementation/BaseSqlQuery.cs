@@ -5,7 +5,6 @@ namespace Curds.Persistence.Query.Queries.Implementation
 {
     using Persistence.Abstraction;
     using Query.Abstraction;
-    using Query.Domain;
     using System.Data.SqlClient;
 
     internal abstract class BaseSqlQuery<TModel> : ISqlQuery
@@ -14,7 +13,6 @@ namespace Curds.Persistence.Query.Queries.Implementation
         private ISqlQueryContext<TModel> QueryContext { get; }
 
         private ISqlQueryFormatter Formatter => QueryContext.Formatter;
-        protected ISqlQueryTokenFactory TokenFactory => QueryContext.TokenFactory;
         protected ISqlQueryParameterBuilder ParameterBuilder => QueryContext.ParameterBuilder;
 
         public BaseSqlQuery(ISqlQueryContext<TModel> queryContext)
@@ -29,33 +27,6 @@ namespace Curds.Persistence.Query.Queries.Implementation
             return command;
         }
         protected abstract IEnumerable<ISqlQueryToken> GenerateTokens();
-
-        protected ISqlQueryToken SelectColumnsToken(IEnumerable<ISqlColumn> columns) => TokenFactory.Phrase(
-            TokenFactory.Keyword(SqlQueryKeyword.SELECT),
-            TokenFactory.SelectList(columns));
-
-        protected ISqlQueryToken DeleteTableToken(ISqlTable table) => TokenFactory.Phrase(
-            TokenFactory.Keyword(SqlQueryKeyword.DELETE),
-            TokenFactory.QualifiedObjectName(table));
-
-        protected ISqlQueryToken UpdateTableToken(ISqlTable table) => TokenFactory.Phrase(
-            TokenFactory.Keyword(SqlQueryKeyword.UPDATE),
-            TokenFactory.QualifiedObjectName(table),
-            TokenFactory.Keyword(SqlQueryKeyword.SET));
-
-        protected IEnumerable<ISqlQueryToken> FromUniverseTokens(ISqlUniverse universe)
-        {
-            foreach (ISqlTable table in universe.Tables)
-                yield return TokenFactory.Phrase(
-                    TokenFactory.Keyword(SqlQueryKeyword.FROM),
-                    TokenFactory.QualifiedObjectName(table));
-
-            int filterIndex = 0;
-            foreach (ISqlQueryToken filter in universe.Filters)
-                yield return TokenFactory.Phrase(
-                    TokenFactory.Keyword(filterIndex++ > 0 ? SqlQueryKeyword.AND : SqlQueryKeyword.WHERE),
-                    filter);
-        }
 
         public virtual Task ProcessResult(ISqlQueryReader queryReader) => Task.CompletedTask;
 

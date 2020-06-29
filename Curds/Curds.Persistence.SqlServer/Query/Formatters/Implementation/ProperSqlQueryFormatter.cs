@@ -1,13 +1,8 @@
-﻿using System;
-
-namespace Curds.Persistence.Query.Formatters.Implementation
+﻿namespace Curds.Persistence.Query.Formatters.Implementation
 {
     using Curds.Persistence.Query.Tokens.Implementation;
-    using Text.Abstraction;
-    using Tokens.Implementation;
     using Query.Abstraction;
-    using Model.Domain;
-    using Model.Abstraction;
+    using Text.Abstraction;
 
     public class ProperSqlQueryFormatter : BaseSqlQueryFormatter
     {
@@ -59,17 +54,12 @@ namespace Curds.Persistence.Query.Formatters.Implementation
 
         public override void VisitValueEntities(ValueEntitiesSqlQueryToken token)
         {
-            if (token.Entities.Count == 1)
-                token.Entities[0].AcceptFormatVisitor(this);
-            else
+            for (int i = 0; i < token.Entities.Count; i++)
             {
-                for (int i = 0; i < token.Entities.Count; i++)
-                {
-                    token.Entities[i].AcceptFormatVisitor(this);
+                token.Entities[i].AcceptFormatVisitor(this);
 
-                    if (i < token.Entities.Count - 1)
-                        StringBuilder.AppendLine(",");
-                }
+                if (i < token.Entities.Count - 1)
+                    StringBuilder.AppendLine(",");
             }
             StringBuilder.SetNewLine();
         }
