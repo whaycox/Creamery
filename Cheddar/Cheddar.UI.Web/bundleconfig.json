@@ -1,0 +1,12 @@
+[
+  {
+    "outputFileName": "wwwroot/css/cheddar.css",
+    "inputFiles": [
+      "Styles/**/*.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "commentMode": "all"
+    }
+  }
+]

@@ -1,0 +1,113 @@
+﻿:root {
+    --main-background: rgb(44, 8, 133);
+    --alt-background: rgb(201, 251, 53);
+    --accent: rgb(233, 156, 16);
+    --main-text: rgb(255, 255, 255);
+    --accent-text: rgb(133, 255, 10);
+    --body-text: black;
+    --transparent: rgba(0, 0, 0, 0);
+    --dark: rgba(0, 0, 0, 0.15);
+    --darker: rgba(0, 0, 0, 0.3);
+    --darkest: rgba(0, 0, 0, 0.5);
+    --light: rgba(255, 255, 255, 0.2);
+    --lighter: rgba(255, 255, 255, 0.5);
+    --lightest: rgba(255, 255, 255, 0.7);
+}
+
+:focus {
+    outline-color: var(--accent);
+    outline-style: solid;
+    outline-width: 2px;
+    outline-offset: -2px;
+}
+
+body {
+    margin: 0px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--body-text);
+}
+
+a {
+    color: var(--main-text);
+    text-decoration: none;
+}
+
+a.active {
+    color: var(--accent-text);
+}
+
+button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: var(--main-background);
+    background-color: var(--alt-background);
+    background-image: linear-gradient(var(--transparent), var(--dark));
+    border: solid 1.5px var(--main-text);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+    button:active {
+        color: var(--main-text);
+        border-color: var(--main-text);
+        background-color: var(--accent);
+    }
+
+empty-space {
+    flex-grow: 1;
+}
+
+#blazor-error-ui {
+    display: none;
+    position: absolute;
+    top: 0px;
+    z-index: 10;
+    background-color: var(--darkest);
+}
+
+#blazor-error-modal {
+    width: 30vw;
+    height: 30vh;
+    display: grid;
+    place-items: center;
+    grid-template-rows: 1fr 60px;
+    grid-template-areas:
+        'error error'
+        'reload dismiss';
+    border: solid 5px var(--accent-text);
+    background-color: var(--main-background);
+    border-radius: 25px;
+    padding: 30px;
+}
+
+    #blazor-error-modal h1 {
+        grid-area: error;
+        color: var(--main-text);
+    }
+
+    #blazor-error-modal button {
+        padding: 15px 20px;
+        margin: 10px;
+        font-size: 2em;
+    }
+
+    #blazor-error-modal .reload {
+        grid-area: reload;
+    }
+
+    #blazor-error-modal .dismiss {
+        grid-area: dismiss;
+    }
+
+div.center-on-screen {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    place-items: center;
+}
+
+div.glyph-container {
+    display: grid;
+    place-items: center;
+}

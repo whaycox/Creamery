@@ -1,0 +1,34 @@
+﻿<NavLink href="@Destination" Match="NavLinkMatch.All" @onclick="FireClick">
+    <div class="nav-item">
+        <Glyph IGlyph="Glyph" />
+        <div class="description">@Description</div>
+    </div>
+</NavLink>
+
+@code {
+    [Parameter]
+    public string Destination { get; set; }
+
+    [Parameter]
+    public IGlyph Glyph { get; set; }
+
+    [Parameter]
+    public string Description { get; set; }
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        if (string.IsNullOrWhiteSpace(Destination))
+            throw new ArgumentNullException(nameof(Destination));
+        if (Glyph == null)
+            throw new ArgumentNullException(nameof(Glyph));
+        if (string.IsNullOrWhiteSpace(Description))
+            throw new ArgumentNullException(nameof(Description));
+    }
+
+    private Task FireClick() => OnClick.InvokeAsync(null);
+}

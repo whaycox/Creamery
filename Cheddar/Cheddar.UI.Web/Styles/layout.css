@@ -1,0 +1,74 @@
+﻿app {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-rows: 75px 1fr 50px;
+    grid-template-areas: 
+        'header'
+        'body'
+        'footer';
+}
+
+app > header {
+    grid-area: header;
+    z-index: 3;
+    background-color: var(--main-background);
+    display: grid;
+    place-items: center;
+    grid-template-columns: 75px 1fr;
+}
+
+    app > header .material-icons {
+        font-size: 3.1em;
+    }
+
+    app > header .user-name {
+        color: var(--main-text);
+        justify-self: end;
+        padding-right: 15px;
+    }
+
+app > nav {
+    grid-area: body;
+    z-index: 2;
+}
+
+app > main {
+    grid-area: body;
+    z-index: 1;
+}
+
+app > footer {
+    grid-area: footer;
+    color: var(--main-text);
+    background-color: var(--main-background);
+    background-image: linear-gradient(var(--dark), var(--dark));
+    display: flex;
+    flex-direction : row;
+    align-items: center;
+}
+
+    app > footer > button {
+        margin: 0px 15px;
+    }
+
+@media (min-width: 600px) {
+    app > nav {
+        grid-row-start: body;
+        grid-row-end: footer;
+    }
+}
+
+@media (min-width: 1500px) {
+    app {
+        grid-template-columns: auto 1fr;
+        grid-template-areas:
+            'header header'
+            'nav body'
+            'nav footer';
+    }
+
+    app > nav {
+        grid-area: nav;
+    }
+}

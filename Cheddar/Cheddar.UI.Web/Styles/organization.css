@@ -1,0 +1,15 @@
+﻿#organization-list {
+    display: flex;
+    flex-direction: column;
+}
+
+#organization-list .control-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 5px;
+}
+
+#organization-list .control-container button {
+    padding: 10px 15px;
+}

@@ -259,3 +259,5 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/Cheddar/Cheddar.UI.Web/wwwroot/css/cheddar.css
+/Cheddar/Cheddar.UI.Web/wwwroot/css/cheddar.min.css

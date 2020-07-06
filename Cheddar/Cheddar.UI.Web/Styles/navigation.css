@@ -1,0 +1,73 @@
+﻿nav.nav-tree {
+    width: 100%;
+    height: 100%;
+    background-color: var(--main-background);
+    background-image: linear-gradient(var(--darker), var(--darker));
+    display: flex;
+    font-size: 1.5em;
+    flex-direction: column;
+}
+
+    nav.nav-tree[aria-expanded=false] {
+        display: none;
+    }
+
+nav.nav-tree .nav-item {
+    height: 50px;
+    display: grid;
+    position: relative;
+    align-items: center;
+    grid-template-columns: 50px 1fr;
+}
+
+    nav.nav-tree .nav-item:hover,
+    nav.nav-tree a:focus > .nav-item {
+        background-image: linear-gradient(var(--light), var(--light));
+    }
+
+    nav.nav-tree .nav-item > .description {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding-left: 10px;
+    }
+
+nav.nav-tree i {
+    font-size: 1.5em;
+}
+
+@media (min-width: 600px) {
+    nav.nav-tree {
+        width: 350px;
+        box-shadow: var(--darkest) 3px 0px 7px;
+    }
+}
+
+@media (min-width: 1500px) {
+    nav.nav-tree {
+        width: auto;
+        box-shadow: none;
+    }
+
+        nav.nav-tree[aria-expanded=false] {
+            display: flex;
+        }
+
+    nav.nav-tree .nav-item > .description {
+        width: 300px;
+    }
+
+        nav.nav-tree[aria-expanded=false] .nav-item > .description {
+            height: 50px;
+            display: none;
+            background-color: var(--main-background);
+            background-image: linear-gradient(var(--darker), var(--darker));
+        }
+
+        nav.nav-tree[aria-expanded=false] .nav-item:hover > .description,
+        nav.nav-tree[aria-expanded=false] a:focus > .nav-item > .description {
+            display: flex;
+            position: absolute;
+            left: 50px;
+        }
+}

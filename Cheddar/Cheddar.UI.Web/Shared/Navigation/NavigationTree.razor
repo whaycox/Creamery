@@ -1,0 +1,25 @@
+﻿<nav class="nav-tree" @attributes="Attributes">
+    <NavigationItem Destination="/" Glyph="@MaterialIconGlyph.Create("home")" Description="Home" OnClick="OnClick" />
+    <NavigationItem Destination="/Organizations" Glyph="@MaterialIconGlyph.Create("device_hub")" Description="Organizations" OnClick="OnClick" />
+</nav>
+
+@code {
+    private Dictionary<string, object> Attributes { get; } = new Dictionary<string, object>();
+
+    [Parameter]
+    public bool Expanded { get; set; }
+    private string ExpandedAttributeValue => Expanded.ToString().ToLower();
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        if (!Attributes.ContainsKey(AttributeConstants.AriaExpanded))
+            Attributes.Add(AttributeConstants.AriaExpanded, ExpandedAttributeValue);
+        else
+            Attributes[AttributeConstants.AriaExpanded] = ExpandedAttributeValue;
+    }
+}

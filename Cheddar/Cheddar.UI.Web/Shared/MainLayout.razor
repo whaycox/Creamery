@@ -1,0 +1,37 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+
+<header>
+    <button @onclick="ToggleNavigation">
+        <Glyph IGlyph="NavigationToggleGlyph" />
+    </button>
+    <div class="user-name">User Name</div>
+</header>
+<NavigationTree Expanded="NavigationExpanded" OnClick="NavigationClicked" />
+<main>
+    @Body
+</main>
+<footer>
+    <empty-space />
+    Cheddar<button @onclick="NavigateToSource">Source</button>
+</footer>
+
+@code {
+    private IGlyph NavigationToggleGlyph { get; } = MaterialIconGlyph.Create("menu");
+    private bool NavigationExpanded { get; set; } = false;
+
+    private void ToggleNavigation()
+    {
+        NavigationExpanded = !NavigationExpanded;
+    }
+
+    private void NavigationClicked()
+    {
+        NavigationExpanded = false;
+    }
+
+    private void NavigateToSource()
+    {
+        NavigationManager.NavigateTo("https://github.com/whaycox/Creamery");
+    }
+}
