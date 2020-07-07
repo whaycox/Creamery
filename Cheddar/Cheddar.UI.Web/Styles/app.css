@@ -21,6 +21,10 @@
     outline-offset: -2px;
 }
 
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -37,9 +41,10 @@ a.active {
 }
 
 button {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+    display: grid;
+    place-items: center;
+    margin: 5px;
+    padding: 5px;
     color: var(--main-background);
     background-color: var(--alt-background);
     background-image: linear-gradient(var(--transparent), var(--dark));
@@ -57,6 +62,36 @@ button {
 empty-space {
     flex-grow: 1;
 }
+
+.cheddar-modal {
+    position: relative;
+    color: var(--main-text);
+    background-color: var(--main-background);
+    background-image: linear-gradient(var(--light), var(--light));
+    border: solid 2px var(--accent-text);
+}
+
+    .cheddar-modal .blazored-modal-header {
+        padding: 0px 0px 0px 5px;
+    }
+
+    .cheddar-modal .blazored-modal-close {
+        position: absolute;
+        padding: 1px 7px 0px 7px;
+        right: 8px;
+        top: 8px;
+        color: var(--main-background);
+        background-color: var(--alt-background);
+        border: solid 2px var(--main-background);
+        border-radius: 50%;
+    }
+
+    .cheddar-modal .blazored-modal-content {
+        margin: 10px;
+        border: solid 1.5px var(--accent-text);
+        border-radius: 5px;
+        padding: 5px;
+    }
 
 #blazor-error-ui {
     display: none;

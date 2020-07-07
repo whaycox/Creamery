@@ -1,8 +1,15 @@
-﻿<div class="control-container">
-    <button><Glyph IGlyph="AddGlyph" />Add Organization</button>
+﻿@inject IModalService Modal
+
+<div class="control-container">
+    <button @onclick="ClickAddOrganization"><Glyph IGlyph="AddGlyph" />Add Organization</button>
 </div>
 
-@code { 
+@code {
     private IGlyph AddGlyph { get; } = MaterialIconGlyph.Create("add_box");
+
+    private void ClickAddOrganization()
+    {
+        Modal.Show<AddOrganization>("New Organization");
+    }
 
 }

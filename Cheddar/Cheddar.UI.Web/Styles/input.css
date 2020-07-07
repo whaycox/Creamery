@@ -1,0 +1,54 @@
+﻿.cheddar-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.cheddar-input {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-areas: 
+        'label input'
+        'validation validation';
+    place-items: center;
+    padding: 5px;
+    border: solid 1px var(--accent-text);
+    border-radius: 5px;
+}
+
+.cheddar-input label {
+    grid-area: label;
+    padding: 8px 13px;
+    color: var(--main-background);
+    background-color: var(--alt-background);
+    background-image: linear-gradient(var(--light), var(--darker));
+    border: solid 1px var(--main-text);
+    border-radius: 5px 0px 0px 5px;
+}
+
+    .cheddar-input input:focus + label {
+        color: var(--main-text);
+        background-color: var(--accent);
+    }
+
+.cheddar-input input {
+    grid-area: input;
+    height: 100%;
+    margin: unset;
+    padding: 5px;
+    border: solid 1px var(--main-text);
+    border-left: none;
+    border-radius: 0px 5px 5px 0px;
+    background-image: linear-gradient(var(--lighter), var(--lightest) 75%);
+    background-color: var(--alt-background);
+}
+
+    .cheddar-input input:focus {
+        background-color: var(--accent);
+    }
+
+.cheddar-input .validation-message {
+    grid-area: validation;
+    justify-self: end;
+    color: var(--accent);
+    padding: 5px;
+}

@@ -1,0 +1,20 @@
+﻿<EditForm Model="AddingOrganization" class="cheddar-form" OnValidSubmit="SubmitAddOrganization">
+    <DataAnnotationsValidator />
+    <div class="cheddar-input">
+        <InputText id="@NameFieldName" @bind-Value="AddingOrganization.Name" />
+        <label for="@NameFieldName">@NameFieldName</label>
+        <ValidationMessage For="() => AddingOrganization.Name" />
+    </div>
+    <button type="submit">Submit</button>
+</EditForm>
+
+@code {
+    private string NameFieldName => nameof(Organization.Name);
+
+    private Organization AddingOrganization { get; } = new Organization();
+
+    private async Task SubmitAddOrganization()
+    {
+        throw new NotImplementedException();
+    }
+}
