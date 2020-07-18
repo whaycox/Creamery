@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq.Expressions;
+using System.Linq;
 
 namespace Curds.Persistence.Query.Implementation
 {
@@ -21,7 +22,20 @@ namespace Curds.Persistence.Query.Implementation
         private List<ISqlQueryToken> ClauseCollection { get; } = new List<ISqlQueryToken>();
         private JoinType JoinType { get; set; }
 
+        private ISqlQueryTokenFactory TokenFactory => QueryContext.TokenFactory;
+
         public ISqlTable JoinedTable { get; }
+
+        public IEnumerable<ISqlQueryToken> Tokens
+        {
+            get
+            {
+                for (int i = 0; i < ClauseCollection.Count; i++)
+                    yield return TokenFactory.Phrase(
+                        TokenFactory.Keyword(i == 0 ? SqlQueryKeyword.ON : SqlQueryKeyword.AND),
+                        ClauseCollection[i]);
+            }
+        }
 
         public SqlJoinClause(
             ISqlQueryContext<TDataModel> queryContext,

@@ -39,7 +39,10 @@ namespace Curds.Persistence.Query.Implementation
                     }
                     else
                     {
-                        throw new NotImplementedException();
+                        yield return TokenFactory.Phrase(
+                            TokenFactory.Keyword(SqlQueryKeyword.JOIN),
+                            TokenFactory.QualifiedObjectName(Tables[i]));
+                        yield return TokenFactory.JoinClause(JoinCollection[i - 1]);
                     }
                 }
 

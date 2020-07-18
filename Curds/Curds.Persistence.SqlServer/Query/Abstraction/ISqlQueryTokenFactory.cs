@@ -17,6 +17,7 @@ namespace Curds.Persistence.Query.Abstraction
         ISqlQueryToken Parameter(ISqlQueryParameterBuilder parameterBuilder, string name, object value);
         ISqlQueryToken ValueEntities(ISqlQueryParameterBuilder parameterBuilder, IEnumerable<ValueEntity> valueEntities);
         ISqlQueryToken SetValues(IEnumerable<ISqlQueryToken> setValueTokens);
+        ISqlQueryToken JoinClause(ISqlJoinClause joinClause);
         ISqlQueryToken BooleanCombination(BooleanCombination combination, IEnumerable<ISqlQueryToken> elements);
         ISqlQueryToken BooleanComparison(BooleanComparison comparison, ISqlQueryToken left, ISqlQueryToken right);
         ISqlQueryToken ArithmeticOperation(ArithmeticOperation operation, ISqlQueryToken left, ISqlQueryToken right);

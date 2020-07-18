@@ -8,7 +8,9 @@ namespace Curds.Persistence.Query.Abstraction
     using Persistence.Abstraction;
 
     public interface ISqlJoinClause
-    { }
+    {
+        IEnumerable<ISqlQueryToken> Tokens { get; }
+    }
 
     public interface ISqlJoinClause<TDataModel, TEntity, TUniverse, TJoinedEntity> : ISqlJoinClause
         where TDataModel : IDataModel

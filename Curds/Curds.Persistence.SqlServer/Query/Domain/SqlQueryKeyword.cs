@@ -15,6 +15,7 @@
         SET,
         FROM,
         JOIN,
+        ON,
         WHERE,
 
         AND,

@@ -13,6 +13,7 @@ namespace Curds.Persistence.Query.Abstraction
         void VisitSetValues(SetValuesSqlQueryToken token);
         void VisitValueEntities(ValueEntitiesSqlQueryToken token);
         void VisitValueEntity(ValueEntitySqlQueryToken token);
+        void VisitJoinClause(JoinClauseSqlQueryToken token);
         void VisitBooleanCombination(BooleanCombinationSqlQueryToken token);
     }
 }

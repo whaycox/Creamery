@@ -235,9 +235,9 @@ namespace Curds.Persistence.Tests
                     ParentID = testParent.ID,
                     Name = $"{nameof(testChild)}{i}",
                 };
-                await childRepository.Insert(testChild);
                 testChildren.Add(testChild);
             }
+            await childRepository.Insert(testChildren);
 
             List<Child> actual = await childRepository.ChildrenByParent(testParent.ID);
 

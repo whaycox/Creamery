@@ -50,6 +50,12 @@ namespace Curds.Persistence.Query.Implementation
         private ValueEntitySqlQueryToken BuildValueEntityToken(ISqlQueryParameterBuilder parameterBuilder, ValueEntity valueEntity) =>
             new ValueEntitySqlQueryToken(valueEntity.Values.Select(value => BuildParameterToken(parameterBuilder, value.Name, value.Content)));
 
+        public ISqlQueryToken SetValues(IEnumerable<ISqlQueryToken> setValueTokens) =>
+            new SetValuesSqlQueryToken(setValueTokens);
+
+        public ISqlQueryToken JoinClause(ISqlJoinClause joinClause) =>
+            new JoinClauseSqlQueryToken(joinClause);
+
         public ISqlQueryToken BooleanCombination(BooleanCombination combination, IEnumerable<ISqlQueryToken> elements) =>
             new BooleanCombinationSqlQueryToken(combination, elements);
 
@@ -58,8 +64,5 @@ namespace Curds.Persistence.Query.Implementation
 
         public ISqlQueryToken ArithmeticOperation(ArithmeticOperation operation, ISqlQueryToken left, ISqlQueryToken right) =>
             new ArithmeticOperationSqlQueryToken(operation, left, right);
-
-        public ISqlQueryToken SetValues(IEnumerable<ISqlQueryToken> setValueTokens) =>
-            new SetValuesSqlQueryToken(setValueTokens);
     }
 }

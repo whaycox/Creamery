@@ -52,6 +52,38 @@
                 StringBuilder.Append($" {TypeMap[column.Type]} NOT NULL");
         }
 
+        public override void VisitSetValues(SetValuesSqlQueryToken token)
+        {
+
+            using (StringBuilder.CreateIndentScope())
+            {
+                if (token.SetValueTokens.Count == 1)
+                    token.SetValueTokens[0].AcceptFormatVisitor(this);
+                else
+                {
+                    for (int i = 0; i < token.SetValueTokens.Count; i++)
+                    {
+                        if (i == 0)
+                            StringBuilder.Append(" ");
+                        else
+                            StringBuilder.Append(",");
+
+                        token.SetValueTokens[i].AcceptFormatVisitor(this);
+
+                        if (i < token.SetValueTokens.Count - 1)
+                            StringBuilder.SetNewLine();
+                    }
+                }
+            }
+        }
+
+        public override void VisitJoinClause(JoinClauseSqlQueryToken token)
+        {
+            using (StringBuilder.CreateIndentScope())
+                foreach (ISqlQueryToken clauseToken in token.Clauses)
+                    clauseToken.AcceptFormatVisitor(this);
+        }
+
         public override void VisitValueEntities(ValueEntitiesSqlQueryToken token)
         {
             for (int i = 0; i < token.Entities.Count; i++)
@@ -101,31 +133,6 @@
                         StringBuilder.SetNewLine();
                     }
                 StringBuilder.AppendLine(")");
-            }
-        }
-
-        public override void VisitSetValues(SetValuesSqlQueryToken token)
-        {
-
-            using (StringBuilder.CreateIndentScope())
-            {
-                if (token.SetValueTokens.Count == 1)
-                    token.SetValueTokens[0].AcceptFormatVisitor(this);
-                else
-                {
-                    for (int i = 0; i < token.SetValueTokens.Count; i++)
-                    {
-                        if (i == 0)
-                            StringBuilder.Append(" ");
-                        else
-                            StringBuilder.Append(",");
-
-                        token.SetValueTokens[i].AcceptFormatVisitor(this);
-
-                        if (i < token.SetValueTokens.Count - 1)
-                            StringBuilder.SetNewLine();
-                    }
-                }
             }
         }
     }
