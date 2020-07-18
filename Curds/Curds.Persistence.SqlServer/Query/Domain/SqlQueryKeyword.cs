@@ -14,6 +14,7 @@
         UPDATE,
         SET,
         FROM,
+        JOIN,
         WHERE,
 
         AND,

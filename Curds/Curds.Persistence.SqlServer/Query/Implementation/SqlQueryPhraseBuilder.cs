@@ -65,19 +65,5 @@ namespace Curds.Persistence.Query.Implementation
         public ISqlQueryToken SetValuesToken(IEnumerable<ISqlQueryToken> setValueTokens) => TokenFactory.Phrase(
             TokenFactory.Keyword(SqlQueryKeyword.SET),
             TokenFactory.SetValues(setValueTokens));
-
-        public IEnumerable<ISqlQueryToken> FromUniverseTokens(ISqlUniverse universe)
-        {
-            foreach (ISqlTable table in universe.Tables)
-                yield return TokenFactory.Phrase(
-                    TokenFactory.Keyword(SqlQueryKeyword.FROM),
-                    TokenFactory.QualifiedObjectName(table));
-
-            int filterIndex = 0;
-            foreach (ISqlQueryToken filter in universe.Filters)
-                yield return TokenFactory.Phrase(
-                    TokenFactory.Keyword(filterIndex++ > 0 ? SqlQueryKeyword.AND : SqlQueryKeyword.WHERE),
-                    filter);
-        }
     }
 }

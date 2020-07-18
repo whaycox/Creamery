@@ -5,26 +5,20 @@ namespace Curds.Persistence.Query.Queries.Implementation
 {
     using Abstraction;
     using Persistence.Abstraction;
-    using Query.Abstraction;
 
-    internal class ProjectEntityQuery<TModel, TEntity> : BaseSqlQuery<TModel, TEntity>
-        where TModel : IDataModel
+    internal class ProjectEntityQuery<TDataModel, TEntity> : BaseSqlQuery<TDataModel, TEntity>
+        where TDataModel : IDataModel
         where TEntity : IEntity
     {
-        private ISqlQueryPhraseBuilder PhraseBuilder { get; }
-
         public ISqlTable ProjectedTable { get; }
-        public ISqlUniverse Source { get; }
+        public ISqlUniverse<TDataModel> Source { get; }
 
         public ProjectEntityQuery(
-            ISqlQueryContext<TModel> queryContext,
-            ISqlQueryPhraseBuilder phraseBuilder,
+            ISqlQueryContext<TDataModel> queryContext,
             ISqlTable projectedTable,
-            ISqlUniverse source)
+            ISqlUniverse<TDataModel> source)
             : base(queryContext)
         {
-            PhraseBuilder = phraseBuilder;
-
             ProjectedTable = projectedTable;
             Source = source;
         }
@@ -32,7 +26,7 @@ namespace Curds.Persistence.Query.Queries.Implementation
         protected override IEnumerable<ISqlQueryToken> GenerateTokens()
         {
             yield return PhraseBuilder.SelectColumnsToken(ProjectedTable.Columns);
-            foreach (ISqlQueryToken token in PhraseBuilder.FromUniverseTokens(Source))
+            foreach (ISqlQueryToken token in Source.Tokens)
                 yield return token;
         }
 

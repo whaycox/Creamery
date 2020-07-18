@@ -18,6 +18,5 @@ namespace Curds.Persistence.Query.Abstraction
         ISqlQueryToken DeleteTableToken(ISqlTable table);
         ISqlQueryToken UpdateTableToken(ISqlTable table);
         ISqlQueryToken SetValuesToken(IEnumerable<ISqlQueryToken> setValueTokens);
-        IEnumerable<ISqlQueryToken> FromUniverseTokens(ISqlUniverse universe);
     }
 }

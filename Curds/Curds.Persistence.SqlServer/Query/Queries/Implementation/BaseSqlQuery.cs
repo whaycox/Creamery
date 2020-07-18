@@ -14,6 +14,8 @@ namespace Curds.Persistence.Query.Queries.Implementation
 
         private ISqlQueryFormatter Formatter => QueryContext.Formatter;
         protected ISqlQueryParameterBuilder ParameterBuilder => QueryContext.ParameterBuilder;
+        protected ISqlQueryTokenFactory TokenFactory => QueryContext.TokenFactory;
+        protected ISqlQueryPhraseBuilder PhraseBuilder => QueryContext.PhraseBuilder;
 
         public BaseSqlQuery(ISqlQueryContext<TModel> queryContext)
         {
@@ -43,6 +45,6 @@ namespace Curds.Persistence.Query.Queries.Implementation
             : base(queryContext)
         { }
 
-        public IList<TEntity> Results { get; } = new List<TEntity>();
+        public List<TEntity> Results { get; } = new List<TEntity>();
     }
 }

@@ -28,8 +28,6 @@ namespace Curds.Persistence.Query.Queries.Tests
         {
             TestObject = new EntityUpdateQuery<ITestDataModel, TestEntity>(
                 MockQueryContext.Object,
-                MockTokenFactory.Object,
-                MockPhraseBuilder.Object,
                 MockUpdatedTable.Object,
                 MockSource.Object);
         }
@@ -55,7 +53,8 @@ namespace Curds.Persistence.Query.Queries.Tests
         {
             TestObject.GenerateCommand();
 
-            MockPhraseBuilder.Verify(builder => builder.FromUniverseTokens(MockSource.Object), Times.Once);
+            throw new NotImplementedException();
+            //MockPhraseBuilder.Verify(builder => builder.FromUniverseTokens(MockSource.Object), Times.Once);
         }
 
         [DataTestMethod]
@@ -69,7 +68,8 @@ namespace Curds.Persistence.Query.Queries.Tests
             List<ISqlQueryToken> expectedTokens = new List<ISqlQueryToken>();
             expectedTokens.Add(SetupPhraseBuilder(builder => builder.UpdateTableToken(It.IsAny<ISqlTable>())));
             expectedTokens.Add(SetupPhraseBuilder(builder => builder.SetValuesToken(It.IsAny<IEnumerable<ISqlQueryToken>>())));
-            expectedTokens.AddRange(SetupPhraseBuilder(builder => builder.FromUniverseTokens(It.IsAny<ISqlUniverse>()), sourceTokensGenerated));
+            throw new NotImplementedException();
+            //expectedTokens.AddRange(SetupPhraseBuilder(builder => builder.FromUniverseTokens(It.IsAny<ISqlUniverse>()), sourceTokensGenerated));
 
             TestObject.GenerateCommand();
 

@@ -14,7 +14,6 @@ namespace Curds.Persistence.Query.Queries.Implementation
         where TModel : IDataModel
         where TEntity : IEntity
     {
-        private ISqlQueryPhraseBuilder PhraseBuilder { get; }
         private ISqlTable Table { get; }
 
         public List<TEntity> Entities { get; } = new List<TEntity>(); 
@@ -22,12 +21,9 @@ namespace Curds.Persistence.Query.Queries.Implementation
             .Select(entity => Table.BuildValueEntity(entity))
             .ToList();
 
-        public InsertQuery(
-            ISqlQueryPhraseBuilder phraseBuilder,
-            ISqlQueryContext<TModel> queryContext)
+        public InsertQuery(ISqlQueryContext<TModel> queryContext)
             : base(queryContext)
         {
-            PhraseBuilder = phraseBuilder;
             Table = queryContext.AddTable<TEntity>();
         }
 

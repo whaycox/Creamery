@@ -35,9 +35,7 @@ namespace Curds.Persistence.Query.Queries.Tests
                 .Setup(model => model.BuildValueEntity(It.IsAny<IEntity>()))
                 .Returns(TestValueEntity);
 
-            TestObject = new InsertQuery<ITestDataModel, TestEntity>(
-                MockPhraseBuilder.Object,
-                MockQueryContext.Object);
+            TestObject = new InsertQuery<ITestDataModel, TestEntity>(MockQueryContext.Object);
             TestObject.Entities.Add(TestEntity);
         }
 

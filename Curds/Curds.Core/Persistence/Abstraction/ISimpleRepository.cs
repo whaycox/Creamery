@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Curds.Persistence.Abstraction
 {
@@ -11,7 +10,7 @@ namespace Curds.Persistence.Abstraction
     {
         Task<TEntity> Fetch(int id);
 
-        Task Update(Action<TEntity> modifier, int id);
+        IEntityUpdate<TEntity> Update(int id);
 
         Task Delete(int id);
     }

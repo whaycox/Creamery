@@ -217,5 +217,31 @@ namespace Curds.Persistence.Tests
             Assert.AreEqual(nameof(CanUpdateWithConstantValues), actual.Name);
             Assert.AreNotSame(TestEntity, actual);
         }
+
+        [TestMethod]
+        public async Task CanProjectEntityFromJoin()
+        {
+            RegisterServices();
+            BuildServiceProvider();
+            IRepository<ITestDataModel, Parent> parentRepository = TestServiceProvider.GetRequiredService<IRepository<ITestDataModel, Parent>>();
+            IChildRepository childRepository = TestServiceProvider.GetRequiredService<IChildRepository>();
+            Parent testParent = new Parent { Name = nameof(testParent) };
+            await parentRepository.Insert(testParent);
+            List<Child> testChildren = new List<Child>();
+            for (int i = 0; i < 3; i++)
+            {
+                Child testChild = new Child
+                {
+                    ParentID = testParent.ID,
+                    Name = $"{nameof(testChild)}{i}",
+                };
+                await childRepository.Insert(testChild);
+                testChildren.Add(testChild);
+            }
+
+            List<Child> actual = await childRepository.ChildrenByParent(testParent.ID);
+
+            CollectionAssert.AreEqual(testChildren, actual);
+        }
     }
 }

@@ -27,7 +27,7 @@ namespace Curds.Persistence.Implementation
         public Task Insert(IEnumerable<TEntity> entities) => InsertQuery(entities).Execute();
         private ISqlQuery InsertQuery(IEnumerable<TEntity> entities) => QueryBuilder.Insert(entities);
 
-        protected async Task<IList<TEntity>> FetchEntities(ISqlQuery<TEntity> entityQuery)
+        protected async Task<List<TEntity>> FetchEntities(ISqlQuery<TEntity> entityQuery)
         {
             await entityQuery.Execute();
             return entityQuery.Results;
@@ -47,7 +47,7 @@ namespace Curds.Persistence.Implementation
             .Where(entity => entity.Keys == keys)
             .Project();
 
-        public Task<IList<TEntity>> FetchAll() => FetchEntities(FetchAllQuery);
+        public Task<List<TEntity>> FetchAll() => FetchEntities(FetchAllQuery);
         private ISqlQuery<TEntity> FetchAllQuery => QueryBuilder
             .From<TEntity>()
             .Project();

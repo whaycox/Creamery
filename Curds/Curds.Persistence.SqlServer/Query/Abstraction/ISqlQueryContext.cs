@@ -11,8 +11,10 @@ namespace Curds.Persistence.Query.Abstraction
         ISqlQueryFormatter Formatter { get; }
         ISqlConnectionContext ConnectionContext { get; }
         ISqlQueryParameterBuilder ParameterBuilder { get; }
+        ISqlQueryTokenFactory TokenFactory { get; }
+        ISqlQueryPhraseBuilder PhraseBuilder { get; }
 
-        IList<ISqlTable> Tables { get; }
+        List<ISqlTable> Tables { get; }
 
         ISqlTable AddTable<TEntity>() where TEntity : IEntity;
 

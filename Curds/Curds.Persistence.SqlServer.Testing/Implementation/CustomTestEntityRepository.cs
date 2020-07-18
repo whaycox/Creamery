@@ -13,10 +13,11 @@ namespace Curds.Persistence.Implementation
             : base(queryBuilder)
         { }
 
-        public Task<IList<TestEntity>> FetchEvensLessThan(int maxID) => FetchEntities(
-            QueryBuilder.From<TestEntity>()
+        public Task<List<TestEntity>> FetchEvensLessThan(int maxID) => FetchEntities(FetchEvensLessThanQuery(maxID));
+        private ISqlQuery<TestEntity> FetchEvensLessThanQuery(int maxID) => QueryBuilder
+            .From<TestEntity>()
             .Where(entity => entity.ID <= maxID)
             .Where(entity => entity.ID % 2 == 0)
-            .Project());
+            .Project();
     }
 }

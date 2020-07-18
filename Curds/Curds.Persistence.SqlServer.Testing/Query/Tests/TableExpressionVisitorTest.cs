@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Linq.Expressions;
+using System.Collections.Generic;
 
 namespace Curds.Persistence.Query.Tests
 {
@@ -38,7 +39,7 @@ namespace Curds.Persistence.Query.Tests
                 .Returns(typeof(TestEntity));
             MockQueryContext
                 .Setup(context => context.Tables)
-                .Returns(new[] { MockTable.Object });
+                .Returns(new List<ISqlTable> { MockTable.Object });
             ParameterNode testNode = new ParameterNode(Expression.Parameter(typeof(TestEntity), nameof(testNode)));
 
             ISqlTable actual = TestObject.VisitParameter(testNode);

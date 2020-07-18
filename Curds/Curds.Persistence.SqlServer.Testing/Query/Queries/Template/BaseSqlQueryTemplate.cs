@@ -20,7 +20,7 @@ namespace Curds.Persistence.Query.Queries.Template
         protected Mock<ISqlQueryParameterBuilder> MockParameterBuilder = new Mock<ISqlQueryParameterBuilder>();
         protected Mock<ISqlQueryReader> MockQueryReader = new Mock<ISqlQueryReader>();
         protected Mock<ISqlQueryPhraseBuilder> MockPhraseBuilder = new Mock<ISqlQueryPhraseBuilder>();
-        protected Mock<ISqlUniverse> MockSource = new Mock<ISqlUniverse>();
+        protected Mock<ISqlUniverse<ITestDataModel>> MockSource = new Mock<ISqlUniverse<ITestDataModel>>();
 
         protected List<ISqlQueryToken> FormattedTokens = null;
 
@@ -30,6 +30,9 @@ namespace Curds.Persistence.Query.Queries.Template
             MockQueryContext
                 .Setup(context => context.ParameterBuilder)
                 .Returns(MockParameterBuilder.Object);
+            MockQueryContext
+                .Setup(context => context.PhraseBuilder)
+                .Returns(MockPhraseBuilder.Object);
             MockQueryContext
                 .Setup(context => context.Formatter.FormatTokens(It.IsAny<IEnumerable<ISqlQueryToken>>()))
                 .Callback<IEnumerable<ISqlQueryToken>>(tokens => FormattedTokens = tokens.ToList());

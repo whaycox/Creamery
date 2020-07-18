@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using Whey;
+using System.Collections.Generic;
 
 namespace Curds.Persistence.Query.Tests
 {
@@ -16,8 +17,6 @@ namespace Curds.Persistence.Query.Tests
     [TestClass]
     public class SqlUniverseTest
     {
-        private Mock<ISqlQueryTokenFactory> MockTokenFactory = new Mock<ISqlQueryTokenFactory>();
-        private Mock<ISqlQueryPhraseBuilder> MockPhraseBuilder = new Mock<ISqlQueryPhraseBuilder>();
         private Mock<ISqlQueryContext<ITestDataModel>> MockQueryContext = new Mock<ISqlQueryContext<ITestDataModel>>();
         private Mock<ISqlTable> MockTable = new Mock<ISqlTable>();
 
@@ -30,10 +29,7 @@ namespace Curds.Persistence.Query.Tests
                 .Setup(context => context.AddTable<TestEntity>())
                 .Returns(MockTable.Object);
 
-            TestObject = new SqlUniverse<ITestDataModel, TestEntity>(
-                MockTokenFactory.Object,
-                MockPhraseBuilder.Object,
-                MockQueryContext.Object);
+            TestObject = new SqlUniverse<ITestDataModel, TestEntity>(MockQueryContext.Object);
         }
 
         [TestMethod]
@@ -47,9 +43,10 @@ namespace Curds.Persistence.Query.Tests
         {
             MockQueryContext
                 .Setup(context => context.Tables)
-                .Returns(new[] { MockTable.Object });
+                .Returns(new List<ISqlTable> { MockTable.Object });
 
-            CollectionAssert.AreEqual(new[] { MockTable.Object }, TestObject.Tables.ToList());
+            throw new NotImplementedException();
+            //CollectionAssert.AreEqual(new[] { MockTable.Object }, TestObject.Tables.ToList());
         }
 
         [TestMethod]
@@ -109,7 +106,7 @@ namespace Curds.Persistence.Query.Tests
         [TestMethod]
         public void WhereReturnsSameObject()
         {
-            ISqlUniverse<TestEntity> actual = TestObject.Where(TestWhereExpression);
+            ISqlUniverse<ITestDataModel, TestEntity> actual = TestObject.Where(TestWhereExpression);
 
             Assert.AreSame(TestObject, actual);
         }
@@ -135,7 +132,8 @@ namespace Curds.Persistence.Query.Tests
 
             TestObject.Where(testExpression);
 
-            CollectionAssert.AreEqual(new[] { testFilterToken }, TestObject.Filters.ToList());
+            throw new NotImplementedException();
+            //CollectionAssert.AreEqual(new[] { testFilterToken }, TestObject.Filters.ToList());
         }
 
         [TestMethod]

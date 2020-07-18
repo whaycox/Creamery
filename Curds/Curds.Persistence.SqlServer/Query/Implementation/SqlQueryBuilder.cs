@@ -8,14 +8,12 @@ namespace Curds.Persistence.Query.Implementation
     using Persistence.Abstraction;
     using Queries.Implementation;
 
-    internal class SqlQueryBuilder<TModel> : ISqlQueryBuilder<TModel>
-        where TModel : IDataModel
+    internal class SqlQueryBuilder<TDataModel> : ISqlQueryBuilder<TDataModel>
+        where TDataModel : IDataModel
     {
         private IServiceProvider ServiceProvider { get; }
 
-        private ISqlQueryTokenFactory TokenFactory => ServiceProvider.GetRequiredService<ISqlQueryTokenFactory>();
-        private ISqlQueryPhraseBuilder PhraseBuilder => ServiceProvider.GetRequiredService<ISqlQueryPhraseBuilder>();
-        private ISqlQueryContext<TModel> FreshContext => ServiceProvider.GetRequiredService<ISqlQueryContext<TModel>>();
+        private ISqlQueryContext<TDataModel> FreshContext => ServiceProvider.GetRequiredService<ISqlQueryContext<TDataModel>>();
 
         public SqlQueryBuilder(IServiceProvider serviceProvider)
         {
@@ -25,17 +23,12 @@ namespace Curds.Persistence.Query.Implementation
         public ISqlQuery Insert<TEntity>(IEnumerable<TEntity> entities)
             where TEntity : IEntity
         {
-            InsertQuery<TModel, TEntity> query = new InsertQuery<TModel, TEntity>(
-                PhraseBuilder,
-                FreshContext);
+            InsertQuery<TDataModel, TEntity> query = new InsertQuery<TDataModel, TEntity>(FreshContext);
             query.Entities.AddRange(entities);
             return query;
         }
 
-        public ISqlUniverse<TEntity> From<TEntity>()
-            where TEntity : IEntity => new SqlUniverse<TModel, TEntity>(
-                TokenFactory,
-                PhraseBuilder,
-                FreshContext);
+        public ISqlUniverse<TDataModel, TEntity> From<TEntity>()
+            where TEntity : IEntity => new SqlUniverse<TDataModel, TEntity>(FreshContext);
     }
 }

@@ -26,6 +26,8 @@ namespace Curds.Persistence.Query.Tests
         private Mock<ISqlQueryFormatter> MockQueryFormatter = new Mock<ISqlQueryFormatter>();
         private Mock<ISqlConnectionContext> MockConnectionContext = new Mock<ISqlConnectionContext>();
         private Mock<ISqlQueryParameterBuilder> MockParameterBuilder = new Mock<ISqlQueryParameterBuilder>();
+        private Mock<ISqlQueryTokenFactory> MockTokenFactory = new Mock<ISqlQueryTokenFactory>();
+        private Mock<ISqlQueryPhraseBuilder> MockPhraseBuilder = new Mock<ISqlQueryPhraseBuilder>();
 
         private SqlQueryContext<ITestDataModel> TestObject = null;
 
@@ -52,7 +54,9 @@ namespace Curds.Persistence.Query.Tests
                 MockExpressionVisitorFactory.Object,
                 MockQueryFormatter.Object,
                 MockConnectionContext.Object,
-                MockParameterBuilder.Object);
+                MockParameterBuilder.Object,
+                MockTokenFactory.Object,
+                MockPhraseBuilder.Object);
         }
 
         [TestMethod]
@@ -71,6 +75,18 @@ namespace Curds.Persistence.Query.Tests
         public void ParameterBuilderIsFromConstructor()
         {
             Assert.AreSame(MockParameterBuilder.Object, TestObject.ParameterBuilder);
+        }
+
+        [TestMethod]
+        public void TokenFactoryIsFromConstructor()
+        {
+            Assert.AreSame(MockTokenFactory.Object, TestObject.TokenFactory);
+        }
+
+        [TestMethod]
+        public void PhraseBuilderIsFromConstructor()
+        {
+            Assert.AreSame(MockPhraseBuilder.Object, TestObject.PhraseBuilder);
         }
 
         [TestMethod]

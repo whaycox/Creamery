@@ -2,9 +2,8 @@
 
 namespace Curds.Persistence.Domain
 {
-    public class OtherEntity : SimpleEntity
+    public class OtherEntity : NamedEntity
     {
-        public string Name { get; set; } = Guid.NewGuid().ToString();
         public bool BoolValue { get; set; } = true;
         public bool? NullableBoolValue { get; set; }
         public byte ByteValue { get; set; } = 255;
@@ -23,5 +22,10 @@ namespace Curds.Persistence.Domain
         public decimal? NullableDecimalValue { get; set; }
         public double DoubleValue { get; set; } = 3e8;
         public double? NullableDoubleValue { get; set; }
+
+        public OtherEntity()
+        {
+            Name = Guid.NewGuid().ToString();
+        }
     }
 }

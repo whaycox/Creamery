@@ -18,9 +18,11 @@ namespace Curds.Persistence.Query.Implementation
         public ISqlQueryFormatter Formatter { get; }
         public ISqlConnectionContext ConnectionContext { get; }
         public ISqlQueryParameterBuilder ParameterBuilder { get; }
+        public ISqlQueryTokenFactory TokenFactory { get; }
+        public ISqlQueryPhraseBuilder PhraseBuilder { get; }
 
         private List<ISqlTable> QueryTables { get; } = new List<ISqlTable>();
-        public IList<ISqlTable> Tables => QueryTables.ToList();
+        public List<ISqlTable> Tables => QueryTables.ToList();
 
         public SqlQueryContext(
             IModelMap<TModel> modelMap,
@@ -28,7 +30,9 @@ namespace Curds.Persistence.Query.Implementation
             ISqlQueryExpressionVisitorFactory expressionVisitorFactory,
             ISqlQueryFormatter formatter,
             ISqlConnectionContext connectionContext,
-            ISqlQueryParameterBuilder parameterBuilder)
+            ISqlQueryParameterBuilder parameterBuilder,
+            ISqlQueryTokenFactory tokenFactory,
+            ISqlQueryPhraseBuilder phraseBuilder)
         {
             ModelMap = modelMap;
             ExpressionNodeFactory = experssionNodeFactory;
@@ -37,6 +41,8 @@ namespace Curds.Persistence.Query.Implementation
             Formatter = formatter;
             ConnectionContext = connectionContext;
             ParameterBuilder = parameterBuilder;
+            TokenFactory = tokenFactory;
+            PhraseBuilder = phraseBuilder;
         }
 
         public ISqlTable AddTable<TEntity>()

@@ -6,32 +6,25 @@ namespace Curds.Persistence.Query.Queries.Implementation
 {
     using Abstraction;
     using Persistence.Abstraction;
-    using Query.Abstraction;
     using Query.Domain;
 
-    internal class EntityUpdateQuery<TModel, TEntity> : BaseSqlQuery<TModel>, IEntityUpdate<TEntity>
-        where TModel : IDataModel
+    internal class EntityUpdateQuery<TDataModel, TEntity> : BaseSqlQuery<TDataModel>, IEntityUpdate<TEntity>
+        where TDataModel : IDataModel
         where TEntity : IEntity
     {
-        private ISqlQueryTokenFactory TokenFactory { get; }
-        private ISqlQueryPhraseBuilder PhraseBuilder { get; }
-        private ISqlQueryContext<TModel> QueryContext { get; }
+        private ISqlQueryContext<TDataModel> QueryContext { get; }
 
         public ISqlTable UpdatedTable { get; }
-        public ISqlUniverse Source { get; }
+        public ISqlUniverse<TDataModel> Source { get; }
 
         public List<ISqlQueryToken> SetTokens { get; } = new List<ISqlQueryToken>();
 
         public EntityUpdateQuery(
-            ISqlQueryContext<TModel> queryContext,
-            ISqlQueryTokenFactory tokenFactory,
-            ISqlQueryPhraseBuilder phraseBuilder,
+            ISqlQueryContext<TDataModel> queryContext,
             ISqlTable updatedTable,
-            ISqlUniverse source)
+            ISqlUniverse<TDataModel> source)
             : base(queryContext)
         {
-            TokenFactory = tokenFactory;
-            PhraseBuilder = phraseBuilder;
             QueryContext = queryContext;
             UpdatedTable = updatedTable;
             Source = source;
@@ -41,7 +34,7 @@ namespace Curds.Persistence.Query.Queries.Implementation
         {
             yield return PhraseBuilder.UpdateTableToken(UpdatedTable);
             yield return PhraseBuilder.SetValuesToken(SetTokens);
-            foreach (ISqlQueryToken token in PhraseBuilder.FromUniverseTokens(Source))
+            foreach (ISqlQueryToken token in Source.Tokens)
                 yield return token;
         }
 

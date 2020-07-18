@@ -114,7 +114,7 @@ namespace Curds.Persistence.Query.Tests
         [TestMethod]
         public void FromReturnsExpectedType()
         {
-            ISqlUniverse<TestEntity> actual = TestObject.From<TestEntity>();
+            ISqlUniverse<ITestDataModel, TestEntity> actual = TestObject.From<TestEntity>();
 
             Assert.IsInstanceOfType(actual, typeof(SqlUniverse<ITestDataModel, TestEntity>));
         }

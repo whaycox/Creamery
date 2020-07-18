@@ -5,6 +5,8 @@ using System;
 namespace Curds.Persistence.Template
 {
     using Domain;
+    using Abstraction;
+    using Implementation;
 
     public abstract class SqlIntegrationTemplate : SqlTemplate
     {
@@ -31,7 +33,8 @@ namespace Curds.Persistence.Template
         protected void RegisterServices()
         {
             TestServiceCollection
-                .AddCurdsPersistence();
+                .AddCurdsPersistence()
+                .AddTransient<IChildRepository, ChildRepository>();
         }
 
         protected void ConfigureCustomTestEntity()

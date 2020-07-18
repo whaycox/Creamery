@@ -5,72 +5,89 @@ using System.Linq.Expressions;
 namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
-    using Persistence.Abstraction;
+    using Curds.Persistence.Abstraction;
+    using Domain;
     using Queries.Implementation;
 
-    internal abstract class SqlUniverse<TModel> : ISqlUniverse
-        where TModel : IDataModel
-    {
-        protected ISqlQueryTokenFactory TokenFactory { get; }
-        protected ISqlQueryPhraseBuilder PhraseBuilder { get; }
-        protected ISqlQueryContext<TModel> QueryContext { get; }
-
-        public IEnumerable<ISqlTable> Tables => QueryContext.Tables;
-
-        public IEnumerable<ISqlQueryToken> Filters => FilterCollection;
-        private List<ISqlQueryToken> FilterCollection { get; } = new List<ISqlQueryToken>();
-
-        public SqlUniverse(
-            ISqlQueryTokenFactory tokenFactory,
-            ISqlQueryPhraseBuilder phraseBuilder,
-            ISqlQueryContext<TModel> queryContext)
-        {
-            TokenFactory = tokenFactory;
-            PhraseBuilder = phraseBuilder;
-            QueryContext = queryContext;
-        }
-
-        protected void AddFilter(ISqlQueryToken universeFilter) => FilterCollection.Add(universeFilter);
-    }
-
-    internal class SqlUniverse<TModel, TEntity> : SqlUniverse<TModel>, ISqlUniverse<TEntity>
-        where TModel : IDataModel
+    internal class SqlUniverse<TDataModel, TEntity> : ISqlUniverse<TDataModel, TEntity>
+        where TDataModel : IDataModel
         where TEntity : IEntity
     {
         private ISqlTable Table { get; }
 
-        public SqlUniverse(
-            ISqlQueryTokenFactory tokenFactory,
-            ISqlQueryPhraseBuilder phraseBuilder,
-            ISqlQueryContext<TModel> queryContext)
-            : base(tokenFactory, phraseBuilder, queryContext)
+        private List<ISqlQueryToken> FilterCollection { get; } = new List<ISqlQueryToken>();
+        private List<ISqlJoinClause> JoinCollection { get; } = new List<ISqlJoinClause>();
+
+        private ISqlQueryTokenFactory TokenFactory => QueryContext.TokenFactory;
+        private List<ISqlTable> Tables => QueryContext.Tables;
+
+        public ISqlQueryContext<TDataModel> QueryContext { get; }
+        public IEnumerable<ISqlQueryToken> Tokens
         {
+            get
+            {
+                if (Tables.Count != JoinCollection.Count + 1)
+                    throw new InvalidOperationException("Not the right number of joins for tables");
+
+                for (int i = 0; i < Tables.Count; i++)
+                {
+                    if (i == 0)
+                    {
+                        yield return TokenFactory.Phrase(
+                            TokenFactory.Keyword(SqlQueryKeyword.FROM),
+                            TokenFactory.QualifiedObjectName(Tables[i]));
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
+                }
+
+                for (int i = 0; i < FilterCollection.Count; i++)
+                    yield return TokenFactory.Phrase(
+                        TokenFactory.Keyword(i > 0 ? SqlQueryKeyword.AND : SqlQueryKeyword.WHERE),
+                        FilterCollection[i]);
+            }
+        }
+
+        public SqlUniverse(ISqlQueryContext<TDataModel> queryContext)
+        {
+            QueryContext = queryContext;
             Table = queryContext.AddTable<TEntity>();
         }
 
-        public ISqlQuery<TEntity> Project() => new ProjectEntityQuery<TModel, TEntity>(
+        public ISqlQuery<TEntity> Project() => new ProjectEntityQuery<TDataModel, TEntity>(
             QueryContext,
-            PhraseBuilder,
             Table,
             this);
 
-        public ISqlQuery Delete() => new DeleteEntityQuery<TModel, TEntity>(
+        public ISqlQuery Delete() => new DeleteEntityQuery<TDataModel, TEntity>(
             QueryContext,
-            PhraseBuilder,
             Table,
             this);
 
-        public ISqlUniverse<TEntity> Where(Expression<Func<TEntity, bool>> filterExpression)
+        public ISqlUniverse<TDataModel, TEntity> Where(Expression<Func<TEntity, bool>> filterExpression)
         {
-            AddFilter(QueryContext.ParseQueryExpression(filterExpression));
+            FilterCollection.Add(QueryContext.ParseQueryExpression(filterExpression));
             return this;
         }
 
-        public IEntityUpdate<TEntity> Update() => new EntityUpdateQuery<TModel, TEntity>(
+        public IEntityUpdate<TEntity> Update() => new EntityUpdateQuery<TDataModel, TEntity>(
             QueryContext,
-            TokenFactory,
-            PhraseBuilder,
             Table,
             this);
+
+        public ISqlJoinClause<TDataModel, TEntity, ISqlUniverse<TDataModel, TEntity>, TJoinedEntity> Join<TJoinedEntity>(Expression<Func<TDataModel, TJoinedEntity>> entitySelectionExpression)
+            where TJoinedEntity : IEntity => new SqlJoinClause<TDataModel, TEntity, ISqlUniverse<TDataModel, TEntity>, TJoinedEntity>(
+                QueryContext,
+                this);
+
+        public ISqlUniverse<TDataModel, TEntity, TJoinedEntity> AddJoin<TUniverse, TJoinedEntity>(ISqlJoinClause<TDataModel, TEntity, TUniverse, TJoinedEntity> joinClause)
+            where TUniverse : ISqlUniverse<TDataModel, TEntity>
+            where TJoinedEntity : IEntity
+        {
+            JoinCollection.Add(joinClause);
+            return new JoinedSqlUniverse<TDataModel, TEntity, TJoinedEntity>(this);
+        }
     }
 }
