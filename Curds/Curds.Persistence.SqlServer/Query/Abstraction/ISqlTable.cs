@@ -13,12 +13,14 @@ namespace Curds.Persistence.Query.Abstraction
         Type EntityType { get; }
         string Schema { get; }
         string Name { get; }
+        string Alias { get; }
 
         IList<ISqlColumn> Columns { get; }
         IList<ISqlColumn> Keys { get; }
         ISqlColumn KeyColumn { get; }
         ISqlColumn Identity { get; }
         IEnumerable<ISqlColumn> NonIdentities { get; }
+        ISqlTable InsertedIdentityTable { get; }
 
         ValueEntity BuildValueEntity(IEntity entity);
         void AssignIdentities(ISqlQueryReader reader, IEntity entity);

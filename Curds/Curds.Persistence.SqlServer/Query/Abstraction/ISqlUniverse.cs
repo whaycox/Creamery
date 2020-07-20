@@ -39,5 +39,7 @@ namespace Curds.Persistence.Query.Abstraction
     {
         ISqlQuery<TEntity> Project<TEntity>(Expression<Func<TEntityOne, TEntityTwo, TEntity>> entityProjectionExpression)
             where TEntity : IEntity;
+
+        ISqlUniverse<TDataModel, TEntityOne, TEntityTwo> Where(Expression<Func<TEntityOne, TEntityTwo, bool>> filterExpression);
     }
 }

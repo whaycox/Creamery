@@ -11,7 +11,10 @@ namespace Curds.Persistence.Query.Tokens.Implementation
     {
         public IEnumerable<ISqlQueryToken> Clauses { get; }
 
-        public JoinClauseSqlQueryToken(ISqlJoinClause joinClause)
+        public JoinClauseSqlQueryToken(
+            ISqlQueryTokenFactory tokenFactory,
+            ISqlJoinClause joinClause)
+            : base(tokenFactory)
         {
             Clauses = joinClause.Tokens;
         }

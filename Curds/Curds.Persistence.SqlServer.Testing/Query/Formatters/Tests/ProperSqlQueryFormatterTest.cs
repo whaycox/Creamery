@@ -88,44 +88,38 @@ namespace Curds.Persistence.Query.Formatters.Tests
                 .VerifyOperationCount();
         }
 
-        private ColumnListSqlQueryToken BuildTestColumnListToken(int columnsToAdd)
-        {
-            List<ISqlColumn> testColumns = new List<ISqlColumn>();
-            for (int i = 0; i < columnsToAdd; i++)
-                testColumns.Add(MockColumn.Object);
-            return new ColumnListSqlQueryToken(testColumns);
-        }
-
         [TestMethod]
         public void VisitColumnListFormatsByDefault()
         {
-            ColumnListSqlQueryToken testColumnList = BuildTestColumnListToken(0);
+            throw new System.NotImplementedException();
+            //ColumnListSqlQueryToken testColumnList = BuildTestColumnListToken(0);
 
-            TestObject.VisitColumnList(testColumnList);
+            //TestObject.VisitColumnList(testColumnList);
 
-            TestStringBuilder
-                .VerifySetNewLine()
-                .VerifyCreateScope()
-                .VerifyDisposeScope()
-                .VerifyOperationCount();
+            //TestStringBuilder
+            //    .VerifySetNewLine()
+            //    .VerifyCreateScope()
+            //    .VerifyDisposeScope()
+            //    .VerifyOperationCount();
         }
 
         [TestMethod]
         public void VisitColumnListWithGroupingFormatsByDefault()
         {
-            ColumnListSqlQueryToken testColumnList = BuildTestColumnListToken(0);
-            testColumnList.IncludeGrouping = true;
+            throw new System.NotImplementedException();
+            //ColumnListSqlQueryToken testColumnList = BuildTestColumnListToken(0);
+            //testColumnList.IncludeGrouping = true;
 
-            TestObject.VisitColumnList(testColumnList);
+            //TestObject.VisitColumnList(testColumnList);
 
-            TestStringBuilder
-                .VerifySetNewLine()
-                .VerifyAppendLine("(")
-                .VerifyCreateScope()
-                .VerifyDisposeScope()
-                .VerifySetNewLine()
-                .VerifyAppend(")")
-                .VerifyOperationCount();
+            //TestStringBuilder
+            //    .VerifySetNewLine()
+            //    .VerifyAppendLine("(")
+            //    .VerifyCreateScope()
+            //    .VerifyDisposeScope()
+            //    .VerifySetNewLine()
+            //    .VerifyAppend(")")
+            //    .VerifyOperationCount();
         }
 
         [TestMethod]

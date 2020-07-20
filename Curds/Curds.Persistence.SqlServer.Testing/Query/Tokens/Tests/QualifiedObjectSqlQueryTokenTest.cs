@@ -41,76 +41,82 @@ namespace Curds.Persistence.Query.Tokens.Tests
         [TestMethod]
         public void NamesComeFromConstructor()
         {
-            TestObject = new QualifiedObjectSqlQueryToken(
-                TestNameOne,
-                TestNameTwo);
+            throw new System.NotImplementedException();
+            //TestObject = new QualifiedObjectSqlQueryToken(
+            //    TestNameOne,
+            //    TestNameTwo);
 
-            Assert.AreEqual(2, TestObject.Names.Count);
-            Assert.AreSame(TestNameOne, TestObject.Names[0]);
-            Assert.AreSame(TestNameTwo, TestObject.Names[1]);
+            //Assert.AreEqual(2, TestObject.Names.Count);
+            //Assert.AreSame(TestNameOne, TestObject.Names[0]);
+            //Assert.AreSame(TestNameTwo, TestObject.Names[1]);
         }
 
         [TestMethod]
         public void ConstructingWithTableUsesSchemaAndName()
         {
-            TestObject = new QualifiedObjectSqlQueryToken(MockTable.Object);
+            throw new System.NotImplementedException();
+            //TestObject = new QualifiedObjectSqlQueryToken(MockTable.Object);
 
-            Assert.AreEqual(2, TestObject.Names.Count);
-            Assert.AreEqual(TestSchema, TestObject.Names[0].Name);
-            Assert.AreEqual(TestName, TestObject.Names[1].Name);
+            //Assert.AreEqual(2, TestObject.Names.Count);
+            //Assert.AreEqual(TestSchema, TestObject.Names[0].Name);
+            //Assert.AreEqual(TestName, TestObject.Names[1].Name);
         }
 
         [TestMethod]
         public void ConstructingWithTablePopulatesTable()
         {
-            TestObject = new QualifiedObjectSqlQueryToken(MockTable.Object);
+            throw new System.NotImplementedException();
+            //TestObject = new QualifiedObjectSqlQueryToken(MockTable.Object);
 
-            Assert.AreSame(MockTable.Object, TestObject.Table);
-            Assert.IsNull(TestObject.Column);
+            //Assert.AreSame(MockTable.Object, TestObject.Table);
+            //Assert.IsNull(TestObject.Column);
         }
 
         [TestMethod]
         public void ConstructingWithColumnUsesSchemaAndBothNames()
         {
-            TestObject = new QualifiedObjectSqlQueryToken(MockColumn.Object);
+            throw new System.NotImplementedException();
+            //TestObject = new QualifiedObjectSqlQueryToken(MockColumn.Object);
 
-            Assert.AreEqual(3, TestObject.Names.Count);
-            Assert.AreEqual(TestSchema, TestObject.Names[0].Name);
-            Assert.AreEqual(TestName, TestObject.Names[1].Name);
-            Assert.AreEqual(TestColumnName, TestObject.Names[2].Name);
+            //Assert.AreEqual(3, TestObject.Names.Count);
+            //Assert.AreEqual(TestSchema, TestObject.Names[0].Name);
+            //Assert.AreEqual(TestName, TestObject.Names[1].Name);
+            //Assert.AreEqual(TestColumnName, TestObject.Names[2].Name);
         }
 
         [TestMethod]
         public void ConstructingWithColumnPopulatesColumn()
         {
-            TestObject = new QualifiedObjectSqlQueryToken(MockColumn.Object);
+            throw new System.NotImplementedException();
+            //TestObject = new QualifiedObjectSqlQueryToken(MockColumn.Object);
 
-            Assert.AreSame(MockColumn.Object, TestObject.Column);
-            Assert.IsNull(TestObject.Table);
+            //Assert.AreSame(MockColumn.Object, TestObject.Column);
         }
 
         [TestMethod]
         public void AcceptFormatVisitorForwardsSingleName()
         {
-            TestObject = new QualifiedObjectSqlQueryToken(TestNameOne);
+            throw new System.NotImplementedException();
+            //TestObject = new QualifiedObjectSqlQueryToken(TestNameOne);
 
-            TestObject.AcceptFormatVisitor(MockFormatVisitor.Object);
+            //TestObject.AcceptFormatVisitor(MockFormatVisitor.Object);
 
-            MockFormatVisitor.Verify(visitor => visitor.VisitLiteral(TestNameOne), Times.Once);
+            //MockFormatVisitor.Verify(visitor => visitor.VisitLiteral(TestNameOne), Times.Once);
         }
 
         [TestMethod]
         public void AcceptFormatVisitorInterspersesMultipleNamesWithSeparator()
         {
-            TestObject = new QualifiedObjectSqlQueryToken(
-                TestNameOne,
-                TestNameTwo);
+            throw new System.NotImplementedException();
+            //TestObject = new QualifiedObjectSqlQueryToken(
+            //    TestNameOne,
+            //    TestNameTwo);
 
-            TestObject.AcceptFormatVisitor(MockFormatVisitor.Object);
+            //TestObject.AcceptFormatVisitor(MockFormatVisitor.Object);
 
-            MockFormatVisitor.Verify(visitor => visitor.VisitLiteral(TestNameOne), Times.Once);
-            MockFormatVisitor.Verify(visitor => visitor.VisitLiteral(TestNameTwo), Times.Once);
-            MockFormatVisitor.Verify(visitor => visitor.VisitLiteral(It.Is<LiteralSqlQueryToken>(token => token.Literal == ".")), Times.Once);
+            //MockFormatVisitor.Verify(visitor => visitor.VisitLiteral(TestNameOne), Times.Once);
+            //MockFormatVisitor.Verify(visitor => visitor.VisitLiteral(TestNameTwo), Times.Once);
+            //MockFormatVisitor.Verify(visitor => visitor.VisitLiteral(It.Is<LiteralSqlQueryToken>(token => token.Literal == ".")), Times.Once);
         }
     }
 }

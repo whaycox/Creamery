@@ -10,59 +10,103 @@ namespace Curds.Persistence.Query.Implementation
     internal class SqlQueryTokenFactory : ISqlQueryTokenFactory
     {
         public ISqlQueryToken ColumnList(IEnumerable<ISqlColumn> columns, bool includeDefinition) =>
-            new ColumnListSqlQueryToken(columns)
+            new TokenListSqlQueryToken(
+                this,
+                columns.Select(column => ColumnToken(column, includeDefinition)))
             {
-                IncludeDefinition = includeDefinition,
                 IncludeGrouping = true,
             };
+        private ISqlQueryToken ColumnToken(ISqlColumn column, bool includeDefinition) =>
+            includeDefinition ?
+                ColumnDefinition(column) :
+                ColumnName(column, false);
 
         public ISqlQueryToken SelectList(IEnumerable<ISqlColumn> columns) =>
-            new ColumnListSqlQueryToken(columns)
-            {
-                IncludeDefinition = false,
-                IncludeGrouping = false,
-            };
+            new TokenListSqlQueryToken(
+                this,
+                columns.Select(column => ColumnName(column, true)));
 
         public ISqlQueryToken InsertedIdentityName(ISqlTable table) =>
-            new InsertedIdentityColumnSqlQueryToken(table.Identity);
+            new InsertedIdentityColumnSqlQueryToken(
+                this,
+                table.Identity);
 
         public ISqlQueryToken Keyword(SqlQueryKeyword keyword) =>
             new KeywordSqlQueryToken(keyword);
 
-        public ISqlQueryToken Phrase(params ISqlQueryToken[] tokens) =>
-            new PhraseSqlQueryToken(tokens);
+        public ISqlQueryToken Phrase(IEnumerable<ISqlQueryToken> tokens) =>
+            new PhraseSqlQueryToken(
+                this,
+                tokens);
 
-        public ISqlQueryToken QualifiedObjectName(ISqlTable table) =>
-            new QualifiedObjectSqlQueryToken(table);
+        public ISqlQueryToken Phrase(params ISqlQueryToken[] tokenParams) =>
+            new PhraseSqlQueryToken(
+                this,
+                tokenParams);
 
-        public ISqlQueryToken QualifiedObjectName(ISqlColumn column) =>
-            new QualifiedObjectSqlQueryToken(column);
+        public ISqlQueryToken TableName(ISqlTable table, bool useAlias, bool useSqlName) =>
+            new TableNameSqlQueryToken(
+                this,
+                table)
+            {
+                UseAlias = useAlias,
+                UseSqlName = useSqlName,
+            };
 
-        public ISqlQueryToken TemporaryIdentityName(ISqlTable table) =>
-            new TemporaryIdentityTableNameSqlQueryToken(table);
+        public ISqlQueryToken ColumnDefinition(ISqlColumn column) =>
+            new ColumnDefinitionSqlQueryToken(
+                this,
+                column);
+
+        public ISqlQueryToken ColumnName(ISqlColumn column, bool useAlias) =>
+            new ColumnNameSqlQueryToken(
+                this,
+                column)
+            {
+                UseAlias = useAlias
+            };
 
         public ISqlQueryToken Parameter(ISqlQueryParameterBuilder parameterBuilder, string name, object value) => BuildParameterToken(parameterBuilder, name, value);
         private ParameterSqlQueryToken BuildParameterToken(ISqlQueryParameterBuilder parameterBuilder, string name, object value) =>
             new ParameterSqlQueryToken(parameterBuilder.RegisterNewParamater(name, value), value?.GetType());
 
         public ISqlQueryToken ValueEntities(ISqlQueryParameterBuilder parameterBuilder, IEnumerable<ValueEntity> valueEntities) =>
-            new ValueEntitiesSqlQueryToken(valueEntities.Select(valueEntity => BuildValueEntityToken(parameterBuilder, valueEntity)));
+            new ValueEntitiesSqlQueryToken(
+                this,
+                valueEntities.Select(valueEntity => BuildValueEntityToken(parameterBuilder, valueEntity)));
         private ValueEntitySqlQueryToken BuildValueEntityToken(ISqlQueryParameterBuilder parameterBuilder, ValueEntity valueEntity) =>
-            new ValueEntitySqlQueryToken(valueEntity.Values.Select(value => BuildParameterToken(parameterBuilder, value.Name, value.Content)));
+            new ValueEntitySqlQueryToken(
+                this,
+                valueEntity.Values.Select(value => BuildParameterToken(parameterBuilder, value.Name, value.Content)));
 
         public ISqlQueryToken SetValues(IEnumerable<ISqlQueryToken> setValueTokens) =>
-            new SetValuesSqlQueryToken(setValueTokens);
+            new SetValuesSqlQueryToken(
+                this,
+                setValueTokens);
 
         public ISqlQueryToken JoinClause(ISqlJoinClause joinClause) =>
-            new JoinClauseSqlQueryToken(joinClause);
+            new JoinClauseSqlQueryToken(
+                this,
+                joinClause);
 
         public ISqlQueryToken BooleanCombination(BooleanCombination combination, IEnumerable<ISqlQueryToken> elements) =>
-            new BooleanCombinationSqlQueryToken(combination, elements);
+            new BooleanCombinationSqlQueryToken(
+                this,
+                combination,
+                elements);
 
         public ISqlQueryToken BooleanComparison(BooleanComparison comparison, ISqlQueryToken left, ISqlQueryToken right) =>
-            new BooleanComparisonSqlQueryToken(comparison, left, right);
+            new BooleanComparisonSqlQueryToken(
+                this,
+                comparison,
+                left,
+                right);
 
         public ISqlQueryToken ArithmeticOperation(ArithmeticOperation operation, ISqlQueryToken left, ISqlQueryToken right) =>
-            new ArithmeticOperationSqlQueryToken(operation, left, right);
+            new ArithmeticOperationSqlQueryToken(
+                this,
+                operation,
+                left,
+                right);
     }
 }

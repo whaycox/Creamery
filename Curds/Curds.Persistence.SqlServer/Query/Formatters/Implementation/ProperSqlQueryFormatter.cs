@@ -12,44 +12,34 @@
 
         public override void VisitLiteral(LiteralSqlQueryToken token) => StringBuilder.Append(token.Literal);
 
-        public override void VisitColumnList(ColumnListSqlQueryToken token)
+        public override void VisitTokenList(TokenListSqlQueryToken token)
         {
             StringBuilder.SetNewLine();
             if (token.IncludeGrouping)
                 StringBuilder.AppendLine("(");
             using (StringBuilder.CreateIndentScope())
             {
-                if (token.Columns.Count == 1)
-                    FormatColumn(token.Columns[0], token.IncludeDefinition);
+                if (token.Tokens.Count == 1)
+                {
+                    token.Tokens[0].AcceptFormatVisitor(this);
+                    StringBuilder.SetNewLine();
+                }
                 else
                 {
-                    for (int i = 0; i < token.Columns.Count; i++)
+                    for (int i = 0; i < token.Tokens.Count; i++)
                     {
                         if (i == 0)
                             StringBuilder.Append(" ");
                         else
                             StringBuilder.Append(",");
 
-                        FormatColumn(token.Columns[i], token.IncludeDefinition);
-
-                        if (i < token.Columns.Count - 1)
-                            StringBuilder.SetNewLine();
+                        token.Tokens[i].AcceptFormatVisitor(this);
+                        StringBuilder.SetNewLine();
                     }
                 }
             }
             if (token.IncludeGrouping)
-            {
-                StringBuilder.SetNewLine();
                 StringBuilder.Append(")");
-            }
-        }
-        private void FormatColumn(ISqlColumn column, bool includeDefinition)
-        {
-            new ObjectNameSqlQueryToken(column.Name)
-                .AcceptFormatVisitor(this);
-
-            if (includeDefinition)
-                StringBuilder.Append($" {TypeMap[column.Type]} NOT NULL");
         }
 
         public override void VisitSetValues(SetValuesSqlQueryToken token)

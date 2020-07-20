@@ -20,11 +20,12 @@ namespace Curds.Persistence.Query.Tokens.Tests
         [TestInitialize]
         public void Init()
         {
-            MockColumn
-                .Setup(column => column.Name)
-                .Returns(TestColumnName);
+            throw new System.NotImplementedException();
+            //MockColumn
+            //    .Setup(column => column.Name)
+            //    .Returns(TestColumnName);
 
-            TestObject = new InsertedIdentityColumnSqlQueryToken(MockColumn.Object);
+            //TestObject = new InsertedIdentityColumnSqlQueryToken(MockColumn.Object);
         }
 
         [TestMethod]

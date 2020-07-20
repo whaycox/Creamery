@@ -17,23 +17,25 @@ namespace Curds.Persistence.Query.Tokens.Tests
         [TestMethod]
         public void ValuesSuppliedInConstructor()
         {
-            for (int i = 0; i < 5; i++)
-                TestValues.Add(new ParameterSqlQueryToken(i.ToString(), typeof(string)));
-            TestObject = new ValueEntitySqlQueryToken(TestValues);
+            throw new System.NotImplementedException();
+            //for (int i = 0; i < 5; i++)
+            //    TestValues.Add(new ParameterSqlQueryToken(i.ToString(), typeof(string)));
+            //TestObject = new ValueEntitySqlQueryToken(TestValues);
 
-            Assert.AreEqual(TestValues.Count, TestObject.Values.Count);
-            for (int i = 0; i < TestValues.Count; i++)
-                Assert.AreSame(TestValues[i], TestObject.Values[i]);
+            //Assert.AreEqual(TestValues.Count, TestObject.Values.Count);
+            //for (int i = 0; i < TestValues.Count; i++)
+            //    Assert.AreSame(TestValues[i], TestObject.Values[i]);
         }
 
         [TestMethod]
         public void VisitsFormatterAsValueEntity()
         {
-            TestObject = new ValueEntitySqlQueryToken(TestValues);
+            throw new System.NotImplementedException();
+            //TestObject = new ValueEntitySqlQueryToken(TestValues);
 
-            TestObject.AcceptFormatVisitor(MockFormatVisitor.Object);
+            //TestObject.AcceptFormatVisitor(MockFormatVisitor.Object);
 
-            MockFormatVisitor.Verify(visitor => visitor.VisitValueEntity(TestObject), Times.Once);
+            //MockFormatVisitor.Verify(visitor => visitor.VisitValueEntity(TestObject), Times.Once);
         }
 
     }

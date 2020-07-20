@@ -8,5 +8,7 @@ namespace Curds.Persistence.Abstraction
     public interface IChildRepository : ISimpleRepository<ITestDataModel, Child>
     {
         Task<List<Child>> ChildrenByParent(int parentID);
+        Task<List<Child>> EvenChildrenByParent(int parentID);
+        Task<List<Child>> OddChildrenByParent(int parentID);
     }
 }

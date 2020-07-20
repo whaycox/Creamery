@@ -9,7 +9,7 @@ namespace Curds.Persistence.Query.Abstraction
     public interface ISqlQueryFormatVisitor
     {
         void VisitLiteral(LiteralSqlQueryToken token);
-        void VisitColumnList(ColumnListSqlQueryToken token);
+        void VisitTokenList(TokenListSqlQueryToken token);
         void VisitSetValues(SetValuesSqlQueryToken token);
         void VisitValueEntities(ValueEntitiesSqlQueryToken token);
         void VisitValueEntity(ValueEntitySqlQueryToken token);

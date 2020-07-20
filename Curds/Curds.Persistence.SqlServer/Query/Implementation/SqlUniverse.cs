@@ -15,8 +15,8 @@ namespace Curds.Persistence.Query.Implementation
     {
         private ISqlTable Table { get; }
 
-        private List<ISqlQueryToken> FilterCollection { get; } = new List<ISqlQueryToken>();
-        private List<ISqlJoinClause> JoinCollection { get; } = new List<ISqlJoinClause>();
+        public List<ISqlQueryToken> FilterCollection { get; } = new List<ISqlQueryToken>();
+        public List<ISqlJoinClause> JoinCollection { get; } = new List<ISqlJoinClause>();
 
         private ISqlQueryTokenFactory TokenFactory => QueryContext.TokenFactory;
         private List<ISqlTable> Tables => QueryContext.Tables;
@@ -35,13 +35,13 @@ namespace Curds.Persistence.Query.Implementation
                     {
                         yield return TokenFactory.Phrase(
                             TokenFactory.Keyword(SqlQueryKeyword.FROM),
-                            TokenFactory.QualifiedObjectName(Tables[i]));
+                            TokenFactory.TableName(Tables[i]));
                     }
                     else
                     {
                         yield return TokenFactory.Phrase(
                             TokenFactory.Keyword(SqlQueryKeyword.JOIN),
-                            TokenFactory.QualifiedObjectName(Tables[i]));
+                            TokenFactory.TableName(Tables[i]));
                         yield return TokenFactory.JoinClause(JoinCollection[i - 1]);
                     }
                 }

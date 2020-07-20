@@ -25,6 +25,7 @@ namespace Curds.Persistence.Query.Tests
         private Mock<ISqlTableVisitor<ITestDataModel>> MockTableVisitor = new Mock<ISqlTableVisitor<ITestDataModel>>();
         private Mock<ISqlQueryFormatter> MockQueryFormatter = new Mock<ISqlQueryFormatter>();
         private Mock<ISqlConnectionContext> MockConnectionContext = new Mock<ISqlConnectionContext>();
+        private Mock<ISqlQueryAliasBuilder> MockAliasBuilder = new Mock<ISqlQueryAliasBuilder>();
         private Mock<ISqlQueryParameterBuilder> MockParameterBuilder = new Mock<ISqlQueryParameterBuilder>();
         private Mock<ISqlQueryTokenFactory> MockTokenFactory = new Mock<ISqlQueryTokenFactory>();
         private Mock<ISqlQueryPhraseBuilder> MockPhraseBuilder = new Mock<ISqlQueryPhraseBuilder>();
@@ -54,6 +55,7 @@ namespace Curds.Persistence.Query.Tests
                 MockExpressionVisitorFactory.Object,
                 MockQueryFormatter.Object,
                 MockConnectionContext.Object,
+                MockAliasBuilder.Object,
                 MockParameterBuilder.Object,
                 MockTokenFactory.Object,
                 MockPhraseBuilder.Object);

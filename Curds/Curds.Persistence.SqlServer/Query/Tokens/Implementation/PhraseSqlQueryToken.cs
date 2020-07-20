@@ -11,7 +11,10 @@ namespace Curds.Persistence.Query.Tokens.Implementation
 
         public List<ISqlQueryToken> Tokens { get; }
 
-        public PhraseSqlQueryToken(params ISqlQueryToken[] tokens)
+        public PhraseSqlQueryToken(
+            ISqlQueryTokenFactory tokenFactory,
+            IEnumerable<ISqlQueryToken> tokens)
+            : base(tokenFactory)
         {
             Tokens = tokens.ToList();
         }

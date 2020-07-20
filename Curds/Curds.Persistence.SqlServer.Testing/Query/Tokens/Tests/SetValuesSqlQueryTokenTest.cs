@@ -18,11 +18,12 @@ namespace Curds.Persistence.Query.Tokens.Tests
         [TestInitialize]
         public void Init()
         {
-            TestObject = new SetValuesSqlQueryToken(new[]
-            {
-                MockTokenOne.Object,
-                MockTokenTwo.Object
-            });
+            throw new System.NotImplementedException();
+            //TestObject = new SetValuesSqlQueryToken(new[]
+            //{
+            //    MockTokenOne.Object,
+            //    MockTokenTwo.Object
+            //});
         }
 
         [TestMethod]

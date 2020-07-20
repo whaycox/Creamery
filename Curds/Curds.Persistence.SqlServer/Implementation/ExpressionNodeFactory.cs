@@ -24,6 +24,8 @@ namespace Curds.Persistence.Implementation
                     return new MemberAccessNode(this, (MemberExpression)expression);
                 case ExpressionType.Equal:
                     return new EqualNode(this, (BinaryExpression)expression);
+                case ExpressionType.NotEqual:
+                    return new NotEqualNode(this, (BinaryExpression)expression);
                 case ExpressionType.LessThan:
                     return new LessThanNode(this, (BinaryExpression)expression);
                 case ExpressionType.LessThanOrEqual:

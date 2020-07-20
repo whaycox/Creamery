@@ -5,8 +5,11 @@
 
     public class InsertedIdentityColumnSqlQueryToken : QualifiedObjectSqlQueryToken
     {
-        public InsertedIdentityColumnSqlQueryToken(ISqlColumn identity)
+        public InsertedIdentityColumnSqlQueryToken(
+            ISqlQueryTokenFactory tokenFactory,
+            ISqlColumn identity)
             : base(
+                tokenFactory,
                 new ObjectNameSqlQueryToken(nameof(SqlQueryKeyword.inserted)),
                 new ObjectNameSqlQueryToken(identity.Name))
         { }

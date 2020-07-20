@@ -9,7 +9,10 @@ namespace Curds.Persistence.Query.Tokens.Implementation
     {
         public List<ParameterSqlQueryToken> Values { get; }
 
-        public ValueEntitySqlQueryToken(IEnumerable<ParameterSqlQueryToken> values)
+        public ValueEntitySqlQueryToken(
+            ISqlQueryTokenFactory tokenFactory,
+            IEnumerable<ParameterSqlQueryToken> values)
+            : base(tokenFactory)
         {
             Values = values.ToList();
         }

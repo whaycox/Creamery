@@ -23,10 +23,11 @@ namespace Curds.Persistence.Query.Tokens.Tests
         [TestInitialize]
         public void Init()
         {
-            TestObject = new ArithmeticOperationSqlQueryToken(
-                TestOperation,
-                MockLeftToken.Object,
-                MockRightToken.Object);
+            throw new NotImplementedException();
+            //TestObject = new ArithmeticOperationSqlQueryToken(
+            //    TestOperation,
+            //    MockLeftToken.Object,
+            //    MockRightToken.Object);
         }
 
         [TestMethod]
@@ -50,25 +51,27 @@ namespace Curds.Persistence.Query.Tokens.Tests
         [DataRow(ArithmeticOperation.Modulo, " % ")]
         public void BuildsOperationToken(ArithmeticOperation testOperation, string expectedLiteral)
         {
-            TestOperation = testOperation;
+            throw new NotImplementedException();
+            //TestOperation = testOperation;
 
-            TestObject = new ArithmeticOperationSqlQueryToken(
-                TestOperation,
-                MockLeftToken.Object,
-                MockRightToken.Object);
+            //TestObject = new ArithmeticOperationSqlQueryToken(
+            //    TestOperation,
+            //    MockLeftToken.Object,
+            //    MockRightToken.Object);
 
-            ConstantSqlQueryToken actual = TestObject.Operation.VerifyIsActually<ConstantSqlQueryToken>();
-            Assert.AreEqual(expectedLiteral, actual.Literal);
+            //ConstantSqlQueryToken actual = TestObject.Operation.VerifyIsActually<ConstantSqlQueryToken>();
+            //Assert.AreEqual(expectedLiteral, actual.Literal);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void InvalidOperationThrows()
         {
-            TestObject = new ArithmeticOperationSqlQueryToken(
-                (ArithmeticOperation)99,
-                MockLeftToken.Object,
-                MockRightToken.Object);
+            throw new NotImplementedException();
+            //TestObject = new ArithmeticOperationSqlQueryToken(
+            //    (ArithmeticOperation)99,
+            //    MockLeftToken.Object,
+            //    MockRightToken.Object);
         }
     }
 }

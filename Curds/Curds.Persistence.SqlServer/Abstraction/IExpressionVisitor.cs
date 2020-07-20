@@ -6,6 +6,7 @@
     {
         TReturn VisitLambda(LambdaNode lambdaNode);
         TReturn VisitEqual(EqualNode equalNode);
+        TReturn VisitNotEqual(NotEqualNode notEqualNode);
         TReturn VisitLessThan(LessThanNode lessThanNode);
         TReturn VisitLessThanOrEqual(LessThanOrEqualNode lessThanOrEqualNode);
         TReturn VisitMemberAccess(MemberAccessNode memberAccessNode);

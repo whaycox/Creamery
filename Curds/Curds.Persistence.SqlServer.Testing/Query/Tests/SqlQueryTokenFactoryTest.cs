@@ -59,35 +59,38 @@ namespace Curds.Persistence.Query.Tests
         [DataRow(true)]
         public void ColumnListBuildsExpectedToken(bool testIncludeDefinitions)
         {
-            ISqlQueryToken actual = TestObject.ColumnList(TestColumns, testIncludeDefinitions);
+            throw new System.NotImplementedException();
+            //ISqlQueryToken actual = TestObject.ColumnList(TestColumns, testIncludeDefinitions);
 
-            Assert.IsInstanceOfType(actual, typeof(ColumnListSqlQueryToken));
-            ColumnListSqlQueryToken columnList = (ColumnListSqlQueryToken)actual;
-            CollectionAssert.AreEqual(TestColumns, columnList.Columns);
-            Assert.AreEqual(testIncludeDefinitions, columnList.IncludeDefinition);
-            Assert.IsTrue(columnList.IncludeGrouping);
+            //Assert.IsInstanceOfType(actual, typeof(ColumnListSqlQueryToken));
+            //ColumnListSqlQueryToken columnList = (ColumnListSqlQueryToken)actual;
+            //CollectionAssert.AreEqual(TestColumns, columnList.Columns);
+            //Assert.AreEqual(testIncludeDefinitions, columnList.IncludeDefinition);
+            //Assert.IsTrue(columnList.IncludeGrouping);
         }
 
         [TestMethod]
         public void SelectListBuildsExpectedToken()
         {
-            ISqlQueryToken actual = TestObject.SelectList(TestColumns);
+            throw new System.NotImplementedException();
+            //ISqlQueryToken actual = TestObject.SelectList(TestColumns);
 
-            Assert.IsInstanceOfType(actual, typeof(ColumnListSqlQueryToken));
-            ColumnListSqlQueryToken columnList = (ColumnListSqlQueryToken)actual;
-            CollectionAssert.AreEqual(TestColumns, columnList.Columns);
-            Assert.IsFalse(columnList.IncludeDefinition);
-            Assert.IsFalse(columnList.IncludeGrouping);
+            //Assert.IsInstanceOfType(actual, typeof(ColumnListSqlQueryToken));
+            //ColumnListSqlQueryToken columnList = (ColumnListSqlQueryToken)actual;
+            //CollectionAssert.AreEqual(TestColumns, columnList.Columns);
+            //Assert.IsFalse(columnList.IncludeDefinition);
+            //Assert.IsFalse(columnList.IncludeGrouping);
         }
 
         [TestMethod]
         public void TemporaryIdentityNameBuildsExpectedToken()
         {
-            ISqlQueryToken actual = TestObject.TemporaryIdentityName(MockTable.Object);
+            throw new System.NotImplementedException();
+            //ISqlQueryToken actual = TestObject.TemporaryIdentityName(MockTable.Object);
 
-            Assert.IsInstanceOfType(actual, typeof(TemporaryIdentityTableNameSqlQueryToken));
-            TemporaryIdentityTableNameSqlQueryToken table = (TemporaryIdentityTableNameSqlQueryToken)actual;
-            Assert.AreEqual(TestTableName, table.BaseTableName);
+            //Assert.IsInstanceOfType(actual, typeof(TemporaryIdentityTableNameSqlQueryToken));
+            //TemporaryIdentityTableNameSqlQueryToken table = (TemporaryIdentityTableNameSqlQueryToken)actual;
+            //Assert.AreEqual(TestTableName, table.BaseTableName);
         }
 
         [TestMethod]
@@ -108,26 +111,28 @@ namespace Curds.Persistence.Query.Tests
         [TestMethod]
         public void QualifiedObjectNameWithTableBuildsExpectedToken()
         {
-            ISqlQueryToken actual = TestObject.QualifiedObjectName(MockTable.Object);
+            throw new System.NotImplementedException();
+            //ISqlQueryToken actual = TestObject.TableName(MockTable.Object);
 
-            Assert.IsInstanceOfType(actual, typeof(QualifiedObjectSqlQueryToken));
-            QualifiedObjectSqlQueryToken qualifiedName = (QualifiedObjectSqlQueryToken)actual;
-            Assert.AreEqual(2, qualifiedName.Names.Count);
-            Assert.AreEqual(TestSchema, qualifiedName.Names[0].Name);
-            Assert.AreEqual(TestTableName, qualifiedName.Names[1].Name);
+            //Assert.IsInstanceOfType(actual, typeof(QualifiedObjectSqlQueryToken));
+            //QualifiedObjectSqlQueryToken qualifiedName = (QualifiedObjectSqlQueryToken)actual;
+            //Assert.AreEqual(2, qualifiedName.Names.Count);
+            //Assert.AreEqual(TestSchema, qualifiedName.Names[0].Name);
+            //Assert.AreEqual(TestTableName, qualifiedName.Names[1].Name);
         }
 
         [TestMethod]
         public void QualifiedObjectNameWithColumnBuildsExpectedToken()
         {
-            ISqlQueryToken actual = TestObject.QualifiedObjectName(MockColumn.Object);
+            throw new System.NotImplementedException();
+            //ISqlQueryToken actual = TestObject.ColumnName(MockColumn.Object);
 
-            Assert.IsInstanceOfType(actual, typeof(QualifiedObjectSqlQueryToken));
-            QualifiedObjectSqlQueryToken qualifiedName = (QualifiedObjectSqlQueryToken)actual;
-            Assert.AreEqual(3, qualifiedName.Names.Count);
-            Assert.AreEqual(TestSchema, qualifiedName.Names[0].Name);
-            Assert.AreEqual(TestTableName, qualifiedName.Names[1].Name);
-            Assert.AreEqual(TestColumnName, qualifiedName.Names[2].Name);
+            //Assert.IsInstanceOfType(actual, typeof(QualifiedObjectSqlQueryToken));
+            //QualifiedObjectSqlQueryToken qualifiedName = (QualifiedObjectSqlQueryToken)actual;
+            //Assert.AreEqual(3, qualifiedName.Names.Count);
+            //Assert.AreEqual(TestSchema, qualifiedName.Names[0].Name);
+            //Assert.AreEqual(TestTableName, qualifiedName.Names[1].Name);
+            //Assert.AreEqual(TestColumnName, qualifiedName.Names[2].Name);
         }
 
         [TestMethod]

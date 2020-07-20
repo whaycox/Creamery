@@ -1,8 +1,8 @@
-﻿using Curds.Persistence.Query.Abstraction;
-using System;
+﻿using System;
 
 namespace Curds.Persistence.Query.Tokens.Implementation
 {
+    using Query.Abstraction;
     using Query.Domain;
 
     public class ArithmeticOperationSqlQueryToken : BaseSqlQueryToken
@@ -15,9 +15,11 @@ namespace Curds.Persistence.Query.Tokens.Implementation
         public ISqlQueryToken Right { get; }
 
         public ArithmeticOperationSqlQueryToken(
+            ISqlQueryTokenFactory tokenFactory,
             ArithmeticOperation operation,
             ISqlQueryToken left,
             ISqlQueryToken right)
+            : base(tokenFactory)
         {
             Operation = OperationKeyword(operation);
             Left = left;

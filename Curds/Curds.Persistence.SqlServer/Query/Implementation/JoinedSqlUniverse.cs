@@ -14,12 +14,12 @@ namespace Curds.Persistence.Query.Implementation
         where TEntityOne : IEntity
         where TEntityTwo : IEntity
     {
-        private ISqlUniverse<TDataModel> SourceUniverse { get; }
+        private SqlUniverse<TDataModel, TEntityOne> SourceUniverse { get; }
 
         public ISqlQueryContext<TDataModel> QueryContext => SourceUniverse.QueryContext;
         public IEnumerable<ISqlQueryToken> Tokens => SourceUniverse.Tokens;
 
-        public JoinedSqlUniverse(ISqlUniverse<TDataModel, TEntityOne> sourceUniverse)
+        public JoinedSqlUniverse(SqlUniverse<TDataModel, TEntityOne> sourceUniverse)
         {
             SourceUniverse = sourceUniverse;
         }
@@ -29,5 +29,11 @@ namespace Curds.Persistence.Query.Implementation
                 QueryContext,
                 QueryContext.ParseTableExpression(entityProjectionExpression),
                 this);
+
+        public ISqlUniverse<TDataModel, TEntityOne, TEntityTwo> Where(Expression<Func<TEntityOne, TEntityTwo, bool>> filterExpression)
+        {
+            SourceUniverse.FilterCollection.Add(QueryContext.ParseQueryExpression(filterExpression));
+            return this;
+        }
     }
 }

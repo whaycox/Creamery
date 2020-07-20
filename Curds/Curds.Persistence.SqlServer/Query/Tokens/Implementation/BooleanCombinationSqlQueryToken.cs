@@ -1,10 +1,10 @@
-﻿using Curds.Persistence.Query.Abstraction;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Curds.Persistence.Query.Tokens.Implementation
 {
+    using Query.Abstraction;
     using Query.Domain;
 
     public class BooleanCombinationSqlQueryToken : BaseSqlQueryToken
@@ -16,8 +16,10 @@ namespace Curds.Persistence.Query.Tokens.Implementation
         public List<ISqlQueryToken> Elements { get; }
 
         public BooleanCombinationSqlQueryToken(
+            ISqlQueryTokenFactory tokenFactory,
             BooleanCombination operation,
             IEnumerable<ISqlQueryToken> elements)
+            : base(tokenFactory)
         {
             Operation = OperationKeyword(operation);
             Elements = elements.ToList();

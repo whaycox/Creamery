@@ -2,6 +2,9 @@
 {
     public enum SqlQueryKeyword
     {
+        NULL,
+        INT,
+
         CREATE,
         DROP,
         TABLE,
@@ -20,6 +23,7 @@
 
         AND,
         OR,
+        NOT,
 
         inserted,
     }

@@ -1,9 +1,9 @@
-﻿using Curds.Persistence.Query.Abstraction;
-using System;
+﻿using System;
 
 namespace Curds.Persistence.Query.Tokens.Implementation
 {
-    using Domain;
+    using Query.Abstraction;
+    using Query.Domain;
 
     public class BooleanComparisonSqlQueryToken : BaseSqlQueryToken
     {
@@ -19,9 +19,11 @@ namespace Curds.Persistence.Query.Tokens.Implementation
         public ISqlQueryToken Right { get; }
 
         public BooleanComparisonSqlQueryToken(
+            ISqlQueryTokenFactory tokenFactory,
             BooleanComparison operation,
             ISqlQueryToken left,
             ISqlQueryToken right)
+            : base(tokenFactory)
         {
             Operation = OperationConstant(operation);
             Left = left;

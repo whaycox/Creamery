@@ -22,9 +22,10 @@ namespace Curds.Persistence.Query.Tokens.Tests
         [TestInitialize]
         public void Init()
         {
-            TestObject = new BooleanCombinationSqlQueryToken(
-                TestCombination,
-                TestElements);
+            throw new NotImplementedException();
+            //TestObject = new BooleanCombinationSqlQueryToken(
+            //    TestCombination,
+            //    TestElements);
         }
 
         [DataTestMethod]
@@ -32,21 +33,23 @@ namespace Curds.Persistence.Query.Tokens.Tests
         [DataRow(BooleanCombination.Or, SqlQueryKeyword.OR)]
         public void OperationTokenIsExpected(BooleanCombination testCombination, SqlQueryKeyword expectedKeyword)
         {
-            TestObject = new BooleanCombinationSqlQueryToken(
-                testCombination,
-                TestElements);
+            throw new NotImplementedException();
+            //TestObject = new BooleanCombinationSqlQueryToken(
+            //    testCombination,
+            //    TestElements);
 
-            KeywordSqlQueryToken operationToken = TestObject.Operation.VerifyIsActually<KeywordSqlQueryToken>();
-            Assert.AreEqual(expectedKeyword, operationToken.Keyword);
+            //KeywordSqlQueryToken operationToken = TestObject.Operation.VerifyIsActually<KeywordSqlQueryToken>();
+            //Assert.AreEqual(expectedKeyword, operationToken.Keyword);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void InvalidCombinationThrows()
         {
-            TestObject = new BooleanCombinationSqlQueryToken(
-                (BooleanCombination)99,
-                TestElements);
+            throw new NotImplementedException();
+            //TestObject = new BooleanCombinationSqlQueryToken(
+            //    (BooleanCombination)99,
+            //    TestElements);
         }
 
         [DataTestMethod]
@@ -56,13 +59,14 @@ namespace Curds.Persistence.Query.Tokens.Tests
         [DataRow(20)]
         public void ElementsArePopulatedFromConstructor(int elementsToAdd)
         {
-            for (int i = 0; i < elementsToAdd; i++)
-                TestElements.Add(Mock.Of<ISqlQueryToken>());
-            TestObject = new BooleanCombinationSqlQueryToken(
-                TestCombination,
-                TestElements);
+            throw new NotImplementedException();
+            //for (int i = 0; i < elementsToAdd; i++)
+            //    TestElements.Add(Mock.Of<ISqlQueryToken>());
+            //TestObject = new BooleanCombinationSqlQueryToken(
+            //    TestCombination,
+            //    TestElements);
 
-            CollectionAssert.AreEqual(TestElements, TestObject.Elements);
+            //CollectionAssert.AreEqual(TestElements, TestObject.Elements);
         }
 
         [TestMethod]

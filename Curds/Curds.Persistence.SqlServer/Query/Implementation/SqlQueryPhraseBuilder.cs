@@ -14,34 +14,38 @@ namespace Curds.Persistence.Query.Implementation
             TokenFactory = tokenFactory;
         }
 
+        private ISqlQueryToken TemporaryIdentityTableName(ISqlTable table) => TokenFactory.TableName(
+            table.InsertedIdentityTable,
+            useAlias: false);
+
         public ISqlQueryToken CreateTemporaryIdentityToken(ISqlTable table) => TokenFactory.Phrase(
             TokenFactory.Keyword(SqlQueryKeyword.CREATE),
             TokenFactory.Keyword(SqlQueryKeyword.TABLE),
-            TokenFactory.TemporaryIdentityName(table),
+            TemporaryIdentityTableName(table),
             TokenFactory.ColumnList(new[] { table.Identity }, true));
 
         public ISqlQueryToken OutputToTemporaryIdentityToken(ISqlTable table) => TokenFactory.Phrase(
             TokenFactory.Keyword(SqlQueryKeyword.OUTPUT),
             TokenFactory.InsertedIdentityName(table),
             TokenFactory.Keyword(SqlQueryKeyword.INTO),
-            TokenFactory.TemporaryIdentityName(table));
+            TemporaryIdentityTableName(table));
 
         public ISqlQueryToken DropTemporaryIdentityToken(ISqlTable table) => TokenFactory.Phrase(
             TokenFactory.Keyword(SqlQueryKeyword.DROP),
             TokenFactory.Keyword(SqlQueryKeyword.TABLE),
-            TokenFactory.TemporaryIdentityName(table));
+            TemporaryIdentityTableName(table));
 
         public IEnumerable<ISqlQueryToken> SelectNewIdentitiesToken(ISqlTable table) => new ISqlQueryToken[]
         {
             SelectColumnsToken(new[]{ table.Identity }),
             TokenFactory.Phrase(
-                    TokenFactory.Keyword(SqlQueryKeyword.FROM),
-                    TokenFactory.TemporaryIdentityName(table)),
+                TokenFactory.Keyword(SqlQueryKeyword.FROM),
+                TokenFactory.TableName(table.InsertedIdentityTable)),
         };
 
         public ISqlQueryToken InsertToTableToken(ISqlTable table) => TokenFactory.Phrase(
             TokenFactory.Keyword(SqlQueryKeyword.INSERT),
-            TokenFactory.QualifiedObjectName(table),
+            TokenFactory.TableName(table, false),
             TokenFactory.ColumnList(table.NonIdentities, false));
 
         public IEnumerable<ISqlQueryToken> ValueEntitiesToken(ISqlQueryParameterBuilder parameterBuilder, IEnumerable<ValueEntity> valueEntities) => new ISqlQueryToken[]
@@ -56,11 +60,11 @@ namespace Curds.Persistence.Query.Implementation
 
         public ISqlQueryToken DeleteTableToken(ISqlTable table) => TokenFactory.Phrase(
             TokenFactory.Keyword(SqlQueryKeyword.DELETE),
-            TokenFactory.QualifiedObjectName(table));
+            TokenFactory.TableName(table, useSqlName: false));
 
         public ISqlQueryToken UpdateTableToken(ISqlTable table) => TokenFactory.Phrase(
             TokenFactory.Keyword(SqlQueryKeyword.UPDATE),
-            TokenFactory.QualifiedObjectName(table));
+            TokenFactory.TableName(table, useSqlName: false));
 
         public ISqlQueryToken SetValuesToken(IEnumerable<ISqlQueryToken> setValueTokens) => TokenFactory.Phrase(
             TokenFactory.Keyword(SqlQueryKeyword.SET),

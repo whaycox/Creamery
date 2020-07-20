@@ -6,6 +6,10 @@
     {
         public abstract string Literal { get; }
 
+        public LiteralSqlQueryToken()
+            : base(null)
+        { }
+
         public override void AcceptFormatVisitor(ISqlQueryFormatVisitor visitor) => visitor.VisitLiteral(this);
     }
 }

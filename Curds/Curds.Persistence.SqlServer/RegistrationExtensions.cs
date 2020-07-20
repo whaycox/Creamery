@@ -47,6 +47,7 @@ namespace Curds.Persistence
             .AddSingleton(typeof(IModelMap<>), typeof(ModelMap<>));
 
         private static IServiceCollection AddQueryConstruction(this IServiceCollection services) => services
+            .AddTransient<ISqlQueryAliasBuilder, SqlQueryAliasBuilder>()
             .AddTransient<ISqlQueryParameterBuilder, SqlQueryParameterBuilder>()
             .AddTransient<ISqlQueryFormatter, ProperSqlQueryFormatter>()
             .AddTransient(typeof(ISqlQueryContext<>), typeof(SqlQueryContext<>))

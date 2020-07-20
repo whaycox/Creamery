@@ -8,7 +8,10 @@ namespace Curds.Persistence.Query.Tokens.Implementation
     {
         public List<ISqlQueryToken> SetValueTokens { get; } = new List<ISqlQueryToken>();
 
-        public SetValuesSqlQueryToken(IEnumerable<ISqlQueryToken> setValueTokens)
+        public SetValuesSqlQueryToken(
+            ISqlQueryTokenFactory tokenFactory,
+            IEnumerable<ISqlQueryToken> setValueTokens)
+            : base(tokenFactory)
         {
             SetValueTokens.AddRange(setValueTokens);
         }

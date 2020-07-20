@@ -22,10 +22,11 @@ namespace Curds.Persistence.Query.Tokens.Tests
         [TestInitialize]
         public void Init()
         {
-            TestObject = new BooleanComparisonSqlQueryToken(
-                TestOperation,
-                MockLeftToken.Object,
-                MockRightToken.Object);
+            throw new System.NotImplementedException();
+            //TestObject = new BooleanComparisonSqlQueryToken(
+            //    TestOperation,
+            //    MockLeftToken.Object,
+            //    MockRightToken.Object);
         }
 
         [TestMethod]
@@ -53,24 +54,26 @@ namespace Curds.Persistence.Query.Tokens.Tests
         [DataRow(BooleanComparison.LessThanOrEqual, " <= ")]
         public void AcceptFormatVisitorVisitsExpectedOperation(BooleanComparison testOperation, string expectedLiteral)
         {
-            TestObject = new BooleanComparisonSqlQueryToken(
-                testOperation,
-                MockLeftToken.Object,
-                MockRightToken.Object);
+            throw new NotImplementedException();
+            //TestObject = new BooleanComparisonSqlQueryToken(
+            //    testOperation,
+            //    MockLeftToken.Object,
+            //    MockRightToken.Object);
 
-            TestObject.AcceptFormatVisitor(MockFormatVisitor.Object);
+            //TestObject.AcceptFormatVisitor(MockFormatVisitor.Object);
 
-            MockFormatVisitor.Verify(visitor => visitor.VisitLiteral(It.Is<LiteralSqlQueryToken>(token => token.Literal == expectedLiteral)), Times.Once);
+            //MockFormatVisitor.Verify(visitor => visitor.VisitLiteral(It.Is<LiteralSqlQueryToken>(token => token.Literal == expectedLiteral)), Times.Once);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void InvalidOperationThrows()
         {
-            TestObject = new BooleanComparisonSqlQueryToken(
-                (BooleanComparison)99,
-                MockLeftToken.Object,
-                MockRightToken.Object);
+            throw new NotImplementedException();
+            //TestObject = new BooleanComparisonSqlQueryToken(
+            //    (BooleanComparison)99,
+            //    MockLeftToken.Object,
+            //    MockRightToken.Object);
         }
     }
 }

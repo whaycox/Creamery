@@ -43,7 +43,7 @@ namespace Curds.Persistence.Query.Formatters.Implementation
         }
 
         public abstract void VisitLiteral(LiteralSqlQueryToken token);
-        public abstract void VisitColumnList(ColumnListSqlQueryToken token);
+        public abstract void VisitTokenList(TokenListSqlQueryToken token);
         public abstract void VisitSetValues(SetValuesSqlQueryToken token);
         public abstract void VisitValueEntities(ValueEntitiesSqlQueryToken token);
         public abstract void VisitValueEntity(ValueEntitySqlQueryToken token);

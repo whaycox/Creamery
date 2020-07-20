@@ -14,6 +14,7 @@ namespace Curds.Persistence.Query.Implementation
         private IModelMap<TModel> ModelMap { get; }
         private IExpressionNodeFactory ExpressionNodeFactory { get; }
         private ISqlQueryExpressionVisitorFactory ExpressionVisitorFactory { get; }
+        private ISqlQueryAliasBuilder AliasBuilder { get; }
 
         public ISqlQueryFormatter Formatter { get; }
         public ISqlConnectionContext ConnectionContext { get; }
@@ -30,6 +31,7 @@ namespace Curds.Persistence.Query.Implementation
             ISqlQueryExpressionVisitorFactory expressionVisitorFactory,
             ISqlQueryFormatter formatter,
             ISqlConnectionContext connectionContext,
+            ISqlQueryAliasBuilder aliasBuilder,
             ISqlQueryParameterBuilder parameterBuilder,
             ISqlQueryTokenFactory tokenFactory,
             ISqlQueryPhraseBuilder phraseBuilder)
@@ -40,6 +42,7 @@ namespace Curds.Persistence.Query.Implementation
 
             Formatter = formatter;
             ConnectionContext = connectionContext;
+            AliasBuilder = aliasBuilder;
             ParameterBuilder = parameterBuilder;
             TokenFactory = tokenFactory;
             PhraseBuilder = phraseBuilder;
@@ -49,6 +52,8 @@ namespace Curds.Persistence.Query.Implementation
             where TEntity : IEntity
         {
             SqlTable table = new SqlTable { Model = ModelMap.Entity<TEntity>() };
+            table.Alias = AliasBuilder.RegisterNewAlias(table.Name);
+
             QueryTables.Add(table);
             return table;
         }

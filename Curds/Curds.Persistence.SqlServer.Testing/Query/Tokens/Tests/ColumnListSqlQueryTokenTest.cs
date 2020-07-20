@@ -13,16 +13,15 @@ namespace Curds.Persistence.Query.Tokens.Tests
     {
         private List<ISqlColumn> TestColumns = new List<ISqlColumn>();
 
-        private ColumnListSqlQueryToken TestObject = null;
-
         [TestMethod]
         public void ColumnsSuppliedByConstructor()
         {
-            for (int i = 0; i < 5; i++)
-                TestColumns.Add(Mock.Of<ISqlColumn>());
-            TestObject = new ColumnListSqlQueryToken(TestColumns);
+            throw new System.NotImplementedException();
+            //for (int i = 0; i < 5; i++)
+            //    TestColumns.Add(Mock.Of<ISqlColumn>());
+            //TestObject = new ColumnListSqlQueryToken(TestColumns);
 
-            CollectionAssert.AreEqual(TestColumns, TestObject.Columns);
+            //CollectionAssert.AreEqual(TestColumns, TestObject.Columns);
         }
 
         [DataTestMethod]
@@ -30,11 +29,12 @@ namespace Curds.Persistence.Query.Tokens.Tests
         [DataRow(true)]
         public void CanSetIncludeGrouping(bool testBool)
         {
-            TestObject = new ColumnListSqlQueryToken(TestColumns);
+            throw new System.NotImplementedException();
+            //TestObject = new ColumnListSqlQueryToken(TestColumns);
 
-            TestObject.IncludeGrouping = testBool;
+            //TestObject.IncludeGrouping = testBool;
 
-            Assert.AreEqual(testBool, TestObject.IncludeGrouping);
+            //Assert.AreEqual(testBool, TestObject.IncludeGrouping);
         }
 
         [DataTestMethod]
@@ -42,21 +42,23 @@ namespace Curds.Persistence.Query.Tokens.Tests
         [DataRow(true)]
         public void CanSetIncludeDefinition(bool testBool)
         {
-            TestObject = new ColumnListSqlQueryToken(TestColumns);
+            throw new System.NotImplementedException();
+            //TestObject = new ColumnListSqlQueryToken(TestColumns);
 
-            TestObject.IncludeDefinition = testBool;
+            //TestObject.IncludeDefinition = testBool;
 
-            Assert.AreEqual(testBool, TestObject.IncludeDefinition);
+            //Assert.AreEqual(testBool, TestObject.IncludeDefinition);
         }
 
         [TestMethod]
         public void VisitsFormatterAsColumnList()
         {
-            TestObject = new ColumnListSqlQueryToken(TestColumns);
+            throw new System.NotImplementedException();
+            //TestObject = new ColumnListSqlQueryToken(TestColumns);
 
-            TestObject.AcceptFormatVisitor(MockFormatVisitor.Object);
+            //TestObject.AcceptFormatVisitor(MockFormatVisitor.Object);
 
-            MockFormatVisitor.Verify(visitor => visitor.VisitColumnList(TestObject), Times.Once);
+            //MockFormatVisitor.Verify(visitor => visitor.VisitColumnList(TestObject), Times.Once);
         }
     }
 }

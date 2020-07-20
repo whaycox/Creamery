@@ -6,6 +6,7 @@ using System.Reflection;
 namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
+    using Curds.Persistence.ExpressionNodes.Domain;
     using Domain;
     using ExpressionNodes.Domain;
     using Persistence.Abstraction;
@@ -58,10 +59,10 @@ namespace Curds.Persistence.Query.Implementation
         {
             property = null;
 
-            if (left is QualifiedObjectSqlQueryToken)
+            if (left is ColumnNameSqlQueryToken)
             {
-                QualifiedObjectSqlQueryToken qualifiedObject = (QualifiedObjectSqlQueryToken)left;
-                if (qualifiedObject.Column != null && qualifiedObject.Column.ValueName == nameof(IEntity.Keys))
+                ColumnNameSqlQueryToken columnName = (ColumnNameSqlQueryToken)left;
+                if (columnName.Column.ValueName == nameof(IEntity.Keys))
                 {
                     if (right is ParameterSqlQueryToken)
                     {
@@ -83,8 +84,8 @@ namespace Curds.Persistence.Query.Implementation
         }
         private ISqlQueryToken ExpandKeyEquality(ISqlQueryToken property, ISqlQueryToken value)
         {
-            QualifiedObjectSqlQueryToken qualifiedObject = (QualifiedObjectSqlQueryToken)property;
-            ISqlTable table = qualifiedObject.Column.Table;
+            ColumnNameSqlQueryToken columnName = (ColumnNameSqlQueryToken)property;
+            ISqlTable table = columnName.Column.Table;
             IList<ISqlColumn> keys = table.Keys;
 
             ParameterSqlQueryToken parameterSqlQueryToken = (ParameterSqlQueryToken)value;
@@ -96,13 +97,20 @@ namespace Curds.Persistence.Query.Implementation
             List<ISqlQueryToken> keyTokens = new List<ISqlQueryToken>();
             for (int i = 0; i < keys.Count; i++)
             {
-                ISqlQueryToken keyQualifiedObject = TokenFactory.QualifiedObjectName(keys[i]);
+                ISqlQueryToken keyQualifiedObject = TokenFactory.ColumnName(keys[i]);
                 ISqlQueryToken keyValue = TokenFactory.Parameter(Context.ParameterBuilder, keys[i].Name, keyValues[i]);
 
                 keyTokens.Add(TokenFactory.BooleanComparison(BooleanComparison.Equals, keyQualifiedObject, keyValue));
             }
 
             return TokenFactory.BooleanCombination(BooleanCombination.And, keyTokens);
+        }
+
+        public override ISqlQueryToken VisitNotEqual(NotEqualNode notEqualNode)
+        {
+            ISqlQueryToken left = notEqualNode.Left.AcceptVisitor(this);
+            ISqlQueryToken right = notEqualNode.Right.AcceptVisitor(this);
+            return TokenFactory.BooleanComparison(BooleanComparison.NotEquals, left, right);
         }
 
         public override ISqlQueryToken VisitLessThan(LessThanNode lessThanNode)
@@ -138,7 +146,7 @@ namespace Curds.Persistence.Query.Implementation
                 column = table.KeyColumn;
             else
                 column = table.Columns.First(col => col.ValueName == propertyInfo.Name);
-            return TokenFactory.QualifiedObjectName(column);
+            return TokenFactory.ColumnName(column);
         }
 
         public override ISqlQueryToken VisitModulo(ModuloNode moduloNode)
