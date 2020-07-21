@@ -42,9 +42,10 @@ namespace Curds.Persistence.Query.Queries.Tests
         [TestMethod]
         public void GenerateCommandBuildsCreateTemporaryIdentityPhrase()
         {
-            TestObject.GenerateCommand();
+            throw new System.NotImplementedException();
+            //TestObject.GenerateCommand();
 
-            MockPhraseBuilder.Verify(builder => builder.CreateTemporaryIdentityToken(MockTable.Object), Times.Once);
+            //MockPhraseBuilder.Verify(builder => builder.CreateTemporaryIdentityToken(MockTable.Object), Times.Once);
         }
 
         [TestMethod]
@@ -98,17 +99,19 @@ namespace Curds.Persistence.Query.Queries.Tests
         [TestMethod]
         public void GenerateCommandBuildsSelectNewIdentitiesPhrase()
         {
-            TestObject.GenerateCommand();
+            throw new System.NotImplementedException();
+            //TestObject.GenerateCommand();
 
-            MockPhraseBuilder.Verify(builder => builder.SelectNewIdentitiesToken(MockTable.Object), Times.Once);
+            //MockPhraseBuilder.Verify(builder => builder.SelectNewIdentitiesToken(MockTable.Object), Times.Once);
         }
 
         [TestMethod]
         public void GenerateCommandBuildsDropTemporaryPhrase()
         {
-            TestObject.GenerateCommand();
+            throw new System.NotImplementedException();
+            //TestObject.GenerateCommand();
 
-            MockPhraseBuilder.Verify(builder => builder.DropTemporaryIdentityToken(MockTable.Object), Times.Once);
+            //MockPhraseBuilder.Verify(builder => builder.DropTemporaryIdentityToken(MockTable.Object), Times.Once);
         }
 
         [DataTestMethod]
@@ -120,17 +123,18 @@ namespace Curds.Persistence.Query.Queries.Tests
         [DataRow(5, 10)]
         public void GeneratedTokensAreExpected(int valueEntityTokens, int selectTokens)
         {
-            List<ISqlQueryToken> expectedTokens = new List<ISqlQueryToken>();
-            expectedTokens.Add(SetupPhraseBuilder(builder => builder.CreateTemporaryIdentityToken(It.IsAny<ISqlTable>())));
-            expectedTokens.Add(SetupPhraseBuilder(builder => builder.InsertToTableToken(It.IsAny<ISqlTable>())));
-            expectedTokens.Add(SetupPhraseBuilder(builder => builder.OutputToTemporaryIdentityToken(It.IsAny<ISqlTable>())));
-            expectedTokens.AddRange(SetupPhraseBuilder(builder => builder.ValueEntitiesToken(It.IsAny<ISqlQueryParameterBuilder>(), It.IsAny<IEnumerable<ValueEntity>>()), valueEntityTokens));
-            expectedTokens.AddRange(SetupPhraseBuilder(builder => builder.SelectNewIdentitiesToken(MockTable.Object), selectTokens));
-            expectedTokens.Add(SetupPhraseBuilder(builder => builder.DropTemporaryIdentityToken(MockTable.Object)));
+            throw new System.NotImplementedException();
+            //List<ISqlQueryToken> expectedTokens = new List<ISqlQueryToken>();
+            //expectedTokens.Add(SetupPhraseBuilder(builder => builder.CreateTemporaryIdentityToken(It.IsAny<ISqlTable>())));
+            //expectedTokens.Add(SetupPhraseBuilder(builder => builder.InsertToTableToken(It.IsAny<ISqlTable>())));
+            //expectedTokens.Add(SetupPhraseBuilder(builder => builder.OutputToTemporaryIdentityToken(It.IsAny<ISqlTable>())));
+            //expectedTokens.AddRange(SetupPhraseBuilder(builder => builder.ValueEntitiesToken(It.IsAny<ISqlQueryParameterBuilder>(), It.IsAny<IEnumerable<ValueEntity>>()), valueEntityTokens));
+            //expectedTokens.AddRange(SetupPhraseBuilder(builder => builder.SelectNewIdentitiesToken(MockTable.Object), selectTokens));
+            //expectedTokens.Add(SetupPhraseBuilder(builder => builder.DropTemporaryIdentityToken(MockTable.Object)));
 
-            TestObject.GenerateCommand();
+            //TestObject.GenerateCommand();
 
-            CollectionAssert.AreEqual(expectedTokens, FormattedTokens);
+            //CollectionAssert.AreEqual(expectedTokens, FormattedTokens);
         }
 
         [DataTestMethod]

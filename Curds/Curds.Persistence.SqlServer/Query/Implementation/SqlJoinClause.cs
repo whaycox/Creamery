@@ -18,9 +18,9 @@ namespace Curds.Persistence.Query.Implementation
     {
         private ISqlQueryContext<TDataModel> QueryContext { get; }
         private TUniverse Universe { get; }
+        private JoinType JoinType { get; set; }
 
         private List<ISqlQueryToken> ClauseCollection { get; } = new List<ISqlQueryToken>();
-        private JoinType JoinType { get; set; }
 
         private ISqlQueryTokenFactory TokenFactory => QueryContext.TokenFactory;
 

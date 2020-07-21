@@ -61,8 +61,11 @@ namespace Curds.Text.Implementation
 
         public void SetNewLine()
         {
-            Builder.Append(Environment.NewLine);
-            IndentsNeeded = true;
+            if (!IndentsNeeded)
+            {
+                Builder.Append(Environment.NewLine);
+                IndentsNeeded = true;
+            }
         }
 
         public string Flush()

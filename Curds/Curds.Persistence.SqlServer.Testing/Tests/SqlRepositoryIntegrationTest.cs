@@ -86,7 +86,7 @@ namespace Curds.Persistence.Tests
             BuildServiceProvider();
             IRepository<ITestDataModel, OtherEntity> testRepository = TestServiceProvider.GetRequiredService<IRepository<ITestDataModel, OtherEntity>>();
 
-            await testRepository.Insert(OtherEntity);
+            await testRepository.Insert(otherEntities);
         }
 
         [TestMethod]

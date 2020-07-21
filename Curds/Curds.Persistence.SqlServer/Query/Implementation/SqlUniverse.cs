@@ -19,32 +19,17 @@ namespace Curds.Persistence.Query.Implementation
         public List<ISqlJoinClause> JoinCollection { get; } = new List<ISqlJoinClause>();
 
         private ISqlQueryTokenFactory TokenFactory => QueryContext.TokenFactory;
-        private List<ISqlTable> Tables => QueryContext.Tables;
+        private ISqlQueryPhraseBuilder PhraseBuilder => QueryContext.PhraseBuilder;
 
         public ISqlQueryContext<TDataModel> QueryContext { get; }
         public IEnumerable<ISqlQueryToken> Tokens
         {
             get
             {
-                if (Tables.Count != JoinCollection.Count + 1)
-                    throw new InvalidOperationException("Not the right number of joins for tables");
+                yield return PhraseBuilder.FromTableToken(Table);
 
-                for (int i = 0; i < Tables.Count; i++)
-                {
-                    if (i == 0)
-                    {
-                        yield return TokenFactory.Phrase(
-                            TokenFactory.Keyword(SqlQueryKeyword.FROM),
-                            TokenFactory.TableName(Tables[i]));
-                    }
-                    else
-                    {
-                        yield return TokenFactory.Phrase(
-                            TokenFactory.Keyword(SqlQueryKeyword.JOIN),
-                            TokenFactory.TableName(Tables[i]));
-                        yield return TokenFactory.JoinClause(JoinCollection[i - 1]);
-                    }
-                }
+                for (int i = 0; i < JoinCollection.Count; i++)
+                    yield return PhraseBuilder.JoinTableToken(JoinCollection[i]);
 
                 for (int i = 0; i < FilterCollection.Count; i++)
                     yield return TokenFactory.Phrase(

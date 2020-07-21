@@ -131,12 +131,13 @@ namespace Curds.Persistence.Query.Tests
         [TestMethod]
         public void ValueEntitiesTokenBuildsExpectedPhrase()
         {
-            ISqlQueryToken valuesToken = SetupTokenFactory(factory => factory.Keyword(SqlQueryKeyword.VALUES));
-            ISqlQueryToken valueEntitiesToken = SetupTokenFactory(factory => factory.ValueEntities(MockParameterBuilder.Object, TestValueEntities));
+            throw new System.NotImplementedException();
+            //ISqlQueryToken valuesToken = SetupTokenFactory(factory => factory.Keyword(SqlQueryKeyword.VALUES));
+            //ISqlQueryToken valueEntitiesToken = SetupTokenFactory(factory => factory.ValueEntities(MockParameterBuilder.Object, TestValueEntities));
 
-            IEnumerable<ISqlQueryToken> actual = TestObject.ValueEntitiesToken(MockParameterBuilder.Object, TestValueEntities);
+            //IEnumerable<ISqlQueryToken> actual = TestObject.ValueEntitiesToken(MockParameterBuilder.Object, TestValueEntities);
 
-            CollectionAssert.AreEqual(new[] { valuesToken, valueEntitiesToken }, actual.ToList());
+            //CollectionAssert.AreEqual(new[] { valuesToken, valueEntitiesToken }, actual.ToList());
         }
 
         [TestMethod]
@@ -180,13 +181,14 @@ namespace Curds.Persistence.Query.Tests
         [TestMethod]
         public void SetValuesTokenBuildsExpectedPhrase()
         {
-            ISqlQueryToken setToken = SetupTokenFactory(factory => factory.Keyword(SqlQueryKeyword.SET));
-            ISqlQueryToken setValuesToken = SetupTokenFactory(factory => factory.SetValues(TestSetValueTokens));
-            ISqlQueryToken expectedPhraseToken = SetupTokenFactory(factory => factory.Phrase(setToken, setValuesToken));
+            throw new System.NotImplementedException();
+            //ISqlQueryToken setToken = SetupTokenFactory(factory => factory.Keyword(SqlQueryKeyword.SET));
+            //ISqlQueryToken setValuesToken = SetupTokenFactory(factory => factory.SetValues(TestSetValueTokens));
+            //ISqlQueryToken expectedPhraseToken = SetupTokenFactory(factory => factory.Phrase(setToken, setValuesToken));
 
-            ISqlQueryToken actual = TestObject.SetValuesToken(TestSetValueTokens);
+            //ISqlQueryToken actual = TestObject.SetValuesToken(TestSetValueTokens);
 
-            Assert.AreSame(expectedPhraseToken, actual);
+            //Assert.AreSame(expectedPhraseToken, actual);
         }
 
         [TestMethod]

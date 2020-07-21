@@ -14,59 +14,51 @@ namespace Curds.Persistence.Query.Implementation
             TokenFactory = tokenFactory;
         }
 
-        private ISqlQueryToken TemporaryIdentityTableName(ISqlTable table) => TokenFactory.TableName(
-            table.InsertedIdentityTable,
-            useAlias: false);
-
-        public ISqlQueryToken CreateTemporaryIdentityToken(ISqlTable table) => TokenFactory.Phrase(
+        public ISqlQueryToken CreateTableToken(ISqlTable table) => TokenFactory.Phrase(
             TokenFactory.Keyword(SqlQueryKeyword.CREATE),
             TokenFactory.Keyword(SqlQueryKeyword.TABLE),
-            TemporaryIdentityTableName(table),
-            TokenFactory.ColumnList(new[] { table.Identity }, true));
+            TokenFactory.TableDefinition(table));
+
+        public ISqlQueryToken DropTableToken(ISqlTable table) => TokenFactory.Phrase(
+            TokenFactory.Keyword(SqlQueryKeyword.DROP),
+            TokenFactory.Keyword(SqlQueryKeyword.TABLE),
+            TokenFactory.TableName(table, useAlias: false));
 
         public ISqlQueryToken OutputToTemporaryIdentityToken(ISqlTable table) => TokenFactory.Phrase(
             TokenFactory.Keyword(SqlQueryKeyword.OUTPUT),
             TokenFactory.InsertedIdentityName(table),
             TokenFactory.Keyword(SqlQueryKeyword.INTO),
-            TemporaryIdentityTableName(table));
-
-        public ISqlQueryToken DropTemporaryIdentityToken(ISqlTable table) => TokenFactory.Phrase(
-            TokenFactory.Keyword(SqlQueryKeyword.DROP),
-            TokenFactory.Keyword(SqlQueryKeyword.TABLE),
-            TemporaryIdentityTableName(table));
-
-        public IEnumerable<ISqlQueryToken> SelectNewIdentitiesToken(ISqlTable table) => new ISqlQueryToken[]
-        {
-            SelectColumnsToken(new[]{ table.Identity }),
-            TokenFactory.Phrase(
-                TokenFactory.Keyword(SqlQueryKeyword.FROM),
-                TokenFactory.TableName(table.InsertedIdentityTable)),
-        };
+            TokenFactory.TableName(table.InsertedIdentityTable, useAlias: false));
 
         public ISqlQueryToken InsertToTableToken(ISqlTable table) => TokenFactory.Phrase(
             TokenFactory.Keyword(SqlQueryKeyword.INSERT),
             TokenFactory.TableName(table, false),
             TokenFactory.ColumnList(table.NonIdentities, false));
 
-        public IEnumerable<ISqlQueryToken> ValueEntitiesToken(ISqlQueryParameterBuilder parameterBuilder, IEnumerable<ValueEntity> valueEntities) => new ISqlQueryToken[]
-        {
+        public ISqlQueryToken ValueEntitiesToken(ISqlQueryParameterBuilder parameterBuilder, IEnumerable<ValueEntity> valueEntities) => TokenFactory.Phrase(
             TokenFactory.Keyword(SqlQueryKeyword.VALUES),
-            TokenFactory.ValueEntities(parameterBuilder, valueEntities)
-        };
+            TokenFactory.ValueEntities(parameterBuilder, valueEntities));
 
         public ISqlQueryToken SelectColumnsToken(IEnumerable<ISqlColumn> columns) => TokenFactory.Phrase(
             TokenFactory.Keyword(SqlQueryKeyword.SELECT),
             TokenFactory.SelectList(columns));
 
+        public ISqlQueryToken FromTableToken(ISqlTable table) => TokenFactory.Phrase(
+            TokenFactory.Keyword(SqlQueryKeyword.FROM),
+            TokenFactory.TableName(table));
+
+        public ISqlQueryToken JoinTableToken(ISqlJoinClause joinClause) => TokenFactory.Phrase(
+            TokenFactory.Keyword(SqlQueryKeyword.JOIN),
+            TokenFactory.TableName(joinClause.JoinedTable),
+            TokenFactory.JoinClause(joinClause));
+
         public ISqlQueryToken DeleteTableToken(ISqlTable table) => TokenFactory.Phrase(
             TokenFactory.Keyword(SqlQueryKeyword.DELETE),
             TokenFactory.TableName(table, useSqlName: false));
 
-        public ISqlQueryToken UpdateTableToken(ISqlTable table) => TokenFactory.Phrase(
+        public ISqlQueryToken UpdateTableToken(ISqlTable table, IEnumerable<ISqlQueryToken> setValueTokens) => TokenFactory.Phrase(
             TokenFactory.Keyword(SqlQueryKeyword.UPDATE),
-            TokenFactory.TableName(table, useSqlName: false));
-
-        public ISqlQueryToken SetValuesToken(IEnumerable<ISqlQueryToken> setValueTokens) => TokenFactory.Phrase(
+            TokenFactory.TableName(table, useSqlName: false),
             TokenFactory.Keyword(SqlQueryKeyword.SET),
             TokenFactory.SetValues(setValueTokens));
     }

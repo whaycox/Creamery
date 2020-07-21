@@ -28,10 +28,8 @@
                 {
                     for (int i = 0; i < token.Tokens.Count; i++)
                     {
-                        if (i == 0)
-                            StringBuilder.Append(" ");
-                        else
-                            StringBuilder.Append(",");
+                        if (token.IncludeSeparators)
+                            AddSeparators(i);
 
                         token.Tokens[i].AcceptFormatVisitor(this);
                         StringBuilder.SetNewLine();
@@ -41,49 +39,12 @@
             if (token.IncludeGrouping)
                 StringBuilder.Append(")");
         }
-
-        public override void VisitSetValues(SetValuesSqlQueryToken token)
+        private void AddSeparators(int listIndex)
         {
-
-            using (StringBuilder.CreateIndentScope())
-            {
-                if (token.SetValueTokens.Count == 1)
-                    token.SetValueTokens[0].AcceptFormatVisitor(this);
-                else
-                {
-                    for (int i = 0; i < token.SetValueTokens.Count; i++)
-                    {
-                        if (i == 0)
-                            StringBuilder.Append(" ");
-                        else
-                            StringBuilder.Append(",");
-
-                        token.SetValueTokens[i].AcceptFormatVisitor(this);
-
-                        if (i < token.SetValueTokens.Count - 1)
-                            StringBuilder.SetNewLine();
-                    }
-                }
-            }
-        }
-
-        public override void VisitJoinClause(JoinClauseSqlQueryToken token)
-        {
-            using (StringBuilder.CreateIndentScope())
-                foreach (ISqlQueryToken clauseToken in token.Clauses)
-                    clauseToken.AcceptFormatVisitor(this);
-        }
-
-        public override void VisitValueEntities(ValueEntitiesSqlQueryToken token)
-        {
-            for (int i = 0; i < token.Entities.Count; i++)
-            {
-                token.Entities[i].AcceptFormatVisitor(this);
-
-                if (i < token.Entities.Count - 1)
-                    StringBuilder.AppendLine(",");
-            }
-            StringBuilder.SetNewLine();
+            if (listIndex == 0)
+                StringBuilder.Append(" ");
+            else
+                StringBuilder.Append(",");
         }
 
         public override void VisitValueEntity(ValueEntitySqlQueryToken token)

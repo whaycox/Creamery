@@ -187,24 +187,25 @@ namespace Curds.Persistence.Query.Tests
         [TestMethod]
         public void ValueEntitiesBuildsExpectedToken()
         {
-            int testInt = 20;
-            Value testValue = new IntValue { Name = nameof(testValue), Int = testInt };
-            ValueEntity testEntity = new ValueEntity();
-            testEntity.Values.Add(testValue);
-            var testEntities = new ValueEntity[] { testEntity };
-            MockParameterBuilder
-                .Setup(builder => builder.RegisterNewParamater(nameof(testValue), testInt))
-                .Returns(nameof(ValueEntitiesBuildsExpectedToken));
+            throw new System.NotImplementedException();
+            //int testInt = 20;
+            //Value testValue = new IntValue { Name = nameof(testValue), Int = testInt };
+            //ValueEntity testEntity = new ValueEntity();
+            //testEntity.Values.Add(testValue);
+            //var testEntities = new ValueEntity[] { testEntity };
+            //MockParameterBuilder
+            //    .Setup(builder => builder.RegisterNewParamater(nameof(testValue), testInt))
+            //    .Returns(nameof(ValueEntitiesBuildsExpectedToken));
 
-            ISqlQueryToken actual = TestObject.ValueEntities(MockParameterBuilder.Object, testEntities);
+            //ISqlQueryToken actual = TestObject.ValueEntities(MockParameterBuilder.Object, testEntities);
 
-            Assert.IsInstanceOfType(actual, typeof(ValueEntitiesSqlQueryToken));
-            ValueEntitiesSqlQueryToken valueEntities = (ValueEntitiesSqlQueryToken)actual;
-            Assert.AreEqual(1, valueEntities.Entities.Count);
-            ValueEntitySqlQueryToken valueEntity = valueEntities.Entities[0];
-            Assert.AreEqual(1, valueEntity.Values.Count);
-            ParameterSqlQueryToken value = valueEntity.Values[0];
-            Assert.AreEqual(nameof(ValueEntitiesBuildsExpectedToken), value.Name);
+            //Assert.IsInstanceOfType(actual, typeof(ValueEntitiesSqlQueryToken));
+            //ValueEntitiesSqlQueryToken valueEntities = (ValueEntitiesSqlQueryToken)actual;
+            //Assert.AreEqual(1, valueEntities.Entities.Count);
+            //ValueEntitySqlQueryToken valueEntity = valueEntities.Entities[0];
+            //Assert.AreEqual(1, valueEntity.Values.Count);
+            //ParameterSqlQueryToken value = valueEntity.Values[0];
+            //Assert.AreEqual(nameof(ValueEntitiesBuildsExpectedToken), value.Name);
         }
 
         [DataTestMethod]
@@ -266,14 +267,15 @@ namespace Curds.Persistence.Query.Tests
         [DataRow(15)]
         public void SetValuesBuildsExpectedToken(int valuesToSet)
         {
-            List<ISqlQueryToken> testValueTokens = new List<ISqlQueryToken>();
-            for (int i = 0; i < valuesToSet; i++)
-                testValueTokens.Add(Mock.Of<ISqlQueryToken>());
+            throw new System.NotImplementedException();
+            //List<ISqlQueryToken> testValueTokens = new List<ISqlQueryToken>();
+            //for (int i = 0; i < valuesToSet; i++)
+            //    testValueTokens.Add(Mock.Of<ISqlQueryToken>());
 
-            ISqlQueryToken actual = TestObject.SetValues(testValueTokens);
+            //ISqlQueryToken actual = TestObject.SetValues(testValueTokens);
 
-            SetValuesSqlQueryToken actualToken = actual.VerifyIsActually<SetValuesSqlQueryToken>();
-            CollectionAssert.AreEqual(testValueTokens, actualToken.SetValueTokens);
+            //SetValuesSqlQueryToken actualToken = actual.VerifyIsActually<SetValuesSqlQueryToken>();
+            //CollectionAssert.AreEqual(testValueTokens, actualToken.SetValueTokens);
         }
     }
 }

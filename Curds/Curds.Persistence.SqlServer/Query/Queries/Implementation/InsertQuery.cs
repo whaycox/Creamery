@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 
 namespace Curds.Persistence.Query.Queries.Implementation
 {
-    using Query.Abstraction;
     using Domain;
     using Persistence.Abstraction;
-    using Abstraction;
+    using Query.Abstraction;
 
     internal class InsertQuery<TModel, TEntity> : BaseSqlQuery<TModel>
         where TModel : IDataModel
@@ -16,7 +15,7 @@ namespace Curds.Persistence.Query.Queries.Implementation
     {
         private ISqlTable Table { get; }
 
-        public List<TEntity> Entities { get; } = new List<TEntity>(); 
+        public List<TEntity> Entities { get; } = new List<TEntity>();
         private IEnumerable<ValueEntity> ValueEntities => Entities
             .Select(entity => Table.BuildValueEntity(entity))
             .ToList();
@@ -29,14 +28,15 @@ namespace Curds.Persistence.Query.Queries.Implementation
 
         protected override IEnumerable<ISqlQueryToken> GenerateTokens()
         {
-            yield return PhraseBuilder.CreateTemporaryIdentityToken(Table);
+            ISqlTable temporaryInsertedIdentities = Table.InsertedIdentityTable;
+
+            yield return PhraseBuilder.CreateTableToken(temporaryInsertedIdentities);
             yield return PhraseBuilder.InsertToTableToken(Table);
             yield return PhraseBuilder.OutputToTemporaryIdentityToken(Table);
-            foreach (ISqlQueryToken token in PhraseBuilder.ValueEntitiesToken(ParameterBuilder, ValueEntities))
-                yield return token;
-            foreach (ISqlQueryToken token in PhraseBuilder.SelectNewIdentitiesToken(Table))
-                yield return token;
-            yield return PhraseBuilder.DropTemporaryIdentityToken(Table);
+            yield return PhraseBuilder.ValueEntitiesToken(ParameterBuilder, ValueEntities);
+            yield return PhraseBuilder.SelectColumnsToken(temporaryInsertedIdentities.Columns);
+            yield return PhraseBuilder.FromTableToken(temporaryInsertedIdentities);
+            yield return PhraseBuilder.DropTableToken(temporaryInsertedIdentities);
         }
 
         public override async Task ProcessResult(ISqlQueryReader queryReader)

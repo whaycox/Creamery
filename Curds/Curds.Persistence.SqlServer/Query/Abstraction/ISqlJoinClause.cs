@@ -6,9 +6,11 @@ using System.Linq.Expressions;
 namespace Curds.Persistence.Query.Abstraction
 {
     using Persistence.Abstraction;
+    using Domain;
 
     public interface ISqlJoinClause
     {
+        ISqlTable JoinedTable { get; }
         IEnumerable<ISqlQueryToken> Tokens { get; }
     }
 
@@ -18,8 +20,6 @@ namespace Curds.Persistence.Query.Abstraction
         where TUniverse : ISqlUniverse<TDataModel, TEntity>
         where TJoinedEntity : IEntity
     {
-        ISqlTable JoinedTable { get; }
-
         ISqlJoinClause<TDataModel, TEntity, TUniverse, TJoinedEntity> On(Expression<Func<TEntity, TJoinedEntity, bool>> clauseExpression);
 
         ISqlUniverse<TDataModel, TEntity, TJoinedEntity> Inner();

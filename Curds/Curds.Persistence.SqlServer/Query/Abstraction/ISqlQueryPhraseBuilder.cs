@@ -7,16 +7,17 @@ namespace Curds.Persistence.Query.Abstraction
 
     public interface ISqlQueryPhraseBuilder
     {
-        ISqlQueryToken CreateTemporaryIdentityToken(ISqlTable table);
+        ISqlQueryToken CreateTableToken(ISqlTable table);
+        ISqlQueryToken DropTableToken(ISqlTable table);
+
         ISqlQueryToken OutputToTemporaryIdentityToken(ISqlTable table);
-        ISqlQueryToken DropTemporaryIdentityToken(ISqlTable table);
-        IEnumerable<ISqlQueryToken> SelectNewIdentitiesToken(ISqlTable table);
 
         ISqlQueryToken InsertToTableToken(ISqlTable table);
-        IEnumerable<ISqlQueryToken> ValueEntitiesToken(ISqlQueryParameterBuilder parameterBuilder, IEnumerable<ValueEntity> valueEntities);
+        ISqlQueryToken ValueEntitiesToken(ISqlQueryParameterBuilder parameterBuilder, IEnumerable<ValueEntity> valueEntities);
         ISqlQueryToken SelectColumnsToken(IEnumerable<ISqlColumn> columns);
+        ISqlQueryToken FromTableToken(ISqlTable table);
+        ISqlQueryToken JoinTableToken(ISqlJoinClause joinClause);
         ISqlQueryToken DeleteTableToken(ISqlTable table);
-        ISqlQueryToken UpdateTableToken(ISqlTable table);
-        ISqlQueryToken SetValuesToken(IEnumerable<ISqlQueryToken> setValueTokens);
+        ISqlQueryToken UpdateTableToken(ISqlTable table, IEnumerable<ISqlQueryToken> setValueTokens);
     }
 }

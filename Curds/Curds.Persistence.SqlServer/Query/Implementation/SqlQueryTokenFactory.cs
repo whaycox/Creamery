@@ -44,6 +44,11 @@ namespace Curds.Persistence.Query.Implementation
                 this,
                 tokenParams);
 
+        public ISqlQueryToken TableDefinition(ISqlTable table) =>
+            new TableDefinitionSqlQueryToken(
+                this,
+                table);
+
         public ISqlQueryToken TableName(ISqlTable table, bool useAlias, bool useSqlName) =>
             new TableNameSqlQueryToken(
                 this,
@@ -71,7 +76,7 @@ namespace Curds.Persistence.Query.Implementation
             new ParameterSqlQueryToken(parameterBuilder.RegisterNewParamater(name, value), value?.GetType());
 
         public ISqlQueryToken ValueEntities(ISqlQueryParameterBuilder parameterBuilder, IEnumerable<ValueEntity> valueEntities) =>
-            new ValueEntitiesSqlQueryToken(
+            new TokenListSqlQueryToken(
                 this,
                 valueEntities.Select(valueEntity => BuildValueEntityToken(parameterBuilder, valueEntity)));
         private ValueEntitySqlQueryToken BuildValueEntityToken(ISqlQueryParameterBuilder parameterBuilder, ValueEntity valueEntity) =>
@@ -80,14 +85,17 @@ namespace Curds.Persistence.Query.Implementation
                 valueEntity.Values.Select(value => BuildParameterToken(parameterBuilder, value.Name, value.Content)));
 
         public ISqlQueryToken SetValues(IEnumerable<ISqlQueryToken> setValueTokens) =>
-            new SetValuesSqlQueryToken(
+            new TokenListSqlQueryToken(
                 this,
                 setValueTokens);
 
         public ISqlQueryToken JoinClause(ISqlJoinClause joinClause) =>
-            new JoinClauseSqlQueryToken(
+            new TokenListSqlQueryToken(
                 this,
-                joinClause);
+                joinClause.Tokens)
+            {
+                IncludeSeparators = false,
+            };
 
         public ISqlQueryToken BooleanCombination(BooleanCombination combination, IEnumerable<ISqlQueryToken> elements) =>
             new BooleanCombinationSqlQueryToken(

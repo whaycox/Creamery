@@ -35,17 +35,19 @@ namespace Curds.Persistence.Query.Queries.Tests
         [TestMethod]
         public void GenerateCommandBuildsUpdateTablePhrase()
         {
-            TestObject.GenerateCommand();
+            throw new System.NotImplementedException();
+            //TestObject.GenerateCommand();
 
-            MockPhraseBuilder.Verify(builder => builder.UpdateTableToken(MockUpdatedTable.Object), Times.Once);
+            //MockPhraseBuilder.Verify(builder => builder.UpdateTableToken(MockUpdatedTable.Object), Times.Once);
         }
 
         [TestMethod]
         public void GenerateCommandBuildsSetValuesPhrase()
         {
-            TestObject.GenerateCommand();
+            throw new System.NotImplementedException();
+            //TestObject.GenerateCommand();
 
-            MockPhraseBuilder.Verify(builder => builder.SetValuesToken(It.IsAny<IEnumerable<ISqlQueryToken>>()), Times.Once);
+            //MockPhraseBuilder.Verify(builder => builder.SetValuesToken(It.IsAny<IEnumerable<ISqlQueryToken>>()), Times.Once);
         }
 
         [TestMethod]
@@ -65,15 +67,15 @@ namespace Curds.Persistence.Query.Queries.Tests
         [DataRow(15)]
         public void GeneratedTokensAreExpected(int sourceTokensGenerated)
         {
-            List<ISqlQueryToken> expectedTokens = new List<ISqlQueryToken>();
-            expectedTokens.Add(SetupPhraseBuilder(builder => builder.UpdateTableToken(It.IsAny<ISqlTable>())));
-            expectedTokens.Add(SetupPhraseBuilder(builder => builder.SetValuesToken(It.IsAny<IEnumerable<ISqlQueryToken>>())));
-            throw new NotImplementedException();
+            throw new System.NotImplementedException();
+            //List<ISqlQueryToken> expectedTokens = new List<ISqlQueryToken>();
+            //expectedTokens.Add(SetupPhraseBuilder(builder => builder.UpdateTableToken(It.IsAny<ISqlTable>())));
+            //expectedTokens.Add(SetupPhraseBuilder(builder => builder.SetValuesToken(It.IsAny<IEnumerable<ISqlQueryToken>>())));
             //expectedTokens.AddRange(SetupPhraseBuilder(builder => builder.FromUniverseTokens(It.IsAny<ISqlUniverse>()), sourceTokensGenerated));
 
-            TestObject.GenerateCommand();
+            //TestObject.GenerateCommand();
 
-            CollectionAssert.AreEqual(expectedTokens, FormattedTokens);
+            //CollectionAssert.AreEqual(expectedTokens, FormattedTokens);
         }
 
         private Expression<Func<TestEntity, string>> TestValueSelectionExpression => entity => entity.Name;

@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using System.Threading.Tasks;
 
 namespace Curds.Text.Tests
 {
@@ -138,6 +131,16 @@ namespace Curds.Text.Tests
             Assert.AreEqual($"\t{TestString}{Environment.NewLine}{TestString}", actual);
         }
 
+        [TestMethod]
+        public void ConsecutiveSetNewLinesAreCombined()
+        {
+            TestObject.Append(nameof(ConsecutiveSetNewLinesAreCombined));
+            TestObject.SetNewLine();
+            TestObject.SetNewLine();
 
+            string actual = TestObject.Flush();
+
+            Assert.AreEqual($"{nameof(ConsecutiveSetNewLinesAreCombined)}{Environment.NewLine}", actual);
+        }
     }
 }

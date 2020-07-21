@@ -15,8 +15,8 @@ namespace Curds.Persistence.Query.Abstraction
         string Name { get; }
         string Alias { get; }
 
-        IList<ISqlColumn> Columns { get; }
-        IList<ISqlColumn> Keys { get; }
+        List<ISqlColumn> Columns { get; }
+        List<ISqlColumn> Keys { get; }
         ISqlColumn KeyColumn { get; }
         ISqlColumn Identity { get; }
         IEnumerable<ISqlColumn> NonIdentities { get; }

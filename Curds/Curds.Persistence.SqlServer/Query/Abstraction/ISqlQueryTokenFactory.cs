@@ -9,6 +9,7 @@ namespace Curds.Persistence.Query.Abstraction
         ISqlQueryToken Keyword(SqlQueryKeyword keyword);
         ISqlQueryToken Phrase(IEnumerable<ISqlQueryToken> tokens);
         ISqlQueryToken Phrase(params ISqlQueryToken[] tokenParams);
+        ISqlQueryToken TableDefinition(ISqlTable table);
         ISqlQueryToken TableName(ISqlTable table, bool useAlias = true, bool useSqlName = true);
         ISqlQueryToken ColumnDefinition(ISqlColumn column);
         ISqlQueryToken ColumnName(ISqlColumn column, bool useAlias = true);

@@ -11,6 +11,7 @@ namespace Curds.Persistence.Query.Tokens.Implementation
         public List<ISqlQueryToken> Tokens { get; }
 
         public bool IncludeGrouping { get; set; }
+        public bool IncludeSeparators { get; set; } = true;
 
         public TokenListSqlQueryToken(
             ISqlQueryTokenFactory tokenFactory,

@@ -16,8 +16,8 @@ namespace Curds.Persistence.Query.Implementation
         public string Schema => string.Empty;
         public string Name => $"#{Table.Name}_Identities";
         public string Alias => Table.Alias;
-        public IList<ISqlColumn> Columns => Table.Columns;
-        public IList<ISqlColumn> Keys => Table.Keys;
+        public List<ISqlColumn> Columns => new List<ISqlColumn> { Table.Identity };
+        public List<ISqlColumn> Keys => Table.Keys;
         public ISqlColumn KeyColumn => Table.KeyColumn;
         public ISqlColumn Identity => Table.Identity;
         public IEnumerable<ISqlColumn> NonIdentities => Table.NonIdentities;

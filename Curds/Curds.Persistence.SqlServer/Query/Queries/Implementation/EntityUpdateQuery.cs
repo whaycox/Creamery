@@ -32,8 +32,7 @@ namespace Curds.Persistence.Query.Queries.Implementation
 
         protected override IEnumerable<ISqlQueryToken> GenerateTokens()
         {
-            yield return PhraseBuilder.UpdateTableToken(UpdatedTable);
-            yield return PhraseBuilder.SetValuesToken(SetTokens);
+            yield return PhraseBuilder.UpdateTableToken(UpdatedTable, SetTokens);
             foreach (ISqlQueryToken token in Source.Tokens)
                 yield return token;
         }
