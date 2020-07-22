@@ -12,6 +12,7 @@ namespace Curds.Persistence
     using Query.Abstraction;
     using Query.Formatters.Implementation;
     using Query.Implementation;
+    using Query.AliasStrategies.Implementation;
 
     public static class RegistrationExtensions
     {
@@ -48,6 +49,7 @@ namespace Curds.Persistence
 
         private static IServiceCollection AddQueryConstruction(this IServiceCollection services) => services
             .AddTransient<ISqlQueryAliasBuilder, SqlQueryAliasBuilder>()
+            .AddTransient<IAliasStrategy, AbbreviatedAliasStrategy>()
             .AddTransient<ISqlQueryParameterBuilder, SqlQueryParameterBuilder>()
             .AddTransient<ISqlQueryFormatter, ProperSqlQueryFormatter>()
             .AddTransient(typeof(ISqlQueryContext<>), typeof(SqlQueryContext<>))

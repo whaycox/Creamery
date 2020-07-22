@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Curds.Persistence.Query.Implementation
 {
@@ -8,18 +6,24 @@ namespace Curds.Persistence.Query.Implementation
 
     internal class SqlQueryAliasBuilder : ISqlQueryAliasBuilder
     {
+        private IAliasStrategy AliasStrategy { get; }
+
         private HashSet<string> Aliases { get; } = new HashSet<string>();
+
+        public SqlQueryAliasBuilder(IAliasStrategy aliasStrategy)
+        {
+            AliasStrategy = aliasStrategy;
+        }
 
         public string RegisterNewAlias(string objectName)
         {
             int disambiguator = 1;
-            string currentAlias = objectName;
+            string currentAlias = AliasStrategy.GenerateAlias(objectName, disambiguator++);
             while (Aliases.Contains(currentAlias))
-                currentAlias = Disambiguate(objectName, disambiguator++);
+                currentAlias = AliasStrategy.GenerateAlias(objectName, disambiguator++);
 
             Aliases.Add(currentAlias);
             return currentAlias;
         }
-        private string Disambiguate(string objectName, int disambiguator) => $"{objectName}_{disambiguator}";
     }
 }

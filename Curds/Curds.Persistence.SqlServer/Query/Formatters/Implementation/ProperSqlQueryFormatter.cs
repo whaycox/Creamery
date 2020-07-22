@@ -22,30 +22,28 @@
                 if (token.Tokens.Count == 1)
                 {
                     token.Tokens[0].AcceptFormatVisitor(this);
-                    StringBuilder.SetNewLine();
                 }
                 else
                 {
                     for (int i = 0; i < token.Tokens.Count; i++)
                     {
                         if (token.IncludeSeparators)
-                            AddSeparators(i);
+                            StringBuilder.Append(Separator(i));
 
                         token.Tokens[i].AcceptFormatVisitor(this);
-                        StringBuilder.SetNewLine();
+
+                        if (i < token.Tokens.Count - 1)
+                            StringBuilder.SetNewLine();
                     }
                 }
             }
             if (token.IncludeGrouping)
+            {
+                StringBuilder.SetNewLine();
                 StringBuilder.Append(")");
+            }
         }
-        private void AddSeparators(int listIndex)
-        {
-            if (listIndex == 0)
-                StringBuilder.Append(" ");
-            else
-                StringBuilder.Append(",");
-        }
+        private string Separator(int listIndex) => listIndex == 0 ? " " : ",";
 
         public override void VisitValueEntity(ValueEntitySqlQueryToken token)
         {
