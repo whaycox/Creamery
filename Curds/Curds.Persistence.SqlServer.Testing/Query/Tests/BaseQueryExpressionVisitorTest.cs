@@ -50,6 +50,13 @@ namespace Curds.Persistence.Query.Tests
 
         [TestMethod]
         [ExpectedException(typeof(NotImplementedException))]
+        public void VisitNotEqualThrows()
+        {
+            TestObject.VisitNotEqual(null);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotImplementedException))]
         public void VisitLessThanThrows()
         {
             TestObject.VisitLessThan(null);

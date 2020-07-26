@@ -11,48 +11,58 @@ namespace Curds.Persistence.Query.Tokens.Tests
     [TestClass]
     public class PhraseSqlQueryTokenTest : BaseSqlQueryTokenTemplate
     {
-        private Mock<ISqlQueryToken> MockToken = new Mock<ISqlQueryToken>();
+        private List<ISqlQueryToken> TestTokens = new List<ISqlQueryToken>();
 
         private PhraseSqlQueryToken TestObject = null;
 
-        [TestMethod]
-        public void TokensComeFromConstructor()
+        [TestInitialize]
+        public void Init()
         {
-            throw new System.NotImplementedException();
-            //List<ISqlQueryToken> testTokens = new List<ISqlQueryToken>();
-            //for (int i = 0; i < 5; i++)
-            //    testTokens.Add(Mock.Of<ISqlQueryToken>());
-            //TestObject = new PhraseSqlQueryToken(
-            //    testTokens[0],
-            //    testTokens[1],
-            //    testTokens[2],
-            //    testTokens[3],
-            //    testTokens[4]);
+            BuildTestObject();
+        }
+        private void BuildTestObject()
+        {
+            TestObject = new PhraseSqlQueryToken(
+                MockTokenFactory.Object,
+                TestTokens);
+        }
 
-            //CollectionAssert.AreEqual(testTokens, TestObject.Tokens);
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(3)]
+        [DataRow(7)]
+        [DataRow(16)]
+        public void TokensComeFromConstructor(int tokensToAdd)
+        {
+            for (int i = 0; i < 5; i++)
+                TestTokens.Add(Mock.Of<ISqlQueryToken>());
+            BuildTestObject();
+
+            CollectionAssert.AreEqual(TestTokens, TestObject.Tokens);
         }
 
         [TestMethod]
-        public void SingleTokenForwardsVisitorToToken()
+        public void AcceptFormatVisitorWithSingleTokenPassesToToken()
         {
-            throw new System.NotImplementedException();
-            //TestObject = new PhraseSqlQueryToken(MockToken.Object);
+            TestTokens.Add(MockToken.Object);
+            BuildTestObject();
 
-            //TestObject.AcceptFormatVisitor(MockFormatVisitor.Object);
+            TestObject.AcceptFormatVisitor(MockFormatVisitor.Object);
 
-            //MockToken.Verify(token => token.AcceptFormatVisitor(MockFormatVisitor.Object), Times.Once);
+            MockToken.Verify(token => token.AcceptFormatVisitor(MockFormatVisitor.Object), Times.Once);
         }
 
         [TestMethod]
         public void MultipleTokensInterspersedWithSpaces()
         {
-            throw new System.NotImplementedException();
-            //TestObject = new PhraseSqlQueryToken(MockToken.Object, MockToken.Object);
+            TestTokens.Add(MockToken.Object);
+            TestTokens.Add(MockToken.Object);
+            BuildTestObject();
 
-            //TestObject.AcceptFormatVisitor(MockFormatVisitor.Object);
+            TestObject.AcceptFormatVisitor(MockFormatVisitor.Object);
 
-            //MockToken.Verify(token => token.AcceptFormatVisitor(MockFormatVisitor.Object), Times.Exactly(2));
-            //MockFormatVisitor.Verify(visitor => visitor.VisitLiteral(It.Is<LiteralSqlQueryToken>(token => token.Literal == " ")), Times.Once);
+            MockToken.Verify(token => token.AcceptFormatVisitor(MockFormatVisitor.Object), Times.Exactly(2));
+            MockFormatVisitor.Verify(visitor => visitor.VisitLiteral(It.Is<LiteralSqlQueryToken>(token => token.Literal == " ")), Times.Once);
         }
     }
 }

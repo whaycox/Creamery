@@ -14,14 +14,12 @@
             Column = column;
         }
 
-        protected override ISqlQueryToken GenerateNameToken() =>
+        protected override ISqlQueryToken RedirectedToken() =>
             UseAlias ?
-                new QualifiedObjectSqlQueryToken(
-                    TokenFactory,
-                    new ObjectNameSqlQueryToken(Column.Table.Alias),
-                    new ObjectNameSqlQueryToken(Column.Name)) :
-                new QualifiedObjectSqlQueryToken(
-                    TokenFactory,
-                    new ObjectNameSqlQueryToken(Column.Name));
+                TokenFactory.QualifiedObject(
+                    Column.Table.Alias,
+                    Column.Name) :
+                TokenFactory.QualifiedObject(
+                    Column.Name);
     }
 }

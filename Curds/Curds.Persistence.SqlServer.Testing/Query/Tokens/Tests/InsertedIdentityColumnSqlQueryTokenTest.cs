@@ -11,49 +11,41 @@ namespace Curds.Persistence.Query.Tokens.Tests
     [TestClass]
     public class InsertedIdentityColumnSqlQueryTokenTest : BaseSqlQueryTokenTemplate
     {
-        private string TestColumnName = nameof(TestColumnName);
+        private string TestIdentityName = nameof(TestIdentityName);
 
-        private Mock<ISqlColumn> MockColumn = new Mock<ISqlColumn>();
+        private Mock<ISqlColumn> MockIdentity = new Mock<ISqlColumn>();
 
         private InsertedIdentityColumnSqlQueryToken TestObject = null;
 
         [TestInitialize]
         public void Init()
         {
-            throw new System.NotImplementedException();
-            //MockColumn
-            //    .Setup(column => column.Name)
-            //    .Returns(TestColumnName);
+            SetupTokenFactory(factory => factory.QualifiedObject(It.IsAny<string[]>()));
+            MockIdentity
+                .Setup(column => column.Name)
+                .Returns(TestIdentityName);
 
-            //TestObject = new InsertedIdentityColumnSqlQueryToken(MockColumn.Object);
+            TestObject = new InsertedIdentityColumnSqlQueryToken(
+                MockTokenFactory.Object,
+                MockIdentity.Object);
         }
 
         [TestMethod]
-        public void HasExpectedNameCount()
-        {
-            Assert.AreEqual(2, TestObject.Names.Count);
-        }
-
-        [TestMethod]
-        public void FirstNameIsInserted()
-        {
-            Assert.AreEqual(nameof(SqlQueryKeyword.inserted), TestObject.Names[0].Name);
-        }
-
-        [TestMethod]
-        public void SecondNameIsColumnName()
-        {
-            Assert.AreEqual(TestColumnName, TestObject.Names[1].Name);
-        }
-
-        [TestMethod]
-        public void AcceptFormatVisitorInterspersesMultipleNamesWithSeparator()
+        public void AcceptFormatVisitorGeneratesExpectedToken()
         {
             TestObject.AcceptFormatVisitor(MockFormatVisitor.Object);
 
-            MockFormatVisitor.Verify(visitor => visitor.VisitLiteral(It.Is<ObjectNameSqlQueryToken>(token => token.Name == nameof(SqlQueryKeyword.inserted))), Times.Once);
-            MockFormatVisitor.Verify(visitor => visitor.VisitLiteral(It.Is<ObjectNameSqlQueryToken>(token => token.Name == TestColumnName)), Times.Once);
-            MockFormatVisitor.Verify(visitor => visitor.VisitLiteral(It.Is<LiteralSqlQueryToken>(token => token.Literal == ".")), Times.Once);
+            MockTokenFactory.Verify(factory => factory.QualifiedObject(
+                nameof(SqlQueryKeyword.inserted),
+                TestIdentityName), Times.Once);
+        }
+
+        [TestMethod]
+        public void AcceptFormatVisitorPassesToGeneratedToken()
+        {
+            TestObject.AcceptFormatVisitor(MockFormatVisitor.Object);
+
+            MockToken.Verify(token => token.AcceptFormatVisitor(MockFormatVisitor.Object), Times.Once);
         }
     }
 }

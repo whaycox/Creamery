@@ -10,10 +10,13 @@ namespace Curds.Persistence.Query.Tests
     using Implementation;
     using Persistence.Abstraction;
     using Persistence.Domain;
+    using Template;
 
     [TestClass]
-    public class TableExpressionVisitorTest
+    public class TableExpressionVisitorTest : BaseQueryExpressionVisitorTemplate
     {
+        private Mock<IExpressionNodeFactory> MockNodeFactory = new Mock<IExpressionNodeFactory>();
+        private Mock<IExpressionNode> MockExpressionNode = new Mock<IExpressionNode>();
         private Mock<ISqlQueryContext<ITestDataModel>> MockQueryContext = new Mock<ISqlQueryContext<ITestDataModel>>();
         private Mock<ISqlTable> MockTable = new Mock<ISqlTable>();
 
@@ -22,6 +25,10 @@ namespace Curds.Persistence.Query.Tests
         [TestInitialize]
         public void Init()
         {
+            MockNodeFactory
+                .Setup(factory => factory.Build(It.IsAny<Expression>()))
+                .Returns(MockExpressionNode.Object);
+
             TestObject = new TableExpressionVisitor<ITestDataModel>(MockQueryContext.Object);
         }
 
@@ -32,7 +39,20 @@ namespace Curds.Persistence.Query.Tests
         }
 
         [TestMethod]
-        public void IdentifiesTableByEntityType()
+        public void LambdaForwardsBody()
+        {
+            LambdaExpression testExpression = Expression.Lambda(TestExpressionOne, TestParameterExpression);
+            LambdaNode testNode = new LambdaNode(
+                MockNodeFactory.Object,
+                testExpression);
+
+            TestObject.VisitLambda(testNode);
+
+            MockExpressionNode.Verify(node => node.AcceptVisitor(TestObject), Times.Once);
+        }
+
+        [TestMethod]
+        public void ParameterIdentifiesTableByEntityType()
         {
             MockTable
                 .Setup(table => table.EntityType)
@@ -40,7 +60,7 @@ namespace Curds.Persistence.Query.Tests
             MockQueryContext
                 .Setup(context => context.Tables)
                 .Returns(new List<ISqlTable> { MockTable.Object });
-            ParameterNode testNode = new ParameterNode(Expression.Parameter(typeof(TestEntity), nameof(testNode)));
+            ParameterNode testNode = new ParameterNode(TestParameterExpression);
 
             ISqlTable actual = TestObject.VisitParameter(testNode);
 

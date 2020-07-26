@@ -5,29 +5,29 @@ namespace Curds.Persistence.Query.Tokens.Implementation
 {
     using Query.Abstraction;
 
-    public class QualifiedObjectSqlQueryToken : BaseSqlQueryToken
+    public class QualifiedObjectSqlQueryToken : CompositeSqlQueryToken
     {
         private static ConstantSqlQueryToken QualifierToken { get; } = new ConstantSqlQueryToken(".");
 
-        public List<ObjectNameSqlQueryToken> Names { get; }
+        public List<string> Names { get; }
 
         public QualifiedObjectSqlQueryToken(
             ISqlQueryTokenFactory tokenFactory,
-            params ObjectNameSqlQueryToken[] names)
+            IEnumerable<string> names)
             : base(tokenFactory)
         {
             Names = names
-                .Where(name => !string.IsNullOrWhiteSpace(name.Name))
+                .Where(name => !string.IsNullOrWhiteSpace(name))
                 .ToList();
         }
 
-        public override void AcceptFormatVisitor(ISqlQueryFormatVisitor visitor)
+        protected override IEnumerable<ISqlQueryToken> GenerateTokens()
         {
             for (int i = 0; i < Names.Count; i++)
             {
                 if (i != 0)
-                    QualifierToken.AcceptFormatVisitor(visitor);
-                Names[i].AcceptFormatVisitor(visitor);
+                    yield return QualifierToken;
+                yield return TokenFactory.ObjectName(Names[i]);
             }
         }
     }

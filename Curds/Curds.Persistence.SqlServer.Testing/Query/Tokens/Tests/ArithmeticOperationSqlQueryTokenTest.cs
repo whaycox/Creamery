@@ -23,55 +23,59 @@ namespace Curds.Persistence.Query.Tokens.Tests
         [TestInitialize]
         public void Init()
         {
-            throw new NotImplementedException();
-            //TestObject = new ArithmeticOperationSqlQueryToken(
-            //    TestOperation,
-            //    MockLeftToken.Object,
-            //    MockRightToken.Object);
+            SetupTokenFactory(factory => factory.Phrase(It.IsAny<ISqlQueryToken[]>()));
+
+            BuildTestObject(TestOperation);
+        }
+        private void BuildTestObject(ArithmeticOperation testOperation)
+        {
+            TestObject = new ArithmeticOperationSqlQueryToken(
+                MockTokenFactory.Object,
+                testOperation,
+                MockLeftToken.Object,
+                MockRightToken.Object);
         }
 
         [TestMethod]
-        public void AcceptFormatVisitorForwardsToLeft()
+        public void AcceptFormatVisitorGeneratesExpectedPhrase()
         {
+            SetupTokenFactory(factory => factory.Keyword(It.IsAny<SqlQueryKeyword>()));
+
             TestObject.AcceptFormatVisitor(MockFormatVisitor.Object);
 
-            MockLeftToken.Verify(token => token.AcceptFormatVisitor(MockFormatVisitor.Object), Times.Once);
+            MockTokenFactory.Verify(factory => factory.Phrase(
+                MockLeftToken.Object,
+                MockToken.Object,
+                MockRightToken.Object), Times.Once);
         }
 
         [TestMethod]
-        public void AcceptFormatVisitorForwardsToRight()
+        public void AcceptFormatVisitorPassesOnToPhrase()
         {
             TestObject.AcceptFormatVisitor(MockFormatVisitor.Object);
 
-            MockRightToken.Verify(token => token.AcceptFormatVisitor(MockFormatVisitor.Object), Times.Once);
+            MockToken.Verify(token => token.AcceptFormatVisitor(MockFormatVisitor.Object), Times.Once);
         }
 
         [DataTestMethod]
-        [DataRow(ArithmeticOperation.Equals, " = ")]
-        [DataRow(ArithmeticOperation.Modulo, " % ")]
-        public void BuildsOperationToken(ArithmeticOperation testOperation, string expectedLiteral)
+        [DataRow(ArithmeticOperation.Equals, SqlQueryKeyword.Equals)]
+        [DataRow(ArithmeticOperation.Modulo, SqlQueryKeyword.Modulo)]
+        public void AcceptFormatVisitorGeneratesExpectedKeyword(ArithmeticOperation testOperation, SqlQueryKeyword expectedKeyword)
         {
-            throw new NotImplementedException();
-            //TestOperation = testOperation;
+            BuildTestObject(testOperation);
 
-            //TestObject = new ArithmeticOperationSqlQueryToken(
-            //    TestOperation,
-            //    MockLeftToken.Object,
-            //    MockRightToken.Object);
+            TestObject.AcceptFormatVisitor(MockFormatVisitor.Object);
 
-            //ConstantSqlQueryToken actual = TestObject.Operation.VerifyIsActually<ConstantSqlQueryToken>();
-            //Assert.AreEqual(expectedLiteral, actual.Literal);
+            MockTokenFactory.Verify(factory => factory.Keyword(expectedKeyword), Times.Once);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void InvalidOperationThrows()
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void InvalidOperationThrowsOnAcceptFormatVisitor()
         {
-            throw new NotImplementedException();
-            //TestObject = new ArithmeticOperationSqlQueryToken(
-            //    (ArithmeticOperation)99,
-            //    MockLeftToken.Object,
-            //    MockRightToken.Object);
+            BuildTestObject((ArithmeticOperation)99);
+
+            TestObject.AcceptFormatVisitor(MockFormatVisitor.Object);
         }
     }
 }

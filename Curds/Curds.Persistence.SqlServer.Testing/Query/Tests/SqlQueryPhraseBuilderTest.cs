@@ -143,13 +143,14 @@ namespace Curds.Persistence.Query.Tests
         [TestMethod]
         public void SelectColumnsTokenBuildsExpectedPhrase()
         {
-            ISqlQueryToken selectToken = SetupTokenFactory(factory => factory.Keyword(SqlQueryKeyword.SELECT));
-            ISqlQueryToken selectListToken = SetupTokenFactory(factory => factory.SelectList(TestNonIdentityColumns));
-            ISqlQueryToken expectedPhraseToken = SetupTokenFactory(factory => factory.Phrase(selectToken, selectListToken));
+            throw new System.NotImplementedException();
+            //ISqlQueryToken selectToken = SetupTokenFactory(factory => factory.Keyword(SqlQueryKeyword.SELECT));
+            //ISqlQueryToken selectListToken = SetupTokenFactory(factory => factory.SelectList(TestNonIdentityColumns));
+            //ISqlQueryToken expectedPhraseToken = SetupTokenFactory(factory => factory.Phrase(selectToken, selectListToken));
 
-            ISqlQueryToken actual = TestObject.SelectColumnsToken(TestNonIdentityColumns);
+            //ISqlQueryToken actual = TestObject.SelectColumnsToken(TestNonIdentityColumns);
 
-            Assert.AreSame(expectedPhraseToken, actual);
+            //Assert.AreSame(expectedPhraseToken, actual);
         }
 
         [TestMethod]

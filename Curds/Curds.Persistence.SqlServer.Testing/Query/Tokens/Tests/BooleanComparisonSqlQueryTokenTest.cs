@@ -12,7 +12,7 @@ namespace Curds.Persistence.Query.Tokens.Tests
     [TestClass]
     public class BooleanComparisonSqlQueryTokenTest : BaseSqlQueryTokenTemplate
     {
-        private BooleanComparison TestOperation = BooleanComparison.Equals;
+        private BooleanComparison TestComparison = BooleanComparison.Equals;
 
         private Mock<ISqlQueryToken> MockLeftToken = new Mock<ISqlQueryToken>();
         private Mock<ISqlQueryToken> MockRightToken = new Mock<ISqlQueryToken>();
@@ -22,58 +22,63 @@ namespace Curds.Persistence.Query.Tokens.Tests
         [TestInitialize]
         public void Init()
         {
-            throw new System.NotImplementedException();
-            //TestObject = new BooleanComparisonSqlQueryToken(
-            //    TestOperation,
-            //    MockLeftToken.Object,
-            //    MockRightToken.Object);
+            SetupTokenFactory(factory => factory.Phrase(It.IsAny<ISqlQueryToken[]>()));
+
+            BuildTestObject(TestComparison);
+        }
+        private void BuildTestObject(BooleanComparison testComparison)
+        {
+            TestObject = new BooleanComparisonSqlQueryToken(
+                MockTokenFactory.Object,
+                testComparison,
+                MockLeftToken.Object,
+                MockRightToken.Object);
         }
 
         [TestMethod]
-        public void AcceptFormatVisitorForwardsToLeft()
+        public void AcceptFormatVisitorGeneratesExpectedPhrase()
         {
+            SetupTokenFactory(factory => factory.Keyword(It.IsAny<SqlQueryKeyword>()));
+
             TestObject.AcceptFormatVisitor(MockFormatVisitor.Object);
 
-            MockLeftToken.Verify(token => token.AcceptFormatVisitor(MockFormatVisitor.Object), Times.Once);
+            MockTokenFactory.Verify(factory => factory.Phrase(
+                MockLeftToken.Object,
+                MockToken.Object,
+                MockRightToken.Object), Times.Once);
         }
 
         [TestMethod]
-        public void AcceptFormatVisitorForwardsToRight()
+        public void AcceptFormatVisitorPassesOnToGeneratedPhrase()
         {
             TestObject.AcceptFormatVisitor(MockFormatVisitor.Object);
 
-            MockRightToken.Verify(token => token.AcceptFormatVisitor(MockFormatVisitor.Object), Times.Once);
+            MockToken.Verify(token => token.AcceptFormatVisitor(MockFormatVisitor.Object), Times.Once);
         }
 
         [DataTestMethod]
-        [DataRow(BooleanComparison.Equals, " = ")]
-        [DataRow(BooleanComparison.NotEquals, " <> ")]
-        [DataRow(BooleanComparison.GreaterThan, " > ")]
-        [DataRow(BooleanComparison.GreaterThanOrEqual, " >= ")]
-        [DataRow(BooleanComparison.LessThan, " < ")]
-        [DataRow(BooleanComparison.LessThanOrEqual, " <= ")]
-        public void AcceptFormatVisitorVisitsExpectedOperation(BooleanComparison testOperation, string expectedLiteral)
+        [DataRow(BooleanComparison.Equals, SqlQueryKeyword.Equals)]
+        [DataRow(BooleanComparison.NotEquals, SqlQueryKeyword.NotEquals)]
+        [DataRow(BooleanComparison.GreaterThan, SqlQueryKeyword.GreaterThan)]
+        [DataRow(BooleanComparison.GreaterThanOrEquals, SqlQueryKeyword.GreaterThanOrEquals)]
+        [DataRow(BooleanComparison.LessThan, SqlQueryKeyword.LessThan)]
+        [DataRow(BooleanComparison.LessThanOrEquals, SqlQueryKeyword.LessThanOrEquals)]
+        public void AcceptFormatVisitorGeneratesExpectedKeyword(BooleanComparison testComparison, SqlQueryKeyword expectedKeyword)
         {
-            throw new NotImplementedException();
-            //TestObject = new BooleanComparisonSqlQueryToken(
-            //    testOperation,
-            //    MockLeftToken.Object,
-            //    MockRightToken.Object);
+            BuildTestObject(testComparison);
 
-            //TestObject.AcceptFormatVisitor(MockFormatVisitor.Object);
+            TestObject.AcceptFormatVisitor(MockFormatVisitor.Object);
 
-            //MockFormatVisitor.Verify(visitor => visitor.VisitLiteral(It.Is<LiteralSqlQueryToken>(token => token.Literal == expectedLiteral)), Times.Once);
+            MockTokenFactory.Verify(factory => factory.Keyword(expectedKeyword), Times.Once);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void InvalidOperationThrows()
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void InvalidOperationThrowsOnAcceptFormatVisitor()
         {
-            throw new NotImplementedException();
-            //TestObject = new BooleanComparisonSqlQueryToken(
-            //    (BooleanComparison)99,
-            //    MockLeftToken.Object,
-            //    MockRightToken.Object);
+            BuildTestObject((BooleanComparison)99);
+
+            TestObject.AcceptFormatVisitor(MockFormatVisitor.Object);
         }
     }
 }

@@ -1,13 +1,10 @@
-﻿using Curds.Persistence.Query.Abstraction;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Linq;
 
 namespace Curds.Persistence.Query.Tokens.Implementation
 {
     using Query.Abstraction;
 
-    public class TableDefinitionSqlQueryToken : BaseSqlQueryToken
+    public class TableDefinitionSqlQueryToken : RedirectedSqlQueryToken
     {
         private ISqlTable Table { get; }
 
@@ -19,12 +16,9 @@ namespace Curds.Persistence.Query.Tokens.Implementation
             Table = table;
         }
 
-        public override void AcceptFormatVisitor(ISqlQueryFormatVisitor visitor)
-        {
-            TokenFactory.Phrase(
-                TokenFactory.TableName(Table, useAlias: false),
-                TokenFactory.ColumnList(Table.Columns, true))
-                .AcceptFormatVisitor(visitor);
-        }
+        protected override ISqlQueryToken RedirectedToken() => TokenFactory.Phrase(
+            TokenFactory.TableName(Table, useAlias: false),
+            TokenFactory.GroupedList(
+                Table.Columns.Select(column => TokenFactory.ColumnDefinition(column))));
     }
 }

@@ -171,17 +171,18 @@ namespace Curds.Persistence.Query.Tests
         [TestMethod]
         public void InsertedIdentityNameBuildsExpectedToken()
         {
-            MockTable
-                .Setup(model => model.Identity)
-                .Returns(MockColumn.Object);
+            throw new System.NotImplementedException();
+            //MockTable
+            //    .Setup(model => model.Identity)
+            //    .Returns(MockColumn.Object);
 
-            ISqlQueryToken actual = TestObject.InsertedIdentityName(MockTable.Object);
+            //ISqlQueryToken actual = TestObject.InsertedIdentityName(MockTable.Object);
 
-            Assert.IsInstanceOfType(actual, typeof(InsertedIdentityColumnSqlQueryToken));
-            InsertedIdentityColumnSqlQueryToken inserted = (InsertedIdentityColumnSqlQueryToken)actual;
-            Assert.AreEqual(2, inserted.Names.Count);
-            Assert.AreEqual(nameof(SqlQueryKeyword.inserted), inserted.Names[0].Name);
-            Assert.AreEqual(TestColumnName, inserted.Names[1].Name);
+            //Assert.IsInstanceOfType(actual, typeof(InsertedIdentityColumnSqlQueryToken));
+            //InsertedIdentityColumnSqlQueryToken inserted = (InsertedIdentityColumnSqlQueryToken)actual;
+            //Assert.AreEqual(2, inserted.Names.Count);
+            //Assert.AreEqual(nameof(SqlQueryKeyword.inserted), inserted.Names[0].Name);
+            //Assert.AreEqual(TestColumnName, inserted.Names[1].Name);
         }
 
         [TestMethod]
@@ -231,7 +232,7 @@ namespace Curds.Persistence.Query.Tests
         [TestMethod]
         public void BooleanComparisonBuildsExpectedToken()
         {
-            BooleanComparison testComparison = BooleanComparison.GreaterThanOrEqual;
+            BooleanComparison testComparison = BooleanComparison.GreaterThanOrEquals;
             ISqlQueryToken testLeftToken = Mock.Of<ISqlQueryToken>();
             ISqlQueryToken testRightToken = Mock.Of<ISqlQueryToken>();
 

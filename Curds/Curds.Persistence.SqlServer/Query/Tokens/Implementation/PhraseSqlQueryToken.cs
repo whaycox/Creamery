@@ -5,7 +5,7 @@ namespace Curds.Persistence.Query.Tokens.Implementation
 {
     using Query.Abstraction;
 
-    internal class PhraseSqlQueryToken : BaseSqlQueryToken
+    internal class PhraseSqlQueryToken : CompositeSqlQueryToken
     {
         private static ConstantSqlQueryToken SpaceToken { get; } = new ConstantSqlQueryToken(" ");
 
@@ -19,13 +19,13 @@ namespace Curds.Persistence.Query.Tokens.Implementation
             Tokens = tokens.ToList();
         }
 
-        public override void AcceptFormatVisitor(ISqlQueryFormatVisitor visitor)
+        protected override IEnumerable<ISqlQueryToken> GenerateTokens()
         {
             for (int i = 0; i < Tokens.Count; i++)
             {
                 if (i != 0)
-                    SpaceToken.AcceptFormatVisitor(visitor);
-                Tokens[i].AcceptFormatVisitor(visitor);
+                    yield return SpaceToken;
+                yield return Tokens[i];
             }
         }
     }

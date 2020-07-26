@@ -3,15 +3,20 @@
     using Query.Abstraction;
     using Query.Domain;
 
-    public class InsertedIdentityColumnSqlQueryToken : QualifiedObjectSqlQueryToken
+    public class InsertedIdentityColumnSqlQueryToken : RedirectedSqlQueryToken
     {
+        private ISqlColumn Identity { get; }
+
         public InsertedIdentityColumnSqlQueryToken(
             ISqlQueryTokenFactory tokenFactory,
             ISqlColumn identity)
-            : base(
-                tokenFactory,
-                new ObjectNameSqlQueryToken(nameof(SqlQueryKeyword.inserted)),
-                new ObjectNameSqlQueryToken(identity.Name))
-        { }
+            : base(tokenFactory)
+        {
+            Identity = identity;
+        }
+
+        protected override ISqlQueryToken RedirectedToken() => TokenFactory.QualifiedObject(
+            nameof(SqlQueryKeyword.inserted),
+            Identity.Name);
     }
 }

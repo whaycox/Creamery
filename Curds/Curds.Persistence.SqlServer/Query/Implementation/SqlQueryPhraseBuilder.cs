@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Curds.Persistence.Query.Implementation
 {
@@ -33,15 +34,18 @@ namespace Curds.Persistence.Query.Implementation
         public ISqlQueryToken InsertToTableToken(ISqlTable table) => TokenFactory.Phrase(
             TokenFactory.Keyword(SqlQueryKeyword.INSERT),
             TokenFactory.TableName(table, false),
-            TokenFactory.ColumnList(table.NonIdentities, false));
+            TokenFactory.GroupedList(
+                table.NonIdentities.Select(column => TokenFactory.ColumnName(column, false))));
 
         public ISqlQueryToken ValueEntitiesToken(ISqlQueryParameterBuilder parameterBuilder, IEnumerable<ValueEntity> valueEntities) => TokenFactory.Phrase(
             TokenFactory.Keyword(SqlQueryKeyword.VALUES),
-            TokenFactory.ValueEntities(parameterBuilder, valueEntities));
+            TokenFactory.UngroupedList(
+                valueEntities.Select(valueEntity => TokenFactory.ValueEntity(parameterBuilder, valueEntity))));
 
         public ISqlQueryToken SelectColumnsToken(IEnumerable<ISqlColumn> columns) => TokenFactory.Phrase(
             TokenFactory.Keyword(SqlQueryKeyword.SELECT),
-            TokenFactory.SelectList(columns));
+            TokenFactory.UngroupedList(
+                columns.Select(column => TokenFactory.ColumnName(column))));
 
         public ISqlQueryToken FromTableToken(ISqlTable table) => TokenFactory.Phrase(
             TokenFactory.Keyword(SqlQueryKeyword.FROM),
@@ -60,6 +64,6 @@ namespace Curds.Persistence.Query.Implementation
             TokenFactory.Keyword(SqlQueryKeyword.UPDATE),
             TokenFactory.TableName(table, useSqlName: false),
             TokenFactory.Keyword(SqlQueryKeyword.SET),
-            TokenFactory.SetValues(setValueTokens));
+            TokenFactory.UngroupedList(setValueTokens));
     }
 }

@@ -16,24 +16,19 @@
             Table = table;
         }
 
-        protected override ISqlQueryToken GenerateNameToken() => UseAlias ? 
-            WithAliasToken() : 
-            WithoutAliasToken;
-        private ISqlQueryToken WithAliasToken()
-        {
-            if (UseSqlName)
-                return TokenFactory.Phrase(
-                    new QualifiedObjectSqlQueryToken(
-                        TokenFactory,
-                        new ObjectNameSqlQueryToken(Table.Schema),
-                        new ObjectNameSqlQueryToken(Table.Name)),
-                    new ObjectNameSqlQueryToken(Table.Alias));
-            else
-                return new ObjectNameSqlQueryToken(Table.Alias);
-        }
-        private ISqlQueryToken WithoutAliasToken => new QualifiedObjectSqlQueryToken(
-            TokenFactory,
-            new ObjectNameSqlQueryToken(Table.Schema),
-            new ObjectNameSqlQueryToken(Table.Name));
+        protected override ISqlQueryToken RedirectedToken() =>
+            UseAlias ?
+                AliasedName :
+                SqlName;
+        private ISqlQueryToken AliasedName =>
+            UseSqlName ?
+                TokenFactory.Phrase(
+                    SqlName,
+                    Alias) :
+                Alias;
+        private ISqlQueryToken SqlName => TokenFactory.QualifiedObject(
+            Table.Schema,
+            Table.Name);
+        private ISqlQueryToken Alias => TokenFactory.ObjectName(Table.Alias);
     }
 }

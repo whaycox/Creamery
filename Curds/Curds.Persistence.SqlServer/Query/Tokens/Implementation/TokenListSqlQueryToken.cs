@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Curds.Persistence.Query.Tokens.Implementation
@@ -13,10 +12,7 @@ namespace Curds.Persistence.Query.Tokens.Implementation
         public bool IncludeGrouping { get; set; }
         public bool IncludeSeparators { get; set; } = true;
 
-        public TokenListSqlQueryToken(
-            ISqlQueryTokenFactory tokenFactory,
-            IEnumerable<ISqlQueryToken> tokens)
-            : base(tokenFactory)
+        public TokenListSqlQueryToken(IEnumerable<ISqlQueryToken> tokens)
         {
             Tokens = tokens.ToList();
         }

@@ -7,6 +7,5 @@
         void VisitLiteral(LiteralSqlQueryToken token);
         void VisitTokenList(TokenListSqlQueryToken token);
         void VisitValueEntity(ValueEntitySqlQueryToken token);
-        void VisitBooleanCombination(BooleanCombinationSqlQueryToken token);
     }
 }

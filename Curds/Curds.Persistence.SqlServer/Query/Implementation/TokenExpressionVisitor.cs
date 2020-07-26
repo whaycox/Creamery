@@ -124,7 +124,7 @@ namespace Curds.Persistence.Query.Implementation
         {
             ISqlQueryToken left = lessThanOrEqualNode.Left.AcceptVisitor(this);
             ISqlQueryToken right = lessThanOrEqualNode.Right.AcceptVisitor(this);
-            return TokenFactory.BooleanComparison(BooleanComparison.LessThanOrEqual, left, right);
+            return TokenFactory.BooleanComparison(BooleanComparison.LessThanOrEquals, left, right);
         }
 
         public override ISqlQueryToken VisitLambda(LambdaNode lambdaNode) =>

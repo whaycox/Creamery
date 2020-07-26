@@ -60,5 +60,16 @@ namespace Curds.Persistence.Query.Queries.Template
                 .Returns(testTokens);
             return testTokens;
         }
+
+        protected List<ISqlQueryToken> SetupSourceTokens(int numberOfTokens)
+        {
+            List<ISqlQueryToken> testTokens = new List<ISqlQueryToken>();
+            for (int i = 0; i < numberOfTokens; i++)
+                testTokens.Add(Mock.Of<ISqlQueryToken>());
+            MockSource
+                .Setup(source => source.Tokens)
+                .Returns(testTokens);
+            return testTokens;
+        }
     }
 }

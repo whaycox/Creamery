@@ -4,17 +4,21 @@ using System.Linq;
 namespace Curds.Persistence.Query.Tokens.Implementation
 {
     using Query.Abstraction;
+    using Query.Domain;
 
     public class ValueEntitySqlQueryToken : BaseSqlQueryToken
     {
-        public List<ParameterSqlQueryToken> Values { get; }
+        public List<ISqlQueryToken> Values { get; }
 
         public ValueEntitySqlQueryToken(
             ISqlQueryTokenFactory tokenFactory,
-            IEnumerable<ParameterSqlQueryToken> values)
-            : base(tokenFactory)
+            ISqlQueryParameterBuilder parameterBuilder,
+            ValueEntity valueEntity)
         {
-            Values = values.ToList();
+            Values = valueEntity
+                .Values
+                .Select(value => tokenFactory.Parameter(parameterBuilder, value.Name, value.Content))
+                .ToList();
         }
 
         public override void AcceptFormatVisitor(ISqlQueryFormatVisitor visitor) => visitor.VisitValueEntity(this);

@@ -32,6 +32,14 @@ namespace Curds.Persistence.Query.Tokens.Tests
         }
 
         [TestMethod]
+        public void KeywordWillUseDisplayName()
+        {
+            TestObject = new KeywordSqlQueryToken(SqlQueryKeyword.Equals);
+
+            Assert.AreEqual("=", TestObject.Literal);
+        }
+
+        [TestMethod]
         public void VisitsFormatterAsLiteral() => VerifyTokenAcceptsLiteralToken(TestObject);
     }
 }

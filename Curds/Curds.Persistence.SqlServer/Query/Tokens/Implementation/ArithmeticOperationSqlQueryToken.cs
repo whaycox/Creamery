@@ -1,17 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Curds.Persistence.Query.Tokens.Implementation
 {
     using Query.Abstraction;
     using Query.Domain;
 
-    public class ArithmeticOperationSqlQueryToken : BaseSqlQueryToken
+    public class ArithmeticOperationSqlQueryToken : RedirectedSqlQueryToken
     {
-        private static ISqlQueryToken EqualsToken { get; } = new ConstantSqlQueryToken(" = ");
-        private static ISqlQueryToken ModuloToken { get; } = new ConstantSqlQueryToken(" % ");
+        private static Dictionary<ArithmeticOperation, SqlQueryKeyword> KeywordMap { get; } = new Dictionary<ArithmeticOperation, SqlQueryKeyword>
+        {
+            { ArithmeticOperation.Equals, SqlQueryKeyword.Equals },
+            { ArithmeticOperation.Modulo, SqlQueryKeyword.Modulo },
+        };
 
+        public ArithmeticOperation Operation { get; }
         public ISqlQueryToken Left { get; }
-        public ISqlQueryToken Operation { get; }
         public ISqlQueryToken Right { get; }
 
         public ArithmeticOperationSqlQueryToken(
@@ -21,28 +25,20 @@ namespace Curds.Persistence.Query.Tokens.Implementation
             ISqlQueryToken right)
             : base(tokenFactory)
         {
-            Operation = OperationKeyword(operation);
             Left = left;
+            Operation = operation;
             Right = right;
         }
-        private ISqlQueryToken OperationKeyword(ArithmeticOperation operation)
-        {
-            switch (operation)
-            {
-                case ArithmeticOperation.Equals:
-                    return EqualsToken;
-                case ArithmeticOperation.Modulo:
-                    return ModuloToken;
-                default:
-                    throw new ArgumentException($"Unsupported operation: {operation}");
-            }
-        }
 
-        public override void AcceptFormatVisitor(ISqlQueryFormatVisitor visitor)
+        protected override ISqlQueryToken RedirectedToken() => TokenFactory.Phrase(
+            Left,
+            OperationKeyword(),
+            Right);
+        private ISqlQueryToken OperationKeyword()
         {
-            Left.AcceptFormatVisitor(visitor);
-            Operation.AcceptFormatVisitor(visitor);
-            Right.AcceptFormatVisitor(visitor);
+            if (!KeywordMap.TryGetValue(Operation, out SqlQueryKeyword keyword))
+                throw new InvalidOperationException($"Unsupported operation: {Operation}");
+            return TokenFactory.Keyword(keyword);
         }
     }
 }

@@ -1,21 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Curds.Persistence.Query.Tokens.Implementation
 {
     using Query.Abstraction;
     using Query.Domain;
 
-    public class BooleanComparisonSqlQueryToken : BaseSqlQueryToken
+    public class BooleanComparisonSqlQueryToken : RedirectedSqlQueryToken
     {
-        private static ConstantSqlQueryToken EqualsToken { get; } = new ConstantSqlQueryToken(" = ");
-        private static ConstantSqlQueryToken NotEqualsToken { get; } = new ConstantSqlQueryToken(" <> ");
-        private static ConstantSqlQueryToken GreaterThanToken { get; } = new ConstantSqlQueryToken(" > ");
-        private static ConstantSqlQueryToken GreaterThanOrEqualsToken { get; } = new ConstantSqlQueryToken(" >= ");
-        private static ConstantSqlQueryToken LessThanToken { get; } = new ConstantSqlQueryToken(" < ");
-        private static ConstantSqlQueryToken LessThanOrEqualsToken { get; } = new ConstantSqlQueryToken(" <= ");
+        private static Dictionary<BooleanComparison, SqlQueryKeyword> KeywordMap { get; } = new Dictionary<BooleanComparison, SqlQueryKeyword>
+        {
+            { BooleanComparison.Equals, SqlQueryKeyword.Equals },
+            { BooleanComparison.NotEquals, SqlQueryKeyword.NotEquals },
+            { BooleanComparison.GreaterThan, SqlQueryKeyword.GreaterThan },
+            { BooleanComparison.GreaterThanOrEquals, SqlQueryKeyword.GreaterThanOrEquals },
+            { BooleanComparison.LessThan, SqlQueryKeyword.LessThan },
+            { BooleanComparison.LessThanOrEquals, SqlQueryKeyword.LessThanOrEquals },
+        };
 
+        public BooleanComparison Operation { get; }
         public ISqlQueryToken Left { get; }
-        public ISqlQueryToken Operation { get; }
         public ISqlQueryToken Right { get; }
 
         public BooleanComparisonSqlQueryToken(
@@ -25,36 +29,20 @@ namespace Curds.Persistence.Query.Tokens.Implementation
             ISqlQueryToken right)
             : base(tokenFactory)
         {
-            Operation = OperationConstant(operation);
+            Operation = operation;
             Left = left;
             Right = right;
         }
-        private ConstantSqlQueryToken OperationConstant(BooleanComparison operation)
-        {
-            switch (operation)
-            {
-                case BooleanComparison.Equals:
-                    return EqualsToken;
-                case BooleanComparison.NotEquals:
-                    return NotEqualsToken;
-                case BooleanComparison.GreaterThan:
-                    return GreaterThanToken;
-                case BooleanComparison.GreaterThanOrEqual:
-                    return GreaterThanOrEqualsToken;
-                case BooleanComparison.LessThan:
-                    return LessThanToken;
-                case BooleanComparison.LessThanOrEqual:
-                    return LessThanOrEqualsToken;
-                default:
-                    throw new ArgumentException($"Unsupported operation {operation}");
-            }
-        }
 
-        public override void AcceptFormatVisitor(ISqlQueryFormatVisitor visitor)
+        protected override ISqlQueryToken RedirectedToken() => TokenFactory.Phrase(
+            Left,
+            OperationKeyword(),
+            Right);
+        private ISqlQueryToken OperationKeyword()
         {
-            Left.AcceptFormatVisitor(visitor);
-            Operation.AcceptFormatVisitor(visitor);
-            Right.AcceptFormatVisitor(visitor);
+            if (!KeywordMap.TryGetValue(Operation, out SqlQueryKeyword keyword))
+                throw new InvalidOperationException($"Unsupported operation: {Operation}");
+            return TokenFactory.Keyword(keyword);
         }
     }
 }

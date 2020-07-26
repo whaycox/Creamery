@@ -35,12 +35,11 @@ namespace Curds.Persistence.Query.Queries.Tests
         }
 
         [TestMethod]
-        public void GenerateCommandBuildsFromUniversePhrase()
+        public void GenerateCommandGetsTokensFromSource()
         {
             TestObject.GenerateCommand();
 
-            throw new System.NotImplementedException();
-            //MockPhraseBuilder.Verify(builder => builder.FromUniverseTokens(MockSource.Object), Times.Once);
+            MockSource.Verify(source => source.Tokens, Times.Once);
         }
 
         [DataTestMethod]
@@ -53,8 +52,7 @@ namespace Curds.Persistence.Query.Queries.Tests
         {
             List<ISqlQueryToken> expectedTokens = new List<ISqlQueryToken>();
             expectedTokens.Add(SetupPhraseBuilder(builder => builder.DeleteTableToken(It.IsAny<ISqlTable>())));
-            throw new System.NotImplementedException();
-            //expectedTokens.AddRange(SetupPhraseBuilder(builder => builder.FromUniverseTokens(It.IsAny<ISqlUniverse>()), sourceTokensGenerated));
+            expectedTokens.AddRange(SetupSourceTokens(sourceTokensGenerated));
 
             TestObject.GenerateCommand();
 
