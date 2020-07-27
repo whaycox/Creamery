@@ -14,6 +14,8 @@ namespace Curds.Tests
     using Cron.RangeFactories.Abstraction;
     using Cron.RangeFactories.Implementation;
     using Cron.RangeFactories.Chains.Implementation;
+    using Text.Abstraction;
+    using Text.Implementation;
 
     [TestClass]
     public class RegistrationExtensionsTest : RegistrationExtensionsTemplate
@@ -26,7 +28,15 @@ namespace Curds.Tests
         {
             AddCurdsCore();
 
-            VerifyServiceWasRegistered(typeof(ITime), typeof(MachineTime), ServiceLifetime.Transient);
+            VerifyServiceWasRegistered(typeof(ITime), typeof(MachineTime), ServiceLifetime.Singleton);
+        }
+
+        [TestMethod]
+        public void CurdsCoreAddsIndentStringBuilder()
+        {
+            AddCurdsCore();
+
+            VerifyServiceWasRegistered(typeof(IIndentStringBuilder), typeof(IndentStringBuilder), ServiceLifetime.Transient);
         }
 
         [TestMethod]

@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curds.Core", "Curds.Core\Cu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curds.Core.Testing", "Curds.Core.Testing\Curds.Core.Testing.csproj", "{DDF5B631-C02B-4D0B-91CE-DC261E743795}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curds.Persistence.SqlServer", "Curds.Persistence.SqlServer\Curds.Persistence.SqlServer.csproj", "{B9303AD6-995C-4618-81D5-54C79D346F36}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Curds.Persistence.SqlServer.Testing", "Curds.Persistence.SqlServer.Testing\Curds.Persistence.SqlServer.Testing.csproj", "{AB967D13-95EC-4ACB-80BC-034605687385}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{DDF5B631-C02B-4D0B-91CE-DC261E743795}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDF5B631-C02B-4D0B-91CE-DC261E743795}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDF5B631-C02B-4D0B-91CE-DC261E743795}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9303AD6-995C-4618-81D5-54C79D346F36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9303AD6-995C-4618-81D5-54C79D346F36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9303AD6-995C-4618-81D5-54C79D346F36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9303AD6-995C-4618-81D5-54C79D346F36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB967D13-95EC-4ACB-80BC-034605687385}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB967D13-95EC-4ACB-80BC-034605687385}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB967D13-95EC-4ACB-80BC-034605687385}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB967D13-95EC-4ACB-80BC-034605687385}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
