@@ -1,9 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
+using Whey;
 
 namespace Curds.Persistence.Query.Tests
 {
@@ -14,15 +12,12 @@ namespace Curds.Persistence.Query.Tests
     [TestClass]
     public class SqlQueryPhraseBuilderTest
     {
-        private List<ISqlColumn> TestNonIdentityColumns = new List<ISqlColumn>();
-        private List<ValueEntity> TestValueEntities = new List<ValueEntity>();
         private ValueEntity TestValueEntity = new ValueEntity();
-        private List<ISqlQueryToken> TestSetValueTokens = new List<ISqlQueryToken>();
 
         private Mock<ISqlQueryTokenFactory> MockTokenFactory = new Mock<ISqlQueryTokenFactory>();
         private Mock<ISqlTable> MockTable = new Mock<ISqlTable>();
-        private Mock<ISqlColumn> MockIdentityColumn = new Mock<ISqlColumn>();
-        private Mock<ISqlColumn> MockNonIdentityColumn = new Mock<ISqlColumn>();
+        private Mock<ISqlColumn> MockColumn = new Mock<ISqlColumn>();
+        private Mock<ISqlJoinClause> MockJoinClause = new Mock<ISqlJoinClause>();
         private Mock<ISqlQueryParameterBuilder> MockParameterBuilder = new Mock<ISqlQueryParameterBuilder>();
         private Mock<ISqlQueryToken> MockSetValueToken = new Mock<ISqlQueryToken>();
 
@@ -31,171 +26,190 @@ namespace Curds.Persistence.Query.Tests
         [TestInitialize]
         public void Init()
         {
-            TestNonIdentityColumns.Add(MockNonIdentityColumn.Object);
-            TestValueEntities.Add(TestValueEntity);
-            TestSetValueTokens.Add(MockSetValueToken.Object);
-
-            MockTable
-                .Setup(table => table.Identity)
-                .Returns(MockIdentityColumn.Object);
-            MockTable
-                .Setup(table => table.NonIdentities)
-                .Returns(TestNonIdentityColumns);
-
             TestObject = new SqlQueryPhraseBuilder(MockTokenFactory.Object);
         }
 
-        private ISqlQueryToken SetupTokenFactory(Expression<Func<ISqlQueryTokenFactory, ISqlQueryToken>> factoryExpression)
+        [TestMethod]
+        public void CreateTableBuildsExpectedPhrase()
         {
-            ISqlQueryToken testToken = Mock.Of<ISqlQueryToken>();
-            MockTokenFactory
-                .Setup(factoryExpression)
-                .Returns(testToken);
-            return testToken;
+            ISqlQueryToken createToken = MockTokenFactory.SetupMock(factory => factory.Keyword(SqlQueryKeyword.CREATE));
+            ISqlQueryToken tableToken = MockTokenFactory.SetupMock(factory => factory.Keyword(SqlQueryKeyword.TABLE));
+            ISqlQueryToken tableDefinitionToken = MockTokenFactory.SetupMock(factory => factory.TableDefinition(MockTable.Object));
+            ISqlQueryToken expectedPhraseToken = MockTokenFactory.SetupMock(factory => factory.Phrase(createToken, tableToken, tableDefinitionToken));
+
+            ISqlQueryToken actual = TestObject.CreateTableToken(MockTable.Object);
+
+            Assert.AreSame(expectedPhraseToken, actual);
         }
 
         [TestMethod]
-        public void CreateTemporaryIdentityTokenBuildsExpectedPhrase()
+        public void DropTableBuildsExpectedPhrase()
         {
-            throw new System.NotImplementedException();
-            //ISqlQueryToken createToken = SetupTokenFactory(factory => factory.Keyword(SqlQueryKeyword.CREATE));
-            //ISqlQueryToken tableToken = SetupTokenFactory(factory => factory.Keyword(SqlQueryKeyword.TABLE));
-            //ISqlQueryToken temporaryIdentityToken = SetupTokenFactory(factory => factory.TemporaryIdentityName(MockTable.Object));
-            //ISqlQueryToken columnListToken = SetupTokenFactory(factory => factory.ColumnList(new[] { MockIdentityColumn.Object }, true));
-            //ISqlQueryToken expectedPhraseToken = SetupTokenFactory(factory => factory.Phrase(createToken, tableToken, temporaryIdentityToken, columnListToken));
+            ISqlQueryToken dropToken = MockTokenFactory.SetupMock(factory => factory.Keyword(SqlQueryKeyword.DROP));
+            ISqlQueryToken tableToken = MockTokenFactory.SetupMock(factory => factory.Keyword(SqlQueryKeyword.TABLE));
+            ISqlQueryToken tableNameToken = MockTokenFactory.SetupMock(factory => factory.TableName(MockTable.Object, false, true));
+            ISqlQueryToken expectedPhraseToken = MockTokenFactory.SetupMock(factory => factory.Phrase(dropToken, tableToken, tableNameToken));
 
-            //ISqlQueryToken actual = TestObject.CreateTemporaryIdentityToken(MockTable.Object);
+            ISqlQueryToken actual = TestObject.DropTableToken(MockTable.Object);
 
-            //Assert.AreSame(expectedPhraseToken, actual);
+            Assert.AreSame(expectedPhraseToken, actual);
         }
 
         [TestMethod]
         public void OutputToTemporaryIdentityTokenBuildsExpectedPhrase()
         {
-            throw new System.NotImplementedException();
-            //ISqlQueryToken outputToken = SetupTokenFactory(factory => factory.Keyword(SqlQueryKeyword.OUTPUT));
-            //ISqlQueryToken insertedIdentityToken = SetupTokenFactory(factory => factory.InsertedIdentityName(MockTable.Object));
-            //ISqlQueryToken intoToken = SetupTokenFactory(factory => factory.Keyword(SqlQueryKeyword.INTO));
-            //ISqlQueryToken temporaryIdentityToken = SetupTokenFactory(factory => factory.TemporaryIdentityName(MockTable.Object));
-            //ISqlQueryToken expectedPhraseToken = SetupTokenFactory(factory => factory.Phrase(outputToken, insertedIdentityToken, intoToken, temporaryIdentityToken));
+            ISqlTable insertedIdentityTable = MockTable.SetupMock(table => table.InsertedIdentityTable);
+            ISqlQueryToken outputToken = MockTokenFactory.SetupMock(factory => factory.Keyword(SqlQueryKeyword.OUTPUT));
+            ISqlQueryToken insertedIdentityToken = MockTokenFactory.SetupMock(factory => factory.InsertedIdentityName(MockTable.Object));
+            ISqlQueryToken intoToken = MockTokenFactory.SetupMock(factory => factory.Keyword(SqlQueryKeyword.INTO));
+            ISqlQueryToken tableNameToken = MockTokenFactory.SetupMock(factory => factory.TableName(insertedIdentityTable, false, true));
+            ISqlQueryToken expectedPhraseToken = MockTokenFactory.SetupMock(factory => factory.Phrase(outputToken, insertedIdentityToken, intoToken, tableNameToken));
 
-            //ISqlQueryToken actual = TestObject.OutputToTemporaryIdentityToken(MockTable.Object);
+            ISqlQueryToken actual = TestObject.OutputToTemporaryIdentityToken(MockTable.Object);
 
-            //Assert.AreSame(expectedPhraseToken, actual);
+            Assert.AreSame(expectedPhraseToken, actual);
+        }
+
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(5)]
+        [DataRow(10)]
+        [DataRow(13)]
+        [DataRow(17)]
+        public void InsertToTableTokenBuildsExpectedPhrase(int nonIdentityColumns)
+        {
+            List<ISqlColumn> testColumns = new List<ISqlColumn>();
+            for (int i = 0; i < nonIdentityColumns; i++)
+                testColumns.Add(MockColumn.Object);
+            MockTable
+                .Setup(table => table.NonIdentities)
+                .Returns(testColumns);
+            ISqlQueryToken columnNameToken = MockTokenFactory.SetupMock(factory => factory.ColumnName(MockColumn.Object, false));
+            List<ISqlQueryToken> nonIdentityTokens = new List<ISqlQueryToken>();
+            for (int i = 0; i < nonIdentityColumns; i++)
+                nonIdentityTokens.Add(columnNameToken);
+            ISqlQueryToken insertToken = MockTokenFactory.SetupMock(factory => factory.Keyword(SqlQueryKeyword.INSERT));
+            ISqlQueryToken tableNameToken = MockTokenFactory.SetupMock(factory => factory.TableName(MockTable.Object, false, true));
+            ISqlQueryToken groupedListToken = MockTokenFactory.SetupMock(factory => factory.GroupedList(nonIdentityTokens, true));
+            ISqlQueryToken expectedPhraseToken = MockTokenFactory.SetupMock(factory => factory.Phrase(insertToken, tableNameToken, groupedListToken));
+
+            ISqlQueryToken actual = TestObject.InsertToTableToken(MockTable.Object);
+
+            Assert.AreSame(expectedPhraseToken, actual);
+        }
+
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(5)]
+        [DataRow(10)]
+        [DataRow(13)]
+        [DataRow(17)]
+        public void ValueEntitiesTokenBuildsExpectedPhrase(int valueEntitiesToAdd)
+        {
+            List<ValueEntity> testValueEntities = new List<ValueEntity>();
+            for (int i = 0; i < valueEntitiesToAdd; i++)
+                testValueEntities.Add(TestValueEntity);
+            ISqlQueryToken valueEntityToken = MockTokenFactory.SetupMock(factory => factory.ValueEntity(MockParameterBuilder.Object, TestValueEntity));
+            List<ISqlQueryToken> valueEntityTokens = new List<ISqlQueryToken>();
+            for (int i = 0; i < valueEntitiesToAdd; i++)
+                valueEntityTokens.Add(valueEntityToken);
+            ISqlQueryToken valuesToken = MockTokenFactory.SetupMock(factory => factory.Keyword(SqlQueryKeyword.VALUES));
+            ISqlQueryToken valueEntitiesToken = MockTokenFactory.SetupMock(factory => factory.UngroupedList(valueEntityTokens, true));
+            ISqlQueryToken expectedPhraseToken = MockTokenFactory.SetupMock(factory => factory.Phrase(valuesToken, valueEntitiesToken));
+
+            ISqlQueryToken actual = TestObject.ValueEntitiesToken(MockParameterBuilder.Object, testValueEntities);
+
+            Assert.AreSame(expectedPhraseToken, actual);
+        }
+
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(5)]
+        [DataRow(10)]
+        [DataRow(13)]
+        [DataRow(17)]
+        public void SelectColumnsTokenBuildsExpectedPhrase(int columnsToAdd)
+        {
+            List<ISqlColumn> testColumns = new List<ISqlColumn>();
+            for (int i = 0; i < columnsToAdd; i++)
+                testColumns.Add(MockColumn.Object);
+            ISqlQueryToken columnNameToken = MockTokenFactory.SetupMock(factory => factory.ColumnName(MockColumn.Object, true));
+            List<ISqlQueryToken> columnNameTokens = new List<ISqlQueryToken>();
+            for (int i = 0; i < columnsToAdd; i++)
+                columnNameTokens.Add(columnNameToken);
+            ISqlQueryToken selectToken = MockTokenFactory.SetupMock(factory => factory.Keyword(SqlQueryKeyword.SELECT));
+            ISqlQueryToken columnNamesToken = MockTokenFactory.SetupMock(factory => factory.UngroupedList(columnNameTokens, true));
+            ISqlQueryToken expectedPhraseToken = MockTokenFactory.SetupMock(factory => factory.Phrase(selectToken, columnNamesToken));
+
+            ISqlQueryToken actual = TestObject.SelectColumnsToken(testColumns);
+
+            Assert.AreSame(expectedPhraseToken, actual);
         }
 
         [TestMethod]
-        public void DropTemporaryIdentityTokenBuildsExpectedPhrase()
+        public void FromTableTokenBuildsExpectedPhrase()
         {
-            throw new System.NotImplementedException();
-            //ISqlQueryToken dropToken = SetupTokenFactory(factory => factory.Keyword(SqlQueryKeyword.DROP));
-            //ISqlQueryToken tableToken = SetupTokenFactory(factory => factory.Keyword(SqlQueryKeyword.TABLE));
-            //ISqlQueryToken temporaryIdentityToken = SetupTokenFactory(factory => factory.TemporaryIdentityName(MockTable.Object));
-            //ISqlQueryToken expectedPhraseToken = SetupTokenFactory(factory => factory.Phrase(dropToken, tableToken, temporaryIdentityToken));
+            ISqlQueryToken fromToken = MockTokenFactory.SetupMock(factory => factory.Keyword(SqlQueryKeyword.FROM));
+            ISqlQueryToken tableNameToken = MockTokenFactory.SetupMock(factory => factory.TableName(MockTable.Object, true, true));
+            ISqlQueryToken expectedPhraseToken = MockTokenFactory.SetupMock(factory => factory.Phrase(fromToken, tableNameToken));
 
-            //ISqlQueryToken actual = TestObject.DropTemporaryIdentityToken(MockTable.Object);
+            ISqlQueryToken actual = TestObject.FromTableToken(MockTable.Object);
 
-            //Assert.AreSame(expectedPhraseToken, actual);
+            Assert.AreSame(expectedPhraseToken, actual);
         }
 
         [TestMethod]
-        public void SelectNewIdentitiesTokenBuildsExpectedPhrase()
+        public void JoinTableTokenBuildsExpectedPhrase()
         {
-            throw new System.NotImplementedException();
-            //ISqlQueryToken selectToken = SetupTokenFactory(factory => factory.Keyword(SqlQueryKeyword.SELECT));
-            //ISqlQueryToken selectListToken = SetupTokenFactory(factory => factory.SelectList(new[] { MockIdentityColumn.Object }));
-            //ISqlQueryToken selectPhrase = SetupTokenFactory(factory => factory.Phrase(selectToken, selectListToken));
-            //ISqlQueryToken fromToken = SetupTokenFactory(factory => factory.Keyword(SqlQueryKeyword.FROM));
-            //ISqlQueryToken temporaryIdentityToken = SetupTokenFactory(factory => factory.TemporaryIdentityName(MockTable.Object));
-            //ISqlQueryToken universePhrase = SetupTokenFactory(factory => factory.Phrase(fromToken, temporaryIdentityToken));
+            MockJoinClause
+                .Setup(joinClause => joinClause.JoinedTable)
+                .Returns(MockTable.Object);
+            ISqlQueryToken joinToken = MockTokenFactory.SetupMock(factory => factory.Keyword(SqlQueryKeyword.JOIN));
+            ISqlQueryToken tableNameToken = MockTokenFactory.SetupMock(factory => factory.TableName(MockTable.Object, true, true));
+            ISqlQueryToken joinClauseToken = MockTokenFactory.SetupMock(factory => factory.JoinClause(MockJoinClause.Object));
+            ISqlQueryToken expectedPhraseToken = MockTokenFactory.SetupMock(factory => factory.Phrase(joinToken, tableNameToken, joinClauseToken));
 
-            //IEnumerable<ISqlQueryToken> actual = TestObject.SelectNewIdentitiesToken(MockTable.Object);
+            ISqlQueryToken actual = TestObject.JoinTableToken(MockJoinClause.Object);
 
-            //CollectionAssert.AreEqual(new[] { selectPhrase, universePhrase }, actual.ToList());
-        }
-
-        [TestMethod]
-        public void InsertToTableTokenBuildsExpectedPhrase()
-        {
-            throw new System.NotImplementedException();
-            //ISqlQueryToken insertToken = SetupTokenFactory(factory => factory.Keyword(SqlQueryKeyword.INSERT));
-            //ISqlQueryToken objectNameToken = SetupTokenFactory(factory => factory.TableName(MockTable.Object));
-            //ISqlQueryToken columnListToken = SetupTokenFactory(factory => factory.ColumnList(TestNonIdentityColumns, false));
-            //ISqlQueryToken expectedPhraseToken = SetupTokenFactory(factory => factory.Phrase(insertToken, objectNameToken, columnListToken));
-
-            //ISqlQueryToken actual = TestObject.InsertToTableToken(MockTable.Object);
-
-            //Assert.AreSame(expectedPhraseToken, actual);
-        }
-
-        [TestMethod]
-        public void ValueEntitiesTokenBuildsExpectedPhrase()
-        {
-            throw new System.NotImplementedException();
-            //ISqlQueryToken valuesToken = SetupTokenFactory(factory => factory.Keyword(SqlQueryKeyword.VALUES));
-            //ISqlQueryToken valueEntitiesToken = SetupTokenFactory(factory => factory.ValueEntities(MockParameterBuilder.Object, TestValueEntities));
-
-            //IEnumerable<ISqlQueryToken> actual = TestObject.ValueEntitiesToken(MockParameterBuilder.Object, TestValueEntities);
-
-            //CollectionAssert.AreEqual(new[] { valuesToken, valueEntitiesToken }, actual.ToList());
-        }
-
-        [TestMethod]
-        public void SelectColumnsTokenBuildsExpectedPhrase()
-        {
-            throw new System.NotImplementedException();
-            //ISqlQueryToken selectToken = SetupTokenFactory(factory => factory.Keyword(SqlQueryKeyword.SELECT));
-            //ISqlQueryToken selectListToken = SetupTokenFactory(factory => factory.SelectList(TestNonIdentityColumns));
-            //ISqlQueryToken expectedPhraseToken = SetupTokenFactory(factory => factory.Phrase(selectToken, selectListToken));
-
-            //ISqlQueryToken actual = TestObject.SelectColumnsToken(TestNonIdentityColumns);
-
-            //Assert.AreSame(expectedPhraseToken, actual);
+            Assert.AreSame(expectedPhraseToken, actual);
         }
 
         [TestMethod]
         public void DeleteTableTokenBuildsExpectedPhrase()
         {
-            throw new NotImplementedException();
-            //ISqlQueryToken deleteToken = SetupTokenFactory(factory => factory.Keyword(SqlQueryKeyword.DELETE));
-            //ISqlQueryToken objectNameToken = SetupTokenFactory(factory => factory.TableName(MockTable.Object));
-            //ISqlQueryToken expectedPhraseToken = SetupTokenFactory(factory => factory.Phrase(deleteToken, objectNameToken));
+            ISqlQueryToken deleteToken = MockTokenFactory.SetupMock(factory => factory.Keyword(SqlQueryKeyword.DELETE));
+            ISqlQueryToken tableNameToken = MockTokenFactory.SetupMock(factory => factory.TableName(MockTable.Object, true, false));
+            ISqlQueryToken expectedPhraseToken = MockTokenFactory.SetupMock(factory => factory.Phrase(deleteToken, tableNameToken));
 
-            //ISqlQueryToken actual = TestObject.DeleteTableToken(MockTable.Object);
+            ISqlQueryToken actual = TestObject.DeleteTableToken(MockTable.Object);
 
-            //Assert.AreSame(expectedPhraseToken, actual);
+            Assert.AreSame(expectedPhraseToken, actual);
         }
 
-        [TestMethod]
-        public void UpdateTableTokenBuildsExpectedPhrase()
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(5)]
+        [DataRow(10)]
+        [DataRow(13)]
+        [DataRow(17)]
+        public void UpdateTableTokenBuildsExpectedPhrase(int setValuesToAdd)
         {
-            throw new System.NotImplementedException();
-            //ISqlQueryToken updateToken = SetupTokenFactory(factory => factory.Keyword(SqlQueryKeyword.UPDATE));
-            //ISqlQueryToken objectNameToken = SetupTokenFactory(factory => factory.TableName(MockTable.Object));
-            //ISqlQueryToken expectedPhraseToken = SetupTokenFactory(factory => factory.Phrase(updateToken, objectNameToken));
+            List<ISqlQueryToken> setValueTokens = new List<ISqlQueryToken>();
+            for (int i = 0; i < setValuesToAdd; i++)
+                setValueTokens.Add(MockSetValueToken.Object);
+            ISqlQueryToken updateToken = MockTokenFactory.SetupMock(factory => factory.Keyword(SqlQueryKeyword.UPDATE));
+            ISqlQueryToken tableNameToken = MockTokenFactory.SetupMock(factory => factory.TableName(MockTable.Object, true, false));
+            ISqlQueryToken setToken = MockTokenFactory.SetupMock(factory => factory.Keyword(SqlQueryKeyword.SET));
+            ISqlQueryToken setValuesToken = MockTokenFactory.SetupMock(factory => factory.UngroupedList(setValueTokens, true));
+            ISqlQueryToken expectedPhraseToken = MockTokenFactory.SetupMock(factory => factory.Phrase(
+                updateToken,
+                tableNameToken,
+                setToken,
+                setValuesToken));
 
-            //ISqlQueryToken actual = TestObject.UpdateTableToken(MockTable.Object);
+            ISqlQueryToken actual = TestObject.UpdateTableToken(MockTable.Object, setValueTokens);
 
-            //Assert.AreSame(expectedPhraseToken, actual);
-        }
-
-        [TestMethod]
-        public void SetValuesTokenBuildsExpectedPhrase()
-        {
-            throw new System.NotImplementedException();
-            //ISqlQueryToken setToken = SetupTokenFactory(factory => factory.Keyword(SqlQueryKeyword.SET));
-            //ISqlQueryToken setValuesToken = SetupTokenFactory(factory => factory.SetValues(TestSetValueTokens));
-            //ISqlQueryToken expectedPhraseToken = SetupTokenFactory(factory => factory.Phrase(setToken, setValuesToken));
-
-            //ISqlQueryToken actual = TestObject.SetValuesToken(TestSetValueTokens);
-
-            //Assert.AreSame(expectedPhraseToken, actual);
-        }
-
-        [TestMethod]
-        public void FromUniverseTokenBuildsExpectedPhrase()
-        {
-            throw new NotImplementedException();
+            Assert.AreSame(expectedPhraseToken, actual);
         }
     }
 }

@@ -51,7 +51,7 @@ namespace Curds.Persistence.Query.Implementation
         public ISqlTable AddTable<TEntity>()
             where TEntity : IEntity
         {
-            SqlTable table = new SqlTable { Model = ModelMap.Entity<TEntity>() };
+            SqlTable table = new SqlTable(ModelMap.Entity<TEntity>());
             table.Alias = AliasBuilder.RegisterNewAlias(table.Name);
 
             QueryTables.Add(table);

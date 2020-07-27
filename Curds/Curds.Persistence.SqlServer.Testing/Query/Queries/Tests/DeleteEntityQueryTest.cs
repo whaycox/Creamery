@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Collections.Generic;
+using Whey;
 
 namespace Curds.Persistence.Query.Queries.Tests
 {
@@ -51,8 +52,8 @@ namespace Curds.Persistence.Query.Queries.Tests
         public void GeneratedTokensAreExpected(int sourceTokensGenerated)
         {
             List<ISqlQueryToken> expectedTokens = new List<ISqlQueryToken>();
-            expectedTokens.Add(SetupPhraseBuilder(builder => builder.DeleteTableToken(It.IsAny<ISqlTable>())));
-            expectedTokens.AddRange(SetupSourceTokens(sourceTokensGenerated));
+            expectedTokens.Add(MockPhraseBuilder.SetupMock(builder => builder.DeleteTableToken(It.IsAny<ISqlTable>())));
+            expectedTokens.AddRange(MockSource.SetupMock(source => source.Tokens, sourceTokensGenerated));
 
             TestObject.GenerateCommand();
 

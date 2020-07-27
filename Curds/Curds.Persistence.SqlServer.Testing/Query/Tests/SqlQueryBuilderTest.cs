@@ -42,14 +42,6 @@ namespace Curds.Persistence.Query.Tests
         }
 
         [TestMethod]
-        public void InsertRequestsPhraseBuilder()
-        {
-            TestObject.Insert(TestEntities);
-
-            MockServiceProvider.Verify(provider => provider.GetService(typeof(ISqlQueryPhraseBuilder)), Times.Once);
-        }
-
-        [TestMethod]
         public void InsertRequestsQueryContext()
         {
             TestObject.Insert(TestEntities);
@@ -85,22 +77,6 @@ namespace Curds.Persistence.Query.Tests
 
             InsertQuery<ITestDataModel, TestEntity> testQuery = actual.VerifyIsActually<InsertQuery<ITestDataModel, TestEntity>>();
             CollectionAssert.AreEqual(TestEntities, testQuery.Entities);
-        }
-
-        [TestMethod]
-        public void FromRequestsPhraseBuilder()
-        {
-            TestObject.From<TestEntity>();
-
-            MockServiceProvider.Verify(provider => provider.GetService(typeof(ISqlQueryPhraseBuilder)), Times.Once);
-        }
-
-        [TestMethod]
-        public void FromRequestsTokenFactory()
-        {
-            TestObject.From<TestEntity>();
-
-            MockServiceProvider.Verify(provider => provider.GetService(typeof(ISqlQueryTokenFactory)), Times.Once);
         }
 
         [TestMethod]

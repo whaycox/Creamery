@@ -19,6 +19,9 @@ namespace Curds.Persistence.Query.Tokens.Implementation
         protected override ISqlQueryToken RedirectedToken() => TokenFactory.Phrase(
             TokenFactory.TableName(Table, useAlias: false),
             TokenFactory.GroupedList(
-                Table.Columns.Select(column => TokenFactory.ColumnDefinition(column))));
+                Table
+                    .Columns
+                    .Select(column => TokenFactory.ColumnDefinition(column))
+                    .ToList()));
     }
 }

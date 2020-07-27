@@ -3,6 +3,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Whey;
 
 namespace Curds.Persistence.Query.Queries.Tests
 {
@@ -18,7 +19,6 @@ namespace Curds.Persistence.Query.Queries.Tests
     {
         private string TestNewName = nameof(TestNewName);
 
-        private Mock<ISqlQueryTokenFactory> MockTokenFactory = new Mock<ISqlQueryTokenFactory>();
         private Mock<ISqlTable> MockUpdatedTable = new Mock<ISqlTable>();
 
         private EntityUpdateQuery<ITestDataModel, TestEntity> TestObject = null;
@@ -32,31 +32,28 @@ namespace Curds.Persistence.Query.Queries.Tests
                 MockSource.Object);
         }
 
-        [TestMethod]
-        public void GenerateCommandBuildsUpdateTablePhrase()
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(3)]
+        [DataRow(5)]
+        [DataRow(10)]
+        [DataRow(15)]
+        public void GenerateCommandBuildsUpdateTablePhrase(int setTokens)
         {
-            throw new System.NotImplementedException();
-            //TestObject.GenerateCommand();
+            for (int i = 0; i < setTokens; i++)
+                TestObject.SetTokens.Add(Mock.Of<ISqlQueryToken>());
 
-            //MockPhraseBuilder.Verify(builder => builder.UpdateTableToken(MockUpdatedTable.Object), Times.Once);
+            TestObject.GenerateCommand();
+
+            MockPhraseBuilder.Verify(builder => builder.UpdateTableToken(MockUpdatedTable.Object, TestObject.SetTokens), Times.Once);
         }
 
         [TestMethod]
-        public void GenerateCommandBuildsSetValuesPhrase()
-        {
-            throw new System.NotImplementedException();
-            //TestObject.GenerateCommand();
-
-            //MockPhraseBuilder.Verify(builder => builder.SetValuesToken(It.IsAny<IEnumerable<ISqlQueryToken>>()), Times.Once);
-        }
-
-        [TestMethod]
-        public void GenerateCommandBuildsFromUniversePhrase()
+        public void GenerateCommandGetsTokensFromSource()
         {
             TestObject.GenerateCommand();
 
-            throw new NotImplementedException();
-            //MockPhraseBuilder.Verify(builder => builder.FromUniverseTokens(MockSource.Object), Times.Once);
+            MockSource.Verify(source => source.Tokens, Times.Once);
         }
 
         [DataTestMethod]
@@ -67,15 +64,13 @@ namespace Curds.Persistence.Query.Queries.Tests
         [DataRow(15)]
         public void GeneratedTokensAreExpected(int sourceTokensGenerated)
         {
-            throw new System.NotImplementedException();
-            //List<ISqlQueryToken> expectedTokens = new List<ISqlQueryToken>();
-            //expectedTokens.Add(SetupPhraseBuilder(builder => builder.UpdateTableToken(It.IsAny<ISqlTable>())));
-            //expectedTokens.Add(SetupPhraseBuilder(builder => builder.SetValuesToken(It.IsAny<IEnumerable<ISqlQueryToken>>())));
-            //expectedTokens.AddRange(SetupPhraseBuilder(builder => builder.FromUniverseTokens(It.IsAny<ISqlUniverse>()), sourceTokensGenerated));
+            List<ISqlQueryToken> expectedTokens = new List<ISqlQueryToken>();
+            expectedTokens.Add(MockPhraseBuilder.SetupMock(builder => builder.UpdateTableToken(It.IsAny<ISqlTable>(), It.IsAny<IEnumerable<ISqlQueryToken>>())));
+            expectedTokens.AddRange(MockSource.SetupMock(source => source.Tokens, sourceTokensGenerated));
 
-            //TestObject.GenerateCommand();
+            TestObject.GenerateCommand();
 
-            //CollectionAssert.AreEqual(expectedTokens, FormattedTokens);
+            CollectionAssert.AreEqual(expectedTokens, FormattedTokens);
         }
 
         private Expression<Func<TestEntity, string>> TestValueSelectionExpression => entity => entity.Name;

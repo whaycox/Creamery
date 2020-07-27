@@ -2,6 +2,7 @@
 using Moq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Whey;
 
 namespace Curds.Persistence.Query.Queries.Tests
 {
@@ -49,12 +50,11 @@ namespace Curds.Persistence.Query.Queries.Tests
         }
 
         [TestMethod]
-        public void GenerateCommandBuildsFromUniversePhrase()
+        public void GenerateCommandGetsTokensFromSource()
         {
             TestObject.GenerateCommand();
 
-            throw new System.NotImplementedException();
-            //MockPhraseBuilder.Verify(builder => builder.FromUniverseTokens(MockSource.Object), Times.Once);
+            MockSource.Verify(source => source.Tokens, Times.Once);
         }
 
         [DataTestMethod]
@@ -67,9 +67,8 @@ namespace Curds.Persistence.Query.Queries.Tests
         public void GeneratedTokensAreExpected(int sourceTokensGenerated)
         {
             List<ISqlQueryToken> expectedTokens = new List<ISqlQueryToken>();
-            expectedTokens.Add(SetupPhraseBuilder(builder => builder.SelectColumnsToken(It.IsAny<IEnumerable<ISqlColumn>>())));
-            throw new System.NotImplementedException();
-            //expectedTokens.AddRange(SetupPhraseBuilder(builder => builder.FromUniverseTokens(It.IsAny<ISqlUniverse>()), sourceTokensGenerated));
+            expectedTokens.Add(MockPhraseBuilder.SetupMock(builder => builder.SelectColumnsToken(It.IsAny<IEnumerable<ISqlColumn>>())));
+            expectedTokens.AddRange(MockSource.SetupMock(source => source.Tokens, sourceTokensGenerated));
 
             TestObject.GenerateCommand();
 

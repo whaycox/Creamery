@@ -20,7 +20,7 @@ namespace Curds.Persistence.Query.Tokens.Tests
         [TestInitialize]
         public void Init()
         {
-            SetupTokenFactory(factory => factory.QualifiedObject(It.IsAny<string[]>()));
+            SetupTokenFactoryForMockToken(factory => factory.QualifiedObject(It.IsAny<string[]>()));
             MockColumn
                 .Setup(column => column.Table.Alias)
                 .Returns(TestAlias);

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq.Expressions;
 
 namespace Curds.Persistence.Query.Implementation
 {
-    using Persistence.Abstraction;
     using Abstraction;
+    using Persistence.Abstraction;
     using Queries.Implementation;
 
     internal class JoinedSqlUniverse<TDataModel, TEntityOne, TEntityTwo> : ISqlUniverse<TDataModel, TEntityOne, TEntityTwo>

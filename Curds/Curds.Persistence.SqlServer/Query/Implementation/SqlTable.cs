@@ -11,7 +11,8 @@ namespace Curds.Persistence.Query.Implementation
 
     internal class SqlTable : ISqlTable
     {
-        public IEntityModel Model { get; set; }
+        public IEntityModel Model { get; }
+
         public string Alias { get; set; }
 
         public Type EntityType => Model.EntityType;
@@ -24,6 +25,11 @@ namespace Curds.Persistence.Query.Implementation
         public ISqlColumn Identity => BuildColumn(Model.Identity);
         public IEnumerable<ISqlColumn> NonIdentities => Model.NonIdentities.Select(value => BuildColumn(value));
         public ISqlTable InsertedIdentityTable => new InsertedIdentitySqlTable(this);
+
+        public SqlTable(IEntityModel model)
+        {
+            Model = model;
+        }
 
         public ValueEntity BuildValueEntity(IEntity entity) => Model.ValueEntity(entity);
         public void AssignIdentities(ISqlQueryReader reader, IEntity entity) => Model.AssignIdentity(reader, entity);

@@ -149,6 +149,39 @@ namespace Curds.Persistence.Tests
             Assert.AreSame(TestConstantOne, rightNode.SourceExpression);
         }
 
+        private Expression TestNotEqualExpression => Expression.NotEqual(TestConstantZero, TestConstantOne);
+
+        [TestMethod]
+        public void NotEqualExpressionIsExpected()
+        {
+            Expression testExpression = TestNotEqualExpression;
+
+            IExpressionNode actual = TestObject.Build(testExpression);
+
+            NotEqualNode actualNode = actual.VerifyIsActually<NotEqualNode>();
+            Assert.AreSame(testExpression, actualNode.SourceExpression);
+        }
+
+        [TestMethod]
+        public void NotEqualExpressionHasExpectedLeft()
+        {
+            IExpressionNode actual = TestObject.Build(TestNotEqualExpression);
+
+            NotEqualNode actualNode = actual.VerifyIsActually<NotEqualNode>();
+            ConstantNode leftNode = actualNode.Left.VerifyIsActually<ConstantNode>();
+            Assert.AreSame(TestConstantZero, leftNode.SourceExpression);
+        }
+
+        [TestMethod]
+        public void NotEqualExpressionHasExpectedRight()
+        {
+            IExpressionNode actual = TestObject.Build(TestNotEqualExpression);
+
+            NotEqualNode actualNode = actual.VerifyIsActually<NotEqualNode>();
+            ConstantNode rightNode = actualNode.Right.VerifyIsActually<ConstantNode>();
+            Assert.AreSame(TestConstantOne, rightNode.SourceExpression);
+        }
+
         private Expression TestLessThanExpression => Expression.LessThan(TestConstantZero, TestConstantOne);
 
         [TestMethod]

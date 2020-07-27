@@ -22,7 +22,7 @@ namespace Curds.Persistence.Query.Tokens.Tests
         [TestInitialize]
         public void Init()
         {
-            SetupTokenFactory(factory => factory.Phrase(It.IsAny<ISqlQueryToken[]>()));
+            SetupTokenFactoryForMockToken(factory => factory.Phrase(It.IsAny<ISqlQueryToken[]>()));
 
             BuildTestObject(TestComparison);
         }
@@ -38,7 +38,7 @@ namespace Curds.Persistence.Query.Tokens.Tests
         [TestMethod]
         public void AcceptFormatVisitorGeneratesExpectedPhrase()
         {
-            SetupTokenFactory(factory => factory.Keyword(It.IsAny<SqlQueryKeyword>()));
+            SetupTokenFactoryForMockToken(factory => factory.Keyword(It.IsAny<SqlQueryKeyword>()));
 
             TestObject.AcceptFormatVisitor(MockFormatVisitor.Object);
 

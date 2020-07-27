@@ -8,7 +8,6 @@ using System.Linq.Expressions;
 
 namespace Curds.Persistence.Query.Queries.Template
 {
-    using Abstraction;
     using Persistence.Abstraction;
     using Query.Abstraction;
 
@@ -19,6 +18,7 @@ namespace Curds.Persistence.Query.Queries.Template
         protected Mock<ISqlQueryContext<ITestDataModel>> MockQueryContext = new Mock<ISqlQueryContext<ITestDataModel>>();
         protected Mock<ISqlQueryParameterBuilder> MockParameterBuilder = new Mock<ISqlQueryParameterBuilder>();
         protected Mock<ISqlQueryReader> MockQueryReader = new Mock<ISqlQueryReader>();
+        protected Mock<ISqlQueryTokenFactory> MockTokenFactory = new Mock<ISqlQueryTokenFactory>();
         protected Mock<ISqlQueryPhraseBuilder> MockPhraseBuilder = new Mock<ISqlQueryPhraseBuilder>();
         protected Mock<ISqlUniverse<ITestDataModel>> MockSource = new Mock<ISqlUniverse<ITestDataModel>>();
 
@@ -31,6 +31,9 @@ namespace Curds.Persistence.Query.Queries.Template
                 .Setup(context => context.ParameterBuilder)
                 .Returns(MockParameterBuilder.Object);
             MockQueryContext
+                .Setup(context => context.TokenFactory)
+                .Returns(MockTokenFactory.Object);
+            MockQueryContext
                 .Setup(context => context.PhraseBuilder)
                 .Returns(MockPhraseBuilder.Object);
             MockQueryContext
@@ -39,37 +42,6 @@ namespace Curds.Persistence.Query.Queries.Template
             MockParameterBuilder
                 .Setup(builder => builder.Flush())
                 .Returns(() => TestFlushedParameters.ToArray());
-        }
-
-        protected ISqlQueryToken SetupPhraseBuilder(Expression<Func<ISqlQueryPhraseBuilder, ISqlQueryToken>> phraseExpression)
-        {
-            ISqlQueryToken testToken = Mock.Of<ISqlQueryToken>();
-            MockPhraseBuilder
-                .Setup(phraseExpression)
-                .Returns(testToken);
-            return testToken;
-        }
-
-        protected List<ISqlQueryToken> SetupPhraseBuilder(Expression<Func<ISqlQueryPhraseBuilder, IEnumerable<ISqlQueryToken>>> phraseExpression, int numberOfTokens)
-        {
-            List<ISqlQueryToken> testTokens = new List<ISqlQueryToken>();
-            for (int i = 0; i < numberOfTokens; i++)
-                testTokens.Add(Mock.Of<ISqlQueryToken>());
-            MockPhraseBuilder
-                .Setup(phraseExpression)
-                .Returns(testTokens);
-            return testTokens;
-        }
-
-        protected List<ISqlQueryToken> SetupSourceTokens(int numberOfTokens)
-        {
-            List<ISqlQueryToken> testTokens = new List<ISqlQueryToken>();
-            for (int i = 0; i < numberOfTokens; i++)
-                testTokens.Add(Mock.Of<ISqlQueryToken>());
-            MockSource
-                .Setup(source => source.Tokens)
-                .Returns(testTokens);
-            return testTokens;
         }
     }
 }

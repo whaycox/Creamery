@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Curds.Persistence.Query.Implementation
 {
@@ -10,7 +9,7 @@ namespace Curds.Persistence.Query.Implementation
 
     internal class InsertedIdentitySqlTable : ISqlTable
     {
-        private SqlTable Table { get; }
+        public ISqlTable Table { get; }
 
         public Type EntityType => Table.EntityType;
         public string Schema => string.Empty;
@@ -20,10 +19,10 @@ namespace Curds.Persistence.Query.Implementation
         public List<ISqlColumn> Keys => Table.Keys;
         public ISqlColumn KeyColumn => Table.KeyColumn;
         public ISqlColumn Identity => Table.Identity;
-        public IEnumerable<ISqlColumn> NonIdentities => Table.NonIdentities;
+        public IEnumerable<ISqlColumn> NonIdentities => new List<ISqlColumn>();
         public ISqlTable InsertedIdentityTable => this;
 
-        public InsertedIdentitySqlTable(SqlTable table)
+        public InsertedIdentitySqlTable(ISqlTable table)
         {
             Table = table;
         }

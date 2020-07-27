@@ -88,44 +88,139 @@ namespace Curds.Persistence.Query.Formatters.Tests
                 .VerifyOperationCount();
         }
 
-        [TestMethod]
-        public void VisitColumnListFormatsByDefault()
+        private TokenListSqlQueryToken TestTokenListToken(int tokensToAdd)
         {
-            throw new System.NotImplementedException();
-            //ColumnListSqlQueryToken testColumnList = BuildTestColumnListToken(0);
+            for (int i = 0; i < tokensToAdd; i++)
+                TestTokens.Add(MockToken.Object);
 
-            //TestObject.VisitColumnList(testColumnList);
-
-            //TestStringBuilder
-            //    .VerifySetNewLine()
-            //    .VerifyCreateScope()
-            //    .VerifyDisposeScope()
-            //    .VerifyOperationCount();
+            return new TokenListSqlQueryToken(TestTokens);
         }
 
-        [TestMethod]
-        public void VisitColumnListWithGroupingFormatsByDefault()
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(5)]
+        [DataRow(10)]
+        [DataRow(15)]
+        [DataRow(20)]
+        public void VisitTokenListVisitsEachElement(int tokensInList)
         {
-            throw new System.NotImplementedException();
-            //ColumnListSqlQueryToken testColumnList = BuildTestColumnListToken(0);
-            //testColumnList.IncludeGrouping = true;
+            TokenListSqlQueryToken testToken = TestTokenListToken(tokensInList);
 
-            //TestObject.VisitColumnList(testColumnList);
+            TestObject.VisitTokenList(testToken);
 
-            //TestStringBuilder
-            //    .VerifySetNewLine()
-            //    .VerifyAppendLine("(")
-            //    .VerifyCreateScope()
-            //    .VerifyDisposeScope()
-            //    .VerifySetNewLine()
-            //    .VerifyAppend(")")
-            //    .VerifyOperationCount();
+            MockToken.Verify(token => token.AcceptFormatVisitor(TestObject), Times.Exactly(tokensInList));
         }
 
-        [TestMethod]
-        public void VisitColumnListNeedsRethinking()
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(5)]
+        [DataRow(10)]
+        [DataRow(15)]
+        [DataRow(20)]
+        public void VisitTokenListWithoutGroupingOrSeparatorsIsExpected(int tokensInList)
         {
-            Assert.Fail();
+            TokenListSqlQueryToken testToken = TestTokenListToken(tokensInList);
+            testToken.IncludeGrouping = false;
+            testToken.IncludeSeparators = false;
+
+            TestObject.VisitTokenList(testToken);
+
+            TestStringBuilder
+                .VerifySetNewLine()
+                .VerifyCreateScope();
+            for (int i = 0; i < tokensInList - 1; i++)
+                TestStringBuilder.VerifySetNewLine();
+            TestStringBuilder
+                .VerifyDisposeScope()
+                .VerifyOperationCount();
+        }
+
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(5)]
+        [DataRow(10)]
+        [DataRow(15)]
+        [DataRow(20)]
+        public void VisitTokenListWithoutGroupingButWithSeparatorsIsExpected(int tokensInList)
+        {
+            TokenListSqlQueryToken testToken = TestTokenListToken(tokensInList);
+            testToken.IncludeGrouping = false;
+            testToken.IncludeSeparators = true;
+
+            TestObject.VisitTokenList(testToken);
+
+            TestStringBuilder
+                .VerifySetNewLine()
+                .VerifyCreateScope();
+            for (int i = 0; i < tokensInList; i++)
+            {
+                if (tokensInList > 1)
+                    TestStringBuilder.VerifyAppend(i == 0 ? " " : ",");
+                if (i < tokensInList - 1)
+                    TestStringBuilder.VerifySetNewLine();
+            }
+            TestStringBuilder
+                .VerifyDisposeScope()
+                .VerifyOperationCount();
+        }
+
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(5)]
+        [DataRow(10)]
+        [DataRow(15)]
+        [DataRow(20)]
+        public void VisitTokenListWithGroupingButWithoutSeparatorsIsExpected(int tokensInList)
+        {
+            TokenListSqlQueryToken testToken = TestTokenListToken(tokensInList);
+            testToken.IncludeGrouping = true;
+            testToken.IncludeSeparators = false;
+
+            TestObject.VisitTokenList(testToken);
+
+            TestStringBuilder
+                .VerifySetNewLine()
+                .VerifyAppendLine("(")
+                .VerifyCreateScope();
+            for (int i = 0; i < tokensInList - 1; i++)
+                TestStringBuilder.VerifySetNewLine();
+            TestStringBuilder
+                .VerifyDisposeScope()
+                .VerifySetNewLine()
+                .VerifyAppend(")")
+                .VerifyOperationCount();
+        }
+
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(5)]
+        [DataRow(10)]
+        [DataRow(15)]
+        [DataRow(20)]
+        public void VisitTokenListWithGroupingAndSeparatorsIsExpected(int tokensInList)
+        {
+            TokenListSqlQueryToken testToken = TestTokenListToken(tokensInList);
+            testToken.IncludeGrouping = true;
+            testToken.IncludeSeparators = true;
+
+            TestObject.VisitTokenList(testToken);
+
+            TestStringBuilder
+                .VerifySetNewLine()
+                .VerifyAppendLine("(")
+                .VerifyCreateScope();
+            for (int i = 0; i < tokensInList; i++)
+            {
+                if (tokensInList > 1)
+                    TestStringBuilder.VerifyAppend(i == 0 ? " " : ",");
+                if (i < tokensInList - 1)
+                    TestStringBuilder.VerifySetNewLine();
+            }
+            TestStringBuilder
+                .VerifyDisposeScope()
+                .VerifySetNewLine()
+                .VerifyAppend(")")
+                .VerifyOperationCount();
         }
     }
 }

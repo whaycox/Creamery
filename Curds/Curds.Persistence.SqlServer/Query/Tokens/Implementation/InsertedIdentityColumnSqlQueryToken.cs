@@ -5,7 +5,7 @@
 
     public class InsertedIdentityColumnSqlQueryToken : RedirectedSqlQueryToken
     {
-        private ISqlColumn Identity { get; }
+        public ISqlColumn Identity { get; }
 
         public InsertedIdentityColumnSqlQueryToken(
             ISqlQueryTokenFactory tokenFactory,

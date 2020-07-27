@@ -5,7 +5,16 @@ namespace Curds.Persistence.Query.Domain
     public enum SqlQueryKeyword
     {
         NULL,
+        NVARCHAR,
+        BIT,
+        TINYINT,
+        SMALLINT,
         INT,
+        BIGINT,
+        DATETIME,
+        DATETIMEOFFSET,
+        DECIMAL,
+        FLOAT,
 
         CREATE,
         DROP,

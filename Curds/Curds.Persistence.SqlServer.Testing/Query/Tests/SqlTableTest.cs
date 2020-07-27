@@ -57,10 +57,7 @@ namespace Curds.Persistence.Query.Tests
                 .Setup(del => del(It.IsAny<ISqlQueryReader>()))
                 .Returns(MockEntity.Object);
 
-            TestObject = new SqlTable
-            {
-                Model = MockEntityModel.Object,
-            };
+            TestObject = new SqlTable(MockEntityModel.Object);
         }
 
         [TestMethod]
@@ -244,6 +241,15 @@ namespace Curds.Persistence.Query.Tests
                 Assert.AreSame(TestObject, actualColumn.Table);
                 Assert.AreSame(TestNonIdentities[i], actualColumn.ValueModel);
             }
+        }
+
+        [TestMethod]
+        public void InsertedIdentityTableBuildsExpectedType()
+        {
+            ISqlTable actual = TestObject.InsertedIdentityTable;
+
+            InsertedIdentitySqlTable actualTable = actual.VerifyIsActually<InsertedIdentitySqlTable>();
+            Assert.AreSame(actualTable.Table, TestObject);
         }
 
         [TestMethod]

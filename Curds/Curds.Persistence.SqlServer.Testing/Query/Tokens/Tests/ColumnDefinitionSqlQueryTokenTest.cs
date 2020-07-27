@@ -18,7 +18,7 @@ namespace Curds.Persistence.Query.Tokens.Tests
         [TestInitialize]
         public void Init()
         {
-            SetupTokenFactory(factory => factory.Phrase(It.IsAny<ISqlQueryToken[]>()));
+            SetupTokenFactoryForMockToken(factory => factory.Phrase(It.IsAny<ISqlQueryToken[]>()));
 
             TestObject = new ColumnDefinitionSqlQueryToken(
                 MockTokenFactory.Object,

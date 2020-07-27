@@ -51,7 +51,7 @@ namespace Curds.Persistence.Tests
         {
             await TestObject.Insert(TestEntity);
 
-            MockConnectionContext.Verify(context => context.Execute(MockQuery.Object), Times.Once);
+            MockQuery.Verify(context => context.Execute(), Times.Once);
         }
     }
 }

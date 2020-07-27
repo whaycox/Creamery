@@ -22,13 +22,17 @@ namespace Curds.Persistence.Model.Tests
         [TestMethod]
         public void MapsTableTypes()
         {
-            IEnumerable<Type> actual = TestObject.EntityTypes<ITestDataModel>();
+            List<Type> actual = TestObject.EntityTypes<ITestDataModel>().ToList();
 
-            Assert.AreEqual(2, actual.Count());
-            Type first = actual.First();
-            Assert.AreEqual(typeof(TestEntity), first);
-            Type second = actual.Last();
-            Assert.AreEqual(typeof(OtherEntity), second);
+            Assert.AreEqual(4, actual.Count());
+            Type testEntity = actual[0];
+            Assert.AreEqual(typeof(TestEntity), testEntity);
+            Type otherEntity = actual[1];
+            Assert.AreEqual(typeof(OtherEntity), otherEntity);
+            Type parent = actual[2];
+            Assert.AreEqual(typeof(Parent), parent);
+            Type child = actual[3];
+            Assert.AreEqual(typeof(Child), child);
         }
 
         [TestMethod]

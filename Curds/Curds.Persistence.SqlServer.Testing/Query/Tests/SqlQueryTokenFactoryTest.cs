@@ -9,7 +9,6 @@ namespace Curds.Persistence.Query.Tests
     using Domain;
     using Implementation;
     using Tokens.Implementation;
-    using Values.Domain;
 
     [TestClass]
     public class SqlQueryTokenFactoryTest
@@ -21,6 +20,7 @@ namespace Curds.Persistence.Query.Tests
 
         private Mock<ISqlTable> MockTable = new Mock<ISqlTable>();
         private Mock<ISqlColumn> MockColumn = new Mock<ISqlColumn>();
+        private Mock<ISqlJoinClause> MockJoinClause = new Mock<ISqlJoinClause>();
         private Mock<ISqlQueryParameterBuilder> MockParameterBuilder = new Mock<ISqlQueryParameterBuilder>();
 
         private SqlQueryTokenFactory TestObject = new SqlQueryTokenFactory();
@@ -45,55 +45,6 @@ namespace Curds.Persistence.Query.Tests
         }
 
         [TestMethod]
-        public void KeywordBuildsExpectedToken()
-        {
-            ISqlQueryToken actual = TestObject.Keyword(SqlQueryKeyword.INSERT);
-
-            Assert.IsInstanceOfType(actual, typeof(KeywordSqlQueryToken));
-            KeywordSqlQueryToken keyword = (KeywordSqlQueryToken)actual;
-            Assert.AreEqual(SqlQueryKeyword.INSERT, keyword.Keyword);
-        }
-
-        [DataTestMethod]
-        [DataRow(false)]
-        [DataRow(true)]
-        public void ColumnListBuildsExpectedToken(bool testIncludeDefinitions)
-        {
-            throw new System.NotImplementedException();
-            //ISqlQueryToken actual = TestObject.ColumnList(TestColumns, testIncludeDefinitions);
-
-            //Assert.IsInstanceOfType(actual, typeof(ColumnListSqlQueryToken));
-            //ColumnListSqlQueryToken columnList = (ColumnListSqlQueryToken)actual;
-            //CollectionAssert.AreEqual(TestColumns, columnList.Columns);
-            //Assert.AreEqual(testIncludeDefinitions, columnList.IncludeDefinition);
-            //Assert.IsTrue(columnList.IncludeGrouping);
-        }
-
-        [TestMethod]
-        public void SelectListBuildsExpectedToken()
-        {
-            throw new System.NotImplementedException();
-            //ISqlQueryToken actual = TestObject.SelectList(TestColumns);
-
-            //Assert.IsInstanceOfType(actual, typeof(ColumnListSqlQueryToken));
-            //ColumnListSqlQueryToken columnList = (ColumnListSqlQueryToken)actual;
-            //CollectionAssert.AreEqual(TestColumns, columnList.Columns);
-            //Assert.IsFalse(columnList.IncludeDefinition);
-            //Assert.IsFalse(columnList.IncludeGrouping);
-        }
-
-        [TestMethod]
-        public void TemporaryIdentityNameBuildsExpectedToken()
-        {
-            throw new System.NotImplementedException();
-            //ISqlQueryToken actual = TestObject.TemporaryIdentityName(MockTable.Object);
-
-            //Assert.IsInstanceOfType(actual, typeof(TemporaryIdentityTableNameSqlQueryToken));
-            //TemporaryIdentityTableNameSqlQueryToken table = (TemporaryIdentityTableNameSqlQueryToken)actual;
-            //Assert.AreEqual(TestTableName, table.BaseTableName);
-        }
-
-        [TestMethod]
         public void PhraseBuildsExpectedToken()
         {
             ISqlQueryToken tokenOne = Mock.Of<ISqlQueryToken>();
@@ -109,30 +60,32 @@ namespace Curds.Persistence.Query.Tests
         }
 
         [TestMethod]
-        public void QualifiedObjectNameWithTableBuildsExpectedToken()
+        public void KeywordBuildsExpectedToken()
         {
-            throw new System.NotImplementedException();
-            //ISqlQueryToken actual = TestObject.TableName(MockTable.Object);
+            ISqlQueryToken actual = TestObject.Keyword(SqlQueryKeyword.INSERT);
 
-            //Assert.IsInstanceOfType(actual, typeof(QualifiedObjectSqlQueryToken));
-            //QualifiedObjectSqlQueryToken qualifiedName = (QualifiedObjectSqlQueryToken)actual;
-            //Assert.AreEqual(2, qualifiedName.Names.Count);
-            //Assert.AreEqual(TestSchema, qualifiedName.Names[0].Name);
-            //Assert.AreEqual(TestTableName, qualifiedName.Names[1].Name);
+            KeywordSqlQueryToken keyword = actual.VerifyIsActually<KeywordSqlQueryToken>();
+            Assert.AreEqual(SqlQueryKeyword.INSERT, keyword.Keyword);
         }
 
         [TestMethod]
-        public void QualifiedObjectNameWithColumnBuildsExpectedToken()
+        public void ObjectNameBuildsExpectedToken()
         {
-            throw new System.NotImplementedException();
-            //ISqlQueryToken actual = TestObject.ColumnName(MockColumn.Object);
+            ISqlQueryToken actual = TestObject.ObjectName(TestTableName);
 
-            //Assert.IsInstanceOfType(actual, typeof(QualifiedObjectSqlQueryToken));
-            //QualifiedObjectSqlQueryToken qualifiedName = (QualifiedObjectSqlQueryToken)actual;
-            //Assert.AreEqual(3, qualifiedName.Names.Count);
-            //Assert.AreEqual(TestSchema, qualifiedName.Names[0].Name);
-            //Assert.AreEqual(TestTableName, qualifiedName.Names[1].Name);
-            //Assert.AreEqual(TestColumnName, qualifiedName.Names[2].Name);
+            ObjectNameSqlQueryToken objectName = actual.VerifyIsActually<ObjectNameSqlQueryToken>();
+            Assert.AreEqual(TestTableName, objectName.Name);
+        }
+
+        [TestMethod]
+        public void QualifiedObjectBuildsExpectedToken()
+        {
+            ISqlQueryToken actual = TestObject.QualifiedObject(
+                TestTableName,
+                TestColumnName);
+
+            QualifiedObjectSqlQueryToken qualifiedObject = actual.VerifyIsActually<QualifiedObjectSqlQueryToken>();
+            CollectionAssert.AreEqual(new[] { TestTableName, TestColumnName }, qualifiedObject.Names);
         }
 
         [TestMethod]
@@ -169,44 +122,125 @@ namespace Curds.Persistence.Query.Tests
         }
 
         [TestMethod]
-        public void InsertedIdentityNameBuildsExpectedToken()
+        public void ValueEntityBuildsExpectedToken()
         {
-            throw new System.NotImplementedException();
-            //MockTable
-            //    .Setup(model => model.Identity)
-            //    .Returns(MockColumn.Object);
+            ValueEntity testValueEntity = new ValueEntity();
 
-            //ISqlQueryToken actual = TestObject.InsertedIdentityName(MockTable.Object);
+            ISqlQueryToken actual = TestObject.ValueEntity(MockParameterBuilder.Object, testValueEntity);
 
-            //Assert.IsInstanceOfType(actual, typeof(InsertedIdentityColumnSqlQueryToken));
-            //InsertedIdentityColumnSqlQueryToken inserted = (InsertedIdentityColumnSqlQueryToken)actual;
-            //Assert.AreEqual(2, inserted.Names.Count);
-            //Assert.AreEqual(nameof(SqlQueryKeyword.inserted), inserted.Names[0].Name);
-            //Assert.AreEqual(TestColumnName, inserted.Names[1].Name);
+            Assert.IsInstanceOfType(actual, typeof(ValueEntitySqlQueryToken));
+        }
+
+        [DataTestMethod]
+        [DataRow(false)]
+        [DataRow(true)]
+        public void GroupedListBuildsExpectedToken(bool testSeparators)
+        {
+            ISqlQueryToken tokenOne = Mock.Of<ISqlQueryToken>();
+            ISqlQueryToken tokenTwo = Mock.Of<ISqlQueryToken>();
+            ISqlQueryToken tokenThree = Mock.Of<ISqlQueryToken>();
+            ISqlQueryToken[] testTokens = new[] { tokenOne, tokenTwo, tokenThree };
+
+            ISqlQueryToken actual = TestObject.GroupedList(testTokens, testSeparators);
+
+            TokenListSqlQueryToken tokenListToken = actual.VerifyIsActually<TokenListSqlQueryToken>();
+            Assert.IsTrue(tokenListToken.IncludeGrouping);
+            Assert.AreEqual(testSeparators, tokenListToken.IncludeSeparators);
+        }
+
+        [DataTestMethod]
+        [DataRow(false)]
+        [DataRow(true)]
+        public void UngroupedListBuildsExpectedToken(bool testSeparators)
+        {
+            ISqlQueryToken tokenOne = Mock.Of<ISqlQueryToken>();
+            ISqlQueryToken tokenTwo = Mock.Of<ISqlQueryToken>();
+            ISqlQueryToken tokenThree = Mock.Of<ISqlQueryToken>();
+            ISqlQueryToken[] testTokens = new[] { tokenOne, tokenTwo, tokenThree };
+
+            ISqlQueryToken actual = TestObject.UngroupedList(testTokens, testSeparators);
+
+            TokenListSqlQueryToken tokenListToken = actual.VerifyIsActually<TokenListSqlQueryToken>();
+            Assert.IsFalse(tokenListToken.IncludeGrouping);
+            Assert.AreEqual(testSeparators, tokenListToken.IncludeSeparators);
         }
 
         [TestMethod]
-        public void ValueEntitiesBuildsExpectedToken()
+        public void TableDefinitionBuildsExpectedToken()
         {
-            throw new System.NotImplementedException();
-            //int testInt = 20;
-            //Value testValue = new IntValue { Name = nameof(testValue), Int = testInt };
-            //ValueEntity testEntity = new ValueEntity();
-            //testEntity.Values.Add(testValue);
-            //var testEntities = new ValueEntity[] { testEntity };
-            //MockParameterBuilder
-            //    .Setup(builder => builder.RegisterNewParamater(nameof(testValue), testInt))
-            //    .Returns(nameof(ValueEntitiesBuildsExpectedToken));
+            ISqlQueryToken actual = TestObject.TableDefinition(MockTable.Object);
 
-            //ISqlQueryToken actual = TestObject.ValueEntities(MockParameterBuilder.Object, testEntities);
+            Assert.IsInstanceOfType(actual, typeof(TableDefinitionSqlQueryToken));
+        }
 
-            //Assert.IsInstanceOfType(actual, typeof(ValueEntitiesSqlQueryToken));
-            //ValueEntitiesSqlQueryToken valueEntities = (ValueEntitiesSqlQueryToken)actual;
-            //Assert.AreEqual(1, valueEntities.Entities.Count);
-            //ValueEntitySqlQueryToken valueEntity = valueEntities.Entities[0];
-            //Assert.AreEqual(1, valueEntity.Values.Count);
-            //ParameterSqlQueryToken value = valueEntity.Values[0];
-            //Assert.AreEqual(nameof(ValueEntitiesBuildsExpectedToken), value.Name);
+        [DataTestMethod]
+        [DataRow(false, false)]
+        [DataRow(false, true)]
+        [DataRow(true, false)]
+        [DataRow(true, true)]
+        public void TableNameBuildsExpectedToken(bool testAlias, bool testSqlName)
+        {
+            ISqlQueryToken actual = TestObject.TableName(MockTable.Object, testAlias, testSqlName);
+
+            TableNameSqlQueryToken tableName = actual.VerifyIsActually<TableNameSqlQueryToken>();
+            Assert.AreEqual(testAlias, tableName.UseAlias);
+            Assert.AreEqual(testSqlName, tableName.UseSqlName);
+        }
+
+        [TestMethod]
+        public void ColumnDefinitionBuildsExpectedToken()
+        {
+            ISqlQueryToken actual = TestObject.ColumnDefinition(MockColumn.Object);
+
+            Assert.IsInstanceOfType(actual, typeof(ColumnDefinitionSqlQueryToken));
+        }
+
+        [DataTestMethod]
+        [DataRow(false)]
+        [DataRow(true)]
+        public void ColumnNameBuildsExpectedToken(bool testAlias)
+        {
+            ISqlQueryToken actual = TestObject.ColumnName(MockColumn.Object, testAlias);
+
+            ColumnNameSqlQueryToken columnName = actual.VerifyIsActually<ColumnNameSqlQueryToken>();
+            Assert.AreEqual(testAlias, columnName.UseAlias);
+        }
+
+        [TestMethod]
+        public void DbTypeBuildsExpectedToken()
+        {
+            ISqlQueryToken actual = TestObject.DbType(MockColumn.Object);
+
+            Assert.IsInstanceOfType(actual, typeof(SqlDbTypeSqlQueryToken));
+        }
+
+        [TestMethod]
+        public void InsertedIdentityNameBuildsExpectedToken()
+        {
+            MockTable
+                .Setup(model => model.Identity)
+                .Returns(MockColumn.Object);
+
+            ISqlQueryToken actual = TestObject.InsertedIdentityName(MockTable.Object);
+
+            InsertedIdentityColumnSqlQueryToken inserted = actual.VerifyIsActually<InsertedIdentityColumnSqlQueryToken>();
+            Assert.AreSame(MockColumn.Object, inserted.Identity);
+        }
+
+        [DataTestMethod]
+        [DataRow(1)]
+        [DataRow(5)]
+        [DataRow(7)]
+        [DataRow(10)]
+        public void JoinClauseBuildsExpectedToken(int joinClauseTokens)
+        {
+            List<ISqlQueryToken> testJoinClauseTokens = MockJoinClause.SetupMock(joinClause => joinClause.Tokens, joinClauseTokens);
+
+            ISqlQueryToken actual = TestObject.JoinClause(MockJoinClause.Object);
+
+            TokenListSqlQueryToken tokenListToken = actual.VerifyIsActually<TokenListSqlQueryToken>();
+            Assert.IsFalse(tokenListToken.IncludeSeparators);
+            CollectionAssert.AreEqual(testJoinClauseTokens, tokenListToken.Tokens);
         }
 
         [DataTestMethod]
@@ -239,8 +273,7 @@ namespace Curds.Persistence.Query.Tests
             ISqlQueryToken actual = TestObject.BooleanComparison(testComparison, testLeftToken, testRightToken);
 
             BooleanComparisonSqlQueryToken actualToken = actual.VerifyIsActually<BooleanComparisonSqlQueryToken>();
-            ConstantSqlQueryToken operationToken = actualToken.Operation.VerifyIsActually<ConstantSqlQueryToken>();
-            Assert.AreEqual(" >= ", operationToken.Literal);
+            Assert.AreEqual(testComparison, actualToken.Operation);
             Assert.AreSame(testLeftToken, actualToken.Left);
             Assert.AreSame(testRightToken, actualToken.Right);
         }
@@ -255,28 +288,9 @@ namespace Curds.Persistence.Query.Tests
             ISqlQueryToken actual = TestObject.ArithmeticOperation(testOperation, testLeftToken, testRightToken);
 
             ArithmeticOperationSqlQueryToken actualToken = actual.VerifyIsActually<ArithmeticOperationSqlQueryToken>();
-            ConstantSqlQueryToken operationToken = actualToken.Operation.VerifyIsActually<ConstantSqlQueryToken>();
-            Assert.AreEqual(" % ", operationToken.Literal);
+            Assert.AreEqual(testOperation, actualToken.Operation);
             Assert.AreSame(testLeftToken, actualToken.Left);
             Assert.AreSame(testRightToken, actualToken.Right);
-        }
-
-        [DataTestMethod]
-        [DataRow(1)]
-        [DataRow(5)]
-        [DataRow(10)]
-        [DataRow(15)]
-        public void SetValuesBuildsExpectedToken(int valuesToSet)
-        {
-            throw new System.NotImplementedException();
-            //List<ISqlQueryToken> testValueTokens = new List<ISqlQueryToken>();
-            //for (int i = 0; i < valuesToSet; i++)
-            //    testValueTokens.Add(Mock.Of<ISqlQueryToken>());
-
-            //ISqlQueryToken actual = TestObject.SetValues(testValueTokens);
-
-            //SetValuesSqlQueryToken actualToken = actual.VerifyIsActually<SetValuesSqlQueryToken>();
-            //CollectionAssert.AreEqual(testValueTokens, actualToken.SetValueTokens);
         }
     }
 }

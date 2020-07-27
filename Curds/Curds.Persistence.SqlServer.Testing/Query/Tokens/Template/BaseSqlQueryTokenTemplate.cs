@@ -12,7 +12,7 @@ namespace Curds.Persistence.Query.Tokens.Template
         protected Mock<ISqlQueryToken> MockToken = new Mock<ISqlQueryToken>();
         protected Mock<ISqlQueryFormatVisitor> MockFormatVisitor = new Mock<ISqlQueryFormatVisitor>();
 
-        protected void SetupTokenFactory(Expression<Func<ISqlQueryTokenFactory, ISqlQueryToken>> setupExpression)
+        protected void SetupTokenFactoryForMockToken(Expression<Func<ISqlQueryTokenFactory, ISqlQueryToken>> setupExpression)
         {
             MockTokenFactory
                 .Setup(setupExpression)

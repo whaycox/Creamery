@@ -22,7 +22,7 @@ namespace Curds.Persistence.Query.Tokens.Tests
         [TestInitialize]
         public void Init()
         {
-            SetupTokenFactory(factory => factory.GroupedList(It.IsAny<IEnumerable<ISqlQueryToken>>(), It.IsAny<bool>()));
+            SetupTokenFactoryForMockToken(factory => factory.GroupedList(It.IsAny<IEnumerable<ISqlQueryToken>>(), It.IsAny<bool>()));
 
             BuildTestObject(TestCombination);
         }
@@ -81,7 +81,7 @@ namespace Curds.Persistence.Query.Tokens.Tests
         {
             AddNElements(elementsToAdd);
             BuildTestObject(TestCombination);
-            SetupTokenFactory(factory => factory.Phrase(It.IsAny<ISqlQueryToken[]>()));
+            SetupTokenFactoryForMockToken(factory => factory.Phrase(It.IsAny<ISqlQueryToken[]>()));
             List<ISqlQueryToken> expectedPhrases = new List<ISqlQueryToken>();
             for (int i = 0; i < elementsToAdd; i++)
                 expectedPhrases.Add(MockToken.Object);
@@ -119,7 +119,7 @@ namespace Curds.Persistence.Query.Tokens.Tests
             ISqlQueryToken keywordToken = MockTokenFactory.SetupMock(factory => factory.Keyword(It.IsAny<SqlQueryKeyword>()));
             AddNElements(elementsToAdd);
             BuildTestObject(TestCombination);
-            SetupTokenFactory(factory => factory.Phrase(
+            SetupTokenFactoryForMockToken(factory => factory.Phrase(
                 It.Is<ConstantSqlQueryToken>(token => token.Literal == "("),
                 It.IsAny<ISqlQueryToken>(),
                 It.Is<ConstantSqlQueryToken>(token => token.Literal == ")")));
