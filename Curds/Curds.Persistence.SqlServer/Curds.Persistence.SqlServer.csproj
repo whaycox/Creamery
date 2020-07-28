@@ -9,7 +9,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Willie Haycox</Authors>
     <Product>Curds.Persistence.SqlServer</Product>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Description>A generic SqlServer data access library.</Description>

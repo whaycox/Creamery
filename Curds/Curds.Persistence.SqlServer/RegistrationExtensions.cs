@@ -10,9 +10,9 @@ namespace Curds.Persistence
     using Model.Configuration.Implementation;
     using Model.Implementation;
     using Query.Abstraction;
+    using Query.AliasStrategies.Implementation;
     using Query.Formatters.Implementation;
     using Query.Implementation;
-    using Query.AliasStrategies.Implementation;
 
     public static class RegistrationExtensions
     {
@@ -22,7 +22,9 @@ namespace Curds.Persistence
             .AddModelConstruction()
             .AddQueryConstruction()
             .AddScoped<ISqlConnectionContext, SqlConnectionContext>()
+            .AddTransient<IDatabase, SqlDatabase>()
             .AddTransient(typeof(IRepository<,>), typeof(SqlRepository<,>))
+            .AddTransient(typeof(ISimpleRepository<,>), typeof(SimpleSqlRepository<,>))
             .ConfigureEntity<SimpleEntity>()
                 .HasKey(entity => entity.ID)
                 .ConfigureColumn(column => column.ID)
