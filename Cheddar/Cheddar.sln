@@ -5,7 +5,13 @@ VisualStudioVersion = 16.0.30225.117
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cheddar.UI.Web", "Cheddar.UI.Web\Cheddar.UI.Web.csproj", "{AC06F999-C03F-4D2A-9203-FC5728716528}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cheddar.Shared", "Cheddar.Shared\Cheddar.Shared.csproj", "{1AF5150E-66F4-4CD8-926E-595C0D927BD8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cheddar.Server", "Cheddar.Server\Cheddar.Server.csproj", "{27D9A041-5B68-4DBD-840E-2D7BCA262940}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cheddar.Application", "Cheddar.Application\Cheddar.Application.csproj", "{0C48062A-C211-4706-9B7F-18D65E70E18B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cheddar.Core", "Cheddar.Core\Cheddar.Core.csproj", "{C64F0172-740E-4E62-863B-F443D6A19981}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cheddar.ViewModel", "Cheddar.ViewModel\Cheddar.ViewModel.csproj", "{C2F53A14-0494-4397-A36F-A0B70F945841}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +23,22 @@ Global
 		{AC06F999-C03F-4D2A-9203-FC5728716528}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC06F999-C03F-4D2A-9203-FC5728716528}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC06F999-C03F-4D2A-9203-FC5728716528}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1AF5150E-66F4-4CD8-926E-595C0D927BD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1AF5150E-66F4-4CD8-926E-595C0D927BD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1AF5150E-66F4-4CD8-926E-595C0D927BD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1AF5150E-66F4-4CD8-926E-595C0D927BD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27D9A041-5B68-4DBD-840E-2D7BCA262940}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27D9A041-5B68-4DBD-840E-2D7BCA262940}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27D9A041-5B68-4DBD-840E-2D7BCA262940}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27D9A041-5B68-4DBD-840E-2D7BCA262940}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C48062A-C211-4706-9B7F-18D65E70E18B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C48062A-C211-4706-9B7F-18D65E70E18B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C48062A-C211-4706-9B7F-18D65E70E18B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C48062A-C211-4706-9B7F-18D65E70E18B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C64F0172-740E-4E62-863B-F443D6A19981}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C64F0172-740E-4E62-863B-F443D6A19981}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C64F0172-740E-4E62-863B-F443D6A19981}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C64F0172-740E-4E62-863B-F443D6A19981}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2F53A14-0494-4397-A36F-A0B70F945841}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2F53A14-0494-4397-A36F-A0B70F945841}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2F53A14-0494-4397-A36F-A0B70F945841}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2F53A14-0494-4397-A36F-A0B70F945841}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

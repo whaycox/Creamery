@@ -1,4 +1,7 @@
-﻿<EditForm Model="AddingOrganization" class="cheddar-form" OnValidSubmit="SubmitAddOrganization">
+﻿@inject HttpClient Http
+@inject NavigationManager Navigator
+
+<EditForm Model="AddingOrganization" class="cheddar-form" OnValidSubmit="SubmitAddOrganization">
     <DataAnnotationsValidator />
     <div class="cheddar-input">
         <InputText id="@NameFieldName" @bind-Value="AddingOrganization.Name" />
@@ -9,12 +12,24 @@
 </EditForm>
 
 @code {
-    private string NameFieldName => nameof(Organization.Name);
+    private string NameFieldName => nameof(OrganizationViewModel.Name);
 
-    private Organization AddingOrganization { get; } = new Organization();
+    private OrganizationViewModel AddingOrganization { get; } = new OrganizationViewModel();
 
     private async Task SubmitAddOrganization()
     {
-        throw new NotImplementedException();
+        HttpResponseMessage response = await Http.PostAsJsonAsync("Organization/Add", AddingOrganization);
+        if (response.IsSuccessStatusCode)
+        {
+            int newID = await response.Content.ReadFromJsonAsync<int>();
+            Navigator.NavigateTo($"Organization/{newID}");
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
+
+
+        Console.WriteLine("Hi");
     }
 }

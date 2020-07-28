@@ -6,6 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Shared\Input\**" />
+    <Content Remove="Shared\Input\**" />
+    <EmbeddedResource Remove="Shared\Input\**" />
+    <None Remove="Shared\Input\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="Styles\app.css" />
     <Content Include="Styles\layout.css" />
     <Content Include="Styles\navigation.css" />
@@ -21,11 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Cheddar.Shared\Cheddar.Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Shared\Input\" />
+    <ProjectReference Include="..\Cheddar.ViewModel\Cheddar.ViewModel.csproj" />
   </ItemGroup>
 
 </Project>
