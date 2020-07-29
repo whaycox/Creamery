@@ -1,0 +1,48 @@
+﻿@typeparam TViewModel
+
+<div class="cheddar-list">
+    <div class="list">
+        @if (ListItems == null)
+        {
+            <div>Loading...</div>
+        }
+        else
+        {
+            foreach (TViewModel item in ListItems)
+            {
+                <div class="list-item" @onclick="async () => CurrentlyDisplayed = await FetchForDisplay(item)">
+                    @Summarize(item)
+                </div>
+            }
+        }
+    </div>
+    @if (CurrentlyDisplayed != null)
+    {
+        <div class="display">
+            @Display(CurrentlyDisplayed)
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment<TViewModel> Create { get; set; }
+
+    [Parameter]
+    public RenderFragment<TViewModel> Summarize { get; set; }
+
+    [Parameter]
+    public RenderFragment<TViewModel> Display { get; set; }
+
+    [Parameter]
+    public Func<TViewModel> NewViewModel { get; set; }
+
+    [Parameter]
+    public Func<TViewModel, Task<TViewModel>> FetchForDisplay { get; set; } = ReturnSelf;
+    private static Task<TViewModel> ReturnSelf(TViewModel selected) => Task.FromResult(selected);
+
+    [Parameter]
+    public IReadOnlyList<TViewModel> ListItems { get; set; }
+
+    private TViewModel CurrentlyDisplayed { get; set; }
+}

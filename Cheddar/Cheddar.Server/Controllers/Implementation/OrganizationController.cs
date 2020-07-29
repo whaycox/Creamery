@@ -8,7 +8,8 @@ using MediatR;
 namespace Cheddar.Server.Controllers.Implementation
 {
     using ViewModel.Domain;
-    using Application.Commands.AddOrganization.Domain;
+    using Application.Organization.Commands.Add.Domain;
+    using Application.Organization.Queries.FetchAll.Domain;
 
     [ApiController]
     [Route("[controller]/[action]")]
@@ -21,6 +22,14 @@ namespace Cheddar.Server.Controllers.Implementation
             Mediator = mediator;
         }
 
+        [HttpGet]
+        public Task<IEnumerable<OrganizationViewModel>> FetchAll()
+        {
+            FetchAllOrganizationsQuery query = new FetchAllOrganizationsQuery();
+            return Mediator.Send(query);
+        }
+
+        [HttpPost]
         public async Task<int> Add(OrganizationViewModel viewModel)
         {
             AddOrganizationCommand command = new AddOrganizationCommand

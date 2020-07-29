@@ -1,0 +1,24 @@
+﻿.cheddar-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas: 'list';
+    place-items: center;
+}
+
+.cheddar-list > .list {
+    grid-area: list;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+    .cheddar-list > .list > .list-item {
+        margin: 10px;
+    }
+
+.cheddar-list .display {
+    grid-area: list;
+    z-index: 2;
+}

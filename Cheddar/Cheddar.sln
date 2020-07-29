@@ -7,11 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cheddar.UI.Web", "Cheddar.U
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cheddar.Server", "Cheddar.Server\Cheddar.Server.csproj", "{27D9A041-5B68-4DBD-840E-2D7BCA262940}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cheddar.Application", "Cheddar.Application\Cheddar.Application.csproj", "{0C48062A-C211-4706-9B7F-18D65E70E18B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cheddar.Application", "Cheddar.Application\Cheddar.Application.csproj", "{0C48062A-C211-4706-9B7F-18D65E70E18B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cheddar.Core", "Cheddar.Core\Cheddar.Core.csproj", "{C64F0172-740E-4E62-863B-F443D6A19981}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cheddar.Core", "Cheddar.Core\Cheddar.Core.csproj", "{C64F0172-740E-4E62-863B-F443D6A19981}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cheddar.ViewModel", "Cheddar.ViewModel\Cheddar.ViewModel.csproj", "{C2F53A14-0494-4397-A36F-A0B70F945841}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cheddar.ViewModel", "Cheddar.ViewModel\Cheddar.ViewModel.csproj", "{C2F53A14-0494-4397-A36F-A0B70F945841}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

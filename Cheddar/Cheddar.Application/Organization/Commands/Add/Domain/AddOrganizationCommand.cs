@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Cheddar.Application.Commands.AddOrganization.Domain
+namespace Cheddar.Application.Organization.Commands.Add.Domain
 {
     public class AddOrganizationCommand : IRequest<int>
     {

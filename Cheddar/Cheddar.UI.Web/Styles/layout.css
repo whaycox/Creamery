@@ -12,7 +12,7 @@
 app > header {
     grid-area: header;
     z-index: 3;
-    background-color: var(--main-background);
+    background-color: var(--alt-background);
     display: grid;
     place-items: center;
     grid-template-columns: 75px 1fr;
@@ -23,7 +23,7 @@ app > header {
     }
 
     app > header .user-name {
-        color: var(--main-text);
+        color: var(--alt-text);
         justify-self: end;
         padding-right: 15px;
     }
@@ -40,8 +40,8 @@ app > main {
 
 app > footer {
     grid-area: footer;
-    color: var(--main-text);
-    background-color: var(--main-background);
+    color: var(--alt-text);
+    background-color: var(--alt-background);
     background-image: linear-gradient(var(--dark), var(--dark));
     display: flex;
     flex-direction : row;

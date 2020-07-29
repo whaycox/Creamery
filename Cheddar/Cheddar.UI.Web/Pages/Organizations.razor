@@ -1,0 +1,20 @@
+﻿@page "/Organizations"
+@inject HttpClient Http
+
+<ListDisplay ListItems="Items" >
+    <Summarize><SummarizeOrganization ViewModel="context" /></Summarize>
+    <Display><DisplayOrganization ViewModel="context" /></Display>
+</ListDisplay>
+
+@code {
+    private Func<OrganizationViewModel> NewViewModel = () => new OrganizationViewModel();
+
+    private IReadOnlyList<OrganizationViewModel> Items { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Items = (await Http.GetFromJsonAsync<IEnumerable<OrganizationViewModel>>("Organization/FetchAll"))
+            .ToList()
+            .AsReadOnly();
+    }
+}

@@ -1,10 +1,9 @@
 ﻿:root {
-    --main-background: rgb(44, 8, 133);
-    --alt-background: rgb(201, 251, 53);
+    --main-background: white;
+    --main-text: black;
+    --alt-background: rgb(55, 55, 55);
+    --alt-text: white;
     --accent: rgb(233, 156, 16);
-    --main-text: rgb(255, 255, 255);
-    --accent-text: rgb(133, 255, 10);
-    --body-text: black;
     --transparent: rgba(0, 0, 0, 0);
     --dark: rgba(0, 0, 0, 0.15);
     --darker: rgba(0, 0, 0, 0.3);
@@ -28,16 +27,7 @@
 body {
     margin: 0px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: var(--body-text);
-}
-
-a {
     color: var(--main-text);
-    text-decoration: none;
-}
-
-a.active {
-    color: var(--accent-text);
 }
 
 button {
@@ -47,7 +37,7 @@ button {
     padding: 5px;
     color: var(--main-background);
     background-color: var(--alt-background);
-    background-image: linear-gradient(var(--transparent), var(--dark));
+    background-image: linear-gradient(var(--light), var(--dark));
     border: solid 1.5px var(--main-text);
     border-radius: 5px;
     cursor: pointer;
@@ -62,36 +52,6 @@ button {
 empty-space {
     flex-grow: 1;
 }
-
-.cheddar-modal {
-    position: relative;
-    color: var(--main-text);
-    background-color: var(--main-background);
-    background-image: linear-gradient(var(--light), var(--light));
-    border: solid 2px var(--accent-text);
-}
-
-    .cheddar-modal .blazored-modal-header {
-        padding: 0px 0px 0px 5px;
-    }
-
-    .cheddar-modal .blazored-modal-close {
-        position: absolute;
-        padding: 1px 7px 0px 7px;
-        right: 8px;
-        top: 8px;
-        color: var(--main-background);
-        background-color: var(--alt-background);
-        border: solid 2px var(--main-background);
-        border-radius: 50%;
-    }
-
-    .cheddar-modal .blazored-modal-content {
-        margin: 10px;
-        border: solid 1.5px var(--accent-text);
-        border-radius: 5px;
-        padding: 5px;
-    }
 
 #blazor-error-ui {
     display: none;

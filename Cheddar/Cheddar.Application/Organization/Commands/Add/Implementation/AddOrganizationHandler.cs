@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Cheddar.Application.Commands.AddOrganization.Implementation
+namespace Cheddar.Application.Organization.Commands.Add.Implementation
 {
     using Cheddar.Domain;
     using Domain;
