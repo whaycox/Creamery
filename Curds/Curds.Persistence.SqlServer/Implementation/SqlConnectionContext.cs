@@ -3,6 +3,8 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using System.Text;
 
 namespace Curds.Persistence.Implementation
 {
@@ -12,6 +14,7 @@ namespace Curds.Persistence.Implementation
 
     internal class SqlConnectionContext : ISqlConnectionContext
     {
+        private ILogger Logger { get; }
         private ISqlConnectionStringFactory ConnectionStringFactory { get; }
         private SqlConnectionInformation ConnectionInformation { get; }
         private ISqlQueryReaderFactory QueryReaderFactory { get; }
@@ -20,10 +23,12 @@ namespace Curds.Persistence.Implementation
         public SqlTransaction Transaction { get; set; }
 
         public SqlConnectionContext(
+            ILogger<SqlConnectionContext> logger,
             ISqlConnectionStringFactory connectionStringFactory,
             IOptions<SqlConnectionInformation> connectionInformation,
             ISqlQueryReaderFactory queryReaderFactory)
         {
+            Logger = logger;
             ConnectionStringFactory = connectionStringFactory;
             ConnectionInformation = connectionInformation.Value;
             QueryReaderFactory = queryReaderFactory;
@@ -34,12 +39,16 @@ namespace Curds.Persistence.Implementation
             if (Connection == null)
                 Connection = new SqlConnection(ConnectionStringFactory.Build(ConnectionInformation));
             if (Connection.State != ConnectionState.Open)
+            {
+                Logger?.LogInformation("Opening a connection to Sql Server");
                 await Connection.OpenAsync();
+            }
         }
 
         public async Task BeginTransaction()
         {
             await CheckConnectionIsOpen();
+            Logger?.LogInformation("Beginning a transaction");
             Transaction = Connection.BeginTransaction();
         }
 
@@ -47,6 +56,7 @@ namespace Curds.Persistence.Implementation
         {
             if (Transaction == null)
                 throw new InvalidOperationException("Must begin a transaction before rolling it back");
+            Logger?.LogInformation("Rolling back a transaction");
             Transaction.Rollback();
             Transaction = null;
         }
@@ -68,7 +78,23 @@ namespace Curds.Persistence.Implementation
             if (Transaction != null)
                 command.Transaction = Transaction;
 
+            Logger?.LogInformation(LogSqlCommand(command));
             return command;
+        }
+        private string LogSqlCommand(SqlCommand command)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine($"Executing Sql Command:{Environment.NewLine}");
+            stringBuilder.AppendLine(command.CommandText);
+
+            if (command.Parameters.Count > 0)
+            {
+                stringBuilder.AppendLine($"With parameters:{Environment.NewLine}");
+                for (int i = 0; i < command.Parameters.Count; i++)
+                    stringBuilder.AppendLine($"{command.Parameters[i].ParameterName}: {command.Parameters[i].Value}");
+            }
+
+            return stringBuilder.ToString();
         }
 
         public async Task Execute(ISqlQuery query)
