@@ -53,6 +53,11 @@ empty-space {
     flex-grow: 1;
 }
 
+.title-bar {
+    background-color: var(--alt-background);
+    background-image: linear-gradient(var(--lightest), var(--lightest));
+}
+
 #blazor-error-ui {
     display: none;
     position: absolute;

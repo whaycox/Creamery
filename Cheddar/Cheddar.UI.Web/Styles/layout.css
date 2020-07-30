@@ -36,6 +36,7 @@ app > nav {
 app > main {
     grid-area: body;
     z-index: 1;
+    overflow-y: auto;
 }
 
 app > footer {

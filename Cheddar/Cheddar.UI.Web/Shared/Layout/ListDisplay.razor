@@ -18,8 +18,16 @@
     </div>
     @if (CurrentlyDisplayed != null)
     {
-        <div class="display">
-            @Display(CurrentlyDisplayed)
+        <div class="selected">
+            <div class="header title-bar">
+                <empty-space />
+                <button class="close" @onclick="() => CurrentlyDisplayed = default">
+                    <Glyph IGlyph="CloseGlyph" />
+                </button>
+            </div>
+            <div class="display">
+                @Display(CurrentlyDisplayed)
+            </div>
         </div>
     }
 </div>
@@ -45,4 +53,6 @@
     public IReadOnlyList<TViewModel> ListItems { get; set; }
 
     private TViewModel CurrentlyDisplayed { get; set; }
+
+    private IGlyph CloseGlyph { get; } = MaterialIconGlyph.Create("close");
 }
