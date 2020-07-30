@@ -1,11 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System;
 
 namespace Curds.Persistence.Template
 {
-    using Domain;
     using Abstraction;
+    using Domain;
     using Implementation;
 
     public abstract class SqlIntegrationTemplate : SqlTemplate
@@ -34,7 +36,8 @@ namespace Curds.Persistence.Template
         {
             TestServiceCollection
                 .AddCurdsPersistence()
-                .AddTransient<IChildRepository, ChildRepository>();
+                .AddTransient<IChildRepository, ChildRepository>()
+                .AddSingleton(Mock.Of<ILogger<SqlConnectionContext>>());
         }
 
         protected void ConfigureCustomTestEntity()

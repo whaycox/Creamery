@@ -4,6 +4,7 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Curds.Persistence.Tests
 {
@@ -19,6 +20,7 @@ namespace Curds.Persistence.Tests
         private SqlCommand TestCommand = new SqlCommand("SELECT 1");
         private SqlCommand TestInsertCommand = new SqlCommand("INSERT dbo.TestEntity VALUES ('Test') SELECT SCOPE_IDENTITY()");
 
+        private Mock<ILogger<SqlConnectionContext>> MockLogger = new Mock<ILogger<SqlConnectionContext>>();
         private Mock<ISqlQueryReaderFactory> MockQueryReaderFactory = new Mock<ISqlQueryReaderFactory>();
         private Mock<ISqlQueryReader> MockQueryReader = new Mock<ISqlQueryReader>();
         private Mock<ISqlQuery> MockQuery = new Mock<ISqlQuery>();
@@ -50,6 +52,7 @@ namespace Curds.Persistence.Tests
                 .Returns(TestCommand);
 
             TestObject = new SqlConnectionContext(
+                MockLogger.Object,
                 MockConnectionStringFactory.Object,
                 MockConnectionOptions.Object,
                 MockQueryReaderFactory.Object);
