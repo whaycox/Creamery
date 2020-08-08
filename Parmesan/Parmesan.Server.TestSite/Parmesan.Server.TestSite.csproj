@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Parmesan.Server\Parmesan.Server.csproj" />
+    <ProjectReference Include="..\Parmesan.UI.Web.TestSite\Parmesan.UI.Web.TestSite.csproj" />
+  </ItemGroup>
+
+</Project>
