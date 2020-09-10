@@ -91,11 +91,18 @@ namespace Curds.Persistence.Model.Implementation
             return entityModel;
         }
 
-        private ValueModel BuildDefaultColumn(PropertyInfo propertyInfo) => new ValueModel
+        private ValueModel BuildDefaultColumn(PropertyInfo propertyInfo)
         {
-            Name = propertyInfo.Name,
-            Property = propertyInfo,
-            SqlType = ColumnTypeMap[propertyInfo.PropertyType],
-        };
+            Type propertyType = propertyInfo.PropertyType;
+            if (propertyType.IsEnum)
+                propertyType = Enum.GetUnderlyingType(propertyType);
+
+            return new ValueModel
+            {
+                Name = propertyInfo.Name,
+                Property = propertyInfo,
+                SqlType = ColumnTypeMap[propertyType],
+            };
+        }
     }
 }
