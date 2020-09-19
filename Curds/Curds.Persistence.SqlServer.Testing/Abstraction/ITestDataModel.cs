@@ -6,6 +6,7 @@
     {
         TestEntity Test { get; }
         OtherEntity Other { get; }
+        TestEnumEntity Enums { get; }
 
         Parent Parents { get; }
         Child Children { get; }

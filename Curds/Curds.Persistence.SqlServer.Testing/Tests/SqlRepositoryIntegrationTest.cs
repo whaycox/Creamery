@@ -17,6 +17,7 @@ namespace Curds.Persistence.Tests
     {
         private TestEntity TestEntity = new TestEntity();
         private OtherEntity OtherEntity = new OtherEntity();
+        private TestEnumEntity TestEnumEntity = new TestEnumEntity();
 
         private void FullyPopulateOtherEntity()
         {
@@ -87,6 +88,16 @@ namespace Curds.Persistence.Tests
             IRepository<ITestDataModel, OtherEntity> testRepository = TestServiceProvider.GetRequiredService<IRepository<ITestDataModel, OtherEntity>>();
 
             await testRepository.Insert(otherEntities);
+        }
+
+        [TestMethod]
+        public async Task CanInsertTestEnumEntity()
+        {
+            RegisterServices();
+            BuildServiceProvider();
+            IRepository<ITestDataModel, TestEnumEntity> testRepository = TestServiceProvider.GetRequiredService<IRepository<ITestDataModel, TestEnumEntity>>();
+
+            await testRepository.Insert(TestEnumEntity);
         }
 
         [TestMethod]
@@ -198,6 +209,32 @@ namespace Curds.Persistence.Tests
             }
             catch (KeyNotFoundException)
             { }
+        }
+
+        [TestMethod]
+        public async Task CanSelectEnumEntity()
+        {
+            PopulateEnumEntity();
+            RegisterServices();
+            BuildServiceProvider();
+            IRepository<ITestDataModel, TestEnumEntity> testRepository = TestServiceProvider.GetRequiredService<IRepository<ITestDataModel, TestEnumEntity>>();
+            await testRepository.Insert(TestEnumEntity);
+
+            TestEnumEntity actual = await testRepository.Fetch(TestEnumEntity.Keys);
+
+            Assert.AreNotEqual(0, actual.ID);
+            Assert.AreNotSame(TestEnumEntity, actual);
+            Assert.AreEqual(TestShortEnum.One, actual.ShortEnum);
+            Assert.AreEqual(TestLongEnum.One, actual.LongEnum);
+            Assert.AreEqual(TestByteEnum.Two, actual.NullableByteEnum);
+            Assert.AreEqual(TestIntEnum.Two, actual.NullableIntEnum);
+        }
+        private void PopulateEnumEntity()
+        {
+            TestEnumEntity.ShortEnum = TestShortEnum.One;
+            TestEnumEntity.LongEnum = TestLongEnum.One;
+            TestEnumEntity.NullableByteEnum = TestByteEnum.Two;
+            TestEnumEntity.NullableIntEnum = TestIntEnum.Two;
         }
 
         [TestMethod]

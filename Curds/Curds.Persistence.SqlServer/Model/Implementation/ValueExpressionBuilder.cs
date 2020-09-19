@@ -135,7 +135,8 @@ namespace Curds.Persistence.Model.Implementation
 
         public Type ValueType(Type propertyType)
         {
-            if (!ValueTypeMap.TryGetValue(propertyType, out Type valueType))
+            Type baseDataType = propertyType.ResolveUnderlyingType();
+            if (!ValueTypeMap.TryGetValue(baseDataType, out Type valueType))
                 throw new ModelException($"{propertyType.FullName} is an unsupported entity value type");
             return valueType;
         }

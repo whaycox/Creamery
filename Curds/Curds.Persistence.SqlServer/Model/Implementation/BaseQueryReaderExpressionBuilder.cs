@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Data;
 
 namespace Curds.Persistence.Model.Implementation
 {
@@ -14,84 +15,59 @@ namespace Curds.Persistence.Model.Implementation
 
     internal abstract class BaseQueryReaderExpressionBuilder : BaseExpressionBuilder
     {
-        private Dictionary<Type, PopulateValueDelegate> PopulateTypeMap { get; }
-
-        public BaseQueryReaderExpressionBuilder()
+        private static IReadOnlyDictionary<SqlDbType, string> PopulateTypeMap { get; } = new Dictionary<SqlDbType, string>
         {
-            PopulateTypeMap = new Dictionary<Type, PopulateValueDelegate>
-            {
-                { typeof(string), PopulateStringValue },
-                { typeof(bool), PopulateBoolValue },
-                { typeof(bool?), PopulateNullableBoolValue },
-                { typeof(byte), PopulateByteValue },
-                { typeof(byte?), PopulateNullableByteValue },
-                { typeof(short), PopulateShortValue },
-                { typeof(short?), PopulateNullableShortValue },
-                { typeof(int), PopulateIntValue },
-                { typeof(int?), PopulateNullableIntValue },
-                { typeof(long), PopulateLongValue },
-                { typeof(long?), PopulateNullableLongValue },
-                { typeof(DateTime), PopulateDateTimeValue },
-                { typeof(DateTime?), PopulateNullableDateTimeValue },
-                { typeof(DateTimeOffset), PopulateDateTimeOffsetValue },
-                { typeof(DateTimeOffset?), PopulateNullableDateTimeOffsetValue },
-                { typeof(decimal), PopulateDecimalValue },
-                { typeof(decimal?), PopulateNullableDecimalValue },
-                { typeof(double), PopulateDoubleValue },
-                { typeof(double?), PopulateNullableDoubleValue }
-            };
-        }
+            { SqlDbType.NVarChar, nameof(ISqlQueryReader.ReadString) },
+            { SqlDbType.Bit, nameof(ISqlQueryReader.ReadBool) },
+            { SqlDbType.TinyInt, nameof(ISqlQueryReader.ReadByte) },
+            { SqlDbType.SmallInt, nameof(ISqlQueryReader.ReadShort) },
+            { SqlDbType.Int, nameof(ISqlQueryReader.ReadInt) },
+            { SqlDbType.BigInt, nameof(ISqlQueryReader.ReadLong) },
+            { SqlDbType.DateTime, nameof(ISqlQueryReader.ReadDateTime) },
+            { SqlDbType.DateTimeOffset, nameof(ISqlQueryReader.ReadDateTimeOffset) },
+            { SqlDbType.Decimal, nameof(ISqlQueryReader.ReadDecimal) },
+            { SqlDbType.Float, nameof(ISqlQueryReader.ReadDouble) },
+        };
+        private static IReadOnlyDictionary<SqlDbType, Type> ReadTypeMap { get; } = new Dictionary<SqlDbType, Type>
+        {
+            { SqlDbType.NVarChar, typeof(string) },
+            { SqlDbType.Bit, typeof(bool?) },
+            { SqlDbType.TinyInt, typeof(byte?) },
+            { SqlDbType.SmallInt, typeof(short?) },
+            { SqlDbType.Int, typeof(int?) },
+            { SqlDbType.BigInt, typeof(long?) },
+            { SqlDbType.DateTime, typeof(DateTime?) },
+            { SqlDbType.DateTimeOffset, typeof(DateTimeOffset?) },
+            { SqlDbType.Decimal, typeof(decimal?) },
+            { SqlDbType.Float, typeof(double?) },
+        };
 
         protected Expression PopulateValueFromReader(ParameterExpression entityParameter, IValueModel value, ParameterExpression queryReaderParameter)
         {
-            if (!PopulateTypeMap.TryGetValue(value.Property.PropertyType, out PopulateValueDelegate populateDelegate))
-                throw new ModelException($"Unsupported type for {value.Name}, {value.Property.PropertyType}");
-            return populateDelegate(entityParameter, value, queryReaderParameter);
-        }
+            if (!PopulateTypeMap.TryGetValue(value.SqlType, out string readMethodName) ||
+                !ReadTypeMap.TryGetValue(value.SqlType, out Type readAsType))
+                    throw new ModelException($"Unsupported type for {value.Name}, {value.SqlType}");
 
+            PropertyInfo valueProperty = value.Property;
+            Type propertyType = valueProperty.PropertyType;
+            MethodInfo setMethod = valueProperty.SetMethod;
+            Expression readValueExpression = ReadValueFromReader(queryReaderParameter, readMethodName, value.Name);
+
+            return propertyType != readAsType ?
+                CallMethodExpressionAndCast(
+                    entityParameter,
+                    setMethod,
+                    readValueExpression,
+                    propertyType) :
+                CallMethodExpression(
+                    entityParameter,
+                    setMethod,
+                    readValueExpression);
+        }
         private Expression ReadValueFromReader(ParameterExpression queryReaderParameter, string readMethodName, string columnName)
         {
             MethodInfo readMethod = typeof(ISqlQueryReader).GetMethod(readMethodName);
             return Expression.Call(queryReaderParameter, readMethod, Expression.Constant(columnName, typeof(string)));
         }
-        
-        private Expression PopulateStringValue(ParameterExpression entityParameter, IValueModel value, ParameterExpression queryReaderParameter) =>
-            CallMethodExpression(entityParameter, value.Property.SetMethod, ReadValueFromReader(queryReaderParameter, nameof(ISqlQueryReader.ReadString), value.Name));
-        private Expression PopulateBoolValue(ParameterExpression entityParameter, IValueModel value, ParameterExpression queryReaderParameter) =>
-            CallMethodExpression<bool>(entityParameter, value.Property.SetMethod, ReadValueFromReader(queryReaderParameter, nameof(ISqlQueryReader.ReadBool), value.Name));
-        private Expression PopulateNullableBoolValue(ParameterExpression entityParameter, IValueModel value, ParameterExpression queryReaderParameter) =>
-            CallMethodExpression(entityParameter, value.Property.SetMethod, ReadValueFromReader(queryReaderParameter, nameof(ISqlQueryReader.ReadBool), value.Name));
-        private Expression PopulateByteValue(ParameterExpression entityParameter, IValueModel value, ParameterExpression queryReaderParameter) =>
-            CallMethodExpression<byte>(entityParameter, value.Property.SetMethod, ReadValueFromReader(queryReaderParameter, nameof(ISqlQueryReader.ReadByte), value.Name));
-        private Expression PopulateNullableByteValue(ParameterExpression entityParameter, IValueModel value, ParameterExpression queryReaderParameter) =>
-            CallMethodExpression(entityParameter, value.Property.SetMethod, ReadValueFromReader(queryReaderParameter, nameof(ISqlQueryReader.ReadByte), value.Name));
-        private Expression PopulateShortValue(ParameterExpression entityParameter, IValueModel value, ParameterExpression queryReaderParameter) =>
-            CallMethodExpression<short>(entityParameter, value.Property.SetMethod, ReadValueFromReader(queryReaderParameter, nameof(ISqlQueryReader.ReadShort), value.Name));
-        private Expression PopulateNullableShortValue(ParameterExpression entityParameter, IValueModel value, ParameterExpression queryReaderParameter) =>
-            CallMethodExpression(entityParameter, value.Property.SetMethod, ReadValueFromReader(queryReaderParameter, nameof(ISqlQueryReader.ReadShort), value.Name));
-        private Expression PopulateIntValue(ParameterExpression entityParameter, IValueModel value, ParameterExpression queryReaderParameter) =>
-            CallMethodExpression<int>(entityParameter, value.Property.SetMethod, ReadValueFromReader(queryReaderParameter, nameof(ISqlQueryReader.ReadInt), value.Name));
-        private Expression PopulateNullableIntValue(ParameterExpression entityParameter, IValueModel value, ParameterExpression queryReaderParameter) =>
-            CallMethodExpression(entityParameter, value.Property.SetMethod, ReadValueFromReader(queryReaderParameter, nameof(ISqlQueryReader.ReadInt), value.Name));
-        private Expression PopulateLongValue(ParameterExpression entityParameter, IValueModel value, ParameterExpression queryReaderParameter) =>
-            CallMethodExpression<long>(entityParameter, value.Property.SetMethod, ReadValueFromReader(queryReaderParameter, nameof(ISqlQueryReader.ReadLong), value.Name));
-        private Expression PopulateNullableLongValue(ParameterExpression entityParameter, IValueModel value, ParameterExpression queryReaderParameter) =>
-            CallMethodExpression(entityParameter, value.Property.SetMethod, ReadValueFromReader(queryReaderParameter, nameof(ISqlQueryReader.ReadLong), value.Name));
-        private Expression PopulateDateTimeValue(ParameterExpression entityParameter, IValueModel value, ParameterExpression queryReaderParameter) =>
-            CallMethodExpression<DateTime>(entityParameter, value.Property.SetMethod, ReadValueFromReader(queryReaderParameter, nameof(ISqlQueryReader.ReadDateTime), value.Name));
-        private Expression PopulateNullableDateTimeValue(ParameterExpression entityParameter, IValueModel value, ParameterExpression queryReaderParameter) =>
-            CallMethodExpression(entityParameter, value.Property.SetMethod, ReadValueFromReader(queryReaderParameter, nameof(ISqlQueryReader.ReadDateTime), value.Name));
-        private Expression PopulateDateTimeOffsetValue(ParameterExpression entityParameter, IValueModel value, ParameterExpression queryReaderParameter) =>
-            CallMethodExpression<DateTimeOffset>(entityParameter, value.Property.SetMethod, ReadValueFromReader(queryReaderParameter, nameof(ISqlQueryReader.ReadDateTimeOffset), value.Name));
-        private Expression PopulateNullableDateTimeOffsetValue(ParameterExpression entityParameter, IValueModel value, ParameterExpression queryReaderParameter) =>
-            CallMethodExpression(entityParameter, value.Property.SetMethod, ReadValueFromReader(queryReaderParameter, nameof(ISqlQueryReader.ReadDateTimeOffset), value.Name));
-        private Expression PopulateDecimalValue(ParameterExpression entityParameter, IValueModel value, ParameterExpression queryReaderParameter) =>
-            CallMethodExpression<decimal>(entityParameter, value.Property.SetMethod, ReadValueFromReader(queryReaderParameter, nameof(ISqlQueryReader.ReadDecimal), value.Name));
-        private Expression PopulateNullableDecimalValue(ParameterExpression entityParameter, IValueModel value, ParameterExpression queryReaderParameter) =>
-            CallMethodExpression(entityParameter, value.Property.SetMethod, ReadValueFromReader(queryReaderParameter, nameof(ISqlQueryReader.ReadDecimal), value.Name));
-        private Expression PopulateDoubleValue(ParameterExpression entityParameter, IValueModel value, ParameterExpression queryReaderParameter) =>
-            CallMethodExpression<double>(entityParameter, value.Property.SetMethod, ReadValueFromReader(queryReaderParameter, nameof(ISqlQueryReader.ReadDouble), value.Name));
-        private Expression PopulateNullableDoubleValue(ParameterExpression entityParameter, IValueModel value, ParameterExpression queryReaderParameter) =>
-            CallMethodExpression(entityParameter, value.Property.SetMethod, ReadValueFromReader(queryReaderParameter, nameof(ISqlQueryReader.ReadDouble), value.Name));
     }
 }

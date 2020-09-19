@@ -18,23 +18,14 @@ namespace Curds.Persistence.Model.Implementation
         {
             { typeof(string), SqlDbType.NVarChar },
             { typeof(bool), SqlDbType.Bit },
-            { typeof(bool?), SqlDbType.Bit },
             { typeof(byte), SqlDbType.TinyInt },
-            { typeof(byte?), SqlDbType.TinyInt },
             { typeof(short), SqlDbType.SmallInt },
-            { typeof(short?), SqlDbType.SmallInt },
             { typeof(int), SqlDbType.Int },
-            { typeof(int?), SqlDbType.Int },
             { typeof(long), SqlDbType.BigInt },
-            { typeof(long?), SqlDbType.BigInt },
             { typeof(DateTime), SqlDbType.DateTime },
-            { typeof(DateTime?), SqlDbType.DateTime },
             { typeof(DateTimeOffset), SqlDbType.DateTimeOffset },
-            { typeof(DateTimeOffset?), SqlDbType.DateTimeOffset },
             { typeof(decimal), SqlDbType.Decimal },
-            { typeof(decimal?), SqlDbType.Decimal },
             { typeof(double), SqlDbType.Float },
-            { typeof(double?), SqlDbType.Float },
         };
 
         private IModelConfigurationFactory ConfigurationFactory { get; }
@@ -90,18 +81,17 @@ namespace Curds.Persistence.Model.Implementation
 
             return entityModel;
         }
-
         private ValueModel BuildDefaultColumn(PropertyInfo propertyInfo)
         {
-            Type propertyType = propertyInfo.PropertyType;
-            if (propertyType.IsEnum)
-                propertyType = Enum.GetUnderlyingType(propertyType);
+            Type baseDataType = propertyInfo
+                .PropertyType
+                .ResolveUnderlyingType();
 
             return new ValueModel
             {
                 Name = propertyInfo.Name,
                 Property = propertyInfo,
-                SqlType = ColumnTypeMap[propertyType],
+                SqlType = ColumnTypeMap[baseDataType],
             };
         }
     }

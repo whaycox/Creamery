@@ -237,11 +237,11 @@ namespace Curds.Persistence.Model.Tests
         }
 
         [DataTestMethod]
-        [DataRow(nameof(TestEnumClass.TestEnum), SqlDbType.Int)]
-        [DataRow(nameof(TestEnumClass.TestShortEnum), SqlDbType.SmallInt)]
+        [DataRow(nameof(TestEnumEntity.IntEnum), SqlDbType.Int)]
+        [DataRow(nameof(TestEnumEntity.ShortEnum), SqlDbType.SmallInt)]
         public void CanUseEnumsForColumn(string testPropertyName, SqlDbType expectedDbType)
         {
-            PropertyInfo enumProperty = typeof(TestEnumClass).GetProperty(testPropertyName);
+            PropertyInfo enumProperty = typeof(TestEnumEntity).GetProperty(testPropertyName);
             MockTypeMapper
                 .Setup(mapper => mapper.ValueTypes(It.IsAny<Type>()))
                 .Returns(new[] { enumProperty });
