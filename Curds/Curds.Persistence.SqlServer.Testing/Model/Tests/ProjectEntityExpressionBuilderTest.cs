@@ -3,6 +3,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Data;
 
 namespace Curds.Persistence.Model.Tests
 {
@@ -101,7 +102,7 @@ namespace Curds.Persistence.Model.Tests
 
             projection(MockQueryReader.Object);
 
-            MockQueryReader.Verify(reader => reader.ReadInt(nameof(ColumnReadIsModelName)), Times.Once);
+            MockQueryReader.Verify(reader => reader.ReadLong(nameof(ColumnReadIsModelName)), Times.Once);
         }
 
         private void VerifyPropertyWasProjected(PropertyInfo testProperty, object expected)
@@ -121,6 +122,10 @@ namespace Curds.Persistence.Model.Tests
         [TestMethod]
         public void CanProjectStringValueFromReader()
         {
+            MockValueModel
+                .Setup(valueModel => valueModel.SqlType)
+                .Returns(SqlDbType.NVarChar);
+
             VerifyPropertyWasProjected(TestEntityType.GetProperty(nameof(OtherEntity.Name)), TestString);
             MockQueryReader.Verify(reader => reader.ReadString(TestPropertyName), Times.Once);
         }
@@ -129,6 +134,10 @@ namespace Curds.Persistence.Model.Tests
         [DynamicData(nameof(BooleanValues))]
         public void CanProjectBooleanValueFromReader(PropertyInfo testProperty)
         {
+            MockValueModel
+                .Setup(valueModel => valueModel.SqlType)
+                .Returns(SqlDbType.Bit);
+
             VerifyPropertyWasProjected(testProperty, TestBool);
             MockQueryReader.Verify(reader => reader.ReadBool(TestPropertyName), Times.Once);
         }
@@ -142,6 +151,10 @@ namespace Curds.Persistence.Model.Tests
         [DynamicData(nameof(ByteValues))]
         public void CanProjectByteValueFromReader(PropertyInfo testProperty)
         {
+            MockValueModel
+                .Setup(valueModel => valueModel.SqlType)
+                .Returns(SqlDbType.TinyInt);
+
             VerifyPropertyWasProjected(testProperty, TestByte);
             MockQueryReader.Verify(reader => reader.ReadByte(TestPropertyName), Times.Once);
         }
@@ -155,6 +168,10 @@ namespace Curds.Persistence.Model.Tests
         [DynamicData(nameof(ShortValues))]
         public void CanProjectShortValueFromReader(PropertyInfo testProperty)
         {
+            MockValueModel
+                .Setup(valueModel => valueModel.SqlType)
+                .Returns(SqlDbType.SmallInt);
+
             VerifyPropertyWasProjected(testProperty, TestShort);
             MockQueryReader.Verify(reader => reader.ReadShort(TestPropertyName), Times.Once);
         }
@@ -168,6 +185,10 @@ namespace Curds.Persistence.Model.Tests
         [DynamicData(nameof(IntegerValues))]
         public void CanProjectIntegerValueFromReader(PropertyInfo testProperty)
         {
+            MockValueModel
+                .Setup(valueModel => valueModel.SqlType)
+                .Returns(SqlDbType.Int);
+
             VerifyPropertyWasProjected(testProperty, TestInt);
             MockQueryReader.Verify(reader => reader.ReadInt(TestPropertyName), Times.Once);
         }
@@ -181,6 +202,10 @@ namespace Curds.Persistence.Model.Tests
         [DynamicData(nameof(LongValues))]
         public void CanProjectLongValueFromReader(PropertyInfo testProperty)
         {
+            MockValueModel
+                .Setup(valueModel => valueModel.SqlType)
+                .Returns(SqlDbType.BigInt);
+
             VerifyPropertyWasProjected(testProperty, TestLong);
             MockQueryReader.Verify(reader => reader.ReadLong(TestPropertyName), Times.Once);
         }
@@ -194,6 +219,10 @@ namespace Curds.Persistence.Model.Tests
         [DynamicData(nameof(DateTimeValues))]
         public void CanProjectDateTimeValueFromReader(PropertyInfo testProperty)
         {
+            MockValueModel
+                .Setup(valueModel => valueModel.SqlType)
+                .Returns(SqlDbType.DateTime);
+
             VerifyPropertyWasProjected(testProperty, TestDateTime);
             MockQueryReader.Verify(reader => reader.ReadDateTime(TestPropertyName), Times.Once);
         }
@@ -207,6 +236,10 @@ namespace Curds.Persistence.Model.Tests
         [DynamicData(nameof(DateTimeOffsetValues))]
         public void CanProjectDateTimeOffsetValueFromReader(PropertyInfo testProperty)
         {
+            MockValueModel
+                .Setup(valueModel => valueModel.SqlType)
+                .Returns(SqlDbType.DateTimeOffset);
+
             VerifyPropertyWasProjected(testProperty, TestDateTimeOffset);
             MockQueryReader.Verify(reader => reader.ReadDateTimeOffset(TestPropertyName), Times.Once);
         }
@@ -220,6 +253,10 @@ namespace Curds.Persistence.Model.Tests
         [DynamicData(nameof(DecimalValues))]
         public void CanProjectDecimalValueFromReader(PropertyInfo testProperty)
         {
+            MockValueModel
+                .Setup(valueModel => valueModel.SqlType)
+                .Returns(SqlDbType.Decimal);
+
             VerifyPropertyWasProjected(testProperty, TestDecimal);
             MockQueryReader.Verify(reader => reader.ReadDecimal(TestPropertyName), Times.Once);
         }
@@ -233,6 +270,10 @@ namespace Curds.Persistence.Model.Tests
         [DynamicData(nameof(DoubleValues))]
         public void CanProjectDoubleValueFromReader(PropertyInfo testProperty)
         {
+            MockValueModel
+                .Setup(valueModel => valueModel.SqlType)
+                .Returns(SqlDbType.Float);
+
             VerifyPropertyWasProjected(testProperty, TestDouble);
             MockQueryReader.Verify(reader => reader.ReadDouble(TestPropertyName), Times.Once);
         }
@@ -246,14 +287,12 @@ namespace Curds.Persistence.Model.Tests
         [ExpectedException(typeof(ModelException))]
         public void ProjectInvalidTypeThrows()
         {
-            PropertyInfo invalidTypeProperty = typeof(ProjectEntityExpressionBuilderTest).GetProperty(nameof(InvalidPropertyType));
             MockValueModel
-                .Setup(model => model.Property)
-                .Returns(invalidTypeProperty);
+                .Setup(model => model.SqlType)
+                .Returns((SqlDbType)99);
 
             TestObject.BuildProjectEntityDelegate(MockEntityModel.Object);
         }
-        public ProjectEntityExpressionBuilderTest InvalidPropertyType => throw new NotImplementedException();
 
         [TestMethod]
         [ExpectedException(typeof(ModelException))]

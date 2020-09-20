@@ -24,14 +24,16 @@ namespace Curds.Persistence.Model.Tests
         {
             List<Type> actual = TestObject.EntityTypes<ITestDataModel>().ToList();
 
-            Assert.AreEqual(4, actual.Count());
+            Assert.AreEqual(5, actual.Count());
             Type testEntity = actual[0];
             Assert.AreEqual(typeof(TestEntity), testEntity);
             Type otherEntity = actual[1];
             Assert.AreEqual(typeof(OtherEntity), otherEntity);
-            Type parent = actual[2];
+            Type enumEntity = actual[2];
+            Assert.AreEqual(typeof(TestEnumEntity), enumEntity);
+            Type parent = actual[3];
             Assert.AreEqual(typeof(Parent), parent);
-            Type child = actual[3];
+            Type child = actual[4];
             Assert.AreEqual(typeof(Child), child);
         }
 

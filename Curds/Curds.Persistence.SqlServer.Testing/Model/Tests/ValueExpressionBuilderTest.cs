@@ -453,23 +453,23 @@ namespace Curds.Persistence.Model.Tests
         [DataTestMethod]
         [DataRow(typeof(string), typeof(StringValue))]
         [DataRow(typeof(bool), typeof(BoolValue))]
-        [DataRow(typeof(bool?), typeof(NullableBoolValue))]
+        [DataRow(typeof(bool?), typeof(BoolValue))]
         [DataRow(typeof(byte), typeof(ByteValue))]
-        [DataRow(typeof(byte?), typeof(NullableByteValue))]
+        [DataRow(typeof(byte?), typeof(ByteValue))]
         [DataRow(typeof(short), typeof(ShortValue))]
-        [DataRow(typeof(short?), typeof(NullableShortValue))]
+        [DataRow(typeof(short?), typeof(ShortValue))]
         [DataRow(typeof(int), typeof(IntValue))]
-        [DataRow(typeof(int?), typeof(NullableIntValue))]
+        [DataRow(typeof(int?), typeof(IntValue))]
         [DataRow(typeof(long), typeof(LongValue))]
-        [DataRow(typeof(long?), typeof(NullableLongValue))]
+        [DataRow(typeof(long?), typeof(LongValue))]
         [DataRow(typeof(DateTime), typeof(DateTimeValue))]
-        [DataRow(typeof(DateTime?), typeof(NullableDateTimeValue))]
+        [DataRow(typeof(DateTime?), typeof(DateTimeValue))]
         [DataRow(typeof(DateTimeOffset), typeof(DateTimeOffsetValue))]
-        [DataRow(typeof(DateTimeOffset?), typeof(NullableDateTimeOffsetValue))]
+        [DataRow(typeof(DateTimeOffset?), typeof(DateTimeOffsetValue))]
         [DataRow(typeof(decimal), typeof(DecimalValue))]
-        [DataRow(typeof(decimal?), typeof(NullableDecimalValue))]
+        [DataRow(typeof(decimal?), typeof(DecimalValue))]
         [DataRow(typeof(double), typeof(DoubleValue))]
-        [DataRow(typeof(double?), typeof(NullableDoubleValue))]
+        [DataRow(typeof(double?), typeof(DoubleValue))]
         public void RetrievesExpectedType(Type testValueType, Type expectedType)
         {
             Type actual = TestObject.ValueType(testValueType);
@@ -521,7 +521,7 @@ namespace Curds.Persistence.Model.Tests
         {
             TestOtherEntity.NullableBoolValue = testBool;
 
-            NullableBoolValue actual = TestAssignValueDelegate<NullableBoolValue>(typeof(OtherEntity).GetProperty(nameof(TestOtherEntity.NullableBoolValue)));
+            BoolValue actual = TestAssignValueDelegate<BoolValue>(typeof(OtherEntity).GetProperty(nameof(TestOtherEntity.NullableBoolValue)));
 
             Assert.AreEqual(testBool, actual.Bool);
         }
@@ -543,7 +543,7 @@ namespace Curds.Persistence.Model.Tests
         {
             TestOtherEntity.NullableIntValue = testInt;
 
-            NullableIntValue actual = TestAssignValueDelegate<NullableIntValue>(typeof(OtherEntity).GetProperty(nameof(TestOtherEntity.NullableIntValue)));
+            IntValue actual = TestAssignValueDelegate<IntValue>(typeof(OtherEntity).GetProperty(nameof(TestOtherEntity.NullableIntValue)));
 
             Assert.AreEqual(testInt, actual.Int);
         }
@@ -565,7 +565,7 @@ namespace Curds.Persistence.Model.Tests
         {
             TestOtherEntity.NullableDateTimeValue = testDateTime;
 
-            NullableDateTimeValue actual = TestAssignValueDelegate<NullableDateTimeValue>(typeof(OtherEntity).GetProperty(nameof(TestOtherEntity.NullableDateTimeValue)));
+            DateTimeValue actual = TestAssignValueDelegate<DateTimeValue>(typeof(OtherEntity).GetProperty(nameof(TestOtherEntity.NullableDateTimeValue)));
 
             Assert.AreEqual(testDateTime, actual.DateTime);
         }
@@ -587,7 +587,7 @@ namespace Curds.Persistence.Model.Tests
         {
             TestOtherEntity.NullableDateTimeOffsetValue = testDateTimeOffset;
 
-            NullableDateTimeOffsetValue actual = TestAssignValueDelegate<NullableDateTimeOffsetValue>(typeof(OtherEntity).GetProperty(nameof(TestOtherEntity.NullableDateTimeOffsetValue)));
+            DateTimeOffsetValue actual = TestAssignValueDelegate<DateTimeOffsetValue>(typeof(OtherEntity).GetProperty(nameof(TestOtherEntity.NullableDateTimeOffsetValue)));
 
             Assert.AreEqual(testDateTimeOffset, actual.DateTimeOffset);
         }
@@ -609,7 +609,7 @@ namespace Curds.Persistence.Model.Tests
         {
             TestOtherEntity.NullableDecimalValue = testDecimal;
 
-            NullableDecimalValue actual = TestAssignValueDelegate<NullableDecimalValue>(typeof(OtherEntity).GetProperty(nameof(TestOtherEntity.NullableDecimalValue)));
+            DecimalValue actual = TestAssignValueDelegate<DecimalValue>(typeof(OtherEntity).GetProperty(nameof(TestOtherEntity.NullableDecimalValue)));
 
             Assert.AreEqual(testDecimal, actual.Decimal);
         }
@@ -631,7 +631,7 @@ namespace Curds.Persistence.Model.Tests
         {
             TestOtherEntity.NullableDoubleValue = testDouble;
 
-            NullableDoubleValue actual = TestAssignValueDelegate<NullableDoubleValue>(typeof(OtherEntity).GetProperty(nameof(TestOtherEntity.NullableDoubleValue)));
+            DoubleValue actual = TestAssignValueDelegate<DoubleValue>(typeof(OtherEntity).GetProperty(nameof(TestOtherEntity.NullableDoubleValue)));
 
             Assert.AreEqual(testDouble, actual.Double);
         }

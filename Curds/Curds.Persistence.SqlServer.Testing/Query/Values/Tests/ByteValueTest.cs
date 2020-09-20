@@ -9,7 +9,7 @@ namespace Curds.Persistence.Query.Values.Tests
     [TestClass]
     public class ByteValueTest
     {
-        private NullableByteValue TestObject = new NullableByteValue();
+        private ByteValue TestObject = new ByteValue();
 
         [DataTestMethod]
         [DynamicData(nameof(ByteData))]
