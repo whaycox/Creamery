@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Threading.Tasks;
 using System.Reflection;
+using System.Data;
 
 namespace Curds.Persistence.Model.Tests
 {
@@ -46,17 +47,20 @@ namespace Curds.Persistence.Model.Tests
                 .Returns(MockValueModel.Object);
         }
 
-        private void SetModelToIdentityProperty(PropertyInfo identityProperty)
+        private void SetModelToIdentityProperty(PropertyInfo propertyInfo, SqlDbType sqlType)
         {
             MockValueModel
                 .Setup(model => model.Property)
-                .Returns(identityProperty);
+                .Returns(propertyInfo);
+            MockValueModel
+                .Setup(model => model.SqlType)
+                .Returns(sqlType);
         }
 
         [TestMethod]
         public void BuiltDelegateAssignsByteIdentity()
         {
-            SetModelToIdentityProperty(TestByteProperty);
+            SetModelToIdentityProperty(TestByteProperty, SqlDbType.TinyInt);
             MockQueryReader
                 .Setup(reader => reader.ReadByte(It.IsAny<string>()))
                 .Returns(TestByteIdentity);
@@ -70,7 +74,7 @@ namespace Curds.Persistence.Model.Tests
         [TestMethod]
         public void BuiltDelegateAssignsShortIdentity()
         {
-            SetModelToIdentityProperty(TestShortProperty);
+            SetModelToIdentityProperty(TestShortProperty, SqlDbType.SmallInt);
             MockQueryReader
                 .Setup(reader => reader.ReadShort(It.IsAny<string>()))
                 .Returns(TestShortIdentity);
@@ -84,7 +88,7 @@ namespace Curds.Persistence.Model.Tests
         [TestMethod]
         public void BuiltDelegateAssignsIntIdentity()
         {
-            SetModelToIdentityProperty(TestIntProperty);
+            SetModelToIdentityProperty(TestIntProperty, SqlDbType.Int);
             MockQueryReader
                 .Setup(reader => reader.ReadInt(It.IsAny<string>()))
                 .Returns(TestIntIdentity);
@@ -98,7 +102,7 @@ namespace Curds.Persistence.Model.Tests
         [TestMethod]
         public void BuiltDelegateAssignsLongIdentity()
         {
-            SetModelToIdentityProperty(TestLongProperty);
+            SetModelToIdentityProperty(TestLongProperty, SqlDbType.BigInt);
             MockQueryReader
                 .Setup(reader => reader.ReadLong(It.IsAny<string>()))
                 .Returns(TestLongIdentity);

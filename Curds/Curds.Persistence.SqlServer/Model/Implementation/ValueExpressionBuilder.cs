@@ -20,23 +20,14 @@ namespace Curds.Persistence.Model.Implementation
         {
             { typeof(string), typeof(StringValue) },
             { typeof(bool), typeof(BoolValue) },
-            { typeof(bool?), typeof(NullableBoolValue) },
             { typeof(byte), typeof(ByteValue) },
-            { typeof(byte?), typeof(NullableByteValue) },
             { typeof(short), typeof(ShortValue) },
-            { typeof(short?), typeof(NullableShortValue) },
             { typeof(int), typeof(IntValue) },
-            { typeof(int?), typeof(NullableIntValue) },
             { typeof(long), typeof(LongValue) },
-            { typeof(long?), typeof(NullableLongValue) },
             { typeof(DateTime), typeof(DateTimeValue) },
-            { typeof(DateTime?), typeof(NullableDateTimeValue) },
             { typeof(DateTimeOffset), typeof(DateTimeOffsetValue) },
-            { typeof(DateTimeOffset?), typeof(NullableDateTimeOffsetValue) },
             { typeof(decimal), typeof(DecimalValue) },
-            { typeof(decimal?), typeof(NullableDecimalValue) },
             { typeof(double), typeof(DoubleValue) },
-            { typeof(double?), typeof(NullableDoubleValue) },
         };
 
         private Dictionary<Type, AssignValueDelegate> ValueAssignDelegateMap { get; }
@@ -47,23 +38,14 @@ namespace Curds.Persistence.Model.Implementation
             {
                 { typeof(StringValue), AssignStringValue },
                 { typeof(BoolValue), AssignBoolValue },
-                { typeof(NullableBoolValue), AssignNullableBoolValue },
                 { typeof(ByteValue), AssignByteValue },
-                { typeof(NullableByteValue), AssignNullableByteValue },
                 { typeof(ShortValue), AssignShortValue },
-                { typeof(NullableShortValue), AssignNullableShortValue },
                 { typeof(IntValue), AssignIntValue },
-                { typeof(NullableIntValue), AssignNullableIntValue },
                 { typeof(LongValue), AssignLongValue },
-                { typeof(NullableLongValue), AssignNullableLongValue },
                 { typeof(DateTimeValue), AssignDateTimeValue },
-                { typeof(NullableDateTimeValue), AssignNullableDateTimeValue },
                 { typeof(DateTimeOffsetValue), AssignDateTimeOffsetValue },
-                { typeof(NullableDateTimeOffsetValue), AssignNullableDateTimeOffsetValue },
                 { typeof(DecimalValue), AssignDecimalValue },
-                { typeof(NullableDecimalValue), AssignNullableDecimalValue },
                 { typeof(DoubleValue), AssignDoubleValue },
-                { typeof(NullableDoubleValue), AssignNullableDoubleValue },
             };
         }
 
@@ -159,56 +141,38 @@ namespace Curds.Persistence.Model.Implementation
         private MethodInfo SetBoolValueMethod = typeof(BoolValue).GetProperty(nameof(BoolValue.Bool)).SetMethod;
         private Expression AssignBoolValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
             CallMethodExpression<bool?>(valueParameter, SetBoolValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
-        private Expression AssignNullableBoolValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
-            CallMethodExpression(valueParameter, SetBoolValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
 
         private MethodInfo SetByteValueMethod = typeof(ByteValue).GetProperty(nameof(ByteValue.Byte)).SetMethod;
         private Expression AssignByteValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
             CallMethodExpression<byte?>(valueParameter, SetByteValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
-        private Expression AssignNullableByteValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
-            CallMethodExpression(valueParameter, SetByteValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
 
         private MethodInfo SetShortValueMethod = typeof(ShortValue).GetProperty(nameof(ShortValue.Short)).SetMethod;
         private Expression AssignShortValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
             CallMethodExpression<short?>(valueParameter, SetShortValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
-        private Expression AssignNullableShortValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
-            CallMethodExpression(valueParameter, SetShortValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
 
         private MethodInfo SetIntValueMethod = typeof(IntValue).GetProperty(nameof(IntValue.Int)).SetMethod;
         private Expression AssignIntValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
             CallMethodExpression<int?>(valueParameter, SetIntValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
-        private Expression AssignNullableIntValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
-            CallMethodExpression(valueParameter, SetIntValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
 
         private MethodInfo SetLongValueMethod = typeof(LongValue).GetProperty(nameof(LongValue.Long)).SetMethod;
         private Expression AssignLongValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
             CallMethodExpression<long?>(valueParameter, SetLongValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
-        private Expression AssignNullableLongValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
-            CallMethodExpression(valueParameter, SetLongValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
 
         private MethodInfo SetDateTimeValueMethod = typeof(DateTimeValue).GetProperty(nameof(DateTimeValue.DateTime)).SetMethod;
         private Expression AssignDateTimeValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
             CallMethodExpression<DateTime?>(valueParameter, SetDateTimeValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
-        private Expression AssignNullableDateTimeValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
-            CallMethodExpression(valueParameter, SetDateTimeValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
 
         private MethodInfo SetDateTimeOffsetValueMethod = typeof(DateTimeOffsetValue).GetProperty(nameof(DateTimeOffsetValue.DateTimeOffset)).SetMethod;
         private Expression AssignDateTimeOffsetValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
             CallMethodExpression<DateTimeOffset?>(valueParameter, SetDateTimeOffsetValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
-        private Expression AssignNullableDateTimeOffsetValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
-            CallMethodExpression(valueParameter, SetDateTimeOffsetValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
 
         private MethodInfo SetDecimalValueMethod = typeof(DecimalValue).GetProperty(nameof(DecimalValue.Decimal)).SetMethod;
         private Expression AssignDecimalValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
             CallMethodExpression<decimal?>(valueParameter, SetDecimalValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
-        private Expression AssignNullableDecimalValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
-            CallMethodExpression(valueParameter, SetDecimalValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
 
         private MethodInfo SetDoubleValueMethod = typeof(DoubleValue).GetProperty(nameof(DoubleValue.Double)).SetMethod;
         private Expression AssignDoubleValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
             CallMethodExpression<double?>(valueParameter, SetDoubleValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
-        private Expression AssignNullableDoubleValue(ParameterExpression valueParameter, PropertyInfo entityProperty, ParameterExpression entityParameter) =>
-            CallMethodExpression(valueParameter, SetDoubleValueMethod, GetEntityPropertyExpression(entityProperty, entityParameter));
         #endregion
     }
 }

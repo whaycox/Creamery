@@ -15,45 +15,31 @@ namespace Curds.Persistence.Model.Implementation
 
     internal abstract class BaseQueryReaderExpressionBuilder : BaseExpressionBuilder
     {
-        private static IReadOnlyDictionary<SqlDbType, string> PopulateTypeMap { get; } = new Dictionary<SqlDbType, string>
+        private static IReadOnlyDictionary<SqlDbType, QueryReaderOption> QueryReaderMap { get; } = new Dictionary<SqlDbType, QueryReaderOption>
         {
-            { SqlDbType.NVarChar, nameof(ISqlQueryReader.ReadString) },
-            { SqlDbType.Bit, nameof(ISqlQueryReader.ReadBool) },
-            { SqlDbType.TinyInt, nameof(ISqlQueryReader.ReadByte) },
-            { SqlDbType.SmallInt, nameof(ISqlQueryReader.ReadShort) },
-            { SqlDbType.Int, nameof(ISqlQueryReader.ReadInt) },
-            { SqlDbType.BigInt, nameof(ISqlQueryReader.ReadLong) },
-            { SqlDbType.DateTime, nameof(ISqlQueryReader.ReadDateTime) },
-            { SqlDbType.DateTimeOffset, nameof(ISqlQueryReader.ReadDateTimeOffset) },
-            { SqlDbType.Decimal, nameof(ISqlQueryReader.ReadDecimal) },
-            { SqlDbType.Float, nameof(ISqlQueryReader.ReadDouble) },
-        };
-        private static IReadOnlyDictionary<SqlDbType, Type> ReadTypeMap { get; } = new Dictionary<SqlDbType, Type>
-        {
-            { SqlDbType.NVarChar, typeof(string) },
-            { SqlDbType.Bit, typeof(bool?) },
-            { SqlDbType.TinyInt, typeof(byte?) },
-            { SqlDbType.SmallInt, typeof(short?) },
-            { SqlDbType.Int, typeof(int?) },
-            { SqlDbType.BigInt, typeof(long?) },
-            { SqlDbType.DateTime, typeof(DateTime?) },
-            { SqlDbType.DateTimeOffset, typeof(DateTimeOffset?) },
-            { SqlDbType.Decimal, typeof(decimal?) },
-            { SqlDbType.Float, typeof(double?) },
+            { SqlDbType.NVarChar, QueryReaderOption.String },
+            { SqlDbType.Bit, QueryReaderOption.Bool },
+            { SqlDbType.TinyInt, QueryReaderOption.Byte },
+            { SqlDbType.SmallInt, QueryReaderOption.Short },
+            { SqlDbType.Int, QueryReaderOption.Int },
+            { SqlDbType.BigInt, QueryReaderOption.Long },
+            { SqlDbType.DateTime, QueryReaderOption.DateTime },
+            { SqlDbType.DateTimeOffset, QueryReaderOption.DateTimeOffset },
+            { SqlDbType.Decimal, QueryReaderOption.Decimal },
+            { SqlDbType.Float, QueryReaderOption.Double },
         };
 
         protected Expression PopulateValueFromReader(ParameterExpression entityParameter, IValueModel value, ParameterExpression queryReaderParameter)
         {
-            if (!PopulateTypeMap.TryGetValue(value.SqlType, out string readMethodName) ||
-                !ReadTypeMap.TryGetValue(value.SqlType, out Type readAsType))
-                    throw new ModelException($"Unsupported type for {value.Name}, {value.SqlType}");
+            if (!QueryReaderMap.TryGetValue(value.SqlType, out QueryReaderOption queryReaderOption))
+                throw new ModelException($"Unsupported type for {value.Name}, {value.SqlType}");
 
             PropertyInfo valueProperty = value.Property;
             Type propertyType = valueProperty.PropertyType;
             MethodInfo setMethod = valueProperty.SetMethod;
-            Expression readValueExpression = ReadValueFromReader(queryReaderParameter, readMethodName, value.Name);
+            Expression readValueExpression = ReadValueFromReader(queryReaderParameter, queryReaderOption.ReadMethodName, value.Name);
 
-            return propertyType != readAsType ?
+            return propertyType != queryReaderOption.ReadMethodType ?
                 CallMethodExpressionAndCast(
                     entityParameter,
                     setMethod,
