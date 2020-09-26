@@ -18,6 +18,7 @@ namespace Parmesan.UI.Web.TestSite
             builder.RootComponents.Add<App>("app");
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddParmesanWebUI("Parmesan.UI.Web.TestSite.Client");
 
             await builder.Build().RunAsync();
         }

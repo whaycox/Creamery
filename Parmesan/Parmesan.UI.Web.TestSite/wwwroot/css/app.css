@@ -2,6 +2,24 @@
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+body {
+    margin: 0px;
+}
+
+#login-test {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    place-items: center;
+}
+
+#login-test button {
+    width: 100px;
+    height: 40px;
+    border-radius: 5px;
+    background-color: chartreuse;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;

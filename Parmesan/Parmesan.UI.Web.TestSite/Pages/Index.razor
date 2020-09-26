@@ -1,3 +1,17 @@
 ﻿@page "/"
+@inject IJSRuntime JavaScript
+@inject HttpClient Http
+@inject ILoginRequestFactory LoginRequestFactory
 
-<h1>Hello, world!</h1>
+<div id="login-test">
+    <button @onclick="TestLogin">Login</button>
+</div>
+
+@code
+{
+    private async Task TestLogin()
+    {
+        string requestUrl = await LoginRequestFactory.Build(Http);
+        await JavaScript.InvokeVoidAsync("rediretTo", requestUrl);
+    }
+}
