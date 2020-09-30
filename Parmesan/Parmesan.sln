@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parmesan.UI.Web.TestSite", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parmesan.UI.Web", "Parmesan.UI.Web\Parmesan.UI.Web.csproj", "{29583066-D71C-4226-A98D-86CDDA90A8AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parmesan.Shared", "Parmesan.Shared\Parmesan.Shared.csproj", "{CDEB42B3-B491-423D-8109-AFAAC80AE62A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parmesan.Shared", "Parmesan.Shared\Parmesan.Shared.csproj", "{CDEB42B3-B491-423D-8109-AFAAC80AE62A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parmesan.Shared.Testing", "Parmesan.Shared.Testing\Parmesan.Shared.Testing.csproj", "{A0D5163E-A98A-429D-9E2E-3EB7B1E13CCF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{CDEB42B3-B491-423D-8109-AFAAC80AE62A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CDEB42B3-B491-423D-8109-AFAAC80AE62A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CDEB42B3-B491-423D-8109-AFAAC80AE62A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0D5163E-A98A-429D-9E2E-3EB7B1E13CCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0D5163E-A98A-429D-9E2E-3EB7B1E13CCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0D5163E-A98A-429D-9E2E-3EB7B1E13CCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0D5163E-A98A-429D-9E2E-3EB7B1E13CCF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

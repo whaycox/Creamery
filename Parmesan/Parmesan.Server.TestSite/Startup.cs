@@ -7,14 +7,22 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace Parmesan.Server.TestSite
 {
     public class Startup
     {
+        private IConfiguration Configuration { get; }
+
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddParmesanServer();
+            services.AddParmesanServer(Configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

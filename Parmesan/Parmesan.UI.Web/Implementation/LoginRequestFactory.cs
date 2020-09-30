@@ -38,7 +38,7 @@ namespace Parmesan.UI.Web.Implementation
             Dictionary<string, string> arguments = new Dictionary<string, string>();
             arguments.Add(AuthorizationRequest.ResponseTypeName, ResponseType.code.ToString());
             arguments.Add(AuthorizationRequest.ClientIDName, ClientIDFactory.ClientID);
-            arguments.Add(AuthorizationRequest.RedirectUriName, $"{HostEnvironment.BaseAddress}loginRedirect");
+            arguments.Add(AuthorizationRequest.RedirectUriName, UriPath.Combine(HostEnvironment.BaseAddress, "loginRedirect"));
             arguments.Add(AuthorizationRequest.ScopeName, "openid");
             string requestState = StateFactory.Generate();
             arguments.Add(AuthorizationRequest.StateName, requestState);

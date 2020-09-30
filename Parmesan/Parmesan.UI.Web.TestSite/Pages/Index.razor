@@ -12,6 +12,6 @@
     private async Task TestLogin()
     {
         string requestUrl = await LoginRequestFactory.Build(Http);
-        await JavaScript.InvokeVoidAsync("rediretTo", requestUrl);
+        await JavaScript.InvokeVoidAsync("redirectTo", requestUrl);
     }
 }

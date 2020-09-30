@@ -21,7 +21,7 @@ namespace Parmesan.Server.Implementation
 
         public OidcProviderMetadata Build() => new OidcProviderMetadata
         {
-            throw new NotImplementedException();
+            AuthorizationEndpoint = UriPath.Combine(Settings.Issuer, "oauth/authorize"),
         };
     }
 }

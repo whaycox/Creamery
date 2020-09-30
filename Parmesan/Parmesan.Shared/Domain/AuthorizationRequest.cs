@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Parmesan.Domain
 {
@@ -16,7 +14,7 @@ namespace Parmesan.Domain
         public string RedirectUri { get; set; }
 
         public const string ScopeName = "scope";
-        public string Scope { get; set; }
+        public List<string> Scope { get; set; } = new List<string>();
 
         public const string StateName = "state";
         public string State { get; set; }
@@ -26,7 +24,7 @@ namespace Parmesan.Domain
 
         public const string CodeChallengeMethodName = "code_challenge_method";
         public CodeChallengeMethod CodeChallengeMethod { get; set; }
-        
+
         public string ResponseMode { get; set; }
         public string Nonce { get; set; }
         public string Display { get; set; }

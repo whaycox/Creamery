@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.JSInterop;
+﻿using Microsoft.JSInterop;
+using System;
 using System.Security.Cryptography;
-using Microsoft.AspNetCore.WebUtilities;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Parmesan.UI.Web.Implementation
@@ -13,12 +11,29 @@ namespace Parmesan.UI.Web.Implementation
 
     internal class PkceFactory : IPkceFactory
     {
-        private const int VerifierLengthInBytes = 96;
+        private const int VerifierLengthInBytes = 32;
 
         private IJSRuntime JavaScript { get; }
 
         private string Verifier { get; set; }
         private string Challenge { get; set; }
+
+        public CodeChallengeMethod CodeChallengeMethod => CodeChallengeMethod.S256;
+
+        public PkceFactory(IJSRuntime javaScript)
+        {
+            JavaScript = javaScript;
+        }
+
+        private string Base64UrlEncode(byte[] bytes) => //https://tools.ietf.org/html/rfc7636#appendix-A
+            Base64UrlEncode(Convert.ToBase64String(bytes));
+        private string Base64UrlEncode(string base64)
+        {
+            base64 = base64.Split('=')[0];
+            base64 = base64.Replace('+', '-');
+            base64 = base64.Replace('/', '_');
+            return base64;
+        }
 
         public async Task<string> CodeVerifier()
         {
@@ -29,8 +44,7 @@ namespace Parmesan.UI.Web.Implementation
         private async Task<string> GenerateCodeVerifier()
         {
             string random = await JavaScript.InvokeAsync<string>("generateRandom", VerifierLengthInBytes);
-            byte[] randomBytes = Convert.FromBase64String(random);
-            return Base64UrlTextEncoder.Encode(randomBytes);
+            return Base64UrlEncode(random);
         }
 
         public async Task<string> CodeChallenge()
@@ -42,14 +56,10 @@ namespace Parmesan.UI.Web.Implementation
         private async Task<string> GenerateCodeChallenge()
         {
             using (SHA256 hasher = SHA256.Create())
-                return Base64UrlTextEncoder.Encode(hasher.ComputeHash(Encoding.ASCII.GetBytes(await CodeVerifier())));
-        }
-
-        public CodeChallengeMethod CodeChallengeMethod => CodeChallengeMethod.S256;
-
-        public PkceFactory(IJSRuntime javaScript)
-        {
-            JavaScript = javaScript;
+                return Base64UrlEncode(
+                    hasher.ComputeHash(
+                        Encoding.ASCII.GetBytes(
+                            await CodeVerifier())));
         }
     }
 }
