@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.JSInterop;
+using System.Threading.Tasks;
 
 namespace Parmesan.UI.Web.Implementation
 {
@@ -8,13 +9,15 @@ namespace Parmesan.UI.Web.Implementation
     {
         private const int LengthInBytes = 12;
 
-        private Random Random { get; } = new Random();
+        private IJSRuntime JavaScript { get; }
 
-        public string Generate()
+        public StateFactory(IJSRuntime javaScript)
         {
-            byte[] state = new byte[LengthInBytes];
-            Random.NextBytes(state);
-            return Convert.ToBase64String(state);
+            JavaScript = javaScript;
         }
+
+        public Task<string> Generate() => JavaScript
+            .InvokeAsync<string>("generateRandom", LengthInBytes)
+            .AsTask();
     }
 }

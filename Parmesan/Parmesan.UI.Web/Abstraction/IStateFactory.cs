@@ -1,7 +1,9 @@
-﻿namespace Parmesan.UI.Web.Abstraction
+﻿using System.Threading.Tasks;
+
+namespace Parmesan.UI.Web.Abstraction
 {
     public interface IStateFactory
     {
-        string Generate();
+        Task<string> Generate();
     }
 }
