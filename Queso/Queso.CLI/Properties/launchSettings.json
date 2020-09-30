@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Queso.CLI": {
-      "commandName": "Project",
-      "commandLineArgs": "-r Testing"
-    }
-  }
-}

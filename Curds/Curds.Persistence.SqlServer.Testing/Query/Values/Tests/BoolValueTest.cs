@@ -8,7 +8,7 @@ namespace Curds.Persistence.Query.Values.Tests
     [TestClass]
     public class BoolValueTest
     {
-        private NullableBoolValue TestObject = new NullableBoolValue();
+        private BoolValue TestObject = new BoolValue();
 
         [DataTestMethod]
         [DataRow(null)]

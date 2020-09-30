@@ -236,6 +236,25 @@ namespace Curds.Persistence.Model.Tests
             Assert.AreEqual(nameof(CanConfigureNameOnColumn), actualValue.Name);
         }
 
+        [DataTestMethod]
+        [DataRow(nameof(TestEnumEntity.IntEnum), SqlDbType.Int)]
+        [DataRow(nameof(TestEnumEntity.ShortEnum), SqlDbType.SmallInt)]
+        public void CanUseEnumsForColumn(string testPropertyName, SqlDbType expectedDbType)
+        {
+            PropertyInfo enumProperty = typeof(TestEnumEntity).GetProperty(testPropertyName);
+            MockTypeMapper
+                .Setup(mapper => mapper.ValueTypes(It.IsAny<Type>()))
+                .Returns(new[] { enumProperty });
+
+            IEnumerable<IEntityModel> actual = TestObject.BuildEntityModels<ITestDataModel>();
+
+            Assert.AreEqual(1, actual.Count());
+            IEntityModel actualEntity = actual.First();
+            Assert.AreEqual(1, actualEntity.Values.Count());
+            IValueModel actualValue = actualEntity.Values.First();
+            Assert.AreEqual(expectedDbType, actualValue.SqlType);
+        }
+
         [TestMethod]
         public void PopulatesKeysFromConfiguration()
         {
