@@ -22,6 +22,7 @@ namespace Curds.Persistence.Query.Queries.Tests
         private ValueEntity TestValueEntity = new ValueEntity();
 
         private Mock<ISqlTable> MockTable = new Mock<ISqlTable>();
+        private Mock<ISqlColumn> MockIdentityColumn = new Mock<ISqlColumn>();
         private Mock<ISqlTable> MockInsertedIdentityTable = new Mock<ISqlTable>();
 
         private InsertQuery<ITestDataModel, TestEntity> TestObject = null;
@@ -32,6 +33,9 @@ namespace Curds.Persistence.Query.Queries.Tests
             MockQueryContext
                 .Setup(context => context.AddTable<TestEntity>())
                 .Returns(MockTable.Object);
+            MockTable
+                .Setup(table => table.Identity)
+                .Returns(MockIdentityColumn.Object);
             MockTable
                 .Setup(table => table.InsertedIdentityTable)
                 .Returns(MockInsertedIdentityTable.Object);

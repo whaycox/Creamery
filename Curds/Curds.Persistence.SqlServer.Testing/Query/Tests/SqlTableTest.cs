@@ -21,6 +21,7 @@ namespace Curds.Persistence.Query.Tests
         private ValueEntity TestValueEntity = new ValueEntity();
 
         private Mock<IEntityModel> MockEntityModel = new Mock<IEntityModel>();
+        private Mock<IValueModel> MockIdentity = new Mock<IValueModel>();
         private Mock<IEntity> MockEntity = new Mock<IEntity>();
         private Mock<ValueEntityDelegate> MockValueEntityDelegate = new Mock<ValueEntityDelegate>();
         private Mock<AssignIdentityDelegate> MockAssignIdentityDelegate = new Mock<AssignIdentityDelegate>();
@@ -38,6 +39,9 @@ namespace Curds.Persistence.Query.Tests
             MockEntityModel
                 .Setup(model => model.Keys)
                 .Returns(TestKeys);
+            MockEntityModel
+                .Setup(model => model.Identity)
+                .Returns(MockIdentity.Object);
             MockEntityModel
                 .Setup(model => model.NonIdentities)
                 .Returns(TestNonIdentities);

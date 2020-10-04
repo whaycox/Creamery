@@ -7,6 +7,7 @@ namespace Curds.Persistence.Query.Implementation
     using Abstraction;
     using Persistence.Abstraction;
     using Queries.Implementation;
+    using Model.Abstraction;
 
     internal class SqlQueryBuilder<TDataModel> : ISqlQueryBuilder<TDataModel>
         where TDataModel : IDataModel
@@ -18,6 +19,8 @@ namespace Curds.Persistence.Query.Implementation
         public SqlQueryBuilder(IServiceProvider serviceProvider)
         {
             ServiceProvider = serviceProvider;
+
+            ServiceProvider.GetRequiredService<IModelMap<TDataModel>>();
         }
 
         public ISqlQuery Insert<TEntity>(IEnumerable<TEntity> entities)

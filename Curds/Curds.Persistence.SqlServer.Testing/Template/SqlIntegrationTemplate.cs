@@ -43,7 +43,7 @@ namespace Curds.Persistence.Template
             TestServiceCollection
                 .AddCurdsPersistence()
                 .AddTransient<IChildRepository, ChildRepository>()
-                .ConfigureEntity<GenericToken>()
+                .ConfigureEntity<ITestDataModel, GenericToken>()
                     .HasKey(token => token.ID)
                     .RegisterEntity()
                 .AddSingleton(Mock.Of<ILogger<SqlConnectionContext>>());
