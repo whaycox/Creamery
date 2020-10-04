@@ -83,5 +83,20 @@ namespace Curds.Persistence.Tests
             TestEnumEntity.NullableByteEnum = TestByteEnum.Two;
             TestEnumEntity.NullableIntEnum = TestIntEnum.Two;
         }
+
+        [TestMethod]
+        public async Task CanSelectIdentitylessEntity()
+        {
+            RegisterServices();
+            BuildServiceProvider();
+            IRepository<ITestDataModel, GenericToken> testRepository = TestServiceProvider.GetRequiredService<IRepository<ITestDataModel, GenericToken>>();
+            await testRepository.Insert(TestGenericToken);
+
+            GenericToken actual = await testRepository.Fetch(TestGenericToken.ID);
+
+            Assert.AreNotSame(TestGenericToken, actual);
+            Assert.AreEqual(TestGenericToken.ID, actual.ID);
+            Assert.AreEqual(TestGenericToken.CreateTime, actual.CreateTime);
+        }
     }
 }

@@ -76,7 +76,8 @@ namespace Curds.Persistence.Model.Implementation
                     .First(model => model.Property.Name == key));
 
             entityModel.ValueEntity = DelegateMapper.MapValueEntityDelegate(entityModel);
-            entityModel.AssignIdentity = DelegateMapper.MapAssignIdentityDelegate(entityModel);
+            if (entityModel.Identity != null)
+                entityModel.AssignIdentity = DelegateMapper.MapAssignIdentityDelegate(entityModel);
             entityModel.ProjectEntity = DelegateMapper.MapProjectEntityDelegate(entityModel);
 
             return entityModel;

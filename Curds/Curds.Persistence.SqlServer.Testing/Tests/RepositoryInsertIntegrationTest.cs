@@ -44,6 +44,16 @@ namespace Curds.Persistence.Tests
         }
 
         [TestMethod]
+        public async Task CanInsertIdentitylessEntity()
+        {
+            RegisterServices();
+            BuildServiceProvider();
+            IRepository<ITestDataModel, GenericToken> testRepository = TestServiceProvider.GetRequiredService<IRepository<ITestDataModel, GenericToken>>();
+
+            await testRepository.Insert(TestGenericToken);
+        }
+
+        [TestMethod]
         public async Task CanInsertPopulatedOtherEntity()
         {
             FullyPopulateOtherEntity();

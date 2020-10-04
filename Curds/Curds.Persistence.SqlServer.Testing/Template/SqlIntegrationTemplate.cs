@@ -17,6 +17,7 @@ namespace Curds.Persistence.Template
         protected TestEntity TestEntity = new TestEntity();
         protected OtherEntity OtherEntity = new OtherEntity();
         protected TestEnumEntity TestEnumEntity = new TestEnumEntity();
+        protected GenericToken TestGenericToken = new GenericToken();
         protected string TestSchema = nameof(TestSchema);
 
         protected IServiceCollection TestServiceCollection = new ServiceCollection();
@@ -42,6 +43,9 @@ namespace Curds.Persistence.Template
             TestServiceCollection
                 .AddCurdsPersistence()
                 .AddTransient<IChildRepository, ChildRepository>()
+                .ConfigureEntity<GenericToken>()
+                    .HasKey(token => token.ID)
+                    .RegisterEntity()
                 .AddSingleton(Mock.Of<ILogger<SqlConnectionContext>>());
         }
 

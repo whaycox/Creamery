@@ -12,6 +12,7 @@ namespace Curds.Persistence.Query.Implementation
     internal class SqlTable : ISqlTable
     {
         public IEntityModel Model { get; }
+        private bool ModelHasIdentity => Model.Identity != null;
 
         public string Alias { get; set; }
 
@@ -22,9 +23,9 @@ namespace Curds.Persistence.Query.Implementation
         public List<ISqlColumn> Columns => Model.Values.Select(value => BuildColumn(value)).ToList();
         public List<ISqlColumn> Keys => Model.Keys.Select(key => BuildColumn(key)).ToList();
         public ISqlColumn KeyColumn => BuildColumn(Model.KeyValue);
-        public ISqlColumn Identity => BuildColumn(Model.Identity);
+        public ISqlColumn Identity => ModelHasIdentity ? BuildColumn(Model.Identity) : null;
         public IEnumerable<ISqlColumn> NonIdentities => Model.NonIdentities.Select(value => BuildColumn(value));
-        public ISqlTable InsertedIdentityTable => new InsertedIdentitySqlTable(this);
+        public ISqlTable InsertedIdentityTable => ModelHasIdentity ? new InsertedIdentitySqlTable(this) : null;
 
         public SqlTable(IEntityModel model)
         {

@@ -7,6 +7,7 @@
         TestEntity Test { get; }
         OtherEntity Other { get; }
         TestEnumEntity Enums { get; }
+        GenericToken Tokens { get; }
 
         Parent Parents { get; }
         Child Children { get; }
