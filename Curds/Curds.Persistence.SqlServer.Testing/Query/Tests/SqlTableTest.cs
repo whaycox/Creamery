@@ -21,6 +21,7 @@ namespace Curds.Persistence.Query.Tests
         private ValueEntity TestValueEntity = new ValueEntity();
 
         private Mock<IEntityModel> MockEntityModel = new Mock<IEntityModel>();
+        private Mock<IValueModel> MockIdentity = new Mock<IValueModel>();
         private Mock<IEntity> MockEntity = new Mock<IEntity>();
         private Mock<ValueEntityDelegate> MockValueEntityDelegate = new Mock<ValueEntityDelegate>();
         private Mock<AssignIdentityDelegate> MockAssignIdentityDelegate = new Mock<AssignIdentityDelegate>();
@@ -38,6 +39,9 @@ namespace Curds.Persistence.Query.Tests
             MockEntityModel
                 .Setup(model => model.Keys)
                 .Returns(TestKeys);
+            MockEntityModel
+                .Setup(model => model.Identity)
+                .Returns(MockIdentity.Object);
             MockEntityModel
                 .Setup(model => model.NonIdentities)
                 .Returns(TestNonIdentities);
@@ -201,6 +205,16 @@ namespace Curds.Persistence.Query.Tests
             Assert.AreSame(mockValue, actualColumn.ValueModel);
         }
 
+        [TestMethod]
+        public void IdentityIsNullWhenModelsHasNone()
+        {
+            MockEntityModel
+                .Setup(model => model.Identity)
+                .Returns<IValueModel>(null);
+
+            Assert.IsNull(TestObject.Identity);
+        }
+
         private void SetupForNNonIdentities(int nonIdentities)
         {
             for (int i = 0; i < nonIdentities; i++)
@@ -250,6 +264,16 @@ namespace Curds.Persistence.Query.Tests
 
             InsertedIdentitySqlTable actualTable = actual.VerifyIsActually<InsertedIdentitySqlTable>();
             Assert.AreSame(actualTable.Table, TestObject);
+        }
+
+        [TestMethod]
+        public void InsertedIdentityTableIsNullWhenModelHasNone()
+        {
+            MockEntityModel
+                .Setup(model => model.Identity)
+                .Returns<IValueModel>(null);
+
+            Assert.IsNull(TestObject.InsertedIdentityTable);
         }
 
         [TestMethod]

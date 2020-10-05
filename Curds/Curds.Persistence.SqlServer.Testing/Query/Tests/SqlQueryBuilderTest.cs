@@ -7,6 +7,7 @@ using Whey;
 namespace Curds.Persistence.Query.Tests
 {
     using Abstraction;
+    using Model.Abstraction;
     using Implementation;
     using Persistence.Abstraction;
     using Persistence.Domain;
@@ -19,9 +20,8 @@ namespace Curds.Persistence.Query.Tests
         private TestEntity TestEntity = new TestEntity();
 
         private Mock<IServiceProvider> MockServiceProvider = new Mock<IServiceProvider>();
-        private Mock<ISqlQueryTokenFactory> MockTokenFactory = new Mock<ISqlQueryTokenFactory>();
-        private Mock<ISqlQueryPhraseBuilder> MockPhraseBuilder = new Mock<ISqlQueryPhraseBuilder>();
         private Mock<ISqlQueryContext<ITestDataModel>> MockQueryContext = new Mock<ISqlQueryContext<ITestDataModel>>();
+        private Mock<IModelMap<ITestDataModel>> MockModelMap = new Mock<IModelMap<ITestDataModel>>();
 
         private SqlQueryBuilder<ITestDataModel> TestObject = null;
 
@@ -29,14 +29,11 @@ namespace Curds.Persistence.Query.Tests
         public void Init()
         {
             MockServiceProvider
-                .Setup(provider => provider.GetService(typeof(ISqlQueryTokenFactory)))
-                .Returns(MockTokenFactory.Object);
-            MockServiceProvider
-                .Setup(provider => provider.GetService(typeof(ISqlQueryPhraseBuilder)))
-                .Returns(MockPhraseBuilder.Object);
-            MockServiceProvider
                 .Setup(provider => provider.GetService(typeof(ISqlQueryContext<ITestDataModel>)))
                 .Returns(MockQueryContext.Object);
+            MockServiceProvider
+                .Setup(provider => provider.GetService(typeof(IModelMap<ITestDataModel>)))
+                .Returns(MockModelMap.Object);
 
             TestObject = new SqlQueryBuilder<ITestDataModel>(MockServiceProvider.Object);
         }

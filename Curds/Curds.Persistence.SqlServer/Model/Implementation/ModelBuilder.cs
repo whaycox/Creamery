@@ -74,9 +74,12 @@ namespace Curds.Persistence.Model.Implementation
                 entityModel.KeyDefinition.Add(
                     entityModel.ValueModels
                     .First(model => model.Property.Name == key));
+            if (entityModel.KeyDefinition.Count == 0)
+                throw new ModelException($"Model {typeof(TModel).FullName} does not define a key for entity {entityType.FullName}");
 
             entityModel.ValueEntity = DelegateMapper.MapValueEntityDelegate(entityModel);
-            entityModel.AssignIdentity = DelegateMapper.MapAssignIdentityDelegate(entityModel);
+            if (entityModel.Identity != null)
+                entityModel.AssignIdentity = DelegateMapper.MapAssignIdentityDelegate(entityModel);
             entityModel.ProjectEntity = DelegateMapper.MapProjectEntityDelegate(entityModel);
 
             return entityModel;

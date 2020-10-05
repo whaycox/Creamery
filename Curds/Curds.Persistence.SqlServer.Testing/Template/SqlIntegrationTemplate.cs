@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
+using Whey.Domain;
 
 namespace Curds.Persistence.Template
 {
@@ -10,8 +11,13 @@ namespace Curds.Persistence.Template
     using Domain;
     using Implementation;
 
+    [TestCategory(nameof(TestType.Integration))]
     public abstract class SqlIntegrationTemplate : SqlTemplate
     {
+        protected TestEntity TestEntity = new TestEntity();
+        protected OtherEntity OtherEntity = new OtherEntity();
+        protected TestEnumEntity TestEnumEntity = new TestEnumEntity();
+        protected GenericToken TestGenericToken = new GenericToken();
         protected string TestSchema = nameof(TestSchema);
 
         protected IServiceCollection TestServiceCollection = new ServiceCollection();
@@ -37,6 +43,9 @@ namespace Curds.Persistence.Template
             TestServiceCollection
                 .AddCurdsPersistence()
                 .AddTransient<IChildRepository, ChildRepository>()
+                .ConfigureEntity<ITestDataModel, GenericToken>()
+                    .HasKey(token => token.ID)
+                    .RegisterEntity()
                 .AddSingleton(Mock.Of<ILogger<SqlConnectionContext>>());
         }
 
@@ -53,6 +62,19 @@ namespace Curds.Persistence.Template
                         .WithColumnName("SomeOtherName")
                         .RegisterColumn()
                     .RegisterEntity();
+        }
+
+        protected void FullyPopulateOtherEntity()
+        {
+            OtherEntity.NullableBoolValue = OtherEntity.BoolValue;
+            OtherEntity.NullableByteValue = OtherEntity.ByteValue;
+            OtherEntity.NullableShortValue = OtherEntity.ShortValue;
+            OtherEntity.NullableIntValue = OtherEntity.IntValue;
+            OtherEntity.NullableLongValue = OtherEntity.LongValue;
+            OtherEntity.NullableDateTimeValue = OtherEntity.DateTimeValue;
+            OtherEntity.NullableDateTimeOffsetValue = OtherEntity.DateTimeOffsetValue;
+            OtherEntity.NullableDecimalValue = OtherEntity.DecimalValue;
+            OtherEntity.NullableDoubleValue = OtherEntity.DoubleValue;
         }
     }
 }

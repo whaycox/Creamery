@@ -48,9 +48,7 @@ namespace Curds.Persistence.Model.Tests
             MockConfigurationFactory
                 .Setup(factory => factory.Build<ITestDataModel>(It.IsAny<Type>()))
                 .Returns(TestCompiledConfiguration);
-            MockTypeMapper
-                .Setup(mapper => mapper.EntityTypes<ITestDataModel>())
-                .Returns(TestEntityTypes);
+            SetupMapperForProperty(TestEntityIDProperty);
 
             TestObject = new ModelBuilder(
                 MockConfigurationFactory.Object,
@@ -60,6 +58,13 @@ namespace Curds.Persistence.Model.Tests
 
         private void SetupMapperForProperty(PropertyInfo property)
         {
+            TestCompiledConfiguration.Keys.Clear();
+            TestCompiledConfiguration.Keys.Add(property.Name);
+
+            MockTypeMapper.Reset();
+            MockTypeMapper
+                .Setup(mapper => mapper.EntityTypes<ITestDataModel>())
+                .Returns(TestEntityTypes);
             MockTypeMapper
                 .Setup(mapper => mapper.ValueTypes(It.IsAny<Type>()))
                 .Returns(new[] { property });
@@ -115,6 +120,7 @@ namespace Curds.Persistence.Model.Tests
         public void MapsAssignIdentityDelegateForEachType()
         {
             TestEntityTypes.Add(OtherEntityType);
+            TestCompiledColumnConfiguration.IsIdentity = true;
 
             TestObject.BuildEntityModels<ITestDataModel>();
 
@@ -242,9 +248,7 @@ namespace Curds.Persistence.Model.Tests
         public void CanUseEnumsForColumn(string testPropertyName, SqlDbType expectedDbType)
         {
             PropertyInfo enumProperty = typeof(TestEnumEntity).GetProperty(testPropertyName);
-            MockTypeMapper
-                .Setup(mapper => mapper.ValueTypes(It.IsAny<Type>()))
-                .Returns(new[] { enumProperty });
+            SetupMapperForProperty(enumProperty);
 
             IEnumerable<IEntityModel> actual = TestObject.BuildEntityModels<ITestDataModel>();
 
@@ -274,7 +278,18 @@ namespace Curds.Persistence.Model.Tests
         [ExpectedException(typeof(InvalidOperationException))]
         public void KeyForMissingPropertyThrows()
         {
-            TestCompiledConfiguration.Keys.Add(TestEntityIDProperty.Name);
+            MockTypeMapper
+                .Setup(mapper => mapper.ValueTypes(It.IsAny<Type>()))
+                .Returns(new List<PropertyInfo>());
+
+            TestObject.BuildEntityModels<ITestDataModel>();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ModelException))]
+        public void NoKeysThrows()
+        {
+            TestCompiledConfiguration.Keys.Clear();
 
             TestObject.BuildEntityModels<ITestDataModel>();
         }

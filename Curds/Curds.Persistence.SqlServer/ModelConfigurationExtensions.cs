@@ -68,7 +68,8 @@ namespace Curds.Persistence
             where TModel : IDataModel
             where TEntity : IEntity
         {
-            throw new NotImplementedException();
+            configuration.Keys.Add(ExpressionParser.ParseEntityValueSelection(valueSelectionExpression));
+            return configuration;
         }
 
         public static IServiceCollection RegisterEntity<TEntity>(this EntityConfiguration<TEntity> configuration)

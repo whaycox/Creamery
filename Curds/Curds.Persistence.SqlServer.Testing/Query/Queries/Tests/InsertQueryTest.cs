@@ -22,6 +22,7 @@ namespace Curds.Persistence.Query.Queries.Tests
         private ValueEntity TestValueEntity = new ValueEntity();
 
         private Mock<ISqlTable> MockTable = new Mock<ISqlTable>();
+        private Mock<ISqlColumn> MockIdentityColumn = new Mock<ISqlColumn>();
         private Mock<ISqlTable> MockInsertedIdentityTable = new Mock<ISqlTable>();
 
         private InsertQuery<ITestDataModel, TestEntity> TestObject = null;
@@ -32,6 +33,9 @@ namespace Curds.Persistence.Query.Queries.Tests
             MockQueryContext
                 .Setup(context => context.AddTable<TestEntity>())
                 .Returns(MockTable.Object);
+            MockTable
+                .Setup(table => table.Identity)
+                .Returns(MockIdentityColumn.Object);
             MockTable
                 .Setup(table => table.InsertedIdentityTable)
                 .Returns(MockInsertedIdentityTable.Object);
@@ -60,6 +64,18 @@ namespace Curds.Persistence.Query.Queries.Tests
         }
 
         [TestMethod]
+        public void NoIdentityDoesntCreateTemporaryIdentityPhrase()
+        {
+            MockTable
+                .Setup(table => table.Identity)
+                .Returns<ISqlColumn>(null);
+
+            TestObject.GenerateCommand();
+
+            MockPhraseBuilder.Verify(builder => builder.CreateTableToken(It.IsAny<ISqlTable>()), Times.Never);
+        }
+
+        [TestMethod]
         public void GenerateCommandBuildsInsertToTablePhrase()
         {
             TestObject.GenerateCommand();
@@ -73,6 +89,18 @@ namespace Curds.Persistence.Query.Queries.Tests
             TestObject.GenerateCommand();
 
             MockPhraseBuilder.Verify(builder => builder.OutputToTemporaryIdentityToken(MockTable.Object), Times.Once);
+        }
+
+        [TestMethod]
+        public void NoIdentityDoesntOutputToTemporaryIdentityPhrase()
+        {
+            MockTable
+                .Setup(table => table.Identity)
+                .Returns<ISqlColumn>(null);
+
+            TestObject.GenerateCommand();
+
+            MockPhraseBuilder.Verify(builder => builder.OutputToTemporaryIdentityToken(It.IsAny<ISqlTable>()), Times.Never);
         }
 
         [DataTestMethod]
@@ -135,6 +163,20 @@ namespace Curds.Persistence.Query.Queries.Tests
             TestObject.GenerateCommand();
 
             MockPhraseBuilder.Verify(builder => builder.DropTableToken(MockInsertedIdentityTable.Object), Times.Once);
+        }
+
+        [TestMethod]
+        public void NoIdentityDoesntBuildSelectFromTemporaryIdentity()
+        {
+            MockTable
+                .Setup(table => table.Identity)
+                .Returns<ISqlColumn>(null);
+
+            TestObject.GenerateCommand();
+
+            MockPhraseBuilder.Verify(builder => builder.SelectColumnsToken(It.IsAny<IEnumerable<ISqlColumn>>()), Times.Never);
+            MockPhraseBuilder.Verify(builder => builder.FromTableToken(It.IsAny<ISqlTable>()), Times.Never);
+            MockPhraseBuilder.Verify(builder => builder.DropTableToken(It.IsAny<ISqlTable>()), Times.Never);
         }
 
         [TestMethod]
