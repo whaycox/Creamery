@@ -64,6 +64,18 @@ namespace Curds.Persistence.Query.Queries.Tests
         }
 
         [TestMethod]
+        public void NoIdentityDoesntCreateTemporaryIdentityPhrase()
+        {
+            MockTable
+                .Setup(table => table.Identity)
+                .Returns<ISqlColumn>(null);
+
+            TestObject.GenerateCommand();
+
+            MockPhraseBuilder.Verify(builder => builder.CreateTableToken(It.IsAny<ISqlTable>()), Times.Never);
+        }
+
+        [TestMethod]
         public void GenerateCommandBuildsInsertToTablePhrase()
         {
             TestObject.GenerateCommand();
@@ -77,6 +89,18 @@ namespace Curds.Persistence.Query.Queries.Tests
             TestObject.GenerateCommand();
 
             MockPhraseBuilder.Verify(builder => builder.OutputToTemporaryIdentityToken(MockTable.Object), Times.Once);
+        }
+
+        [TestMethod]
+        public void NoIdentityDoesntOutputToTemporaryIdentityPhrase()
+        {
+            MockTable
+                .Setup(table => table.Identity)
+                .Returns<ISqlColumn>(null);
+
+            TestObject.GenerateCommand();
+
+            MockPhraseBuilder.Verify(builder => builder.OutputToTemporaryIdentityToken(It.IsAny<ISqlTable>()), Times.Never);
         }
 
         [DataTestMethod]
@@ -139,6 +163,20 @@ namespace Curds.Persistence.Query.Queries.Tests
             TestObject.GenerateCommand();
 
             MockPhraseBuilder.Verify(builder => builder.DropTableToken(MockInsertedIdentityTable.Object), Times.Once);
+        }
+
+        [TestMethod]
+        public void NoIdentityDoesntBuildSelectFromTemporaryIdentity()
+        {
+            MockTable
+                .Setup(table => table.Identity)
+                .Returns<ISqlColumn>(null);
+
+            TestObject.GenerateCommand();
+
+            MockPhraseBuilder.Verify(builder => builder.SelectColumnsToken(It.IsAny<IEnumerable<ISqlColumn>>()), Times.Never);
+            MockPhraseBuilder.Verify(builder => builder.FromTableToken(It.IsAny<ISqlTable>()), Times.Never);
+            MockPhraseBuilder.Verify(builder => builder.DropTableToken(It.IsAny<ISqlTable>()), Times.Never);
         }
 
         [TestMethod]

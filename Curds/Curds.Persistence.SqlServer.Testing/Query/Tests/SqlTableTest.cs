@@ -205,6 +205,16 @@ namespace Curds.Persistence.Query.Tests
             Assert.AreSame(mockValue, actualColumn.ValueModel);
         }
 
+        [TestMethod]
+        public void IdentityIsNullWhenModelsHasNone()
+        {
+            MockEntityModel
+                .Setup(model => model.Identity)
+                .Returns<IValueModel>(null);
+
+            Assert.IsNull(TestObject.Identity);
+        }
+
         private void SetupForNNonIdentities(int nonIdentities)
         {
             for (int i = 0; i < nonIdentities; i++)
@@ -254,6 +264,16 @@ namespace Curds.Persistence.Query.Tests
 
             InsertedIdentitySqlTable actualTable = actual.VerifyIsActually<InsertedIdentitySqlTable>();
             Assert.AreSame(actualTable.Table, TestObject);
+        }
+
+        [TestMethod]
+        public void InsertedIdentityTableIsNullWhenModelHasNone()
+        {
+            MockEntityModel
+                .Setup(model => model.Identity)
+                .Returns<IValueModel>(null);
+
+            Assert.IsNull(TestObject.InsertedIdentityTable);
         }
 
         [TestMethod]

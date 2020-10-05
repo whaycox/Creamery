@@ -11,7 +11,7 @@ namespace Curds.Persistence.Tests
     using Model.Configuration.Domain;
 
     [TestClass]
-    public class RegistrationExtensionsTest : RegistrationExtensionsTemplate
+    public class ModelConfigurationExtensionsTest : RegistrationExtensionsTemplate
     {
         private string TestSchema = nameof(TestSchema);
         private string TestTable = nameof(TestTable);
@@ -87,6 +87,34 @@ namespace Curds.Persistence.Tests
         }
         private bool VerifyTestEntityHasTableInModel(ModelEntityConfiguration<ITestDataModel, TestEntity> actual) =>
             TestTable == actual.Table;
+
+        [TestMethod]
+        public void CanConfigureKeyForEntity()
+        {
+            TestServiceCollection
+                .ConfigureEntity<TestEntity>()
+                .HasKey(entity => entity.ID)
+                .RegisterEntity();
+
+            VerifyServiceHasInstance<EntityConfiguration<TestEntity>>(typeof(IEntityConfiguration), ServiceLifetime.Singleton, VerifyTestEntityHasKey);
+        }
+        private bool VerifyTestEntityHasKey(EntityConfiguration<TestEntity> actual) =>
+            actual.Keys.Count == 1 &&
+            actual.Keys.First() == nameof(TestEntity.ID);
+
+        [TestMethod]
+        public void CanConfigureKeyForEntityInModel()
+        {
+            TestServiceCollection
+                .ConfigureEntity<ITestDataModel, TestEntity>()
+                .HasKey(entity => entity.ID)
+                .RegisterEntity();
+
+            VerifyServiceHasInstance<ModelEntityConfiguration<ITestDataModel, TestEntity>>(typeof(IModelEntityConfiguration), ServiceLifetime.Singleton, VerifyTestEntityHasKeyInModel);
+        }
+        private bool VerifyTestEntityHasKeyInModel(ModelEntityConfiguration<ITestDataModel, TestEntity> actual) =>
+            actual.Keys.Count == 1 &&
+            actual.Keys.First() == nameof(TestEntity.ID);
 
         private bool VerifyOtherEntityHasIdentity(EntityConfiguration<OtherEntity> actual)
         {

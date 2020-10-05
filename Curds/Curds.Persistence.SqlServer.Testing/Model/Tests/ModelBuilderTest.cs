@@ -284,5 +284,14 @@ namespace Curds.Persistence.Model.Tests
 
             TestObject.BuildEntityModels<ITestDataModel>();
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(ModelException))]
+        public void NoKeysThrows()
+        {
+            TestCompiledConfiguration.Keys.Clear();
+
+            TestObject.BuildEntityModels<ITestDataModel>();
+        }
     }
 }

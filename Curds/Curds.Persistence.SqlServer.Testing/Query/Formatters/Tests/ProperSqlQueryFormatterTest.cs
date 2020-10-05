@@ -1,21 +1,27 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Curds.Persistence.Query.Formatters.Tests
 {
     using Implementation;
     using Query.Abstraction;
-    using Text.Abstraction;
+    using Query.Domain;
     using Tokens.Implementation;
+    using Values.Domain;
 
     [TestClass]
     public class ProperSqlQueryFormatterTest
     {
         private SimpleIndentStringBuilder TestStringBuilder = new SimpleIndentStringBuilder();
         private List<ISqlQueryToken> TestTokens = new List<ISqlQueryToken>();
+        private ValueEntity TestValueEntity = new ValueEntity();
+        private IntValue TestValueOne = new IntValue { Name = nameof(TestValueOne), Int = 5 };
+        private IntValue TestValueTwo = new IntValue { Name = nameof(TestValueTwo), Int = 7 };
+        private ValueEntitySqlQueryToken TestValueEntityToken = null;
 
+        private Mock<ISqlQueryTokenFactory> MockTokenFactory = new Mock<ISqlQueryTokenFactory>();
+        private Mock<ISqlQueryParameterBuilder> MockParameterBuilder = new Mock<ISqlQueryParameterBuilder>();
         private Mock<ISqlQueryToken> MockToken = new Mock<ISqlQueryToken>();
         private Mock<ISqlColumn> MockColumn = new Mock<ISqlColumn>();
 
@@ -24,7 +30,21 @@ namespace Curds.Persistence.Query.Formatters.Tests
         [TestInitialize]
         public void Init()
         {
+            TestValueEntity.Values.Add(TestValueOne);
+
+            MockTokenFactory
+                .Setup(factory => factory.Parameter(MockParameterBuilder.Object, It.IsAny<string>(), It.IsAny<object>()))
+                .Returns(MockToken.Object);
+
+            BuildValueEntityToken();
             TestObject = new ProperSqlQueryFormatter(TestStringBuilder);
+        }
+        private void BuildValueEntityToken()
+        {
+            TestValueEntityToken = new ValueEntitySqlQueryToken(
+                MockTokenFactory.Object,
+                MockParameterBuilder.Object,
+                TestValueEntity);
         }
 
         [DataTestMethod]
@@ -221,6 +241,41 @@ namespace Curds.Persistence.Query.Formatters.Tests
                 .VerifySetNewLine()
                 .VerifyAppend(")")
                 .VerifyOperationCount();
+        }
+
+        [TestMethod]
+        public void VisitValueEntityWrapsWithParens()
+        {
+            TestObject.VisitValueEntity(TestValueEntityToken);
+
+            TestStringBuilder
+                .VerifyAppend("(")
+                .VerifyAppend(")");
+        }
+
+        [TestMethod]
+        public void VisitValueEntityVisitsEachToken()
+        {
+            TestValueEntity.Values.Add(TestValueTwo);
+            BuildValueEntityToken();
+
+            TestObject.VisitValueEntity(TestValueEntityToken);
+
+            MockToken.Verify(token => token.AcceptFormatVisitor(TestObject), Times.Exactly(2));
+        }
+
+        [TestMethod]
+        public void VisitValueEntitySeparatesEachValueWithComma()
+        {
+            TestValueEntity.Values.Add(TestValueTwo);
+            BuildValueEntityToken();
+
+            TestObject.VisitValueEntity(TestValueEntityToken);
+
+            TestStringBuilder
+                .VerifyAppend("(")
+                .VerifyAppend(", ")
+                .VerifyAppend(")");
         }
     }
 }
