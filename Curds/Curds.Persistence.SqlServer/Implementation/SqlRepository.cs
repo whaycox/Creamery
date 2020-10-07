@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Data.SqlClient;
-using System.Linq;
 
 namespace Curds.Persistence.Implementation
 {
     using Abstraction;
     using Domain;
     using Query.Abstraction;
-    using Model.Abstraction;
 
     public class SqlRepository<TDataModel, TEntity> : IRepository<TDataModel, TEntity>
         where TDataModel : IDataModel
@@ -27,21 +23,22 @@ namespace Curds.Persistence.Implementation
         public Task Insert(IEnumerable<TEntity> entities) => InsertQuery(entities).Execute();
         private ISqlQuery InsertQuery(IEnumerable<TEntity> entities) => QueryBuilder.Insert(entities);
 
+        protected async Task<TEntity> FetchSingleEntity(ISqlQuery<TEntity> entityQuery)
+        {
+            List<TEntity> entities = await FetchEntities(entityQuery);
+            if (entities.Count == 0)
+                throw new QueryResultCountException("No entities found with the supplied keys");
+            if (entities.Count != 1)
+                throw new QueryResultCountException($"Expected 1 entity but found {entities.Count} instead");
+            return entities[0];
+        }
         protected async Task<List<TEntity>> FetchEntities(ISqlQuery<TEntity> entityQuery)
         {
             await entityQuery.Execute();
             return entityQuery.Results;
         }
 
-        public async Task<TEntity> Fetch(params object[] keys)
-        {
-            IList<TEntity> entities = await FetchEntities(FetchQuery(keys));
-            if (entities.Count == 0)
-                throw new KeyNotFoundException();
-            if (entities.Count != 1)
-                throw new Exception();
-            return entities.First();
-        }
+        public Task<TEntity> Fetch(params object[] keys) => FetchSingleEntity(FetchQuery(keys));
         private ISqlQuery<TEntity> FetchQuery(object[] keys) => QueryBuilder
             .From<TEntity>()
             .Where(entity => entity.Keys == keys)

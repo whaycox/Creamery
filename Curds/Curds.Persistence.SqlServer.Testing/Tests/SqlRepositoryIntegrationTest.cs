@@ -30,7 +30,7 @@ namespace Curds.Persistence.Tests
                 await testRepository.Fetch(TestEntity.ID);
                 Assert.Fail();
             }
-            catch (KeyNotFoundException)
+            catch (QueryResultCountException)
             { }
         }
 
