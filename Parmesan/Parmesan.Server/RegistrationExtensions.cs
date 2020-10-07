@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Curds.Persistence.Domain;
 
 namespace Parmesan.Server
 {
     using Abstraction;
+    using Application;
     using Domain;
     using Implementation;
 
@@ -14,7 +16,9 @@ namespace Parmesan.Server
             services.AddControllersWithViews();
 
             services
+                .AddParmesanApplication()
                 .Configure<OidcSettings>(configuration.GetSection("Parmesan.Server:OIDC"))
+                .Configure<SqlConnectionInformation>(configuration.GetSection("Parmesan.Server:SQL"))
                 .AddSingleton<IOidcProviderMetadataFactory, OidcProviderMetadataFactory>()
                 .AddSingleton<IAuthorizationRequestParser, AuthorizationRequestParser>();
 

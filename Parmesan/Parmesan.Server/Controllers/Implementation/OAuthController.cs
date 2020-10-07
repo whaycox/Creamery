@@ -1,33 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Parmesan.Server.Controllers.Implementation
 {
+    using Application.Queries.VerifyAuthorizationRequest.Domain;
     using Domain;
-    using Server.Abstraction;
     using Parmesan.Domain;
+    using Server.Abstraction;
+    using ViewModels.Domain;
 
     public class OAuthController : Controller
     {
         private IAuthorizationRequestParser AuthorizationRequestParser { get; }
+        private IMediator Mediator { get; }
 
-        public OAuthController(IAuthorizationRequestParser authorizationRequestParser)
+        public OAuthController(
+            IAuthorizationRequestParser authorizationRequestParser,
+            IMediator mediator)
         {
             AuthorizationRequestParser = authorizationRequestParser;
+            Mediator = mediator;
         }
 
         public const string AuthorizeRoute = "oauth/authorize";
         [HttpGet]
         [Route(AuthorizeRoute)]
-        public IActionResult Authorize(WebAuthorizationRequest webAuthorizationRequest)
+        public async Task<IActionResult> Authorize(WebAuthorizationRequest webAuthorizationRequest)
         {
             AuthorizationRequest parsedRequest = AuthorizationRequestParser.Parse(webAuthorizationRequest);
-
-
-            return View();
+            AuthorizationRequestViewModel viewModel = await Mediator.Send(new VerifyAuthorizationRequestQuery
+            {
+                AuthorizationRequest = parsedRequest,
+            });
+            return View(viewModel);
         }
     }
 }
