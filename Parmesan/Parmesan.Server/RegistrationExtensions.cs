@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Curds.Persistence.Domain;
+using MediatR;
 
 namespace Parmesan.Server
 {
@@ -16,6 +17,7 @@ namespace Parmesan.Server
             services.AddControllersWithViews();
 
             services
+                .AddMediatR(typeof(RegistrationExtensions).Assembly)
                 .AddParmesanApplication()
                 .Configure<OidcSettings>(configuration.GetSection("Parmesan.Server:OIDC"))
                 .Configure<SqlConnectionInformation>(configuration.GetSection("Parmesan.Server:SQL"))

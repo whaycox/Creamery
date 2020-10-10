@@ -17,16 +17,18 @@ namespace Parmesan.Persistence.Implementation
 
         public async Task<Client> FetchByPublicClientID(string publicClientID)
         {
-            List<Client> fetched = await FetchEntities(FetchByPublicClientIDQuery(publicClientID));
-            if (fetched.Count == 0)
-                throw new KeyNotFoundException($"No client found with ClientID: {publicClientID}");
-            if (fetched.Count > 1)
-                throw new InvalidOperationException($"Duplicate clients found with ClientID: {publicClientID}");
-            return fetched[0];
+            Client fetched = await FetchSingleEntity(FetchByPublicClientIDQuery(publicClientID));
+            List<ClientRedirectionUri> redirects = await FetchEntities(FetchRedirectsForClientQuery(fetched.ID));
+            fetched.Redirects.AddRange(redirects);
+            return fetched;
         }
         private ISqlQuery<Client> FetchByPublicClientIDQuery(string publicClientID) => QueryBuilder
             .From<Client>()
             .Where(client => client.PublicClientID == publicClientID)
+            .Project();
+        private ISqlQuery<ClientRedirectionUri> FetchRedirectsForClientQuery(int clientID) => QueryBuilder
+            .From<ClientRedirectionUri>()
+            .Where(redirect => redirect.ClientID == clientID)
             .Project();
     }
 }

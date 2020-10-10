@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Parmesan.Server.Controllers.Implementation
 {
@@ -9,7 +10,10 @@ namespace Parmesan.Server.Controllers.Implementation
     using Parmesan.Domain;
     using Server.Abstraction;
     using ViewModels.Domain;
+    using Queries.CheckForSession.Domain;
+    using Commands.BindAuthorizationToSession.Domain;
 
+    [Authorize]
     public class OAuthController : Controller
     {
         private IAuthorizationRequestParser AuthorizationRequestParser { get; }

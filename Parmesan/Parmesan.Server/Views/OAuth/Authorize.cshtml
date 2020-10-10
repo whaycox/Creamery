@@ -1,0 +1,15 @@
+﻿@model AuthorizationRequestViewModel
+
+<div>
+    <div>Display Name: @Model.ClientDisplayName</div>
+    <div>
+        <div>They are requesting access to:</div>
+        <ul>
+            @foreach (string scope in Model.ScopeDescriptions)
+            {
+                <li>@scope</li>
+            }
+        </ul>
+    </div>
+    <button>Authorize</button>
+</div>

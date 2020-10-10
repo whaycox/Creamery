@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Curds.Persistence;
 using Microsoft.Extensions.DependencyInjection;
-using Curds.Persistence;
 
 namespace Parmesan
 {
+    using Abstraction;
+    using Implementation;
     using Persistence.Abstraction;
     using Persistence.Implementation;
-    using Domain;
 
     public static class RegistrationExtensions
     {
@@ -14,6 +14,7 @@ namespace Parmesan
             .AddCurdsPersistence()
             .ConfigureParmesanDataModel()
             .AddTransient<IParmesanDatabase, SqlParmesanDatabase>()
+            .AddTransient<IScopeResolver, ScopeResolver>()
             .AddTransient<IClientRepository, SqlClientRepository>();
 
         private static IServiceCollection ConfigureParmesanDataModel(this IServiceCollection services) => services

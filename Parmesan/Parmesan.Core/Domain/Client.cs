@@ -9,5 +9,8 @@ namespace Parmesan.Domain
     {
         public string PublicClientID { get; set; }
         public ClientType Type { get; set; }
+        public string DisplayName { get; set; }
+
+        public List<ClientRedirectionUri> Redirects { get; } = new List<ClientRedirectionUri>();
     }
 }
