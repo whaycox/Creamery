@@ -8,6 +8,7 @@ namespace Parmesan.Server.Commands.SignInUser.Implementation
 {
     using Application.Queries.VerifyAuthentication.Domain;
     using Domain;
+    using Server.Domain;
 
     internal class SignInUserHandler : AsyncRequestHandler<SignInUserCommand>
     {
@@ -24,7 +25,7 @@ namespace Parmesan.Server.Commands.SignInUser.Implementation
             {
                 Authentication = request.Authentication,
             });
-            await request.Context.SignInAsync(authenticatedUser);
+            await request.Context.SignInAsync(ServerConstants.LoginAuthenticationScheme, authenticatedUser);
         }
     }
 }

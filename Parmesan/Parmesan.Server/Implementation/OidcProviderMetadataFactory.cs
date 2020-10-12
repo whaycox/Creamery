@@ -21,7 +21,7 @@ namespace Parmesan.Server.Implementation
 
         public OidcProviderMetadata Build() => new OidcProviderMetadata
         {
-            AuthorizationEndpoint = UriPath.Combine(Settings.Issuer, "oauth/authorize"),
+            AuthorizationEndpoint = UriPath.Combine(Settings.Issuer, ServerConstants.AuthorizeRoute),
         };
     }
 }

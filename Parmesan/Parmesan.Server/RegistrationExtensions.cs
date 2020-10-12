@@ -18,10 +18,24 @@ namespace Parmesan.Server
         public static IServiceCollection AddParmesanServer(this IServiceCollection services, IConfiguration configuration)
         {
             services
-                .AddAuthentication(LoginCookieConstants.LoginAuthenticationScheme)
-                .AddCookie(LoginCookieConstants.LoginAuthenticationScheme, options =>
+                .AddAuthorization(options =>
                 {
-                    options.LoginPath = new PathString(AuthenticationRoutes.LoginRoute);
+                    options.AddPolicy(ServerConstants.LoginAuthorizationPolicy, builder =>
+                    {
+                        builder.AuthenticationSchemes.Add(ServerConstants.LoginAuthenticationScheme);
+                        builder.RequireAuthenticatedUser();
+                    });
+                })
+                .AddAuthentication()
+                .AddCookie(ServerConstants.LoginAuthenticationScheme, options =>
+                {
+                    options.Cookie = new CookieBuilder
+                    {
+                        IsEssential = true,
+                        SameSite = SameSiteMode.Strict,
+                        Path = ServerConstants.CookiePath,
+                    };
+                    options.LoginPath = new PathString(ServerConstants.LoginRoute);
                 });
 
             services.AddControllersWithViews();

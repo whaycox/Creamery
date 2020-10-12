@@ -11,7 +11,7 @@ namespace Parmesan.Server.Controllers.Implementation
     using Server.Domain;
     using ViewModels.Domain;
 
-    [Authorize]
+    [Authorize(ServerConstants.LoginAuthorizationPolicy)]
     public class OAuthController : Controller
     {
         private IAuthorizationRequestParser AuthorizationRequestParser { get; }
@@ -25,9 +25,8 @@ namespace Parmesan.Server.Controllers.Implementation
             Mediator = mediator;
         }
 
-        public const string AuthorizeRoute = "oauth/authorize";
         [HttpGet]
-        [Route(AuthorizeRoute)]
+        [Route(ServerConstants.AuthorizeRoute)]
         public async Task<IActionResult> Authorize(WebAuthorizationRequest webAuthorizationRequest)
         {
             AuthorizationRequest parsedRequest = AuthorizationRequestParser.Parse(webAuthorizationRequest);
