@@ -8,5 +8,8 @@ namespace Parmesan.Persistence.Abstraction
     {
         Client Clients { get; }
         ClientRedirectionUri ClientRedirectionUris { get; }
+
+        User Users { get; }
+        PasswordAuthentication Passwords { get; }
     }
 }

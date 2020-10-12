@@ -22,7 +22,7 @@ namespace Parmesan.Server.TestSite
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddParmesanServer(Configuration);
+            services.AddParmesanServer(Configuration).AddAuthentication();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -38,6 +38,8 @@ namespace Parmesan.Server.TestSite
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

@@ -12,13 +12,19 @@ namespace Parmesan.Persistence.Implementation
     internal class SqlParmesanDatabase : SqlDatabase, IParmesanDatabase
     {
         public IClientRepository Clients { get; }
+        public IUserRepository Users { get; }
+        public IRepository<IParmesanDataModel, PasswordAuthentication> Passwords { get; }
 
         public SqlParmesanDatabase(
             ISqlConnectionContext connectionContext,
-            IClientRepository clients)
+            IClientRepository clients,
+            IUserRepository users,
+            IRepository<IParmesanDataModel, PasswordAuthentication> passwords)
             : base(connectionContext)
         {
             Clients = clients;
+            Users = users;
+            Passwords = passwords;
         }
     }
 }

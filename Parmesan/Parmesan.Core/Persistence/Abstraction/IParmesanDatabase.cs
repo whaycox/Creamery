@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Curds.Persistence.Abstraction;
+﻿using Curds.Persistence.Abstraction;
 
 namespace Parmesan.Persistence.Abstraction
 {
@@ -10,5 +7,7 @@ namespace Parmesan.Persistence.Abstraction
     public interface IParmesanDatabase
     {
         IClientRepository Clients { get; }
+        IUserRepository Users { get; }
+        IRepository<IParmesanDataModel, PasswordAuthentication> Passwords { get; }
     }
 }

@@ -1,0 +1,10 @@
+﻿@model string
+
+<div>
+    <form method="post">
+        <input type="text" name="userName" placeholder="User Name" />
+        <input type="password" name="password" placeholder="Password" />
+        <input type="hidden" name="returnUrl" value="@Model" />
+        <button type="submit">Authenticate</button>
+    </form>
+</div>

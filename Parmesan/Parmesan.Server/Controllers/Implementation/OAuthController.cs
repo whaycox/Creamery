@@ -1,17 +1,15 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Parmesan.Server.Controllers.Implementation
 {
     using Application.Queries.VerifyAuthorizationRequest.Domain;
-    using Domain;
     using Parmesan.Domain;
     using Server.Abstraction;
+    using Server.Domain;
     using ViewModels.Domain;
-    using Queries.CheckForSession.Domain;
-    using Commands.BindAuthorizationToSession.Domain;
 
     [Authorize]
     public class OAuthController : Controller
