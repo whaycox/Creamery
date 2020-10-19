@@ -9,6 +9,7 @@ namespace Parmesan.Domain
         public int ClientID { get; set; }
         public int UserID { get; set; }
         public string Scope { get; set; }
+        public string RedirectUri { get; set; }
         public string CodeChallenge { get; set; }
         public DateTimeOffset Expiration { get; set; }
 

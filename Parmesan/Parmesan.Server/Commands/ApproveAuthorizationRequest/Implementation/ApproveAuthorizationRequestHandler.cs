@@ -11,17 +11,17 @@ namespace Parmesan.Server.Commands.ApproveAuthorizationRequest.Implementation
 {
     using Domain;
     using Application.Domain;
-    using Server.Abstraction;
+    using Application.Abstraction;
     using Application.Commands.CreateAuthorizationCode.Domain;
     using Parmesan.Domain;
 
     internal class ApproveAuthorizationRequestHandler : IRequestHandler<ApproveAuthorizationRequestCommand, string>
     {
-        private IAuthorizationTickets AuthorizationTickets { get; }
+        private IAuthorizationTicketRepository AuthorizationTickets { get; }
         private IMediator Mediator { get; }
 
         public ApproveAuthorizationRequestHandler(
-            IAuthorizationTickets authorizationTickets, 
+            IAuthorizationTicketRepository authorizationTickets, 
             IMediator mediator)
         {
             AuthorizationTickets = authorizationTickets;
@@ -36,6 +36,7 @@ namespace Parmesan.Server.Commands.ApproveAuthorizationRequest.Implementation
                 ClientID = authZ.Client.ID,
                 UserID = request.UserID,
                 Scope = ReassembleScopes(authZ.Scopes),
+                RedirectUri = authZ.RedirectUri,
                 CodeChallenge = authZ.CodeChallenge,
             });
             Dictionary<string, string> queryAdditions = new Dictionary<string, string>();

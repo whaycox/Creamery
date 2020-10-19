@@ -1,36 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Security;
-using System.Security.Cryptography;
 
-namespace Parmesan.Server.Implementation
+namespace Parmesan.Application.Implementation
 {
     using Abstraction;
-    using Application.Domain;
+    using Domain;
+    using Parmesan.Abstraction;
 
-    internal class AuthorizationTickets : IAuthorizationTickets
+    internal class AuthorizationTicketRepository : IAuthorizationTicketRepository
     {
         private const int TicketLengthInBytes = 48;
 
+        private ISecureRandom Random { get; }
+
         private Dictionary<string, VerifiedAuthorizationRequest> TicketCollection { get; } = new Dictionary<string, VerifiedAuthorizationRequest>();
+
+        public AuthorizationTicketRepository(ISecureRandom random)
+        {
+            Random = random;
+        }
 
         public string Create(VerifiedAuthorizationRequest authorizationRequest)
         {
             if (authorizationRequest == null)
                 throw new ArgumentNullException(nameof(authorizationRequest));
 
-            string ticketNumber = CreateNewTicketNumber();
+            string ticketNumber = Random.Generate(TicketLengthInBytes);
             TicketCollection.Add(ticketNumber, authorizationRequest);
 
             return ticketNumber;
-        }
-        private string CreateNewTicketNumber()
-        {
-            byte[] ticketBytes = new byte[TicketLengthInBytes];
-            using (RandomNumberGenerator random = RandomNumberGenerator.Create())
-                random.GetBytes(ticketBytes);
-            return Convert.ToBase64String(ticketBytes);
         }
 
         public VerifiedAuthorizationRequest Consume(string ticketNumber)

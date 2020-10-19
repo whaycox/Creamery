@@ -1,15 +1,13 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System;
-using System.Net;
+using System.Threading.Tasks;
 
 namespace Parmesan.Server.Controllers.Implementation
 {
-    using Domain;
     using Commands.SignInUser.Domain;
+    using Domain;
     using Server.Domain;
     using ViewModels.Domain;
 

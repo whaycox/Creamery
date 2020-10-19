@@ -25,7 +25,11 @@ namespace Parmesan.Server.Commands.SignInUser.Implementation
             {
                 Authentication = request.Authentication,
             });
-            await request.Context.SignInAsync(ServerConstants.LoginAuthenticationScheme, authenticatedUser);
+            AuthenticationProperties authProperties = new AuthenticationProperties { IsPersistent = request.Authentication.RememberMe };
+            await request.Context.SignInAsync(
+                ServerConstants.LoginAuthenticationScheme, 
+                authenticatedUser, 
+                authProperties);
         }
     }
 }

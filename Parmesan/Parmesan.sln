@@ -15,9 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parmesan.Shared", "Parmesan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parmesan.Shared.Testing", "Parmesan.Shared.Testing\Parmesan.Shared.Testing.csproj", "{A0D5163E-A98A-429D-9E2E-3EB7B1E13CCF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parmesan.Application", "Parmesan.Application\Parmesan.Application.csproj", "{2AC99C54-13B1-414A-927D-78713EB9D385}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parmesan.Application", "Parmesan.Application\Parmesan.Application.csproj", "{2AC99C54-13B1-414A-927D-78713EB9D385}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parmesan.Core", "Parmesan.Core\Parmesan.Core.csproj", "{32E5C063-4A87-411F-A345-AACB27BBB460}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Parmesan.Core", "Parmesan.Core\Parmesan.Core.csproj", "{32E5C063-4A87-411F-A345-AACB27BBB460}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

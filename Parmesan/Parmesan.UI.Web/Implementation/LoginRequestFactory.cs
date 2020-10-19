@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.WebUtilities;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Parmesan.UI.Web.Implementation
 {

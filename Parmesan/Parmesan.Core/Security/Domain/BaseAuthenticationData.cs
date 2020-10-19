@@ -5,5 +5,6 @@
     public abstract class BaseAuthenticationData : IAuthenticationData
     {
         public string UserName { get; set; }
+        public bool RememberMe { get; set; }
     }
 }

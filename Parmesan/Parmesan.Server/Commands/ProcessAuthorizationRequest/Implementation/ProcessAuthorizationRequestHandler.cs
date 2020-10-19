@@ -10,17 +10,18 @@ namespace Parmesan.Server.Commands.ProcessAuthorizationRequest.Implementation
     using Parmesan.Domain;
     using Server.Abstraction;
     using ViewModels.Domain;
+    using Application.Abstraction;
 
     internal class ProcessAuthorizationRequestHandler : IRequestHandler<ProcessAuthorizationRequestCommand, AuthorizationRequestViewModel>
     {
         private IAuthorizationRequestParser RequsetParser { get; }
         private IMediator Mediator { get; }
-        private IAuthorizationTickets AuthorizationTickets { get; }
+        private IAuthorizationTicketRepository AuthorizationTickets { get; }
 
         public ProcessAuthorizationRequestHandler(
             IAuthorizationRequestParser requsetParser,
             IMediator mediator,
-            IAuthorizationTickets authorizationTickets)
+            IAuthorizationTicketRepository authorizationTickets)
         {
             RequsetParser = requsetParser;
             Mediator = mediator;

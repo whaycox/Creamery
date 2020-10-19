@@ -46,8 +46,7 @@ namespace Parmesan.Server
                 .Configure<OidcSettings>(configuration.GetSection("Parmesan.Server:OIDC"))
                 .Configure<SqlConnectionInformation>(configuration.GetSection("Parmesan.Server:SQL"))
                 .AddSingleton<IOidcProviderMetadataFactory, OidcProviderMetadataFactory>()
-                .AddSingleton<IAuthorizationRequestParser, AuthorizationRequestParser>()
-                .AddSingleton<IAuthorizationTickets, AuthorizationTickets>();
+                .AddSingleton<IAuthorizationRequestParser, AuthorizationRequestParser>();
 
             return services;
         }

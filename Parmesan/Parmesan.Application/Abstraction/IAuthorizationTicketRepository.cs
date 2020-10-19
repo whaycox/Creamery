@@ -1,8 +1,8 @@
-﻿namespace Parmesan.Server.Abstraction
+﻿namespace Parmesan.Application.Abstraction
 {
-    using Application.Domain;
+    using Domain;
 
-    public interface IAuthorizationTickets
+    public interface IAuthorizationTicketRepository
     {
         string Create(VerifiedAuthorizationRequest authorizationRequest);
         VerifiedAuthorizationRequest Consume(string ticketNumber);

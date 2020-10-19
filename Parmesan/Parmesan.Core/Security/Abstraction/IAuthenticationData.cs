@@ -3,5 +3,6 @@
     public interface IAuthenticationData
     {
         string UserName { get; }
+        bool RememberMe { get; }
     }
 }

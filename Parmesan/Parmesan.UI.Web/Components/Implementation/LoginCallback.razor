@@ -1,0 +1,21 @@
+﻿@page "/loginRedirect"
+@inject NavigationManager Navigation
+
+<div>This is the login callback</div>
+<div>Code: @Code</div>
+<div>State: @State</div>
+
+@code {
+
+    private string Code { get; set; }
+    private string State { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Uri current = Navigation.ToAbsoluteUri(Navigation.Uri);
+        Dictionary<string, StringValues> queryDictionary = QueryHelpers.ParseQuery(current.Query);
+        Code = queryDictionary[ResponseType.code.ToString()];
+        State = queryDictionary[AuthorizationRequest.StateName];
+    }
+}

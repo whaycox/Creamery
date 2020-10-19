@@ -40,8 +40,9 @@ namespace Parmesan.Application.Commands.CreateAuthorizationCode.Implementation
                 Code = Random.Generate(CodeLengthInBytes),
                 ClientID = request.ClientID,
                 UserID = request.UserID,
-                CodeChallenge = request.CodeChallenge,
                 Scope = request.Scope,
+                RedirectUri = request.RedirectUri,
+                CodeChallenge = request.CodeChallenge,
                 Expiration = CurrentExpiration,
             };
             await Database.AuthorizationCodes.Insert(newCode);
