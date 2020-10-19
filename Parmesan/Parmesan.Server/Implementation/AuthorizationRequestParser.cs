@@ -3,7 +3,7 @@
 namespace Parmesan.Server.Implementation
 {
     using Abstraction;
-    using Domain;
+    using Controllers.Domain;
     using Parmesan.Domain;
 
     internal class AuthorizationRequestParser : IAuthorizationRequestParser

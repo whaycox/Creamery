@@ -15,6 +15,7 @@ namespace Parmesan
     {
         public static IServiceCollection AddParmesanCore(this IServiceCollection services) => services
             .AddPersistence()
+            .AddSingleton<ISecureRandom, SecureRandom>()
             .AddTransient<IScopeResolver, ScopeResolver>()
             .AddTransient<IClaimsPrincipalFactory, ClaimsPrinicpalFactory>()
             .AddTransient<IAuthenticationVerifier, AuthenticationVerifier>()
@@ -31,6 +32,9 @@ namespace Parmesan
             .ConfigureDefaultSchema(nameof(Parmesan))
             .ConfigureEntity<PasswordAuthentication>()
                 .HasKey(password => password.UserID)
+                .RegisterEntity()
+            .ConfigureEntity<AuthorizationCode>()
+                .HasKey(authCode => authCode.Code)
                 .RegisterEntity();
     }
 }

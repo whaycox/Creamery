@@ -1,15 +1,22 @@
 ﻿@model AuthorizationRequestViewModel
 
-<div>
-    <div>Display Name: @Model.ClientDisplayName</div>
-    <div>
-        <div>They are requesting access to:</div>
-        <ul>
-            @foreach (string scope in Model.ScopeDescriptions)
-            {
-                <li>@scope</li>
-            }
-        </ul>
+<div class="server-display">
+    <div class="display-title">
+        @Model.ClientDisplayName
     </div>
-    <button>Authorize</button>
+    <div class="display-content">
+        <form id="auth-overview" method="post" action="authorize">
+            <div class="description">Is Requesting Access To:</div>
+            <ul class="scope">
+                @foreach (string scope in Model.ScopeDescriptions)
+                {
+                    <li>@scope</li>
+                }
+            </ul>
+            <input type="hidden" name="ticketNumber" value="@Model.TicketNumber" />
+            <div class="submit-container">
+                <button type="submit">Authorize</button>
+            </div>
+        </form>
+    </div>
 </div>

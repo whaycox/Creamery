@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 
-namespace Parmesan.ViewModels.Domain
+namespace Parmesan.Application.Domain
 {
-    public class AuthorizationRequestViewModel
+    using Parmesan.Domain;
+
+    public class VerifiedAuthorizationRequest
     {
-        public string PublicClientID { get; set; }
-        public string ClientDisplayName { get; set; }
+        public Client Client { get; set; }
         public string RedirectUri { get; set; }
+        public List<string> Scopes { get; set; }
         public List<string> ScopeDescriptions { get; set; }
         public string State { get; set; }
         public string CodeChallenge { get; set; }

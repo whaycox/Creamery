@@ -39,7 +39,7 @@ namespace Parmesan.UI.Web.Implementation
             arguments.Add(AuthorizationRequest.ResponseTypeName, ResponseType.code.ToString());
             arguments.Add(AuthorizationRequest.ClientIDName, ClientIDFactory.ClientID);
             arguments.Add(AuthorizationRequest.RedirectUriName, UriPath.Combine(HostEnvironment.BaseAddress, "loginRedirect"));
-            arguments.Add(AuthorizationRequest.ScopeName, "openid");
+            arguments.Add(AuthorizationRequest.ScopeName, "openid profile");
             string requestState = await StateFactory.Generate();
             arguments.Add(AuthorizationRequest.StateName, requestState);
             arguments.Add(AuthorizationRequest.CodeChallengeMethodName, PkceFactory.CodeChallengeMethod.ToString());

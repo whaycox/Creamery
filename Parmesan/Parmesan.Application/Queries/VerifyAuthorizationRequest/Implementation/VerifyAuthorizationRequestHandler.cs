@@ -11,9 +11,9 @@ namespace Parmesan.Application.Queries.VerifyAuthorizationRequest.Implementation
     using Parmesan.Abstraction;
     using Parmesan.Domain;
     using Persistence.Abstraction;
-    using ViewModels.Domain;
+    using Application.Domain;
 
-    internal class VerifyAuthorizationRequestHandler : IRequestHandler<VerifyAuthorizationRequestQuery, AuthorizationRequestViewModel>
+    internal class VerifyAuthorizationRequestHandler : IRequestHandler<VerifyAuthorizationRequestQuery, VerifiedAuthorizationRequest>
     {
         private IParmesanDatabase Database { get; }
         private IScopeResolver ScopeResolver { get; }
@@ -26,7 +26,7 @@ namespace Parmesan.Application.Queries.VerifyAuthorizationRequest.Implementation
             ScopeResolver = scopeResolver;
         }
 
-        public async Task<AuthorizationRequestViewModel> Handle(VerifyAuthorizationRequestQuery request, CancellationToken cancellationToken)
+        public async Task<VerifiedAuthorizationRequest> Handle(VerifyAuthorizationRequestQuery request, CancellationToken cancellationToken)
         {
             AuthorizationRequest authZ = request.AuthorizationRequest;
             Client client = await Database.Clients.FetchByPublicClientID(authZ.ClientID);
@@ -42,11 +42,11 @@ namespace Parmesan.Application.Queries.VerifyAuthorizationRequest.Implementation
                 .Scope
                 .Select(scope => ScopeResolver.Resolve(scope))
                 .ToList();
-            return new AuthorizationRequestViewModel
+            return new VerifiedAuthorizationRequest
             {
-                PublicClientID = client.PublicClientID,
-                ClientDisplayName = client.DisplayName,
+                Client = client,
                 RedirectUri = authZ.RedirectUri,
+                Scopes = authZ.Scope,
                 ScopeDescriptions = resolvedScopes,
                 State = authZ.State,
                 CodeChallenge = authZ.CodeChallenge,

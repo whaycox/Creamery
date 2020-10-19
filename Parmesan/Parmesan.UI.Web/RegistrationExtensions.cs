@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
-using System.Linq;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Parmesan.UI.Web
 {
     using Abstraction;
-    using Domain;
     using Implementation;
+    using Parmesan.Abstraction;
 
     public static class RegistrationExtensions
     {
         public static IServiceCollection AddParmesanWebUI(this IServiceCollection services, string clientName) => services
+            .AddSingleton<ISecureRandom, SecureRandom>()
             .AddSingleton<IClientIDFactory>(new ClientIDFactory(clientName))
             .AddSingleton<IStateFactory, StateFactory>()
             .AddSingleton<IPkceFactory, PkceFactory>()

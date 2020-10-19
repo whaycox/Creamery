@@ -5,23 +5,19 @@ using System.Threading.Tasks;
 
 namespace Parmesan.Server.Controllers.Implementation
 {
-    using Application.Queries.VerifyAuthorizationRequest.Domain;
-    using Parmesan.Domain;
-    using Server.Abstraction;
+    using Commands.ApproveAuthorizationRequest.Domain;
+    using Commands.ProcessAuthorizationRequest.Domain;
+    using Domain;
     using Server.Domain;
     using ViewModels.Domain;
 
     [Authorize(ServerConstants.LoginAuthorizationPolicy)]
     public class OAuthController : Controller
     {
-        private IAuthorizationRequestParser AuthorizationRequestParser { get; }
         private IMediator Mediator { get; }
 
-        public OAuthController(
-            IAuthorizationRequestParser authorizationRequestParser,
-            IMediator mediator)
+        public OAuthController(IMediator mediator)
         {
-            AuthorizationRequestParser = authorizationRequestParser;
             Mediator = mediator;
         }
 
@@ -29,12 +25,24 @@ namespace Parmesan.Server.Controllers.Implementation
         [Route(ServerConstants.AuthorizeRoute)]
         public async Task<IActionResult> Authorize(WebAuthorizationRequest webAuthorizationRequest)
         {
-            AuthorizationRequest parsedRequest = AuthorizationRequestParser.Parse(webAuthorizationRequest);
-            AuthorizationRequestViewModel viewModel = await Mediator.Send(new VerifyAuthorizationRequestQuery
+            ProcessAuthorizationRequestCommand command = new ProcessAuthorizationRequestCommand
             {
-                AuthorizationRequest = parsedRequest,
-            });
+                Request = webAuthorizationRequest,
+            };
+            AuthorizationRequestViewModel viewModel = await Mediator.Send(command);
             return View(viewModel);
+        }
+
+        [HttpPost]
+        [Route(ServerConstants.AuthorizeRoute)]
+        public async Task<IActionResult> ApproveAuthorization(string ticketNumber)
+        {
+            string redirectUri = await Mediator.Send(new ApproveAuthorizationRequestCommand
+            {
+                UserID = HttpContext.User.LoggedInUserID(),
+                TicketNumber = ticketNumber,
+            });
+            return new RedirectResult(redirectUri);
         }
     }
 }

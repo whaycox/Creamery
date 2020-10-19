@@ -1,50 +1,34 @@
-﻿using Microsoft.JSInterop;
-using System;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Parmesan.UI.Web.Implementation
 {
     using Abstraction;
+    using Parmesan.Abstraction;
     using Parmesan.Domain;
 
     internal class PkceFactory : IPkceFactory
     {
-        private const int VerifierLengthInBytes = 32;
+        private const int VerifierLengthInBytes = 48;
 
-        private IJSRuntime JavaScript { get; }
+        private ISecureRandom Random { get; }
 
         private string Verifier { get; set; }
         private string Challenge { get; set; }
 
         public CodeChallengeMethod CodeChallengeMethod => CodeChallengeMethod.S256;
 
-        public PkceFactory(IJSRuntime javaScript)
+        public PkceFactory(ISecureRandom random)
         {
-            JavaScript = javaScript;
-        }
-
-        private string Base64UrlEncode(byte[] bytes) => //https://tools.ietf.org/html/rfc7636#appendix-A
-            Base64UrlEncode(Convert.ToBase64String(bytes));
-        private string Base64UrlEncode(string base64)
-        {
-            base64 = base64.Split('=')[0];
-            base64 = base64.Replace('+', '-');
-            base64 = base64.Replace('/', '_');
-            return base64;
+            Random = random;
         }
 
         public async Task<string> CodeVerifier()
         {
             if (Verifier == null)
-                Verifier = await GenerateCodeVerifier();
+                Verifier = await Random.GenerateAsync(VerifierLengthInBytes);
             return Verifier;
-        }
-        private async Task<string> GenerateCodeVerifier()
-        {
-            string random = await JavaScript.InvokeAsync<string>("generateRandom", VerifierLengthInBytes);
-            return Base64UrlEncode(random);
         }
 
         public async Task<string> CodeChallenge()
@@ -56,10 +40,9 @@ namespace Parmesan.UI.Web.Implementation
         private async Task<string> GenerateCodeChallenge()
         {
             using (SHA256 hasher = SHA256.Create())
-                return Base64UrlEncode(
-                    hasher.ComputeHash(
-                        Encoding.ASCII.GetBytes(
-                            await CodeVerifier())));
+                return hasher
+                    .ComputeHash(Encoding.ASCII.GetBytes(await CodeVerifier()))
+                    .Base64UrlEncode();
         }
     }
 }

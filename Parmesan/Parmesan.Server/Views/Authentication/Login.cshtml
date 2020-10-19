@@ -1,10 +1,23 @@
-﻿@model string
+﻿@model LoginViewModel
+@{ 
+    ViewBag.Title = "Login";
+}
 
-<div>
-    <form method="post">
-        <input type="text" name="userName" placeholder="User Name" />
-        <input type="password" name="password" placeholder="Password" />
-        <input type="hidden" name="returnUrl" value="@Model" />
-        <button type="submit">Authenticate</button>
-    </form>
+<div class="server-display">
+    <div class="display-title">
+        @Model.SiteName
+    </div>
+    <div class="display-content">
+        <form id="login-form" method="post" action="login">
+            <label for="userName">User Name:</label>
+            <input id="userName" name="userName" type="text" placeholder="User Name" />
+            <label for="password">Password:</label>
+            <input id="password" name="password" type="password" placeholder="Password" />
+            <input name="returnUrl" type="hidden" value="@Model.ReturnUrl" />
+            <div id="error-display" ></div>
+            <div class="submit-container">
+                <button type="submit">Authenticate</button>
+            </div>
+        </form>
+    </div>
 </div>

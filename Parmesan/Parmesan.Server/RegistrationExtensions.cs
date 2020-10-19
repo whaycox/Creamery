@@ -11,7 +11,6 @@ namespace Parmesan.Server
     using Application;
     using Domain;
     using Implementation;
-    using Controllers.Domain;
 
     public static class RegistrationExtensions
     {
@@ -43,10 +42,12 @@ namespace Parmesan.Server
             services
                 .AddMediatR(typeof(RegistrationExtensions).Assembly)
                 .AddParmesanApplication()
+                .Configure<ServerOptions>(configuration.GetSection("Parmesan.Server"))
                 .Configure<OidcSettings>(configuration.GetSection("Parmesan.Server:OIDC"))
                 .Configure<SqlConnectionInformation>(configuration.GetSection("Parmesan.Server:SQL"))
                 .AddSingleton<IOidcProviderMetadataFactory, OidcProviderMetadataFactory>()
-                .AddSingleton<IAuthorizationRequestParser, AuthorizationRequestParser>();
+                .AddSingleton<IAuthorizationRequestParser, AuthorizationRequestParser>()
+                .AddSingleton<IAuthorizationTickets, AuthorizationTickets>();
 
             return services;
         }

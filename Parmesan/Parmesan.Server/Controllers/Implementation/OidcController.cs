@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Parmesan.Server.Controllers.Implementation
 {
@@ -10,6 +11,7 @@ namespace Parmesan.Server.Controllers.Implementation
     using Server.Abstraction;
 
     [ApiController]
+    [AllowAnonymous]
     public class OidcController : ControllerBase
     {
         private IOidcProviderMetadataFactory MetadataFactory { get; }
