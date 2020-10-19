@@ -14,6 +14,7 @@ namespace Parmesan.UI.Web
             .AddSingleton<IStateFactory, StateFactory>()
             .AddSingleton<IPkceFactory, PkceFactory>()
             .AddSingleton<IRemoteOidcMetadataProvider, RemoteOidcMetadataProvider>()
-            .AddSingleton<ILoginRequestFactory, LoginRequestFactory>();
+            .AddSingleton<ILoginRequestFactory, LoginRequestFactory>()
+            .AddSingleton<ILoginRequestStorage, LoginRequestStorage>();
     }
 }

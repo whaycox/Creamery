@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 namespace Parmesan.UI.Web.Implementation
 {
     using Abstraction;
+    using Domain;
 
     internal class StateFactory : IStateFactory
     {
@@ -17,7 +18,7 @@ namespace Parmesan.UI.Web.Implementation
         }
 
         public Task<string> Generate() => JavaScript
-            .InvokeAsync<string>("generateRandom", LengthInBytes)
+            .InvokeAsync<string>(JavaScriptFunctionNames.GenerateRandom, LengthInBytes)
             .AsTask();
     }
 }

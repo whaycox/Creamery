@@ -16,19 +16,22 @@ namespace Parmesan.UI.Web.Implementation
         private IClientIDFactory ClientIDFactory { get; }
         private IStateFactory StateFactory { get; }
         private IPkceFactory PkceFactory { get; }
+        private ILoginRequestStorage RequestStorage { get; }
 
         public LoginRequestFactory(
             IWebAssemblyHostEnvironment hostEnvironment,
             IRemoteOidcMetadataProvider oidcProviderMetadataFactory,
             IClientIDFactory clientIDFactory,
             IStateFactory stateFactory,
-            IPkceFactory pkceFactory)
+            IPkceFactory pkceFactory,
+            ILoginRequestStorage requestStorage)
         {
             HostEnvironment = hostEnvironment;
             OidcProviderMetadataFactory = oidcProviderMetadataFactory;
             ClientIDFactory = clientIDFactory;
             StateFactory = stateFactory;
             PkceFactory = pkceFactory;
+            RequestStorage = requestStorage;
         }
 
         public async Task<string> Build(HttpClient httpClient)
@@ -44,6 +47,8 @@ namespace Parmesan.UI.Web.Implementation
             arguments.Add(AuthorizationRequest.CodeChallengeName, await PkceFactory.CodeChallenge());
 
             OidcProviderMetadata metadata = await OidcProviderMetadataFactory.Fetch(httpClient);
+
+            await RequestStorage.Store(await PkceFactory.CodeVerifier(), requestState);
 
             return QueryHelpers.AddQueryString(metadata.AuthorizationEndpoint, arguments);
         }

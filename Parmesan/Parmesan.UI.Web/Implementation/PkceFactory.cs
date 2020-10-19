@@ -1,6 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System;
 
 namespace Parmesan.UI.Web.Implementation
 {
@@ -43,6 +44,13 @@ namespace Parmesan.UI.Web.Implementation
                 return hasher
                     .ComputeHash(Encoding.ASCII.GetBytes(await CodeVerifier()))
                     .Base64UrlEncode();
+        }
+
+        public void SetVerifier(string verifier)
+        {
+            if (Verifier != null)
+                throw new InvalidOperationException("Cannot set a verifier when one is set");
+            Verifier = verifier;
         }
     }
 }

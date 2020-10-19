@@ -1,21 +1,32 @@
 ﻿@page "/loginRedirect"
 @inject NavigationManager Navigation
+@inject ILoginRequestStorage RequestStorage
+@inject IPkceFactory Pkce
 
 <div>This is the login callback</div>
 <div>Code: @Code</div>
 <div>State: @State</div>
+<div>Expected State: @ExpectedState</div>
+<div>Verifier: @Verifier</div>
 
 @code {
 
     private string Code { get; set; }
     private string State { get; set; }
+    private string ExpectedState { get; set; }
+    private string Verifier { get; set; }
 
     protected async override Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         Uri current = Navigation.ToAbsoluteUri(Navigation.Uri);
         Dictionary<string, StringValues> queryDictionary = QueryHelpers.ParseQuery(current.Query);
-        Code = queryDictionary[ResponseType.code.ToString()];
-        State = queryDictionary[AuthorizationRequest.StateName];
+        string providedCode = queryDictionary[ResponseType.code.ToString()];
+        string providedState = queryDictionary[AuthorizationRequest.StateName];
+
+        var loginRequest = await RequestStorage.Consume();
+        if (loginRequest.state != providedState)
+            throw new InvalidOperationException("Invalid state provided");
+        Pkce.SetVerifier(loginRequest.verifier);
     }
 }

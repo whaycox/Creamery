@@ -1,5 +1,5 @@
 ﻿@page "/"
-@inject IJSRuntime JavaScript
+@inject NavigationManager Navigation
 @inject HttpClient Http
 @inject ILoginRequestFactory LoginRequestFactory
 
@@ -12,6 +12,6 @@
     private async Task TestLogin()
     {
         string requestUrl = await LoginRequestFactory.Build(Http);
-        await JavaScript.InvokeVoidAsync(JavaScriptFunctionNames.RedirectTo, requestUrl);
+        Navigation.NavigateTo(requestUrl, true);
     }
 }

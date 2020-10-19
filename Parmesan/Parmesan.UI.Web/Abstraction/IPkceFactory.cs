@@ -10,5 +10,7 @@ namespace Parmesan.UI.Web.Abstraction
 
         Task<string> CodeVerifier();
         Task<string> CodeChallenge();
+
+        void SetVerifier(string verifier);
     }
 }
