@@ -6,30 +6,31 @@ namespace Curds.Collections.Tests
     using Implementation;
 
     [TestClass]
-    public class LinkedListNodeTest
+    public class DualLinkNodeTest
     {
         private object TestParent = new object();
-        private LinkedListNode<int> TestNodeA = null;
-        private LinkedListNode<int> TestNodeB = null;
-        private LinkedListNode<int> TestNodeC = null;
+        private int TestInt = 3;
+        private DualLinkNode<int> TestNodeA = null;
+        private DualLinkNode<int> TestNodeB = null;
+        private DualLinkNode<int> TestNodeC = null;
 
-        private LinkedListNode<int> TestObject = null;
+        private DualLinkNode<int> TestObject = null;
 
         [TestInitialize]
         public void Init()
         {
-            TestNodeA = new LinkedListNode<int>(TestParent);
-            TestNodeB = new LinkedListNode<int>(TestParent);
-            TestNodeC = new LinkedListNode<int>(TestParent);
+            TestNodeA = new DualLinkNode<int>(TestParent, TestInt);
+            TestNodeB = new DualLinkNode<int>(TestParent, TestInt);
+            TestNodeC = new DualLinkNode<int>(TestParent, TestInt);
 
-            TestObject = new LinkedListNode<int>(TestParent);
+            TestObject = new DualLinkNode<int>(TestParent, TestInt);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void CannotSupplyNullParent()
         {
-            new LinkedListNode<int>(null);
+            new DualLinkNode<int>(null, TestInt);
         }
 
         [TestMethod]
@@ -37,7 +38,7 @@ namespace Curds.Collections.Tests
         public void CannotAttachBeforeNodeOfDifferentParent()
         {
             object otherParent = new object();
-            LinkedListNode<int> otherNode = new LinkedListNode<int>(otherParent);
+            DualLinkNode<int> otherNode = new DualLinkNode<int>(otherParent, TestInt);
 
             TestObject.AttachBefore(otherNode);
         }
@@ -47,7 +48,7 @@ namespace Curds.Collections.Tests
         public void CannotAttachAfterNodeOfDifferentParent()
         {
             object otherParent = new object();
-            LinkedListNode<int> otherNode = new LinkedListNode<int>(otherParent);
+            DualLinkNode<int> otherNode = new DualLinkNode<int>(otherParent, TestInt);
 
             TestObject.AttachAfter(otherNode);
         }
@@ -138,7 +139,7 @@ namespace Curds.Collections.Tests
             TestNodeA.AttachBefore(TestNodeB);
             TestObject.AttachBefore(TestNodeB);
 
-            LinkedListNode<int> actual = TestObject.DetachBefore();
+            DualLinkNode<int> actual = TestObject.DetachBefore();
 
             Assert.AreSame(TestNodeA, actual);
         }
@@ -237,7 +238,7 @@ namespace Curds.Collections.Tests
             TestNodeB.AttachAfter(TestNodeA);
             TestObject.AttachAfter(TestNodeA);
 
-            LinkedListNode<int> actual = TestObject.DetachAfter();
+            DualLinkNode<int> actual = TestObject.DetachAfter();
 
             Assert.AreSame(TestNodeB, actual);
         }
