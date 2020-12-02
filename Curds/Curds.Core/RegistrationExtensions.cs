@@ -2,6 +2,8 @@
 
 namespace Curds
 {
+    using Clone.Abstraction;
+    using Clone.Implementation;
     using Cron.Abstraction;
     using Cron.FieldDefinitions.Implementation;
     using Cron.FieldFactories.Implementation;
@@ -9,8 +11,8 @@ namespace Curds
     using Cron.RangeFactories.Abstraction;
     using Cron.RangeFactories.Chains.Implementation;
     using Cron.RangeFactories.Implementation;
-    using Persistence.Abstraction;
-    using Persistence.Implementation;
+    using Expressions.Abstraction;
+    using Expressions.Implementation;
     using Text.Abstraction;
     using Text.Implementation;
     using Time.Abstraction;
@@ -19,11 +21,23 @@ namespace Curds
     public static class RegistrationExtensions
     {
         public static IServiceCollection AddCurdsCore(this IServiceCollection services) => services
-            .AddCurdsCron()
-            .AddSingleton<ITime, MachineTime>()
+            .AddTime()
+            .AddExpressions()
+            .AddClone()
+            .AddCron()
             .AddTransient<IIndentStringBuilder, IndentStringBuilder>();
 
-        public static IServiceCollection AddCurdsCron(this IServiceCollection services) => services
+        private static IServiceCollection AddTime(this IServiceCollection services) => services
+            .AddSingleton<ITime, MachineTime>();
+
+        private static IServiceCollection AddExpressions(this IServiceCollection services) => services
+            .AddSingleton<IExpressionBuilderFactory, ExpressionBuilderFactory>();
+
+        private static IServiceCollection AddClone(this IServiceCollection services) => services
+            .AddSingleton<ICloneDefinitionFactory, CloneDefinitionFactory>()
+            .AddSingleton<ICloneFactory, CloneFactory>();
+
+        private static IServiceCollection AddCron(this IServiceCollection services) => services
             .AddTransient<ICronExpressionFactory, CronExpressionFactory>()
             .AddCronFieldDefinitions()
             .AddCronFieldFactories()

@@ -17,7 +17,7 @@ namespace Curds.Cron.Tests
         public void Init()
         {
             ServiceProvider = new ServiceCollection()
-                .AddCurdsCron()
+                .AddCurdsCore()
                 .BuildServiceProvider();
         }
 

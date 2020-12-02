@@ -21,7 +21,6 @@ namespace Curds.Tests
     public class RegistrationExtensionsTest : RegistrationExtensionsTemplate
     {
         private void AddCurdsCore() => TestServiceCollection.AddCurdsCore();
-        private void AddCurdsCron() => TestServiceCollection.AddCurdsCron();
 
         [TestMethod]
         public void CurdsCoreAddsTime()
@@ -42,7 +41,7 @@ namespace Curds.Tests
         [TestMethod]
         public void CurdsCronAddsExpressionFactory()
         {
-            AddCurdsCron();
+            AddCurdsCore();
 
             VerifyServiceWasRegistered(typeof(ICronExpressionFactory), typeof(CronExpressionFactory), ServiceLifetime.Transient);
         }
@@ -50,7 +49,7 @@ namespace Curds.Tests
         [TestMethod]
         public void CurdsCronAddsFieldDefinitions()
         {
-            AddCurdsCron();
+            AddCurdsCore();
 
             VerifyServiceWasRegistered(typeof(MinuteFieldDefinition), typeof(MinuteFieldDefinition), ServiceLifetime.Singleton);
             VerifyServiceWasRegistered(typeof(HourFieldDefinition), typeof(HourFieldDefinition), ServiceLifetime.Singleton);
@@ -62,7 +61,7 @@ namespace Curds.Tests
         [TestMethod]
         public void CurdsCronAddsFieldFactories()
         {
-            AddCurdsCron();
+            AddCurdsCore();
 
             VerifyServiceWasRegistered(typeof(ICronFieldFactory<MinuteFieldDefinition>), typeof(MinuteFieldFactory), ServiceLifetime.Transient);
             VerifyServiceWasRegistered(typeof(ICronFieldFactory<HourFieldDefinition>), typeof(HourFieldFactory), ServiceLifetime.Transient);
@@ -74,7 +73,7 @@ namespace Curds.Tests
         [TestMethod]
         public void CurdsCronAddsRangeFactories()
         {
-            AddCurdsCron();
+            AddCurdsCore();
 
             VerifyServiceWasRegistered(typeof(ICronRangeFactory<MinuteFieldDefinition>), typeof(MinuteRangeFactory), ServiceLifetime.Transient);
             VerifyServiceWasRegistered(typeof(ICronRangeFactory<HourFieldDefinition>), typeof(HourRangeFactory), ServiceLifetime.Transient);
@@ -86,7 +85,7 @@ namespace Curds.Tests
         [TestMethod]
         public void CurdsCronAddsRangeLinkFactories()
         {
-            AddCurdsCron();
+            AddCurdsCore();
 
             VerifyServiceWasRegistered(typeof(IRangeFactoryChain<MinuteFieldDefinition>), typeof(MinuteChain), ServiceLifetime.Transient);
             VerifyServiceWasRegistered(typeof(IRangeFactoryChain<HourFieldDefinition>), typeof(HourChain), ServiceLifetime.Transient);
