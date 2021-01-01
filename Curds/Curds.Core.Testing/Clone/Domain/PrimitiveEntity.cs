@@ -16,5 +16,40 @@ namespace Curds.Clone.Domain
         public DateTime TestDateTime { get; set; } = DateTime.Now;
         public DateTimeOffset TestDateTimeOffset { get; set; } = DateTimeOffset.UtcNow;
         public string TestString { get; set; } = nameof(TestString);
+
+        public override int GetHashCode() => HashCode.Combine(
+            TestString,
+            TestString,
+            TestInt,
+            TestLong,
+            TestDateTime,
+            TestDateTimeOffset,
+            TestString);
+
+        public override bool Equals(object obj)
+        {
+            PrimitiveEntity testObject = obj as PrimitiveEntity;
+            return testObject != null &&
+                EqualsInternal(testObject);
+        }
+        private bool EqualsInternal(PrimitiveEntity testObject)
+        {
+            if (TestByte != testObject.TestByte)
+                return false;
+            if (TestShort != testObject.TestShort)
+                return false;
+            if (TestInt != testObject.TestInt)
+                return false;
+            if (TestLong != testObject.TestLong)
+                return false;
+            if (TestDateTime != testObject.TestDateTime)
+                return false;
+            if (TestDateTimeOffset != testObject.TestDateTimeOffset)
+                return false;
+            if (TestString != testObject.TestString)
+                return false;
+
+            return true;
+        }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Curds.Clone.Domain
 {
-    internal class CloneParameters
+    internal class CloneExpressionContext
     {
         public ParameterExpression SourceEntity { get; set; }
         public ParameterExpression TargetEntity { get; set; }

@@ -1,5 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Whey.Domain;
 
 namespace Curds.Clone.Tests
 {
@@ -7,6 +10,7 @@ namespace Curds.Clone.Tests
     using Domain;
 
     [TestClass]
+    [TestCategory(nameof(TestType.Integration))]
     public class CloneIntegrationTest
     {
         private ServiceCollection TestServiceCollection = new ServiceCollection();
@@ -61,6 +65,25 @@ namespace Curds.Clone.Tests
             VerifyPrimitiveEntityWasCloned(actual);
         }
 
+        [DataTestMethod]
+        [DataRow(10)]
+        [DataRow(50)]
+        [DataRow(100)]
+        public async Task CanCloneTypesConcurrently(int clones)
+        {
+            ICloneFactory testObject = TestServiceProvider.GetRequiredService<ICloneFactory>();
+            List<Task<PrimitiveEntity>> cloneTasks = new List<Task<PrimitiveEntity>>();
+            for (int i = 0; i < clones; i++)
+                cloneTasks.Add(ClonePrimitive(testObject));
+            Parallel.ForEach(cloneTasks, (task) => task.Start());
+
+            await Task.WhenAll(cloneTasks);
+
+            foreach (Task<PrimitiveEntity> cloneTask in cloneTasks)
+                VerifyPrimitiveEntityWasCloned(cloneTask.Result);
+        }
+        private Task<PrimitiveEntity> ClonePrimitive(ICloneFactory cloneFactory) => new Task<PrimitiveEntity>(() => cloneFactory.Clone(TestPrimitiveEntity));
+
         [TestMethod]
         public void CanCloneEntityWithComplexTypes()
         {
@@ -72,6 +95,42 @@ namespace Curds.Clone.Tests
             Assert.AreEqual(TestComplexEntity.TestInt, actual.TestInt);
             Assert.AreNotSame(TestComplexEntity.TestPrimitiveEntity, actual.TestPrimitiveEntity);
             VerifyPrimitiveEntityWasCloned(actual.TestPrimitiveEntity);
+        }
+
+        [DataTestMethod]
+        [DataRow(10)]
+        [DataRow(50)]
+        [DataRow(100)]
+        public void CanCloneEntityWithCollections(int testEntitiesInCollection)
+        {
+            CollectionEntity testEntity = new CollectionEntity(testEntitiesInCollection);
+            ICloneFactory testObject = TestServiceProvider.GetRequiredService<ICloneFactory>();
+
+            CollectionEntity actual = testObject.Clone(testEntity);
+
+            Assert.AreNotSame(testEntity, actual);
+            Assert.AreEqual(testEntitiesInCollection, actual.IntArray.Length);
+            Assert.AreEqual(testEntitiesInCollection, actual.PrimitiveEntityArray.Length);
+            Assert.AreEqual(testEntitiesInCollection, actual.ComplexEntityArray.Length);
+            Assert.AreEqual(testEntitiesInCollection, actual.LongList.Count);
+            Assert.AreEqual(testEntitiesInCollection, actual.PrimitiveEntityList.Count);
+            Assert.AreEqual(testEntitiesInCollection, actual.ComplexEntityList.Count);
+            for (int i = 0; i < testEntitiesInCollection; i++)
+                VerifyIndexWasCloned(testEntity, actual, i);
+        }
+        private void VerifyIndexWasCloned(CollectionEntity expected, CollectionEntity actual, int entityIndex)
+        {
+            Assert.AreEqual(expected.IntArray[entityIndex], actual.IntArray[entityIndex]);
+            Assert.AreNotSame(expected.PrimitiveEntityArray[entityIndex], actual.PrimitiveEntityArray[entityIndex]);
+            Assert.AreEqual(expected.PrimitiveEntityArray[entityIndex], actual.PrimitiveEntityArray[entityIndex]);
+            Assert.AreNotSame(expected.ComplexEntityArray[entityIndex], actual.ComplexEntityArray[entityIndex]);
+            Assert.AreEqual(expected.ComplexEntityArray[entityIndex], actual.ComplexEntityArray[entityIndex]);
+
+            Assert.AreEqual(expected.LongList[entityIndex], actual.LongList[entityIndex]);
+            Assert.AreNotSame(expected.PrimitiveEntityList[entityIndex], actual.PrimitiveEntityList[entityIndex]);
+            Assert.AreEqual(expected.PrimitiveEntityList[entityIndex], actual.PrimitiveEntityList[entityIndex]);
+            Assert.AreNotSame(expected.ComplexEntityList[entityIndex], actual.ComplexEntityList[entityIndex]);
+            Assert.AreEqual(expected.ComplexEntityList[entityIndex], actual.ComplexEntityList[entityIndex]);
         }
     }
 }
