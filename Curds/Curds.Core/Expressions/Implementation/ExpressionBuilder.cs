@@ -43,6 +43,8 @@ namespace Curds.Expressions.Implementation
             return variableExpression;
         }
 
+        public Expression ConvertExpressionType<TTarget>(Expression source) => Expression.Convert(source, typeof(TTarget));
+
         public Expression CallMethod(Expression variable, MethodInfo method, params Expression[] arguments) =>
             Expression.Call(variable, method, arguments);
         public Expression GetProperty(Expression variable, PropertyInfo property) =>

@@ -17,6 +17,8 @@ namespace Curds
     using Text.Implementation;
     using Time.Abstraction;
     using Time.Implementation;
+    using Persistence.Abstraction;
+    using Persistence.Implementation;
 
     public static class RegistrationExtensions
     {
@@ -24,6 +26,7 @@ namespace Curds
             .AddTime()
             .AddExpressions()
             .AddClone()
+            .AddPersistence()
             .AddCron()
             .AddTransient<IIndentStringBuilder, IndentStringBuilder>();
 
@@ -31,11 +34,18 @@ namespace Curds
             .AddSingleton<ITime, MachineTime>();
 
         private static IServiceCollection AddExpressions(this IServiceCollection services) => services
-            .AddSingleton<IExpressionBuilderFactory, ExpressionBuilderFactory>();
+            .AddSingleton<IExpressionNodeFactory, ExpressionNodeFactory>()
+            .AddSingleton<IExpressionBuilderFactory, ExpressionBuilderFactory>()
+            .AddSingleton<IExpressionVisitorFactory, ExpressionVisitorFactory>()
+            .AddSingleton<IExpressionParser, ExpressionParser>();
 
         private static IServiceCollection AddClone(this IServiceCollection services) => services
             .AddSingleton<ICloneDefinitionFactory, CloneDefinitionFactory>()
             .AddSingleton<ICloneFactory, CloneFactory>();
+
+        private static IServiceCollection AddPersistence(this IServiceCollection services) => services
+            .AddSingleton<IEntityUpdateDelegateFactory, EntityUpdateDelegateFactory>()
+            .AddSingleton(typeof(ISimpleRepository<>), typeof(CloningSimpleEntityRepository<>));
 
         private static IServiceCollection AddCron(this IServiceCollection services) => services
             .AddTransient<ICronExpressionFactory, CronExpressionFactory>()

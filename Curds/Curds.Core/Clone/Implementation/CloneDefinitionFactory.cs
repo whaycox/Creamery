@@ -19,6 +19,8 @@ namespace Curds.Clone.Implementation
         private HashSet<Type> PrimitiveTypes { get; } = new HashSet<Type>
         {
             typeof(string),
+            typeof(bool),
+            typeof(bool?),
             typeof(byte),
             typeof(byte?),
             typeof(short),

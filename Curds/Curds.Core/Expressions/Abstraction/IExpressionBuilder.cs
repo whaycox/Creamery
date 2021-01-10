@@ -11,6 +11,8 @@ namespace Curds.Expressions.Abstraction
         ParameterExpression CreateObject<TEntity>(string name);
         ParameterExpression CreateObject<TEntity>(string name, Type[] constructorTypes, Expression[] constructorValues);
 
+        Expression ConvertExpressionType<TTarget>(Expression source);
+
         Expression CallMethod(Expression variable, MethodInfo method, params Expression[] arguments);
         Expression GetProperty(Expression variable, PropertyInfo property);
 
