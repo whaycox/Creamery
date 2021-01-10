@@ -2,31 +2,18 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Whey.Domain;
 
 namespace Curds.Clone.Tests
 {
     using Abstraction;
+    using Curds.Template;
     using Domain;
 
     [TestClass]
-    [TestCategory(nameof(TestType.Integration))]
-    public class CloneIntegrationTest
+    public class CloneIntegrationTest : IntegrationTemplate
     {
-        private ServiceCollection TestServiceCollection = new ServiceCollection();
-        private ServiceProvider TestServiceProvider = null;
         private PrimitiveEntity TestPrimitiveEntity = new PrimitiveEntity();
         private ComplexEntity TestComplexEntity = new ComplexEntity();
-
-        private void RegisterServices()
-        {
-            TestServiceCollection.AddCurdsCore();
-        }
-
-        private void BuildServiceProvider()
-        {
-            TestServiceProvider = TestServiceCollection.BuildServiceProvider();
-        }
 
         [TestInitialize]
         public void Init()
@@ -35,12 +22,6 @@ namespace Curds.Clone.Tests
 
             RegisterServices();
             BuildServiceProvider();
-        }
-
-        [TestCleanup]
-        public void Cleanup()
-        {
-            TestServiceProvider?.Dispose();
         }
 
         private void VerifyPrimitiveEntityWasCloned(PrimitiveEntity actual)
@@ -64,25 +45,6 @@ namespace Curds.Clone.Tests
 
             VerifyPrimitiveEntityWasCloned(actual);
         }
-
-        [DataTestMethod]
-        [DataRow(10)]
-        [DataRow(50)]
-        [DataRow(100)]
-        public async Task CanCloneTypesConcurrently(int clones)
-        {
-            ICloneFactory testObject = TestServiceProvider.GetRequiredService<ICloneFactory>();
-            List<Task<PrimitiveEntity>> cloneTasks = new List<Task<PrimitiveEntity>>();
-            for (int i = 0; i < clones; i++)
-                cloneTasks.Add(ClonePrimitive(testObject));
-            Parallel.ForEach(cloneTasks, (task) => task.Start());
-
-            await Task.WhenAll(cloneTasks);
-
-            foreach (Task<PrimitiveEntity> cloneTask in cloneTasks)
-                VerifyPrimitiveEntityWasCloned(cloneTask.Result);
-        }
-        private Task<PrimitiveEntity> ClonePrimitive(ICloneFactory cloneFactory) => new Task<PrimitiveEntity>(() => cloneFactory.Clone(TestPrimitiveEntity));
 
         [TestMethod]
         public void CanCloneEntityWithComplexTypes()

@@ -9,8 +9,8 @@ namespace Curds.Expressions.Implementation
 
     internal class PropertySelectionVisitor : BaseExpressionVisitor<PropertyInfo>
     {
-        private ParameterExpression LambdaParameter { get; set; }
-        private PropertyInfo SelectedProperty { get; set; }
+        public ParameterExpression LambdaParameter { get; private set; }
+        public PropertyInfo SelectedProperty { get; private set; }
 
         public override void VisitLambda(LambdaNode lambdaNode)
         {

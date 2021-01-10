@@ -13,6 +13,7 @@ namespace Curds.Persistence.Implementation
     {
         private IExpressionBuilderFactory ExpressionBuilderFactory { get; }
 
+        private object Locker { get; } = new object();
         private Dictionary<Type, Dictionary<PropertyInfo, EntityUpdateDelegate>> UpdateDelegates { get; } = new Dictionary<Type, Dictionary<PropertyInfo, EntityUpdateDelegate>>();
 
         public EntityUpdateDelegateFactory(IExpressionBuilderFactory expressionBuilderFactory)
@@ -23,21 +24,32 @@ namespace Curds.Persistence.Implementation
         public Action<TEntity> Create<TEntity, TValue>(PropertyInfo updateProperty, TValue newValue)
             where TEntity : class, IEntity
         {
-            if (updateProperty.DeclaringType != typeof(TEntity))
+            if (!updateProperty.DeclaringType.IsAssignableFrom(typeof(TEntity)))
                 throw new InvalidOperationException($"Property {updateProperty.Name} does not belong to supplied entity type {typeof(TEntity).FullName}");
-            if (!UpdateDelegates.ContainsKey(typeof(TEntity)))
-                UpdateDelegates.Add(typeof(TEntity), new Dictionary<PropertyInfo, EntityUpdateDelegate>());
 
-            Dictionary<PropertyInfo, EntityUpdateDelegate> updateDelegates = UpdateDelegates[typeof(TEntity)];
-            if (!updateDelegates.ContainsKey(updateProperty))
-                updateDelegates.Add(
-                    updateProperty,
-                    BuildUpdateDelegate<TEntity, TValue>(
-                        ExpressionBuilderFactory.Create(),
-                        updateProperty));
-
-            EntityUpdateDelegate<TEntity, TValue> updateDelegate = (EntityUpdateDelegate<TEntity, TValue>)updateDelegates[updateProperty];
+            EntityUpdateDelegate<TEntity, TValue> updateDelegate = FetchUpdateDelegate<TEntity, TValue>(updateProperty);
             return (TEntity entity) => updateDelegate.Update(entity, newValue);
+        }
+        private EntityUpdateDelegate<TEntity, TValue> FetchUpdateDelegate<TEntity, TValue>(PropertyInfo updateProperty)
+            where TEntity : class, IEntity
+        {
+            lock (Locker)
+            {
+                if (!UpdateDelegates.ContainsKey(typeof(TEntity)))
+                    UpdateDelegates.Add(
+                        typeof(TEntity),
+                        new Dictionary<PropertyInfo, EntityUpdateDelegate>());
+
+                Dictionary<PropertyInfo, EntityUpdateDelegate> updateDelegates = UpdateDelegates[typeof(TEntity)];
+                if (!updateDelegates.ContainsKey(updateProperty))
+                    updateDelegates.Add(
+                        updateProperty,
+                        BuildUpdateDelegate<TEntity, TValue>(
+                            ExpressionBuilderFactory.Create(),
+                            updateProperty));
+
+                return (EntityUpdateDelegate<TEntity, TValue>)updateDelegates[updateProperty];
+            }
         }
         private EntityUpdateDelegate<TEntity, TValue> BuildUpdateDelegate<TEntity, TValue>(IExpressionBuilder expressionBuilder, PropertyInfo updateProperty)
             where TEntity : class, IEntity

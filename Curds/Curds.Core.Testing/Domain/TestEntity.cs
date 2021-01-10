@@ -6,6 +6,8 @@ namespace Curds.Domain
 
     public class TestEntity : BaseSimpleEntity
     {
+        public int TestField = default;
+
         public bool BoolValue { get; set; } = true;
         public bool? NullableBoolValue { get; set; }
         public byte ByteValue { get; set; } = 255;

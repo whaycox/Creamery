@@ -8,8 +8,8 @@ namespace Curds.Template
     [TestCategory(nameof(TestType.Integration))]
     public abstract class IntegrationTemplate
     {
-        protected IServiceCollection TestServiceCollection = new ServiceCollection();
-        protected IServiceProvider TestServiceProvider = null;
+        protected ServiceCollection TestServiceCollection = new ServiceCollection();
+        protected ServiceProvider TestServiceProvider = null;
 
         protected void BuildServiceProvider()
         {
@@ -20,6 +20,12 @@ namespace Curds.Template
         {
             TestServiceCollection
                 .AddCurdsCore();
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            TestServiceProvider?.Dispose();
         }
     }
 }

@@ -54,6 +54,20 @@ namespace Curds.Expressions.Tests
 
         [TestMethod]
         [ExpectedException(typeof(NotImplementedException))]
+        public void GreateThanIsntImplemented()
+        {
+            TestObject.VisitGreaterThan(null);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotImplementedException))]
+        public void GreaterThanOrEqualIsntImplemented()
+        {
+            TestObject.VisitGreaterThanOrEqual(null);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotImplementedException))]
         public void LambdaIsntImplemented()
         {
             TestObject.VisitLambda(null);

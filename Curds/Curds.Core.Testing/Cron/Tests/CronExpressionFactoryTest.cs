@@ -7,7 +7,6 @@ namespace Curds.Cron.Tests
     using Abstraction;
     using FieldDefinitions.Implementation;
     using Implementation;
-    using FieldFactories.Implementation;
 
     [TestClass]
     public class CronExpressionFactoryTest
@@ -25,9 +24,9 @@ namespace Curds.Cron.Tests
         private Mock<ICronField> MockHourField = new Mock<ICronField>();
         private Mock<ICronFieldFactory<DayOfMonthFieldDefinition>> MockDayOfMonthFactory = new Mock<ICronFieldFactory<DayOfMonthFieldDefinition>>();
         private Mock<ICronField> MockDayOfMonthField = new Mock<ICronField>();
-        private Mock<ICronFieldFactory<MonthFieldDefinition>> MockMonthFactory = new Mock<ICronFieldFactory<MonthFieldDefinition>>(); 
+        private Mock<ICronFieldFactory<MonthFieldDefinition>> MockMonthFactory = new Mock<ICronFieldFactory<MonthFieldDefinition>>();
         private Mock<ICronField> MockMonthField = new Mock<ICronField>();
-        private Mock<ICronFieldFactory<DayOfWeekFieldDefinition>> MockDayOfWeekFactory = new Mock<ICronFieldFactory<DayOfWeekFieldDefinition>>(); 
+        private Mock<ICronFieldFactory<DayOfWeekFieldDefinition>> MockDayOfWeekFactory = new Mock<ICronFieldFactory<DayOfWeekFieldDefinition>>();
         private Mock<ICronField> MockDayOfWeekField = new Mock<ICronField>();
 
         private CronExpressionFactory TestObject = null;
