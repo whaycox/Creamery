@@ -1,4 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using System.Threading.Tasks;
 
 namespace Curds.Expressions.Tests
 {
@@ -8,7 +14,15 @@ namespace Curds.Expressions.Tests
     [TestClass]
     public class ExpressionBuilderFactoryTest
     {
-        private ExpressionBuilderFactory TestObject = new ExpressionBuilderFactory();
+        private Mock<IExpressionFactory> MockExpressionFactory = new Mock<IExpressionFactory>();
+
+        private ExpressionBuilderFactory TestObject = null;
+
+        [TestInitialize]
+        public void Init()
+        {
+            TestObject = new ExpressionBuilderFactory(MockExpressionFactory.Object);
+        }
 
         [TestMethod]
         public void ReturnsExpectedType()

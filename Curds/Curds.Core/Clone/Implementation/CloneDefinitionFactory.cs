@@ -15,6 +15,7 @@ namespace Curds.Clone.Implementation
         private const string IndexPropertyName = "Item";
 
         private IExpressionBuilderFactory ExpressionBuilderFactory { get; }
+        private IExpressionFactory ExpressionFactory { get; }
 
         private HashSet<Type> PrimitiveTypes { get; } = new HashSet<Type>
         {
@@ -48,9 +49,12 @@ namespace Curds.Clone.Implementation
         private MethodInfo CloneMethod { get; } = typeof(ICloneFactory).GetMethod(nameof(ICloneFactory.Clone));
         private PropertyInfo ArrayLengthProperty { get; } = typeof(Array).GetProperty(nameof(Array.Length));
 
-        public CloneDefinitionFactory(IExpressionBuilderFactory expressionBuilderFactory)
+        public CloneDefinitionFactory(
+            IExpressionBuilderFactory expressionBuilderFactory,
+            IExpressionFactory expressionFactory)
         {
             ExpressionBuilderFactory = expressionBuilderFactory;
+            ExpressionFactory = expressionFactory;
         }
 
         public ICloneDefinition<TEntity> Create<TEntity>(ICloneFactory cloneFactory)
@@ -100,7 +104,7 @@ namespace Curds.Clone.Implementation
             context.TargetEntity = expressionBuilder.CreateObject<TEntity>(
                 nameof(CloneExpressionContext.TargetEntity),
                 new[] { typeof(int) },
-                new[] { expressionBuilder.GetProperty(context.SourceEntity, ArrayLengthProperty) });
+                new[] { ExpressionFactory.Call(context.SourceEntity, ArrayLengthProperty.GetMethod) });
             expressionBuilder.For(context.SourceEntity, CloneArrayElementDelegate(expressionBuilder, context));
         }
         private Func<ParameterExpression, Expression> CloneArrayElementDelegate(IExpressionBuilder expressionBuilder, CloneExpressionContext context)
@@ -116,16 +120,16 @@ namespace Curds.Clone.Implementation
             if (PrimitiveTypes.Contains(elementType))
                 return (iterator) =>
                 {
-                    Expression getElementExpression = expressionBuilder.CallMethod(context.SourceEntity, indexProperty.GetMethod, iterator);
-                    return expressionBuilder.CallMethod(context.TargetEntity, indexProperty.SetMethod, iterator, getElementExpression);
+                    Expression getElementExpression = ExpressionFactory.Call(context.SourceEntity, indexProperty.GetMethod, iterator);
+                    return ExpressionFactory.Call(context.TargetEntity, indexProperty.SetMethod, iterator, getElementExpression);
                 };
             else
                 return (iterator) =>
                 {
-                    Expression getElementExpression = expressionBuilder.CallMethod(context.SourceEntity, indexProperty.GetMethod, iterator);
+                    Expression getElementExpression = ExpressionFactory.Call(context.SourceEntity, indexProperty.GetMethod, iterator);
                     MethodInfo cloneMethod = CloneMethod.MakeGenericMethod(elementType);
-                    Expression clonedElement = expressionBuilder.CallMethod(context.CloneFactory, cloneMethod, getElementExpression);
-                    return expressionBuilder.CallMethod(context.TargetEntity, indexProperty.SetMethod, iterator, clonedElement);
+                    Expression clonedElement = ExpressionFactory.Call(context.CloneFactory, cloneMethod, getElementExpression);
+                    return ExpressionFactory.Call(context.TargetEntity, indexProperty.SetMethod, iterator, clonedElement);
                 };
         }
         private void AddListExpressions<TEntity>(IExpressionBuilder expressionBuilder, CloneExpressionContext context)
@@ -137,7 +141,7 @@ namespace Curds.Clone.Implementation
             context.TargetEntity = expressionBuilder.CreateObject<TEntity>(
                 nameof(CloneExpressionContext.TargetEntity),
                 new[] { typeof(int) },
-                new[] { expressionBuilder.GetProperty(context.SourceEntity, listCountProperty) });
+                new[] { ExpressionFactory.Call(context.SourceEntity, listCountProperty.GetMethod) });
             expressionBuilder.For(context.SourceEntity, CloneListElementDelegate(expressionBuilder, context));
         }
         private Func<ParameterExpression, Expression> CloneListElementDelegate(IExpressionBuilder expressionBuilder, CloneExpressionContext context)
@@ -157,16 +161,16 @@ namespace Curds.Clone.Implementation
             if (PrimitiveTypes.Contains(elementType))
                 return (iterator) =>
                 {
-                    Expression getElementExpression = expressionBuilder.CallMethod(context.SourceEntity, indexProperty.GetMethod, iterator);
-                    return expressionBuilder.CallMethod(context.TargetEntity, addMethod, getElementExpression);
+                    Expression getElementExpression = ExpressionFactory.Call(context.SourceEntity, indexProperty.GetMethod, iterator);
+                    return ExpressionFactory.Call(context.TargetEntity, addMethod, getElementExpression);
                 };
             else
                 return (iterator) =>
                 {
-                    Expression getElementExpression = expressionBuilder.CallMethod(context.SourceEntity, indexProperty.GetMethod, iterator);
+                    Expression getElementExpression = ExpressionFactory.Call(context.SourceEntity, indexProperty.GetMethod, iterator);
                     MethodInfo cloneMethod = CloneMethod.MakeGenericMethod(elementType);
-                    Expression clonedElement = expressionBuilder.CallMethod(context.CloneFactory, cloneMethod, getElementExpression);
-                    return expressionBuilder.CallMethod(context.TargetEntity, addMethod, clonedElement);
+                    Expression clonedElement = ExpressionFactory.Call(context.CloneFactory, cloneMethod, getElementExpression);
+                    return ExpressionFactory.Call(context.TargetEntity, addMethod, clonedElement);
                 };
         }
 
@@ -188,7 +192,7 @@ namespace Curds.Clone.Implementation
         }
         private void ClonePrimitiveProperty(IExpressionBuilder expressionBuilder, CloneExpressionContext parameters, PropertyInfo property)
         {
-            Expression sourceValue = expressionBuilder.GetProperty(parameters.SourceEntity, property);
+            Expression sourceValue = ExpressionFactory.Call(parameters.SourceEntity, property.GetMethod);
             expressionBuilder.SetProperty(
                 parameters.TargetEntity,
                 property,
@@ -197,8 +201,8 @@ namespace Curds.Clone.Implementation
         private void CloneComplexProperty(IExpressionBuilder expressionBuilder, CloneExpressionContext parameters, PropertyInfo property)
         {
             MethodInfo cloneMethod = CloneMethod.MakeGenericMethod(property.PropertyType);
-            Expression complexValue = expressionBuilder.GetProperty(parameters.SourceEntity, property);
-            Expression subClone = expressionBuilder.CallMethod(parameters.CloneFactory, cloneMethod, complexValue);
+            Expression complexValue = ExpressionFactory.Call(parameters.SourceEntity, property.GetMethod);
+            Expression subClone = ExpressionFactory.Call(parameters.CloneFactory, cloneMethod, complexValue);
             expressionBuilder.SetProperty(
                 parameters.TargetEntity,
                 property,

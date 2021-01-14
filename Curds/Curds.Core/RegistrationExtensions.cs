@@ -35,6 +35,7 @@ namespace Curds
 
         private static IServiceCollection AddExpressions(this IServiceCollection services) => services
             .AddSingleton<IExpressionNodeFactory, ExpressionNodeFactory>()
+            .AddSingleton<IExpressionFactory, ExpressionFactory>()
             .AddSingleton<IExpressionBuilderFactory, ExpressionBuilderFactory>()
             .AddSingleton<IExpressionVisitorFactory, ExpressionVisitorFactory>()
             .AddSingleton<IExpressionParser, ExpressionParser>();

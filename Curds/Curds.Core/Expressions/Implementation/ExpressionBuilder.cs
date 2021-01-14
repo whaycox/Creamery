@@ -10,26 +10,24 @@ namespace Curds.Expressions.Implementation
 
     internal class ExpressionBuilder : IExpressionBuilder
     {
-        private List<ParameterExpression> ParameterExpressions { get; } = new List<ParameterExpression>();
-        private List<ParameterExpression> BodyVariables { get; } = new List<ParameterExpression>();
-        private List<Expression> BodyExpressions { get; } = new List<Expression>();
-        private PropertyInfo CollectionCountProperty { get; } = typeof(ICollection).GetProperty(nameof(ICollection.Count));
+        private IExpressionFactory ExpressionFactory { get; }
+
+        public List<ParameterExpression> ParameterExpressions { get; } = new List<ParameterExpression>();
+        public List<ParameterExpression> BodyVariables { get; } = new List<ParameterExpression>();
+        public List<Expression> BodyExpressions { get; } = new List<Expression>();
+        public PropertyInfo CollectionCountProperty { get; } = typeof(ICollection).GetProperty(nameof(ICollection.Count));
+
+        public ExpressionBuilder(IExpressionFactory expressionFactory)
+        {
+            ExpressionFactory = expressionFactory;
+        }
 
         public ParameterExpression AddParameter<TEntity>(string name)
         {
-            ParameterExpression parameterExpression = Expression.Parameter(typeof(TEntity), name);
+            ParameterExpression parameterExpression = ExpressionFactory.Parameter<TEntity>(name);
             ParameterExpressions.Add(parameterExpression);
 
             return parameterExpression;
-        }
-
-        private ParameterExpression AddVariable<TEntity>(string name) => AddVariable(typeof(TEntity), name);
-        private ParameterExpression AddVariable(Type variableType, string name)
-        {
-            ParameterExpression variableExpression = Expression.Parameter(variableType, name);
-            BodyVariables.Add(variableExpression);
-
-            return variableExpression;
         }
 
         public ParameterExpression CreateObject<TEntity>(string name) => CreateObject<TEntity>(name, new Type[0], null);
@@ -37,36 +35,44 @@ namespace Curds.Expressions.Implementation
         {
             ConstructorInfo constructor = typeof(TEntity).GetConstructor(constructorTypes);
             ParameterExpression variableExpression = AddVariable<TEntity>(name);
-            Expression createObjectExpression = Expression.Assign(variableExpression, Expression.New(constructor, constructorValues));
+            Expression createObjectExpression = ExpressionFactory.Assign(
+                variableExpression,
+                ExpressionFactory.New(
+                    constructor,
+                    constructorValues));
 
             BodyExpressions.Add(createObjectExpression);
             return variableExpression;
         }
+        private ParameterExpression AddVariable<TEntity>(string name)
+        {
+            ParameterExpression variableExpression = ExpressionFactory.Variable<TEntity>(name);
+            BodyVariables.Add(variableExpression);
 
-        public Expression ConvertExpressionType<TTarget>(Expression source) => Expression.Convert(source, typeof(TTarget));
-
-        public Expression CallMethod(Expression variable, MethodInfo method, params Expression[] arguments) =>
-            Expression.Call(variable, method, arguments);
-        public Expression GetProperty(Expression variable, PropertyInfo property) =>
-            Expression.Call(variable, property.GetMethod);
+            return variableExpression;
+        }
 
         public void SetProperty(ParameterExpression variable, PropertyInfo property, Expression value) =>
-            BodyExpressions.Add(Expression.Call(variable, property.SetMethod, value));
+            BodyExpressions.Add(ExpressionFactory.Call(variable, property.SetMethod, value));
 
         public void For(Expression collectionExpression, Func<ParameterExpression, Expression> contentExpressionDelegate)
         {
-            ParameterExpression iteratorVariable = Expression.Parameter(typeof(int), nameof(iteratorVariable));
-            LabelTarget breakLabel = Expression.Label(nameof(breakLabel));
+            ParameterExpression iteratorVariable = ExpressionFactory.Variable<int>(nameof(iteratorVariable));
+            LabelTarget breakLabel = ExpressionFactory.Label(nameof(breakLabel));
 
-            Expression forBlock = Expression.Block(
+            Expression forBlock = ExpressionFactory.Block(
                 new[] { iteratorVariable },
-                Expression.Loop(
-                    Expression.IfThenElse(
-                        Expression.LessThan(iteratorVariable, GetProperty(collectionExpression, CollectionCountProperty)),
-                        Expression.Block(
+                ExpressionFactory.Loop(
+                    ExpressionFactory.IfThenElse(
+                        ExpressionFactory.LessThan(
+                            iteratorVariable,
+                            ExpressionFactory.Call(
+                                collectionExpression,
+                                CollectionCountProperty.GetMethod)),
+                        ExpressionFactory.Block(
                             contentExpressionDelegate(iteratorVariable),
-                            Expression.PostIncrementAssign(iteratorVariable)),
-                        Expression.Break(breakLabel)),
+                            ExpressionFactory.PostIncrementAssign(iteratorVariable)),
+                        ExpressionFactory.Break(breakLabel)),
                     breakLabel)
                 );
 
@@ -75,15 +81,15 @@ namespace Curds.Expressions.Implementation
 
         public void ReturnObject(ParameterExpression variable)
         {
-            LabelTarget returnLabel = Expression.Label(variable.Type);
-            BodyExpressions.Add(Expression.Return(returnLabel, variable));
-            BodyExpressions.Add(Expression.Label(returnLabel, variable));
+            LabelTarget returnLabel = ExpressionFactory.Label(variable.Type);
+            BodyExpressions.Add(ExpressionFactory.Return(returnLabel, variable));
+            BodyExpressions.Add(ExpressionFactory.Label(returnLabel, variable));
         }
 
         public TDelegate Build<TDelegate>()
         {
-            Expression body = Expression.Block(BodyVariables, BodyExpressions);
-            return Expression
+            Expression body = ExpressionFactory.Block(BodyVariables, BodyExpressions);
+            return ExpressionFactory
                 .Lambda<TDelegate>(body, ParameterExpressions)
                 .Compile();
         }

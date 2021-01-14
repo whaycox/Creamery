@@ -26,5 +26,12 @@ namespace Curds.Domain
         public decimal? NullableDecimalValue { get; set; }
         public double DoubleValue { get; set; } = 3e8;
         public double? NullableDoubleValue { get; set; }
+
+        public TestEntity()
+        { }
+        public TestEntity(int intValue)
+        {
+            IntValue = intValue;
+        }
     }
 }

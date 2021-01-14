@@ -4,6 +4,13 @@
 
     internal class ExpressionBuilderFactory : IExpressionBuilderFactory
     {
-        public IExpressionBuilder Create() => new ExpressionBuilder();
+        private IExpressionFactory ExpressionFactory { get; }
+
+        public ExpressionBuilderFactory(IExpressionFactory expressionFactory)
+        {
+            ExpressionFactory = expressionFactory;
+        }
+
+        public IExpressionBuilder Create() => new ExpressionBuilder(ExpressionFactory);
     }
 }
