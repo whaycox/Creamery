@@ -4,8 +4,8 @@
 
     internal class CloneDefinition<TEntity> : ICloneDefinition<TEntity>
     {
-        private ICloneFactory CloneFactory { get; }
-        private CloneDelegate<TEntity> CloneDelegate { get; }
+        public ICloneFactory CloneFactory { get; }
+        public CloneDelegate<TEntity> CloneDelegate { get; }
 
         public CloneDefinition(
             ICloneFactory cloneFactory,

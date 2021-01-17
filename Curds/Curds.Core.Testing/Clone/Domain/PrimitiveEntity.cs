@@ -17,6 +17,8 @@ namespace Curds.Clone.Domain
         public DateTimeOffset TestDateTimeOffset { get; set; } = DateTimeOffset.UtcNow;
         public string TestString { get; set; } = nameof(TestString);
 
+        public int ReadOnlyInt => throw new NotImplementedException();
+
         public override int GetHashCode() => HashCode.Combine(
             TestString,
             TestString,

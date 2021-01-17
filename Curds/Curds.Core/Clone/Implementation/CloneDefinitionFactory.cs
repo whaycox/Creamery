@@ -12,9 +12,10 @@ namespace Curds.Clone.Implementation
 
     internal class CloneDefinitionFactory : ICloneDefinitionFactory
     {
-        private const string IndexPropertyName = "Item";
+        public const string IndexPropertyName = "Item";
 
         private IExpressionBuilderFactory ExpressionBuilderFactory { get; }
+
         private IExpressionFactory ExpressionFactory { get; }
 
         private HashSet<Type> PrimitiveTypes { get; } = new HashSet<Type>
@@ -105,9 +106,9 @@ namespace Curds.Clone.Implementation
                 nameof(CloneExpressionContext.TargetEntity),
                 new[] { typeof(int) },
                 new[] { ExpressionFactory.Call(context.SourceEntity, ArrayLengthProperty.GetMethod) });
-            expressionBuilder.For(context.SourceEntity, CloneArrayElementDelegate(expressionBuilder, context));
+            expressionBuilder.For(context.SourceEntity, CloneArrayElementDelegate(context));
         }
-        private Func<ParameterExpression, Expression> CloneArrayElementDelegate(IExpressionBuilder expressionBuilder, CloneExpressionContext context)
+        private Func<ParameterExpression, Expression> CloneArrayElementDelegate(CloneExpressionContext context)
         {
             Type elementType = context
                 .SourceEntity
