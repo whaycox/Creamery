@@ -2,6 +2,6 @@
 {
     public interface IDataModel
     {
-        TEntity Entity<TEntity>() where TEntity : IEntity;
+        TEntity Entity<TEntity>() where TEntity : class, IEntity;
     }
 }
