@@ -10,6 +10,7 @@ namespace Curds.Persistence.Query.Tests
     using Model.Abstraction;
     using Persistence.Abstraction;
     using Persistence.Domain;
+    using Expressions.Abstraction;
 
     [TestClass]
     public class SqlQueryContextTest

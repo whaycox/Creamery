@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
+    using Expressions.Abstraction;
     using Model.Abstraction;
     using Persistence.Abstraction;
 
@@ -60,14 +61,18 @@ namespace Curds.Persistence.Query.Implementation
 
         public ISqlQueryToken ParseQueryExpression(Expression queryExpression)
         {
+            ISqlQueryTokenVisitor<TModel> visitor = ExpressionVisitorFactory.TokenVisitor(this);
             IExpressionNode rootNode = ExpressionNodeFactory.Build(queryExpression);
-            return rootNode.AcceptVisitor(ExpressionVisitorFactory.TokenVisitor(this));
+            rootNode.AcceptVisitor(visitor);
+            return visitor.Build();
         }
 
         public ISqlTable ParseTableExpression(Expression tableExpression)
         {
+            ISqlTableVisitor<TModel> visitor = ExpressionVisitorFactory.TableVisitor(this);
             IExpressionNode rootNode = ExpressionNodeFactory.Build(tableExpression);
-            return rootNode.AcceptVisitor(ExpressionVisitorFactory.TableVisitor(this));
+            rootNode.AcceptVisitor(visitor);
+            return visitor.Build();
         }
     }
 }

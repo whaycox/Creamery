@@ -17,16 +17,16 @@ namespace Curds.Persistence.Query.Abstraction
 
     public interface ISqlUniverse<TDataModel, TEntity> : ISqlUniverse<TDataModel>
         where TDataModel : IDataModel
-        where TEntity : IEntity
+        where TEntity : class, IEntity
     {
         ISqlQuery<TEntity> Project();
         ISqlQuery Delete();
 
         ISqlJoinClause<TDataModel, TEntity, ISqlUniverse<TDataModel, TEntity>, TJoinedEntity> Join<TJoinedEntity>(Expression<Func<TDataModel, TJoinedEntity>> entitySelectionExpression)
-            where TJoinedEntity : IEntity;
+            where TJoinedEntity : class, IEntity;
         ISqlUniverse<TDataModel, TEntity, TJoinedEntity> AddJoin<TUniverse, TJoinedEntity>(ISqlJoinClause<TDataModel, TEntity, TUniverse, TJoinedEntity> joinClause)
             where TUniverse : ISqlUniverse<TDataModel, TEntity>
-            where TJoinedEntity : IEntity;
+            where TJoinedEntity : class, IEntity;
         ISqlUniverse<TDataModel, TEntity> Where(Expression<Func<TEntity, bool>> filterExpression);
 
         IEntityUpdate<TEntity> Update();
@@ -34,8 +34,8 @@ namespace Curds.Persistence.Query.Abstraction
 
     public interface ISqlUniverse<TDataModel, TEntityOne, TEntityTwo> : ISqlUniverse<TDataModel>
         where TDataModel : IDataModel
-        where TEntityOne : IEntity
-        where TEntityTwo : IEntity
+        where TEntityOne : class, IEntity
+        where TEntityTwo : class, IEntity
     {
         ISqlQuery<TEntity> Project<TEntity>(Expression<Func<TEntityOne, TEntityTwo, TEntity>> entityProjectionExpression)
             where TEntity : IEntity;

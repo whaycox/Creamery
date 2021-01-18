@@ -10,8 +10,8 @@ namespace Curds.Persistence.Query.Implementation
 
     internal class JoinedSqlUniverse<TDataModel, TEntityOne, TEntityTwo> : ISqlUniverse<TDataModel, TEntityOne, TEntityTwo>
         where TDataModel : IDataModel
-        where TEntityOne : IEntity
-        where TEntityTwo : IEntity
+        where TEntityOne : class, IEntity
+        where TEntityTwo : class, IEntity
     {
         private SqlUniverse<TDataModel, TEntityOne> SourceUniverse { get; }
 

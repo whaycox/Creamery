@@ -8,7 +8,7 @@ namespace Curds.Persistence.Implementation
 
     public class SimpleSqlRepository<TDataModel, TEntity> : SqlRepository<TDataModel, TEntity>, ISimpleRepository<TDataModel, TEntity>
         where TDataModel : IDataModel
-        where TEntity : SimpleEntity
+        where TEntity : BaseSimpleEntity
     {
         public SimpleSqlRepository(ISqlQueryBuilder<TDataModel> queryBuilder)
             : base(queryBuilder)

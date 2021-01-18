@@ -1,17 +1,19 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Curds.Persistence
 {
-    using Abstraction;
-    using Implementation;
+    using Expressions.Abstraction;
+    using Expressions.Implementation;
     using Model.Configuration.Abstraction;
     using Model.Configuration.Domain;
+    using Abstraction;
 
     public static class ModelConfigurationExtensions
     {
-        private static readonly IExpressionParser ExpressionParser = new ExpressionParser();
+        private static IExpressionParser Parser { get; } = ExpressionParser.Singleton;
 
         public static IServiceCollection ConfigureDefaultSchema(this IServiceCollection services, string defaultSchema) => services
             .AddSingleton(typeof(IGlobalConfiguration), new GlobalConfiguration { Schema = defaultSchema });
@@ -60,7 +62,8 @@ namespace Curds.Persistence
         public static EntityConfiguration<TEntity> HasKey<TEntity, TValue>(this EntityConfiguration<TEntity> configuration, Expression<Func<TEntity, TValue>> valueSelectionExpression)
             where TEntity : IEntity
         {
-            configuration.Keys.Add(ExpressionParser.ParseEntityValueSelection(valueSelectionExpression));
+            PropertyInfo selectedProperty = Parser.ParsePropertyExpression(valueSelectionExpression);
+            configuration.Keys.Add(selectedProperty.Name);
             return configuration;
         }
 
@@ -68,7 +71,8 @@ namespace Curds.Persistence
             where TModel : IDataModel
             where TEntity : IEntity
         {
-            configuration.Keys.Add(ExpressionParser.ParseEntityValueSelection(valueSelectionExpression));
+            PropertyInfo selectedProperty = Parser.ParsePropertyExpression(valueSelectionExpression);
+            configuration.Keys.Add(selectedProperty.Name);
             return configuration;
         }
 
@@ -94,7 +98,8 @@ namespace Curds.Persistence
         public static ColumnConfiguration<TEntity, TValue> ConfigureColumn<TEntity, TValue>(this EntityConfiguration<TEntity> configuration, Expression<Func<TEntity, TValue>> valueSelectionExpression)
             where TEntity : IEntity
         {
-            ColumnConfiguration<TEntity, TValue> column = new ColumnConfiguration<TEntity, TValue>(ExpressionParser.ParseEntityValueSelection(valueSelectionExpression))
+            PropertyInfo selectedProperty = Parser.ParsePropertyExpression(valueSelectionExpression);
+            ColumnConfiguration<TEntity, TValue> column = new ColumnConfiguration<TEntity, TValue>(selectedProperty.Name)
             {
                 EntityConfiguration = configuration,
             };
@@ -105,7 +110,8 @@ namespace Curds.Persistence
             where TModel : IDataModel
             where TEntity : IEntity
         {
-            ModelColumnConfiguration<TModel, TEntity, TValue> column = new ModelColumnConfiguration<TModel, TEntity, TValue>(ExpressionParser.ParseEntityValueSelection(valueSelectionExpression))
+            PropertyInfo selectedProperty = Parser.ParsePropertyExpression(valueSelectionExpression);
+            ModelColumnConfiguration<TModel, TEntity, TValue> column = new ModelColumnConfiguration<TModel, TEntity, TValue>(selectedProperty.Name)
             {
                 EntityConfiguration = configuration,
             };

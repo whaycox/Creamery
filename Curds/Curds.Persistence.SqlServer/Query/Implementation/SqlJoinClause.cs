@@ -12,9 +12,9 @@ namespace Curds.Persistence.Query.Implementation
 
     internal class SqlJoinClause<TDataModel, TEntity, TUniverse, TJoinedEntity> : ISqlJoinClause<TDataModel, TEntity, TUniverse, TJoinedEntity>
         where TDataModel : IDataModel
-        where TEntity : IEntity
+        where TEntity : class, IEntity
         where TUniverse : ISqlUniverse<TDataModel, TEntity>
-        where TJoinedEntity : IEntity
+        where TJoinedEntity : class, IEntity
     {
         private ISqlQueryContext<TDataModel> QueryContext { get; }
         private TUniverse Universe { get; }

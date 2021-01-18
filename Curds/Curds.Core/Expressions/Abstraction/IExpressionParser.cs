@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Curds.Expressions.Abstraction
 {
-    internal interface IExpressionParser
+    public interface IExpressionParser
     {
         PropertyInfo ParsePropertyExpression<TEntity, TValue>(Expression<Func<TEntity, TValue>> propertyExpression);
     }

@@ -2,7 +2,7 @@
 using System;
 using System.Linq.Expressions;
 
-namespace Curds.Persistence.Tests
+namespace Curds.Expressions.Tests
 {
     using Domain;
 

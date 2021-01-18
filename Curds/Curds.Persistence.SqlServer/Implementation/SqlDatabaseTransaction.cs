@@ -14,6 +14,8 @@ namespace Curds.Persistence.Implementation
         }
 
         public Task CommitTransaction() => ConnectionContext.CommitTransaction();
+        public Task RollbackTransaction() => Task.Run(() => RollbackInternal());
+        private void RollbackInternal() => ConnectionContext?.RollbackTransaction();
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
@@ -23,7 +25,7 @@ namespace Curds.Persistence.Implementation
             if (!disposedValue)
             {
                 if (disposing)
-                    ConnectionContext?.RollbackTransaction();
+                    RollbackInternal();
                 disposedValue = true;
             }
         }

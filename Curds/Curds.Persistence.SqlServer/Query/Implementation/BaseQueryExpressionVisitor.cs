@@ -3,6 +3,7 @@
     using Abstraction;
     using Persistence.Abstraction;
     using Persistence.Implementation;
+    using Expressions.Implementation;
 
     internal abstract class BaseQueryExpressionVisitor<TModel, TReturn> : BaseExpressionVisitor<TReturn>
         where TModel : IDataModel

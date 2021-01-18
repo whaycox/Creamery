@@ -6,11 +6,12 @@ using System.Collections.Generic;
 namespace Curds.Persistence.Query.Tests
 {
     using Abstraction;
-    using ExpressionNodes.Domain;
+    using Expressions.Abstraction;
     using Implementation;
     using Persistence.Abstraction;
     using Persistence.Domain;
     using Template;
+    using Expressions.Nodes.Domain;
 
     [TestClass]
     public class TableExpressionVisitorTest : BaseQueryExpressionVisitorTemplate
@@ -62,9 +63,11 @@ namespace Curds.Persistence.Query.Tests
                 .Returns(new List<ISqlTable> { MockTable.Object });
             ParameterNode testNode = new ParameterNode(TestParameterExpression);
 
-            ISqlTable actual = TestObject.VisitParameter(testNode);
 
-            Assert.AreSame(MockTable.Object, actual);
+            throw new System.NotImplementedException();
+            //ISqlTable actual = TestObject.VisitParameter(testNode);
+
+            //Assert.AreSame(MockTable.Object, actual);
         }
     }
 }

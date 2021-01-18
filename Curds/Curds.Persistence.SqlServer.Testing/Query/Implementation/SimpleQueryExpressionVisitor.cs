@@ -8,5 +8,10 @@
         public SimpleQueryExpressionVisitor(ISqlQueryContext<ITestDataModel> queryContext)
             : base(queryContext)
         { }
+
+        public override object Build()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

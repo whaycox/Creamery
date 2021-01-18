@@ -6,8 +6,21 @@ namespace Curds.Expressions.Implementation
 {
     using Abstraction;
 
-    internal class ExpressionParser : IExpressionParser
+    public class ExpressionParser : IExpressionParser
     {
+        private static ExpressionParser _singleton = null;
+        public static IExpressionParser Singleton
+        {
+            get
+            {
+                if (_singleton == null)
+                    _singleton = new ExpressionParser(
+                        new ExpressionNodeFactory(),
+                        new ExpressionVisitorFactory());
+                return _singleton;
+            }
+        }
+
         private IExpressionNodeFactory ExpressionNodeFactory { get; }
         private IExpressionVisitorFactory ExpressionVisitorFactory { get; }
 

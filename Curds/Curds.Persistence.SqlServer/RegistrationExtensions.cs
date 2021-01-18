@@ -25,7 +25,7 @@ namespace Curds.Persistence
             .AddTransient<IDatabase, SqlDatabase>()
             .AddTransient(typeof(IRepository<,>), typeof(SqlRepository<,>))
             .AddTransient(typeof(ISimpleRepository<,>), typeof(SimpleSqlRepository<,>))
-            .ConfigureEntity<SimpleEntity>()
+            .ConfigureEntity<BaseSimpleEntity>()
                 .HasKey(entity => entity.ID)
                 .ConfigureColumn(column => column.ID)
                     .IsIdentity()
@@ -36,7 +36,6 @@ namespace Curds.Persistence
             .AddSingleton<ISqlConnectionStringFactory, SqlConnectionStringFactory>()
             .AddSingleton<ISqlQueryReaderFactory, SqlQueryReaderFactory>()
             .AddSingleton<IModelConfigurationFactory, ModelConfigurationFactory>()
-            .AddSingleton<IExpressionNodeFactory, ExpressionNodeFactory>()
             .AddSingleton<ISqlQueryExpressionVisitorFactory, SqlQueryExpressionVisitorFactory>()
             .AddTransient<ISqlQueryTokenFactory, SqlQueryTokenFactory>();
 

@@ -5,7 +5,7 @@ namespace Curds.Expressions.Implementation
     using Abstraction;
     using Nodes.Domain;
 
-    internal abstract class BaseExpressionVisitor<TReturn> : IExpressionVisitor<TReturn>
+    public abstract class BaseExpressionVisitor<TReturn> : IExpressionVisitor<TReturn>
     {
         public virtual void VisitConstant(ConstantNode constantNode) => throw new NotImplementedException();
         public virtual void VisitConvert(ConvertNode convertNode) => throw new NotImplementedException();

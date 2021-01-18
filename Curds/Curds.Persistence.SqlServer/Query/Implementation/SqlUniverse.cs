@@ -11,7 +11,7 @@ namespace Curds.Persistence.Query.Implementation
 
     internal class SqlUniverse<TDataModel, TEntity> : ISqlUniverse<TDataModel, TEntity>
         where TDataModel : IDataModel
-        where TEntity : IEntity
+        where TEntity : class, IEntity
     {
         private ISqlTable Table { get; }
 
@@ -66,13 +66,13 @@ namespace Curds.Persistence.Query.Implementation
             this);
 
         public ISqlJoinClause<TDataModel, TEntity, ISqlUniverse<TDataModel, TEntity>, TJoinedEntity> Join<TJoinedEntity>(Expression<Func<TDataModel, TJoinedEntity>> entitySelectionExpression)
-            where TJoinedEntity : IEntity => new SqlJoinClause<TDataModel, TEntity, ISqlUniverse<TDataModel, TEntity>, TJoinedEntity>(
+            where TJoinedEntity : class, IEntity => new SqlJoinClause<TDataModel, TEntity, ISqlUniverse<TDataModel, TEntity>, TJoinedEntity>(
                 QueryContext,
                 this);
 
         public ISqlUniverse<TDataModel, TEntity, TJoinedEntity> AddJoin<TUniverse, TJoinedEntity>(ISqlJoinClause<TDataModel, TEntity, TUniverse, TJoinedEntity> joinClause)
             where TUniverse : ISqlUniverse<TDataModel, TEntity>
-            where TJoinedEntity : IEntity
+            where TJoinedEntity : class, IEntity
         {
             JoinCollection.Add(joinClause);
             return new JoinedSqlUniverse<TDataModel, TEntity, TJoinedEntity>(this);
