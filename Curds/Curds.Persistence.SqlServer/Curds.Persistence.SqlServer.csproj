@@ -9,7 +9,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Willie Haycox</Authors>
     <Product>Curds.Persistence.SqlServer</Product>
-    <Version>0.1.7</Version>
+    <Version>0.1.8</Version>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Description>A generic SqlServer data access library.</Description>
@@ -19,9 +19,9 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.6" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.9" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.0" />
-    <PackageReference Include="Curds.Core" Version="0.6.0" />
+    <PackageReference Include="Curds.Core" Version="0.7.0" />
   </ItemGroup>
 
 </Project>

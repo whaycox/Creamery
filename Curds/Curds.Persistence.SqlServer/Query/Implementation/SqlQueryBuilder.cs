@@ -5,9 +5,9 @@ using System.Collections.Generic;
 namespace Curds.Persistence.Query.Implementation
 {
     using Abstraction;
+    using Model.Abstraction;
     using Persistence.Abstraction;
     using Queries.Implementation;
-    using Model.Abstraction;
 
     internal class SqlQueryBuilder<TDataModel> : ISqlQueryBuilder<TDataModel>
         where TDataModel : IDataModel
@@ -24,7 +24,7 @@ namespace Curds.Persistence.Query.Implementation
         }
 
         public ISqlQuery Insert<TEntity>(IEnumerable<TEntity> entities)
-            where TEntity : IEntity
+            where TEntity : class, IEntity
         {
             InsertQuery<TDataModel, TEntity> query = new InsertQuery<TDataModel, TEntity>(FreshContext);
             query.Entities.AddRange(entities);
@@ -32,6 +32,6 @@ namespace Curds.Persistence.Query.Implementation
         }
 
         public ISqlUniverse<TDataModel, TEntity> From<TEntity>()
-            where TEntity : IEntity => new SqlUniverse<TDataModel, TEntity>(FreshContext);
+            where TEntity : class, IEntity => new SqlUniverse<TDataModel, TEntity>(FreshContext);
     }
 }

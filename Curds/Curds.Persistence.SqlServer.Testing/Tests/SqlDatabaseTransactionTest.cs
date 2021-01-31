@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Threading.Tasks;
 
 namespace Curds.Persistence.Tests
 {
-    using Implementation;
     using Abstraction;
+    using Implementation;
 
     [TestClass]
     public class SqlDatabaseTransactionTest
@@ -32,6 +26,14 @@ namespace Curds.Persistence.Tests
             await TestObject.CommitTransaction();
 
             MockConnectionContext.Verify(context => context.CommitTransaction(), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task RollbackForwardsToConnection()
+        {
+            await TestObject.RollbackTransaction();
+
+            MockConnectionContext.Verify(context => context.RollbackTransaction(), Times.Once);
         }
 
         [TestMethod]

@@ -4,12 +4,11 @@ using System.Threading.Tasks;
 namespace Curds.Persistence.Implementation
 {
     using Abstraction;
-    using Domain;
     using Query.Abstraction;
 
     public class SqlRepository<TDataModel, TEntity> : BaseSqlRepository, IRepository<TDataModel, TEntity>
         where TDataModel : IDataModel
-        where TEntity : IEntity
+        where TEntity : class, IEntity
     {
         protected ISqlQueryBuilder<TDataModel> QueryBuilder { get; }
 

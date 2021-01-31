@@ -10,8 +10,8 @@ namespace Curds.Persistence.Query.Implementation
 
     internal class JoinedSqlUniverse<TDataModel, TEntityOne, TEntityTwo> : ISqlUniverse<TDataModel, TEntityOne, TEntityTwo>
         where TDataModel : IDataModel
-        where TEntityOne : IEntity
-        where TEntityTwo : IEntity
+        where TEntityOne : class, IEntity
+        where TEntityTwo : class, IEntity
     {
         private SqlUniverse<TDataModel, TEntityOne> SourceUniverse { get; }
 
@@ -24,7 +24,7 @@ namespace Curds.Persistence.Query.Implementation
         }
 
         public ISqlQuery<TEntity> Project<TEntity>(Expression<Func<TEntityOne, TEntityTwo, TEntity>> entityProjectionExpression)
-            where TEntity : IEntity => new ProjectEntityQuery<TDataModel, TEntity>(
+            where TEntity : class, IEntity => new ProjectEntityQuery<TDataModel, TEntity>(
                 QueryContext,
                 QueryContext.ParseTableExpression(entityProjectionExpression),
                 this);

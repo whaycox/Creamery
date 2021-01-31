@@ -3,12 +3,11 @@
 namespace Curds.Persistence.Implementation
 {
     using Abstraction;
-    using Domain;
     using Query.Abstraction;
 
     public class SimpleSqlRepository<TDataModel, TEntity> : SqlRepository<TDataModel, TEntity>, ISimpleRepository<TDataModel, TEntity>
         where TDataModel : IDataModel
-        where TEntity : SimpleEntity
+        where TEntity : class, ISimpleEntity
     {
         public SimpleSqlRepository(ISqlQueryBuilder<TDataModel> queryBuilder)
             : base(queryBuilder)
