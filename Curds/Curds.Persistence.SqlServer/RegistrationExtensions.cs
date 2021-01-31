@@ -25,7 +25,7 @@ namespace Curds.Persistence
             .AddTransient<IDatabase, SqlDatabase>()
             .AddTransient(typeof(IRepository<,>), typeof(SqlRepository<,>))
             .AddTransient(typeof(ISimpleRepository<,>), typeof(SimpleSqlRepository<,>))
-            .ConfigureEntity<SimpleEntity>()
+            .ConfigureEntity<BaseSimpleEntity>()
                 .HasKey(entity => entity.ID)
                 .ConfigureColumn(column => column.ID)
                     .IsIdentity()

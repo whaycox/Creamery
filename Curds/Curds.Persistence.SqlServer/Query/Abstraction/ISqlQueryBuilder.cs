@@ -8,9 +8,9 @@ namespace Curds.Persistence.Query.Abstraction
         where TDataModel : IDataModel
     {
         ISqlQuery Insert<TEntity>(IEnumerable<TEntity> entities)
-            where TEntity : IEntity;
+            where TEntity : class, IEntity;
 
         ISqlUniverse<TDataModel, TEntity> From<TEntity>()
-            where TEntity : IEntity;
+            where TEntity : class, IEntity;
     }
 }

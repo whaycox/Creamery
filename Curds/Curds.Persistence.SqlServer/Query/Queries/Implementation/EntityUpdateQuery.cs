@@ -10,7 +10,7 @@ namespace Curds.Persistence.Query.Queries.Implementation
 
     internal class EntityUpdateQuery<TDataModel, TEntity> : BaseSqlQuery<TDataModel>, IEntityUpdate<TEntity>
         where TDataModel : IDataModel
-        where TEntity : IEntity
+        where TEntity : class, IEntity
     {
         private ISqlQueryContext<TDataModel> QueryContext { get; }
 

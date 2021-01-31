@@ -10,6 +10,6 @@ namespace Curds.Persistence.Model.Domain
         public TestEntity PublicEntity { get; }
 
         public TEntity Entity<TEntity>()
-            where TEntity : IEntity => throw new NotImplementedException();
+            where TEntity : class, IEntity => throw new NotImplementedException();
     }
 }
