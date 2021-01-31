@@ -9,7 +9,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Willie Haycox</Authors>
     <Product>Curds</Product>
-    <Version>0.6.0</Version>
+    <Version>0.7.0</Version>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Description>A generic Core library.</Description>
