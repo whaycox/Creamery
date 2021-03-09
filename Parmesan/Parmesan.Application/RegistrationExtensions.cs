@@ -10,7 +10,6 @@ namespace Parmesan.Application
     {
         public static IServiceCollection AddParmesanApplication(this IServiceCollection services) => services
             .AddParmesanCore()
-            .AddMediatR(typeof(RegistrationExtensions))
-            .AddSingleton<IAuthorizationTicketRepository, AuthorizationTicketRepository>();
+            .AddMediatR(typeof(RegistrationExtensions));
     }
 }

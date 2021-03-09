@@ -50,6 +50,7 @@ namespace Parmesan.UI.Web.Implementation
         {
             if (Verifier != null)
                 throw new InvalidOperationException("Cannot set a verifier when one is set");
+            Challenge = null;
             Verifier = verifier;
         }
     }

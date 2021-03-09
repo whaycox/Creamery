@@ -11,6 +11,7 @@ namespace Parmesan.Persistence.Implementation
         public IClientRepository Clients { get; }
         public IUserRepository Users { get; }
         public IRepository<IParmesanDataModel, PasswordAuthentication> Passwords { get; }
+        public IRepository<IParmesanDataModel, AuthorizationGrant> AuthorizationGrants { get; }
         public IRepository<IParmesanDataModel, AuthorizationCode> AuthorizationCodes { get; }
 
         public SqlParmesanDatabase(
@@ -18,12 +19,14 @@ namespace Parmesan.Persistence.Implementation
             IClientRepository clients,
             IUserRepository users,
             IRepository<IParmesanDataModel, PasswordAuthentication> passwords,
+            IRepository<IParmesanDataModel, AuthorizationGrant> authorizationGrants,
             IRepository<IParmesanDataModel, AuthorizationCode> authorizationCodes)
             : base(connectionContext)
         {
             Clients = clients;
             Users = users;
             Passwords = passwords;
+            AuthorizationGrants = authorizationGrants;
             AuthorizationCodes = authorizationCodes;
         }
     }

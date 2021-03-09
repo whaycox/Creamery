@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Parmesan.Application.Implementation
+namespace Parmesan.Persistence.Implementation
 {
     using Abstraction;
     using Domain;
@@ -13,14 +13,14 @@ namespace Parmesan.Application.Implementation
 
         private ISecureRandom Random { get; }
 
-        private Dictionary<string, VerifiedAuthorizationRequest> TicketCollection { get; } = new Dictionary<string, VerifiedAuthorizationRequest>();
+        private Dictionary<string, AuthorizationRequest> TicketCollection { get; } = new Dictionary<string, AuthorizationRequest>();
 
         public AuthorizationTicketRepository(ISecureRandom random)
         {
             Random = random;
         }
 
-        public string Create(VerifiedAuthorizationRequest authorizationRequest)
+        public string Create(AuthorizationRequest authorizationRequest)
         {
             if (authorizationRequest == null)
                 throw new ArgumentNullException(nameof(authorizationRequest));
@@ -31,9 +31,9 @@ namespace Parmesan.Application.Implementation
             return ticketNumber;
         }
 
-        public VerifiedAuthorizationRequest Consume(string ticketNumber)
+        public AuthorizationRequest Consume(string ticketNumber)
         {
-            if (!TicketCollection.TryGetValue(ticketNumber, out VerifiedAuthorizationRequest value))
+            if (!TicketCollection.TryGetValue(ticketNumber, out AuthorizationRequest value))
                 return null;
             TicketCollection.Remove(ticketNumber);
             return value;

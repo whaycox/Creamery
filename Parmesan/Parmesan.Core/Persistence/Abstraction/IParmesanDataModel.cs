@@ -12,6 +12,7 @@ namespace Parmesan.Persistence.Abstraction
         User Users { get; }
         PasswordAuthentication Passwords { get; }
 
+        AuthorizationGrant AuthorizationGrants { get; }
         AuthorizationCode AuthorizationCodes { get; }
     }
 }

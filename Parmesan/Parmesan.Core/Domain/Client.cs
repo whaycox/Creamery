@@ -5,7 +5,7 @@ using Curds.Persistence.Domain;
 
 namespace Parmesan.Domain
 {
-    public class Client : SimpleEntity
+    public class Client : BaseSimpleEntity
     {
         public string PublicClientID { get; set; }
         public ClientType Type { get; set; }

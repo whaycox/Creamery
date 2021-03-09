@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Parmesan.Server.Controllers.Domain
+namespace Parmesan.Server.Domain
 {
     using Parmesan.Domain;
 

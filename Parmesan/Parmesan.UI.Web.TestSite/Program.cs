@@ -15,12 +15,18 @@ namespace Parmesan.UI.Web.TestSite
         public static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
-            builder.RootComponents.Add<App>("app");
+            builder
+                .RootComponents
+                .Add<App>("app");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-            builder.Services.AddParmesanWebUI("Parmesan.UI.Web.TestSite");
+            builder
+                .Services
+                .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
+                .AddParmesanWebUI("Parmesan.UI.Web.TestSite");
 
-            await builder.Build().RunAsync();
+            await builder
+                .Build()
+                .RunAsync();
         }
     }
 }

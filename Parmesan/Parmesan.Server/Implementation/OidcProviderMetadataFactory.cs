@@ -22,6 +22,7 @@ namespace Parmesan.Server.Implementation
         public OidcProviderMetadata Build() => new OidcProviderMetadata
         {
             AuthorizationEndpoint = UriPath.Combine(Settings.Issuer, ServerConstants.AuthorizeRoute),
+            TokenEndpoint = UriPath.Combine(Settings.Issuer, ServerConstants.TokenRoute),
         };
     }
 }

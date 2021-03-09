@@ -9,6 +9,7 @@ namespace Parmesan.Persistence.Abstraction
         IClientRepository Clients { get; }
         IUserRepository Users { get; }
         IRepository<IParmesanDataModel, PasswordAuthentication> Passwords { get; }
+        IRepository<IParmesanDataModel, AuthorizationGrant> AuthorizationGrants { get; }
         IRepository<IParmesanDataModel, AuthorizationCode> AuthorizationCodes { get; }
     }
 }

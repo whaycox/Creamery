@@ -2,6 +2,8 @@
 @inject NavigationManager Navigation
 @inject ILoginRequestStorage RequestStorage
 @inject IPkceFactory Pkce
+@inject HttpClient Http
+@inject IAccessTokenProvider AccessTokenProvider
 
 <div>This is the login callback</div>
 <div>Code: @Code</div>
@@ -21,12 +23,16 @@
         await base.OnInitializedAsync();
         Uri current = Navigation.ToAbsoluteUri(Navigation.Uri);
         Dictionary<string, StringValues> queryDictionary = QueryHelpers.ParseQuery(current.Query);
-        string providedCode = queryDictionary[ResponseType.code.ToString()];
-        string providedState = queryDictionary[AuthorizationRequest.StateName];
+        Code = queryDictionary[ResponseType.code.ToString()];
+        State = queryDictionary[AuthorizationRequest.StateName];
 
         var loginRequest = await RequestStorage.Consume();
-        if (loginRequest.state != providedState)
+        ExpectedState = loginRequest.state;
+        Verifier = loginRequest.verifier;
+        if (ExpectedState != State)
             throw new InvalidOperationException("Invalid state provided");
-        Pkce.SetVerifier(loginRequest.verifier);
+
+        Pkce.SetVerifier(Verifier);
+        AccessTokenResponse accessTokenResponse = await AccessTokenProvider.Request(Http, Code);
     }
 }

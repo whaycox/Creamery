@@ -35,9 +35,8 @@ namespace Parmesan.Application.Commands.CreateAuthorizationCode.Implementation
 
         public async Task<string> Handle(CreateAuthorizationCodeCommand request, CancellationToken cancellationToken)
         {
-            AuthorizationCode newCode = new AuthorizationCode
+            AuthorizationGrant authGrant = new AuthorizationGrant
             {
-                Code = Random.Generate(CodeLengthInBytes),
                 ClientID = request.ClientID,
                 UserID = request.UserID,
                 Scope = request.Scope,
@@ -45,9 +44,16 @@ namespace Parmesan.Application.Commands.CreateAuthorizationCode.Implementation
                 CodeChallenge = request.CodeChallenge,
                 Expiration = CurrentExpiration,
             };
-            await Database.AuthorizationCodes.Insert(newCode);
+            await Database.AuthorizationGrants.Insert(authGrant);
 
-            return newCode.Code;
+            AuthorizationCode authCode = new AuthorizationCode
+            {
+                Code = Random.Generate(CodeLengthInBytes),
+                AuthorizationGrantID = authGrant.ID,
+            };
+            await Database.AuthorizationCodes.Insert(authCode);
+
+            return authCode.Code;
         }
     }
 }

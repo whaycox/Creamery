@@ -4,9 +4,10 @@
     {
         public const string LoginAuthorizationPolicy = "Parmesan.Server.Authorization.LoggedIn";
         public const string LoginAuthenticationScheme = "Parmesan.Server.Authentication.Login";
-        public const string CookiePath = "/Parmesan.Server";
+        public const string CookiePath = "/parmesan.server";
 
-        public const string LoginRoute = "/Parmesan.Server/auth/login";
-        public const string AuthorizeRoute = "/Parmesan.Server/oauth/authorize";
+        public const string LoginRoute = "/parmesan.server/auth/login";
+        public const string AuthorizeRoute = "/parmesan.server/oauth/authorize";
+        public const string TokenRoute = "/parmesan.server/oauth/token";
     }
 }
