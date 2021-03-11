@@ -1,0 +1,17 @@
+﻿.o-glyph-component {
+    grid-row: 1 / 2;
+    grid-column: 1 / 2;
+    border-radius: 50%;
+}
+
+.glyph {
+    width: 62%;
+    height: 62%;
+    background-color: black;
+}
+
+.knockout {
+    width: 45%;
+    height: 45%;
+    background-color: white;
+}

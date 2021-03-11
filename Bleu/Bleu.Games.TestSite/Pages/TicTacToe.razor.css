@@ -1,0 +1,166 @@
+﻿.tictactoe-container {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas: 'game controls';
+    place-items: center;
+    width: 100vw;
+    height: 100vh;
+}
+
+.game {
+    grid-area: game;
+    display: grid;
+    grid-template-areas: 'board';
+    place-items: center;
+}
+
+.board {
+    grid-area: board;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    place-items: center;
+    width: 95vh;
+    height: 95vh;
+}
+
+.result {
+    grid-area: board;
+    font-size: 11em;
+    padding: 75px;
+    background-color: white;
+    border: solid 1px black;
+    box-shadow: rgba(0, 0, 0, 0.4) 5px 5px 5px; 
+}
+
+.cell {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    cursor: default;
+}
+    .cell:not(.selected):hover {
+        background-color: rgb(199, 199, 199);
+        transition: background-color linear .3s;
+        cursor: pointer;
+    }
+
+#cell-0 {
+    border-right: solid 1px black;
+    border-bottom: solid 1px black;
+}
+
+#cell-1 {
+    border-bottom: solid 1px black;
+}
+
+#cell-2 {
+    border-left: solid 1px black;
+    border-bottom: solid 1px black;
+}
+
+#cell-3 {
+    border-right: solid 1px black;
+}
+
+#cell-5 {
+    border-left: solid 1px black;
+}
+
+#cell-6 {
+    border-top: solid 1px black;
+    border-right: solid 1px black;
+}
+
+#cell-7 {
+    border-top: solid 1px black;
+}
+
+#cell-8 {
+    border-top: solid 1px black;
+    border-left: solid 1px black;
+}
+
+#game-controls {
+    grid-area: controls;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-auto-rows: min-content;
+    align-items: center;
+    width: 174px;
+    height: 100%;
+    background-color: rgb(163, 163, 163);
+    border-left: solid 1px black;
+}
+    #game-controls[aria-expanded="false"] {
+        display: none;
+    }
+
+#game-controls label {
+    justify-self: end;
+    margin: 10px 0px 10px 20px;
+    font-size: 1.3em;
+}
+
+#game-controls input {
+    margin-right: 15px;
+}
+
+#game-controls button {
+    grid-column: 1 / 3;
+    margin: 5px;
+    padding: 10px;
+    background-color: rgb(204, 204, 204);
+    border: solid 1px black;
+    cursor: pointer;
+}
+
+.expand-button {
+    grid-area: controls;
+    justify-self: start;
+    z-index: 2;
+    padding: unset;
+    background-color: black;
+    color: white;
+    border: solid 1px black;
+    border-radius: 10px 0px 0px 10px;
+}
+    .expand-button.expanded {
+        position: relative;
+        right: 10px;
+        border-radius: 5px;
+    }
+
+.expand-button span {
+    margin: 15px 0px;
+}
+
+@media (max-aspect-ratio: 10/9) {
+    .tictactoe-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr;
+        grid-template-areas: 'game';
+    }
+    #game-controls {
+        grid-area: game;
+        z-index: 2;
+        justify-self: end;
+        box-shadow: rgba(0, 0, 0, 0.3) -5px 0px 5px;
+    }
+    .expand-button {
+        grid-area: game;
+        z-index: 3;
+        justify-self: end;
+    }
+        .expand-button.expanded {
+            position: relative;
+            right: 160px;
+            border-radius: 5px;
+        }
+
+    .board {
+        width: 90vw;
+        height: 90vw;
+    }
+}

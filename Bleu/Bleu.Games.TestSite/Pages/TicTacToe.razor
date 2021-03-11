@@ -1,0 +1,40 @@
+﻿@page "/tic-tac-toe"
+<div class="tictactoe-container">
+    <div class="game">
+        <div class="board">
+            <div id="cell-0" class="cell selected"><TicTacToeXGlyph /></div>
+            <div id="cell-1" class="cell selected"><TicTacToeOGlyph /></div>
+            <div id="cell-2" class="cell"></div>
+            <div id="cell-3" class="cell"></div>
+            <div id="cell-4" class="cell"></div>
+            <div id="cell-5" class="cell"></div>
+            <div id="cell-6" class="cell"></div>
+            <div id="cell-7" class="cell"></div>
+            <div id="cell-8" class="cell"></div>
+        </div>
+        <div class="result">We Draw.</div>
+    </div>
+    <button class="expand-button @(Expanded ? "expanded" : string.Empty)" aria-controls="game-controls" @onclick="() => Expanded = !Expanded">
+        @if (Expanded)
+        {
+            <span class="material-icons">chevron_right</span>
+        }
+        else
+        {
+            <span class="material-icons">chevron_left</span>
+        }
+    </button>
+    <div id="game-controls" aria-expanded="@Expanded.ToString().ToLower()">
+        <label for="me-first">Me First</label>
+        <input id="me-first" type="radio" name="starting-player" checked />
+        <label for="you-first">You First</label>
+        <input id="you-first" type="radio" name="starting-player" />
+        <label for="random-first">Random</label>
+        <input id="random-first" type="radio" name="starting-player" />
+        <button>Start</button>
+    </div>
+</div>
+
+@code {
+    private bool Expanded { get; set; } = true;
+}
