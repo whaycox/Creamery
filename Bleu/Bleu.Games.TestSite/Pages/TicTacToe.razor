@@ -1,18 +1,39 @@
 ﻿@page "/tic-tac-toe"
+@inject ITicTacToeFactory Factory
 <div class="tictactoe-container">
-    <div class="game">
+    <div class="game" ended="@(!Game.Active)">
         <div class="board">
-            <div id="cell-0" class="cell selected"><TicTacToeXGlyph /></div>
-            <div id="cell-1" class="cell selected"><TicTacToeOGlyph /></div>
-            <div id="cell-2" class="cell"></div>
-            <div id="cell-3" class="cell"></div>
-            <div id="cell-4" class="cell"></div>
-            <div id="cell-5" class="cell"></div>
-            <div id="cell-6" class="cell"></div>
-            <div id="cell-7" class="cell"></div>
-            <div id="cell-8" class="cell"></div>
+            @{
+                PlayerType?[] currentBoard = Game.Board;
+                for (int i = 0; i < currentBoard.Length; i++)
+                {
+                    <TicTacToeCell Index="i" Game="Game" UpdateDelegate="GameHasChanged" />
+                }
+            }
         </div>
-        <div class="result">We Draw.</div>
+        @if (!Game.Active)
+        {
+            <div class="result-container">
+                <div class="result">
+                    @if (Game.Winner == null)
+                    {
+                        <span>We Draw.</span>
+                    }
+                    else
+                    {
+                        switch (Game.Winner.Value)
+                        {
+                            case PlayerType.CPU:
+                                <span>I Win!</span>
+                                break;
+                            case PlayerType.Player:
+                                <span>You Win!</span>
+                                break;
+                        }
+                    }
+                </div>
+            </div>
+        }
     </div>
     <button class="expand-button @(Expanded ? "expanded" : string.Empty)" aria-controls="game-controls" @onclick="() => Expanded = !Expanded">
         @if (Expanded)
@@ -26,15 +47,37 @@
     </button>
     <div id="game-controls" aria-expanded="@Expanded.ToString().ToLower()">
         <label for="me-first">Me First</label>
-        <input id="me-first" type="radio" name="starting-player" checked />
+        <input id="me-first" type="radio" name="starting-player" checked="@(StartingPlayer == PlayerType.CPU)" @onchange="() => StartingPlayer = PlayerType.CPU" />
         <label for="you-first">You First</label>
-        <input id="you-first" type="radio" name="starting-player" />
+        <input id="you-first" type="radio" name="starting-player" checked="@(StartingPlayer == PlayerType.Player)" @onchange="() => StartingPlayer = PlayerType.Player" />
         <label for="random-first">Random</label>
-        <input id="random-first" type="radio" name="starting-player" />
-        <button>Start</button>
+        <input id="random-first" type="radio" name="starting-player" checked="@(StartingPlayer == PlayerType.Random)" @onchange="() => StartingPlayer = PlayerType.Random" />
+        <button @onclick="NewGame">Start</button>
     </div>
 </div>
 
 @code {
     private bool Expanded { get; set; } = true;
+    private PlayerType StartingPlayer { get; set; } = PlayerType.CPU;
+    private ITicTacToeGame Game { get; set; }
+
+    private TicTacToeGameOptions Options => new TicTacToeGameOptions
+    {
+        StartingPlayer = StartingPlayer,
+    };
+
+    private void GameHasChanged() => StateHasChanged();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        ITicTacToeBrain brain = Factory.Brain();
+        Game = Factory.Game(brain, Options);
+    }
+
+    private void NewGame()
+    {
+        ITicTacToeBrain brain = Factory.Brain();
+        Game = Factory.Game(brain, Options);
+    }
 }

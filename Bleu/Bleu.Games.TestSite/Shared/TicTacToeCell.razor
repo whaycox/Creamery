@@ -1,0 +1,36 @@
+﻿@{
+    string cellClass = $"cell {(CellSelected ? "selected" : string.Empty)}";
+}
+<div id="cell-@Index" class="@cellClass" @onclick="SelectCell">
+    @if (Value == PlayerType.CPU)
+    {
+        <TicTacToeXGlyph />
+    }
+    else if (Value == PlayerType.Player)
+    {
+        <TicTacToeOGlyph />
+    }
+</div>
+
+@code {
+    private PlayerType? Value => Game.Board[Index];
+    private bool CellSelected => Value != null;
+
+    [Parameter]
+    public int Index { get; set; }
+
+    [Parameter]
+    public ITicTacToeGame Game { get; set; }
+
+    [Parameter]
+    public Action UpdateDelegate { get; set; }
+
+    private void SelectCell()
+    {
+        if (Game.Active && !CellSelected)
+        {
+            Game.Select(Index);
+            UpdateDelegate();
+        }
+    }
+}

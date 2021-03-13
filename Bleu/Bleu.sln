@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bleu.Games.TestSite", "Bleu.Games.TestSite\Bleu.Games.TestSite.csproj", "{D03EDBB1-7F3B-4E19-97C4-AC811FF8179A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bleu.Games", "Bleu.Games\Bleu.Games.csproj", "{E48F17DF-BB99-445F-B818-3B9624C8EA52}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{D03EDBB1-7F3B-4E19-97C4-AC811FF8179A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D03EDBB1-7F3B-4E19-97C4-AC811FF8179A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D03EDBB1-7F3B-4E19-97C4-AC811FF8179A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E48F17DF-BB99-445F-B818-3B9624C8EA52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E48F17DF-BB99-445F-B818-3B9624C8EA52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E48F17DF-BB99-445F-B818-3B9624C8EA52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E48F17DF-BB99-445F-B818-3B9624C8EA52}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
